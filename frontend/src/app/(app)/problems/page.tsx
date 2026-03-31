@@ -396,9 +396,27 @@ export default function ProblemsPage() {
     setOpenSections([]);
   };
 
+  const toSlug = (value: string) =>
+    value
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+
   const getProblemHref = (sectionName: string, problemName: string) => {
     if (sectionName === "Binary Tree" && problemName === "Inorder Traversal") {
       return "/problems/binary-tree/inorder-traversal";
+    }
+
+    if (sectionName === "Binary Tree" && problemName === "Preorder Traversal") {
+      return "/problems/binary-tree/preorder-traversal";
+    }
+
+    if (sectionName === "Binary Tree" && problemName === "Postorder Traversal") {
+      return "/problems/binary-tree/postorder-traversal";
+    }
+
+    if (sectionName === "Binary Tree") {
+      return `/problems/binary-tree/${toSlug(problemName)}`;
     }
 
     return null;
