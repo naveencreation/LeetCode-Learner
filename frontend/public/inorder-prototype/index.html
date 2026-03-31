@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inorder Tree Traversal - Interactive Visualization</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="header-title-wrap">
+                <h1 class="title">Inorder Tree Traversal</h1>
+                <p class="subtitle">Left -> Root -> Right recursion visualizer</p>
+            </div>
+            <div class="header-metrics">
+                <div class="metric-chip">
+                    <span class="metric-label">Step</span>
+                    <span class="metric-value" id="stepIndicator">0/11</span>
+                </div>
+                <div class="metric-chip">
+                    <span class="metric-label">Visited</span>
+                    <span class="metric-value" id="visitedCount">0</span>
+                </div>
+                <div class="metric-chip metric-result">
+                    <span class="metric-label">Result</span>
+                    <span class="metric-value" id="resultPreview">[]</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="code-section">
+                <div class="section-header">
+                    <h2>Python Code</h2>
+                    <span class="badge code-badge">Execution</span>
+                </div>
+                <div class="code-panel">
+                    <pre><code><span class="code-line" data-line="0"><span class="keyword">def</span> <span class="function">recursiveInorder</span>(<span class="var">root</span>, <span class="var">arr</span>):</span>
+<span class="code-line" data-line="1">    <span class="keyword">if</span> <span class="var">root</span> <span class="keyword">is</span> <span class="keyword">None</span>:</span>
+<span class="code-line" data-line="2">        <span class="keyword">return</span></span>
+<span class="code-line" data-line="3">    recursiveInorder(<span class="var">root</span>.left, <span class="var">arr</span>)</span>
+<span class="code-line" data-line="4">    <span class="var">arr</span>.append(<span class="var">root</span>.data)</span>
+<span class="code-line" data-line="5">    recursiveInorder(<span class="var">root</span>.right, <span class="var">arr</span>)</span></code></pre>
+                </div>
+                <div class="code-info">
+                    <span class="code-status" id="codeStatus">Current Line:</span>
+                </div>
+            </div>
+
+            <!-- Tree Visualization -->
+            <div class="tree-section">
+                <div class="section-header">
+                    <h2>Tree Structure</h2>
+                    <span class="badge" id="operationBadge">Ready</span>
+                </div>
+                <canvas id="treeCanvas" width="400" height="450"></canvas>
+                <div class="tree-info">
+                    <div class="info-item">
+                        <span class="label">Operation:</span>
+                        <span class="value" id="operation">Waiting...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="call-stack-panel">
+                <div class="section-header">
+                    <h2>Recursion Stack</h2>
+                    <span class="badge" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">Live</span>
+                </div>
+                <div class="call-stack-container" id="callStackContainer">
+                    <div class="call-stack-empty">Stack is empty. Click Next to begin!</div>
+                </div>
+            </div>
+
+            <div class="explanation-panel">
+                <div class="section-header">
+                    <h2>Step Explanation</h2>
+                    <span class="badge" style="background: linear-gradient(135deg, #06b6d4, #14b8a6);">Info</span>
+                </div>
+                <div class="explanation-box" id="explanationBox">
+                    <div class="explanation-content">
+                        <p class="explanation-title" id="explanationTitle">Ready to Start</p>
+                        <p class="explanation-desc" id="explanationDesc">Click "Next Step" to begin exploring the inorder traversal algorithm. Watch how the recursion unfolds!</p>
+                        <div class="explanation-details" id="explanationDetails"></div>
+                    </div>
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color unvisited"></div>
+                        <span>Unvisited</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color exploring-left"></div>
+                        <span>Left</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color current"></div>
+                        <span>Current</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color exploring-right"></div>
+                        <span>Right</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color completed"></div>
+                        <span>Done</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section">
+                <div class="section-header">
+                    <h2>Traversal Progress</h2>
+                </div>
+
+                <!-- Current State -->
+                <div class="state-box">
+                    <div class="state-item">
+                        <span class="state-label">Current Node</span>
+                        <div class="state-value" id="currentNode">-</div>
+                    </div>
+                    <div class="state-item">
+                        <span class="state-label">Phase</span>
+                        <div class="state-value" id="phase">Start</div>
+                    </div>
+                </div>
+
+                <!-- Result Array -->
+                <div class="result-box">
+                    <span class="array-label">Result Array:</span>
+                    <div class="result-array" id="resultArray">
+                        <span class="placeholder">Traversal result appears here...</span>
+                    </div>
+                </div>
+
+                <!-- Status Message -->
+                <div class="status-message" id="status">
+                    👉 Press <strong>Next</strong> to begin the traversal
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="controls">
+                <button class="btn btn-secondary" id="prevBtn" onclick="previousStep()" disabled>
+                    <span class="btn-icon">⬅</span>
+                    <span class="btn-text">Previous</span>
+                </button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                    <span class="btn-text">Next Step</span>
+                    <span class="btn-icon">➡</span>
+                </button>
+                <button class="btn btn-danger" id="resetBtn" onclick="resetTraversal()">
+                    <span class="btn-icon">↻</span>
+                    <span class="btn-text">Reset</span>
+                </button>
+            </div>
+            <div class="keyboard-hint">Press <kbd>→</kbd> for Next, <kbd>←</kbd> for Previous</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
