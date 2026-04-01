@@ -12,7 +12,7 @@ const frameStyles: Record<CallStackFrame["state"], string> = {
 
 export function CallStackPanel({ activeCallStack }: CallStackPanelProps) {
   return (
-    <section className="grid min-h-0 grid-rows-[auto_1fr] gap-2 rounded-xl border border-slate-200 bg-white p-2.5 shadow-[0_2px_10px_rgba(17,24,39,0.06)]">
+    <section className="grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr] gap-2 rounded-xl border border-slate-200 bg-white p-2.5 shadow-[0_2px_10px_rgba(17,24,39,0.06)]">
       <div className="mb-0.5 flex items-center justify-between">
         <h2 className="text-[13px] font-extrabold uppercase tracking-[0.01em] text-slate-700">
           Recursion Stack

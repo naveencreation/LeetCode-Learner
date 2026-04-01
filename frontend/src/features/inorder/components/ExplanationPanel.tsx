@@ -1,10 +1,12 @@
 import type { ExecutionStep } from "../types";
+import { INORDER_LINE_GUIDE, INORDER_LINE_LABELS } from "../constants";
 
 interface ExplanationPanelProps {
   currentStep: number;
   totalSteps: number;
   result: number[];
   activeStep: ExecutionStep | undefined;
+  currentCodeLine: number;
 }
 
 function getExplanation(
@@ -12,13 +14,20 @@ function getExplanation(
   currentStep: number,
   totalSteps: number,
   result: number[],
+  currentCodeLine: number,
 ) {
+  const lineGuide = INORDER_LINE_GUIDE[currentCodeLine];
+  const lineLabel = INORDER_LINE_LABELS[currentCodeLine] ?? "Traversal Context";
+
   if (!step && currentStep === 0) {
     return {
       title: "Ready to Start",
       description:
-        'Click "Next Step" to begin inorder traversal. The flow is Left -> Root -> Right.',
-      details: ["The call stack will grow as recursion goes deeper."],
+        'Click "Next Step" to begin. We will follow Left -> Root -> Right and explain each highlighted code line.',
+      details: [
+        "Start from recursiveInorder(root, arr).",
+        "Watch call stack, highlighted line, and result array together.",
+      ],
     };
   }
 
@@ -28,7 +37,19 @@ function getExplanation(
       description: `All steps finished. Final inorder result is [${result.join(", ")}].`,
       details: [
         `Total execution steps: ${totalSteps}`,
-        "Use Previous to replay each recursive action.",
+        "Use Previous to replay each recursive action slowly.",
+      ],
+    };
+  }
+
+  if (lineGuide) {
+    return {
+      title: `Line ${currentCodeLine + 1}: ${lineLabel}`,
+      description: lineGuide.meaning,
+      details: [
+        `Why this line matters: ${lineGuide.why}`,
+        `What happens next: ${lineGuide.next}`,
+        `Current result snapshot: [${result.join(", ")}]`,
       ],
     };
   }
@@ -78,11 +99,18 @@ export function ExplanationPanel({
   totalSteps,
   result,
   activeStep,
+  currentCodeLine,
 }: ExplanationPanelProps) {
-  const explanation = getExplanation(activeStep, currentStep, totalSteps, result);
+  const explanation = getExplanation(
+    activeStep,
+    currentStep,
+    totalSteps,
+    result,
+    currentCodeLine,
+  );
 
   return (
-    <section className="grid min-h-0 grid-rows-[auto_1fr_auto] gap-2 rounded-xl border border-slate-200 bg-white p-2.5 shadow-[0_2px_10px_rgba(17,24,39,0.06)]">
+    <section className="grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr_auto] gap-2 rounded-xl border border-slate-200 bg-white p-2.5 shadow-[0_2px_10px_rgba(17,24,39,0.06)]">
       <div className="mb-0.5 flex items-center justify-between">
         <h2 className="text-[13px] font-extrabold uppercase tracking-[0.01em] text-slate-700">
           Step Explanation

@@ -110,6 +110,7 @@ export function useInorderTraversal() {
 
   const activeStep = executionSteps[currentStep];
   const executedStep = currentStep > 0 ? executionSteps[currentStep - 1] : undefined;
+  const displayStep = executedStep ?? activeStep;
 
   return {
     root,
@@ -120,10 +121,10 @@ export function useInorderTraversal() {
     result: projectedState.result,
     visitedNodes: projectedState.visitedNodes,
     nodeStates: projectedState.nodeStates,
-    currentOperation: activeStep?.operation ?? "Waiting...",
-    currentPhase: getPhaseLabel(activeStep),
-    currentCodeLine: getCodeLineForStep(activeStep),
-    operationBadge: getOperationBadge(activeStep),
+    currentOperation: displayStep?.operation ?? "Waiting...",
+    currentPhase: getPhaseLabel(displayStep),
+    currentCodeLine: getCodeLineForStep(displayStep),
+    operationBadge: getOperationBadge(displayStep),
     activeStep,
     executedStep,
     activeCallStack: executedStep?.callStack ?? [],
