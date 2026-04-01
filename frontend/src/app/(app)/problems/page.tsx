@@ -504,30 +504,30 @@ export default function ProblemsPage() {
                 <button
                   type="button"
                   onClick={() => toggleSection(section.name)}
-                  className="flex w-full items-center gap-3 px-4 py-4 text-left transition hover:bg-muted/40 sm:px-5"
+                  className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition hover:bg-muted/40 sm:px-5"
                   aria-expanded={isOpen}
                   aria-controls={panelId}
                 >
                   <span
-                    className={`text-xs text-muted-foreground transition-transform ${
+                    className={`text-[11px] text-muted-foreground transition-transform sm:text-xs ${
                       isOpen ? "rotate-90" : "rotate-0"
                     }`}
                   >
                     ❯
                   </span>
 
-                  <h2 className="text-lg font-semibold leading-none tracking-tight sm:text-[1.65rem]">
+                  <h2 className="text-[1rem] font-medium leading-tight tracking-normal text-foreground/90 sm:text-[1.08rem]">
                     {section.name}
                   </h2>
 
                   <div className="ml-auto flex items-center gap-3">
-                    <div className="h-2 w-24 overflow-hidden rounded-full bg-muted sm:w-36 md:w-40">
+                    <div className="h-1.5 w-24 overflow-hidden rounded-full bg-muted/70 sm:w-36 md:w-40">
                       <div
                         className="h-full rounded-full bg-primary"
                         style={{ width: `${sectionProgress}%` }}
                       />
                     </div>
-                    <span className="w-[88px] whitespace-nowrap text-right text-xl font-medium tabular-nums text-muted-foreground sm:text-2xl">
+                    <span className="w-[64px] whitespace-nowrap text-right text-sm font-medium tabular-nums text-muted-foreground sm:w-[72px] sm:text-base">
                       {section.solved} / {section.problems.length}
                     </span>
                   </div>
