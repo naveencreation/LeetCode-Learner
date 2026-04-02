@@ -1,23 +1,41 @@
 "use client";
 
+import { useMemo, useState } from "react";
+
+import { getCodeLineForStep } from "../selectors";
 import { usePostorderTraversal } from "../usePostorderTraversal";
 import { CallStackPanel } from "./CallStackPanel";
 import { CodePanel } from "./CodePanel";
 import { ControlsBar } from "./ControlsBar";
 import { ExplanationPanel } from "./ExplanationPanel";
+import { TreeSetupModal } from "./TreeSetupModal";
 import { ResultPanel } from "./ResultPanel";
 import { TreePanel } from "./TreePanel";
 
 export function PostorderLayout() {
+  const [isTreeSetupOpen, setIsTreeSetupOpen] = useState(false);
+
   const {
     currentCodeLine,
     currentNode,
     currentOperation,
     currentPhase,
     currentStep,
+    executionSteps,
+    root,
+    selectedPreset,
+    presets,
+    customNodePositions,
     executedStep,
     isAtEnd,
     isAtStart,
+    controlMode,
+    setControlMode,
+    isPlaying,
+    autoPlaySpeedMs,
+    setAutoPlaySpeedMs,
+    playTraversal,
+    pauseTraversal,
     nextStep,
     nodeStates,
     operationBadge,
@@ -27,14 +45,25 @@ export function PostorderLayout() {
     totalSteps,
     activeCallStack,
     activeStep,
+    applyTreeConfiguration,
   } = usePostorderTraversal();
 
+  const executionLineNumbers = useMemo(() => {
+    const lineNumbers = new Set<number>([currentCodeLine, 20]);
+
+    executionSteps.forEach((step) => {
+      lineNumbers.add(getCodeLineForStep(step));
+    });
+
+    return Array.from(lineNumbers).sort((a, b) => a - b);
+  }, [currentCodeLine, executionSteps]);
+
   return (
-    <section className="relative h-full min-h-0 overflow-hidden rounded-[18px] border border-white/80 bg-[linear-gradient(140deg,#eff6ff_0%,#fdfdfc_60%,#eefbf9_100%)] p-3 shadow-[0_12px_34px_rgba(15,23,42,0.12)]">
+    <section className="relative h-full min-h-0 overflow-hidden rounded-[18px] border border-white/80 bg-[linear-gradient(140deg,#eff6ff_0%,#fdfdfc_60%,#eefbf9_100%)] p-2.5 shadow-[0_12px_34px_rgba(15,23,42,0.12)]">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_15%_20%,#dff6f2_0%,transparent_30%),radial-gradient(circle_at_82%_10%,#fff4e8_0%,transparent_24%)]" />
 
-      <div className="relative z-[1] grid h-full min-h-0 grid-rows-[auto_1fr_auto] gap-2">
-      <header className="grid items-center gap-2 lg:grid-cols-[minmax(280px,1fr)_auto]">
+      <div className="relative z-[1] grid h-full min-h-0 grid-rows-[auto_1fr] gap-1.5">
+      <header className="shrink-0 grid items-center gap-1.5 lg:grid-cols-[minmax(280px,1fr)_auto]">
         <div className="min-w-0">
           <h1 className="text-[clamp(20px,2vw,28px)] font-extrabold leading-[1.15] tracking-[-0.02em] text-slate-900">
             Postorder Tree Traversal
@@ -68,20 +97,26 @@ export function PostorderLayout() {
         </div>
       </header>
 
-      <div className="grid min-h-0 gap-2 xl:grid-cols-[minmax(250px,1.05fr)_minmax(390px,1.5fr)_minmax(260px,1.1fr)] xl:grid-rows-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
-        <div className="space-y-2 xl:row-span-2">
-          <CodePanel currentCodeLine={currentCodeLine} />
+      <div className="grid min-h-0 overflow-hidden gap-1.5 xl:grid-cols-[minmax(300px,1.2fr)_minmax(380px,1.45fr)_minmax(250px,0.95fr)] xl:grid-rows-[minmax(0,1.26fr)_minmax(0,0.74fr)_auto]">
+        <div className="min-h-0 xl:row-span-3">
+          <CodePanel
+            currentCodeLine={currentCodeLine}
+            executionLineNumbers={executionLineNumbers}
+          />
         </div>
 
-        <div className="space-y-2 xl:col-start-2 xl:row-start-1">
+        <div className="min-h-0 xl:col-start-2 xl:row-start-1">
           <TreePanel
+            root={root}
             currentOperation={currentOperation}
             operationBadge={operationBadge}
             nodeStates={nodeStates}
             activeStep={activeStep}
+            customNodePositions={customNodePositions}
+            onOpenTreeSetup={() => setIsTreeSetupOpen(true)}
           />
         </div>
-        <div className="space-y-2 xl:col-start-2 xl:row-start-2">
+        <div className="min-h-0 xl:col-start-2 xl:row-start-2">
           <ResultPanel
             currentNode={currentNode}
             currentPhase={currentPhase}
@@ -92,27 +127,57 @@ export function PostorderLayout() {
           />
         </div>
 
-        <div className="space-y-2 xl:col-start-3 xl:row-start-1">
-          <CallStackPanel activeCallStack={activeCallStack} />
+        <div className="min-h-0 grid gap-1.5 xl:col-start-3 xl:row-span-3 xl:grid-rows-[minmax(0,0.72fr)_minmax(0,1.28fr)]">
+          <div className="min-h-0">
+            <CallStackPanel activeCallStack={activeCallStack} />
+          </div>
+          <div className="min-h-0">
+            <ExplanationPanel
+              currentStep={currentStep}
+              totalSteps={totalSteps}
+              result={result}
+              activeStep={executedStep}
+              currentCodeLine={currentCodeLine}
+            />
+          </div>
         </div>
-        <div className="space-y-2 xl:col-start-3 xl:row-start-2">
-          <ExplanationPanel
-            currentStep={currentStep}
-            totalSteps={totalSteps}
-            result={result}
-            activeStep={executedStep}
+
+        <div className="min-h-0 xl:col-start-2 xl:row-start-3">
+          <ControlsBar
+            isAtStart={isAtStart}
+            isAtEnd={isAtEnd}
+            controlMode={controlMode}
+            setControlMode={setControlMode}
+            isPlaying={isPlaying}
+            autoPlaySpeedMs={autoPlaySpeedMs}
+            setAutoPlaySpeedMs={setAutoPlaySpeedMs}
+            playTraversal={playTraversal}
+            pauseTraversal={pauseTraversal}
+            nextStep={nextStep}
+            previousStep={previousStep}
+            resetTraversal={resetTraversal}
           />
         </div>
       </div>
 
-      <ControlsBar
-        isAtStart={isAtStart}
-        isAtEnd={isAtEnd}
-        nextStep={nextStep}
-        previousStep={previousStep}
-        resetTraversal={resetTraversal}
-      />
+      {isTreeSetupOpen ? (
+        <TreeSetupModal
+          root={root}
+          selectedPreset={selectedPreset}
+          presets={presets}
+          customNodePositions={customNodePositions}
+          onClose={() => setIsTreeSetupOpen(false)}
+          onApply={(nextRoot, nextPositions, preset) =>
+            applyTreeConfiguration(nextRoot, nextPositions, preset, false)
+          }
+          onApplyAndRun={(nextRoot, nextPositions, preset) =>
+            applyTreeConfiguration(nextRoot, nextPositions, preset, true)
+          }
+        />
+      ) : null}
       </div>
     </section>
   );
 }
+
+

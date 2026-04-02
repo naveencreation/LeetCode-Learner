@@ -1,9 +1,11 @@
-export type InorderOperationType =
-  | "enter_function"
-  | "traverse_left"
-  | "visit"
-  | "traverse_right"
-  | "exit_function";
+export type LeftViewOperationType =
+  | "start_level"
+  | "dequeue"
+  | "capture_left_view"
+  | "enqueue_left"
+  | "enqueue_right"
+  | "end_level"
+  | "finish";
 
 export type NodeVisualState =
   | "unvisited"
@@ -18,6 +20,18 @@ export interface TreeNode {
   right: TreeNode | null;
 }
 
+export interface NodePosition {
+  x: number;
+  y: number;
+}
+
+export type TreePresetKey =
+  | "complete"
+  | "left_skewed"
+  | "right_skewed"
+  | "sparse_random"
+  | "custom_empty";
+
 export interface CallStackFrame {
   nodeVal: number;
   depth: number;
@@ -26,15 +40,22 @@ export interface CallStackFrame {
 }
 
 export interface ExecutionStep {
-  type: InorderOperationType;
+  type: LeftViewOperationType;
   node: TreeNode | null;
   value: number | undefined;
   operation: string;
+  level: number;
+  indexInLevel: number;
+  queueBefore: number[];
+  queueAfter: number[];
+  dequeued?: number;
+  enqueued?: number[];
+  captured?: boolean;
   callStack: CallStackFrame[];
   nodeStates: Record<number, NodeVisualState>;
 }
 
-export interface InorderTraversalState {
+export interface LeftViewTraversalState {
   currentStep: number;
   result: number[];
   visitedNodes: Set<number>;
@@ -42,3 +63,6 @@ export interface InorderTraversalState {
   executionSteps: ExecutionStep[];
   nodeStates: Record<number, NodeVisualState>;
 }
+
+
+

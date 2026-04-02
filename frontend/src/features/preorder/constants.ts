@@ -1,23 +1,105 @@
-import type { TreeNode } from "./types";
+import type { TreeNode, TreePresetKey } from "./types";
 
 export const PREORDER_CODE_LINES = [
-  "def recursivePreorder(root, arr):",
-  "    if root is None:",
-  "        return",
-  "    arr.append(root.data)",
-  "    recursivePreorder(root.left, arr)",
-  "    recursivePreorder(root.right, arr)",
+  "class TreeNode:",
+  "    def __init__(self, val=0, left=None, right=None):",
+  "        self.data = val",
+  "        self.left = left",
+  "        self.right = right",
+  "",
+  "class Solution:",
+  "    def __init__(self):",
+  "        pass",
+  "",
+  "    def recursivePreorder(self, root, arr):",
+  "        # Base case: no node to process",
+  "        if root is None:",
+  "            return",
+  "        arr.append(root.data)",
+  "        self.recursivePreorder(root.left, arr)",
+  "        self.recursivePreorder(root.right, arr)",
+  "",
+  "    def preorder(self, root):",
+  "        arr = []",
+  "        self.recursivePreorder(root, arr)",
+  "        return arr",
+  "",
+  "if __name__ == \"__main__\":",
+  "    root = TreeNode(1)",
+  "    root.left = TreeNode(2)",
+  "    root.right = TreeNode(3)",
+  "    root.left.left = TreeNode(4)",
+  "    root.left.right = TreeNode(5)",
+  "    root.right.right = TreeNode(6)",
+  "",
+  "    sol = Solution()",
+  "    result = sol.preorder(root)",
+  "    print(\"Preorder Traversal: \", end=\"\")",
+  "    for val in result:",
+  "        print(val, end=\" \")",
+  "    print()",
 ] as const;
 
 export const OPERATION_TO_LINE_MAP = {
-  enter_function: 0,
-  visit: 3,
-  traverse_left: 4,
-  traverse_right: 5,
-  exit_function: 2,
+  enter_function: 10,
+  visit: 14,
+  traverse_left: 15,
+  traverse_right: 16,
+  exit_function: 13,
 } as const;
 
-export function createSampleTree(): TreeNode {
+export const PREORDER_LINE_LABELS: Record<number, string> = {
+  10: "Function Entry",
+  12: "Base Case Check",
+  13: "Return To Caller",
+  14: "Process Current Node",
+  15: "Traverse Left Subtree",
+  16: "Traverse Right Subtree",
+  20: "Start Traversal",
+};
+
+export const PREORDER_LINE_GUIDE: Record<
+  number,
+  { meaning: string; why: string; next: string }
+> = {
+  10: {
+    meaning: "We entered recursivePreorder for the current node.",
+    why: "Every recursive call starts from this function definition.",
+    next: "Check whether root is None before continuing.",
+  },
+  12: {
+    meaning: "This checks if we reached an empty child.",
+    why: "The base case prevents infinite recursion.",
+    next: "If root is None we return; otherwise continue left.",
+  },
+  13: {
+    meaning: "Return control to the previous recursive call.",
+    why: "Once a subtree is done, recursion unwinds to parent.",
+    next: "Parent call continues with process/root or right subtree.",
+  },
+  14: {
+    meaning: "Append current node value into result array.",
+    why: "Preorder starts with Root before visiting children.",
+    next: "Then recurse into left subtree.",
+  },
+  15: {
+    meaning: "Move recursively to the left child.",
+    why: "After Root, preorder goes to Left.",
+    next: "After left subtree finishes, recurse into right subtree.",
+  },
+  16: {
+    meaning: "Move recursively to the right child.",
+    why: "Preorder finishes each node by exploring Right.",
+    next: "When right subtree ends, return to parent call.",
+  },
+  20: {
+    meaning: "Start traversal by calling the recursive helper.",
+    why: "This initializes recursion from the root.",
+    next: "Result array gets built through recursive calls.",
+  },
+};
+
+function createCompleteTree(): TreeNode {
   return {
     val: 1,
     left: {
@@ -35,12 +117,117 @@ export function createSampleTree(): TreeNode {
     },
     right: {
       val: 3,
-      left: null,
-      right: {
+      left: {
         val: 6,
+        left: null,
+        right: null,
+      },
+      right: {
+        val: 7,
         left: null,
         right: null,
       },
     },
   };
 }
+
+export function createSampleTree(): TreeNode {
+  return createCompleteTree();
+}
+
+function createLeftSkewedTree(): TreeNode {
+  return {
+    val: 1,
+    left: {
+      val: 2,
+      left: {
+        val: 3,
+        left: {
+          val: 4,
+          left: null,
+          right: null,
+        },
+        right: null,
+      },
+      right: null,
+    },
+    right: null,
+  };
+}
+
+function createRightSkewedTree(): TreeNode {
+  return {
+    val: 1,
+    left: null,
+    right: {
+      val: 2,
+      left: null,
+      right: {
+        val: 3,
+        left: null,
+        right: {
+          val: 4,
+          left: null,
+          right: null,
+        },
+      },
+    },
+  };
+}
+
+function createSparseRandomTree(): TreeNode {
+  const values = [12, 7, 20, 3, 9, 16, 24, 5, 14];
+
+  return {
+    val: values[0],
+    left: {
+      val: values[1],
+      left: Math.random() > 0.5 ? { val: values[3], left: null, right: null } : null,
+      right: { val: values[4], left: null, right: null },
+    },
+    right: {
+      val: values[2],
+      left: Math.random() > 0.35 ? { val: values[5], left: null, right: null } : null,
+      right:
+        Math.random() > 0.45
+          ? {
+              val: values[6],
+              left: Math.random() > 0.6 ? { val: values[7], left: null, right: null } : null,
+              right: Math.random() > 0.6 ? { val: values[8], left: null, right: null } : null,
+            }
+          : null,
+    },
+  };
+}
+
+function createCustomEmptyTree(): TreeNode {
+  return {
+    val: 1,
+    left: null,
+    right: null,
+  };
+}
+
+export const PREORDER_TREE_PRESETS: Record<
+  TreePresetKey,
+  { label: string; create: () => TreeNode }
+> = {
+  complete: { label: "Complete Tree", create: createCompleteTree },
+  left_skewed: { label: "Skewed Left", create: createLeftSkewedTree },
+  right_skewed: { label: "Skewed Right", create: createRightSkewedTree },
+  sparse_random: { label: "Sparse Random", create: createSparseRandomTree },
+  custom_empty: { label: "Custom Empty Start", create: createCustomEmptyTree },
+};
+
+export function cloneTree(node: TreeNode | null): TreeNode | null {
+  if (node === null) {
+    return null;
+  }
+
+  return {
+    val: node.val,
+    left: cloneTree(node.left),
+    right: cloneTree(node.right),
+  };
+}
+

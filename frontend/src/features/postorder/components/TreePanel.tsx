@@ -1,28 +1,14 @@
-import type { ExecutionStep, NodeVisualState } from "../types";
+import type { ExecutionStep, NodePosition, NodeVisualState, TreeNode } from "../types";
 
 interface TreePanelProps {
+  root: TreeNode;
   currentOperation: string;
   operationBadge: string;
   nodeStates: Record<number, NodeVisualState>;
   activeStep: ExecutionStep | undefined;
+  customNodePositions: Record<number, NodePosition>;
+  onOpenTreeSetup: () => void;
 }
-
-const positions = {
-  1: { x: 190, y: 52 },
-  2: { x: 110, y: 122 },
-  3: { x: 270, y: 122 },
-  4: { x: 80, y: 190 },
-  5: { x: 160, y: 190 },
-  6: { x: 300, y: 190 },
-};
-
-const edges: Array<[number, number]> = [
-  [1, 2],
-  [1, 3],
-  [2, 4],
-  [2, 5],
-  [3, 6],
-];
 
 const stateStyles: Record<
   NodeVisualState,
@@ -68,6 +54,76 @@ const childByOperation: Record<string, "left" | "right" | null> = {
   exit_function: null,
 };
 
+function collectNodesAndEdges(
+  node: TreeNode | null,
+  depth: number,
+  nodes: Array<{ value: number; depth: number }>,
+  edges: Array<[number, number]>,
+): void {
+  if (!node) {
+    return;
+  }
+
+  nodes.push({ value: node.val, depth });
+
+  if (node.left) {
+    edges.push([node.val, node.left.val]);
+    collectNodesAndEdges(node.left, depth + 1, nodes, edges);
+  }
+
+  if (node.right) {
+    edges.push([node.val, node.right.val]);
+    collectNodesAndEdges(node.right, depth + 1, nodes, edges);
+  }
+}
+
+function assignPostorderIndex(
+  node: TreeNode | null,
+  map: Record<number, number>,
+  counter: { value: number },
+): void {
+  if (!node) {
+    return;
+  }
+
+  assignPostorderIndex(node.left, map, counter);
+  map[node.val] = counter.value;
+  counter.value += 1;
+  assignPostorderIndex(node.right, map, counter);
+}
+
+function buildAutoPositions(root: TreeNode): Record<number, NodePosition> {
+  const nodes: Array<{ value: number; depth: number }> = [];
+  const edges: Array<[number, number]> = [];
+  collectNodesAndEdges(root, 0, nodes, edges);
+
+  const postorderIndex: Record<number, number> = {};
+  assignPostorderIndex(root, postorderIndex, { value: 0 });
+
+  const nodeCount = nodes.length;
+  const maxDepth = nodes.reduce((max, node) => Math.max(max, node.depth), 0);
+
+  const viewWidth = 380;
+  const viewHeight = 240;
+  const minX = 40;
+  const maxX = viewWidth - 40;
+  const minY = 40;
+  const maxY = viewHeight - 34;
+
+  const xStep = nodeCount > 1 ? (maxX - minX) / (nodeCount - 1) : 0;
+  const yStep = maxDepth > 0 ? (maxY - minY) / maxDepth : 0;
+
+  const positions: Record<number, NodePosition> = {};
+  nodes.forEach((node) => {
+    positions[node.value] = {
+      x: minX + postorderIndex[node.value] * xStep,
+      y: minY + node.depth * yStep,
+    };
+  });
+
+  return positions;
+}
+
 function getConnectorPoints(
   from: { x: number; y: number },
   to: { x: number; y: number },
@@ -87,12 +143,96 @@ function getConnectorPoints(
   };
 }
 
+function fitPositionsToViewport(
+  positions: Record<number, NodePosition>,
+  nodeValues: number[],
+  viewWidth: number,
+  viewHeight: number,
+  nodeRadius: number,
+): Record<number, NodePosition> {
+  if (nodeValues.length === 0) {
+    return positions;
+  }
+
+  const points = nodeValues
+    .map((value) => ({ value, point: positions[value] }))
+    .filter((entry): entry is { value: number; point: NodePosition } => Boolean(entry.point));
+
+  if (points.length === 0) {
+    return positions;
+  }
+
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+
+  points.forEach(({ point }) => {
+    minX = Math.min(minX, point.x);
+    maxX = Math.max(maxX, point.x);
+    minY = Math.min(minY, point.y);
+    maxY = Math.max(maxY, point.y);
+  });
+
+  const boundsWidth = Math.max(1, maxX - minX);
+  const boundsHeight = Math.max(1, maxY - minY);
+  const safePadding = nodeRadius + 8;
+  const availableWidth = Math.max(1, viewWidth - safePadding * 2);
+  const availableHeight = Math.max(1, viewHeight - safePadding * 2);
+
+  const scale = Math.min(availableWidth / boundsWidth, availableHeight / boundsHeight, 1);
+
+  const scaledWidth = boundsWidth * scale;
+  const scaledHeight = boundsHeight * scale;
+  const offsetX = (viewWidth - scaledWidth) / 2;
+  const offsetY = (viewHeight - scaledHeight) / 2;
+
+  const fitted: Record<number, NodePosition> = {};
+  points.forEach(({ value, point }) => {
+    fitted[value] = {
+      x: offsetX + (point.x - minX) * scale,
+      y: offsetY + (point.y - minY) * scale,
+    };
+  });
+
+  return {
+    ...positions,
+    ...fitted,
+  };
+}
+
 export function TreePanel({
+  root,
   currentOperation,
   operationBadge,
   nodeStates,
   activeStep,
+  customNodePositions,
+  onOpenTreeSetup,
 }: TreePanelProps) {
+  const viewWidth = 380;
+  const viewHeight = 240;
+  const nodeRadius = 20;
+
+  const nodes: Array<{ value: number; depth: number }> = [];
+  const edges: Array<[number, number]> = [];
+  collectNodesAndEdges(root, 0, nodes, edges);
+
+  const autoPositions = buildAutoPositions(root);
+  const mergedPositions: Record<number, NodePosition> = {
+    ...autoPositions,
+    ...customNodePositions,
+  };
+
+  const nodeValues = nodes.map((node) => node.value);
+  const positions = fitPositionsToViewport(
+    mergedPositions,
+    nodeValues,
+    viewWidth,
+    viewHeight,
+    nodeRadius,
+  );
+
   const sourceNode = activeStep?.node?.val;
   const direction = activeStep ? childByOperation[activeStep.type] : null;
   const targetNode =
@@ -108,18 +248,27 @@ export function TreePanel({
       : null;
 
   return (
-    <section className="grid min-h-0 grid-rows-[auto_1fr_auto] gap-2 rounded-xl border border-slate-200 bg-white p-2.5 shadow-[0_2px_10px_rgba(17,24,39,0.06)]">
-      <div className="mb-0.5 flex items-center justify-between">
-        <h2 className="text-[13px] font-extrabold uppercase tracking-[0.01em] text-slate-700">
+    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr_auto] gap-2 p-2.5">
+      <div className="traversal-panel-header">
+        <h2 className="traversal-panel-title">
           Tree Structure
         </h2>
-        <span className="rounded-full bg-gradient-to-r from-teal-700 to-teal-400 px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-white">
-          {operationBadge}
-        </span>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onOpenTreeSetup}
+            className="traversal-pill hover:bg-slate-50"
+          >
+            Select Tree
+          </button>
+          <span className="rounded-full bg-gradient-to-r from-teal-700 to-teal-400 px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-white">
+            {operationBadge}
+          </span>
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-gradient-to-b from-[#fcfffe] to-[#f6f8fb] p-2">
-        <svg viewBox="0 0 380 240" className="h-full w-full">
+        <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} className="h-full w-full">
           <defs>
             <marker
               id="tree-arrow"
@@ -149,8 +298,8 @@ export function TreePanel({
             <g key={`${from}-${to}`}>
               {(() => {
                 const connector = getConnectorPoints(
-                  positions[from as keyof typeof positions],
-                  positions[to as keyof typeof positions],
+                  positions[from],
+                  positions[to],
                 );
 
                 return (
@@ -184,7 +333,9 @@ export function TreePanel({
             </g>
           ))}
 
-          {Object.entries(positions).map(([value, point]) => {
+          {Object.entries(positions)
+            .sort((a, b) => Number(a[0]) - Number(b[0]))
+            .map(([value, point]) => {
             const nodeValue = Number(value);
             const nodeState = nodeStates[nodeValue] ?? "unvisited";
             const styles = stateStyles[nodeState];
@@ -240,3 +391,5 @@ export function TreePanel({
     </section>
   );
 }
+
+

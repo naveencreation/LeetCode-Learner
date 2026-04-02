@@ -1,10 +1,12 @@
 import type { ExecutionStep } from "../types";
+import { POSTORDER_LINE_GUIDE, POSTORDER_LINE_LABELS } from "../constants";
 
 interface ExplanationPanelProps {
   currentStep: number;
   totalSteps: number;
   result: number[];
   activeStep: ExecutionStep | undefined;
+  currentCodeLine: number;
 }
 
 function getExplanation(
@@ -12,13 +14,20 @@ function getExplanation(
   currentStep: number,
   totalSteps: number,
   result: number[],
+  currentCodeLine: number,
 ) {
+  const lineGuide = POSTORDER_LINE_GUIDE[currentCodeLine];
+  const lineLabel = POSTORDER_LINE_LABELS[currentCodeLine] ?? "Traversal Context";
+
   if (!step && currentStep === 0) {
     return {
       title: "Ready to Start",
       description:
-        'Click "Next Step" to begin postorder traversal. The flow is Left -> Right -> Root.',
-      details: ["The call stack will grow as recursion goes deeper."],
+        'Click "Next Step" to begin. We will follow Left -> Right -> Root and explain each highlighted code line.',
+      details: [
+        "Start from recursivePostorder(root, arr).",
+        "Watch call stack, highlighted line, and result array together.",
+      ],
     };
   }
 
@@ -28,7 +37,19 @@ function getExplanation(
       description: `All steps finished. Final postorder result is [${result.join(", ")}].`,
       details: [
         `Total execution steps: ${totalSteps}`,
-        "Use Previous to replay each recursive action.",
+        "Use Previous to replay each recursive action slowly.",
+      ],
+    };
+  }
+
+  if (lineGuide) {
+    return {
+      title: `Line ${currentCodeLine + 1}: ${lineLabel}`,
+      description: lineGuide.meaning,
+      details: [
+        `Why this line matters: ${lineGuide.why}`,
+        `What happens next: ${lineGuide.next}`,
+        `Current result snapshot: [${result.join(", ")}]`,
       ],
     };
   }
@@ -43,20 +64,20 @@ function getExplanation(
     case "traverse_left":
       return {
         title: `Traverse Left from ${step.value}`,
-        description: "Postorder first explores the left subtree recursively.",
+        description: "Postorder explores left subtree before right and root.",
         details: ["Flow remains Left -> Right -> Root."],
       };
     case "visit":
       return {
         title: `Process Node ${step.value}`,
-        description: "Postorder processes root only after both subtrees.",
+        description: "Current node value is appended after both child subtrees complete.",
         details: [`Result length after this step: ${result.length + 1}`],
       };
     case "traverse_right":
       return {
         title: `Traverse Right from ${step.value}`,
         description: "After left subtree, recursion enters right subtree.",
-        details: ["Visit root happens after right subtree returns."],
+        details: ["This completes Left -> Right before processing Root."],
       };
     case "exit_function":
       return {
@@ -78,13 +99,20 @@ export function ExplanationPanel({
   totalSteps,
   result,
   activeStep,
+  currentCodeLine,
 }: ExplanationPanelProps) {
-  const explanation = getExplanation(activeStep, currentStep, totalSteps, result);
+  const explanation = getExplanation(
+    activeStep,
+    currentStep,
+    totalSteps,
+    result,
+    currentCodeLine,
+  );
 
   return (
-    <section className="grid min-h-0 grid-rows-[auto_1fr_auto] gap-2 rounded-xl border border-slate-200 bg-white p-2.5 shadow-[0_2px_10px_rgba(17,24,39,0.06)]">
-      <div className="mb-0.5 flex items-center justify-between">
-        <h2 className="text-[13px] font-extrabold uppercase tracking-[0.01em] text-slate-700">
+    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr_auto] gap-2 p-2.5">
+      <div className="traversal-panel-header">
+        <h2 className="traversal-panel-title">
           Step Explanation
         </h2>
         <span className="rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-white">
@@ -134,3 +162,5 @@ export function ExplanationPanel({
     </section>
   );
 }
+
+

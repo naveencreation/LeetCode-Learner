@@ -53,6 +53,11 @@ function pushStep(
   type: ExecutionStep["type"],
   node: TreeNode,
   operation: string,
+  level: number,
+  indexInLevel: number,
+  queueBefore: number[],
+  queueAfter: number[],
+  extras: Pick<ExecutionStep, "dequeued" | "enqueued" | "captured">,
   callStack: CallStackFrame[],
   nodeStates: Record<number, NodeVisualState>,
 ): void {
@@ -61,9 +66,20 @@ function pushStep(
     node,
     value: node.val,
     operation,
+    level,
+    indexInLevel,
+    queueBefore,
+    queueAfter,
+    dequeued: extras.dequeued,
+    enqueued: extras.enqueued,
+    captured: extras.captured,
     callStack,
     nodeStates: cloneNodeStates(nodeStates),
   });
+}
+
+function queueValues(queue: TreeNode[]): number[] {
+  return queue.map((item) => item.val);
 }
 
 export function generateLeftViewExecutionSteps(root: TreeNode): {
@@ -91,23 +107,49 @@ export function generateLeftViewExecutionSteps(root: TreeNode): {
 
     pushStep(
       executionSteps,
-      "enter_function",
+      "start_level",
       leftmost,
       `Enter level ${level} (leftmost=${leftmost.val})`,
+      level,
+      0,
+      queueValues(queue),
+      queueValues(queue),
+      {},
       getCallStackSnapshot(callStack, "executing", frameId),
       nodeStates,
     );
 
     for (let index = 0; index < levelSize; index += 1) {
+      const queueBeforeDequeue = queueValues(queue);
       const node = queue.shift() as TreeNode;
+      const queueAfterDequeue = queueValues(queue);
+
+      pushStep(
+        executionSteps,
+        "dequeue",
+        node,
+        `Dequeue node ${node.val} from level ${level}`,
+        level,
+        index,
+        queueBeforeDequeue,
+        queueAfterDequeue,
+        { dequeued: node.val },
+        getCallStackSnapshot(callStack, "executing", frameId),
+        nodeStates,
+      );
 
       if (index === 0) {
         nodeStates[node.val] = "current";
         pushStep(
           executionSteps,
-          "visit",
+          "capture_left_view",
           node,
           `Add node ${node.val} to left view`,
+          level,
+          index,
+          queueAfterDequeue,
+          queueAfterDequeue,
+          { captured: true },
           getCallStackSnapshot(callStack, "executing", frameId),
           nodeStates,
         );
@@ -115,28 +157,42 @@ export function generateLeftViewExecutionSteps(root: TreeNode): {
 
       if (node.left) {
         nodeStates[node.val] = "exploring_left";
+        const queueBeforeEnqueue = queueValues(queue);
+        queue.push(node.left);
+        const queueAfterEnqueue = queueValues(queue);
         pushStep(
           executionSteps,
-          "traverse_left",
+          "enqueue_left",
           node,
           `Queue left child ${node.left.val} from node ${node.val}`,
+          level,
+          index,
+          queueBeforeEnqueue,
+          queueAfterEnqueue,
+          { enqueued: [node.left.val] },
           getCallStackSnapshot(callStack, "executing", frameId),
           nodeStates,
         );
-        queue.push(node.left);
       }
 
       if (node.right) {
         nodeStates[node.val] = "exploring_right";
+        const queueBeforeEnqueue = queueValues(queue);
+        queue.push(node.right);
+        const queueAfterEnqueue = queueValues(queue);
         pushStep(
           executionSteps,
-          "traverse_right",
+          "enqueue_right",
           node,
           `Queue right child ${node.right.val} from node ${node.val}`,
+          level,
+          index,
+          queueBeforeEnqueue,
+          queueAfterEnqueue,
+          { enqueued: [node.right.val] },
           getCallStackSnapshot(callStack, "executing", frameId),
           nodeStates,
         );
-        queue.push(node.right);
       }
 
       nodeStates[node.val] = "completed";
@@ -144,9 +200,14 @@ export function generateLeftViewExecutionSteps(root: TreeNode): {
 
     pushStep(
       executionSteps,
-      "exit_function",
+      "end_level",
       leftmost,
       `Complete level ${level}`,
+      level,
+      levelSize - 1,
+      queueValues(queue),
+      queueValues(queue),
+      {},
       getCallStackSnapshot(callStack, "exiting", frameId),
       nodeStates,
     );

@@ -7,16 +7,20 @@ export function getPhaseLabel(step: ExecutionStep | undefined): string {
   }
 
   switch (step.type) {
-    case "traverse_left":
+    case "enqueue_left":
       return "Queue Left";
-    case "traverse_right":
+    case "enqueue_right":
       return "Queue Right";
-    case "visit":
+    case "capture_left_view":
       return "Capture Left View";
-    case "enter_function":
+    case "dequeue":
+      return "Dequeue";
+    case "start_level":
       return "Start Level";
-    case "exit_function":
+    case "end_level":
       return "Complete Level";
+    case "finish":
+      return "Complete";
     default:
       return "Complete";
   }
