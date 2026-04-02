@@ -135,7 +135,7 @@ export default function TopicProblemsPage() {
           </div>
         </aside>
 
-        <div className="traversal-panel flex min-h-0 flex-col overflow-hidden">
+        <div id="problem-list" className="traversal-panel flex min-h-0 flex-col overflow-hidden">
           <div className="border-b border-slate-200 bg-slate-50/80 px-4 py-3 sm:px-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-lg font-extrabold tracking-tight text-slate-900">

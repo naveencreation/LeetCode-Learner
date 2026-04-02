@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { getCodeLineForStep } from "../selectors";
@@ -94,6 +95,12 @@ export function PostorderLayout() {
             </span>
             <span className="truncate text-[13px] font-extrabold text-slate-900">[{result.join(", ")}]</span>
           </div>
+          <Link
+            href="/problems/topics/trees#problem-list"
+            className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[12px] font-semibold text-slate-700 transition hover:bg-slate-50"
+          >
+            ← Back To Trees List
+          </Link>
         </div>
       </header>
 

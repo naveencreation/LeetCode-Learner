@@ -21,10 +21,10 @@ export default async function BinaryTreeProblemPage({ params }: BinaryTreeProble
     <section className="mx-auto w-full max-w-5xl space-y-5">
       <header className="space-y-2">
         <Link
-          href="/problems"
+          href="/problems/topics/trees#problem-list"
           className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground"
         >
-          ← Back to Problems
+          ← Back to Trees List
         </Link>
         <h1 className="text-3xl font-bold tracking-tight">{problem.title}</h1>
         <p className="text-sm leading-relaxed text-muted-foreground">{problem.intuition}</p>
