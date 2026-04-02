@@ -143,6 +143,64 @@ function getConnectorPoints(
   };
 }
 
+function fitPositionsToViewport(
+  positions: Record<number, NodePosition>,
+  nodeValues: number[],
+  viewWidth: number,
+  viewHeight: number,
+  nodeRadius: number,
+): Record<number, NodePosition> {
+  if (nodeValues.length === 0) {
+    return positions;
+  }
+
+  const points = nodeValues
+    .map((value) => ({ value, point: positions[value] }))
+    .filter((entry): entry is { value: number; point: NodePosition } => Boolean(entry.point));
+
+  if (points.length === 0) {
+    return positions;
+  }
+
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+
+  points.forEach(({ point }) => {
+    minX = Math.min(minX, point.x);
+    maxX = Math.max(maxX, point.x);
+    minY = Math.min(minY, point.y);
+    maxY = Math.max(maxY, point.y);
+  });
+
+  const boundsWidth = Math.max(1, maxX - minX);
+  const boundsHeight = Math.max(1, maxY - minY);
+  const safePadding = nodeRadius + 8;
+  const availableWidth = Math.max(1, viewWidth - safePadding * 2);
+  const availableHeight = Math.max(1, viewHeight - safePadding * 2);
+
+  const scale = Math.min(availableWidth / boundsWidth, availableHeight / boundsHeight, 1);
+
+  const scaledWidth = boundsWidth * scale;
+  const scaledHeight = boundsHeight * scale;
+  const offsetX = (viewWidth - scaledWidth) / 2;
+  const offsetY = (viewHeight - scaledHeight) / 2;
+
+  const fitted: Record<number, NodePosition> = {};
+  points.forEach(({ value, point }) => {
+    fitted[value] = {
+      x: offsetX + (point.x - minX) * scale,
+      y: offsetY + (point.y - minY) * scale,
+    };
+  });
+
+  return {
+    ...positions,
+    ...fitted,
+  };
+}
+
 export function TreePanel({
   root,
   currentOperation,
@@ -152,15 +210,28 @@ export function TreePanel({
   customNodePositions,
   onOpenTreeSetup,
 }: TreePanelProps) {
+  const viewWidth = 380;
+  const viewHeight = 240;
+  const nodeRadius = 20;
+
   const nodes: Array<{ value: number; depth: number }> = [];
   const edges: Array<[number, number]> = [];
   collectNodesAndEdges(root, 0, nodes, edges);
 
   const autoPositions = buildAutoPositions(root);
-  const positions: Record<number, NodePosition> = {
+  const mergedPositions: Record<number, NodePosition> = {
     ...autoPositions,
     ...customNodePositions,
   };
+
+  const nodeValues = nodes.map((node) => node.value);
+  const positions = fitPositionsToViewport(
+    mergedPositions,
+    nodeValues,
+    viewWidth,
+    viewHeight,
+    nodeRadius,
+  );
 
   const sourceNode = activeStep?.node?.val;
   const direction = activeStep ? childByOperation[activeStep.type] : null;
@@ -197,7 +268,7 @@ export function TreePanel({
       </div>
 
       <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-gradient-to-b from-[#fcfffe] to-[#f6f8fb] p-2">
-        <svg viewBox="0 0 380 240" className="h-full w-full">
+        <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} className="h-full w-full">
           <defs>
             <marker
               id="tree-arrow"
