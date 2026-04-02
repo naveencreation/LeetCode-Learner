@@ -1,0 +1,41 @@
+<svg width="820" height="240" viewBox="0 0 820 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="logoTitle logoDesc">
+  <title id="logoTitle">CodeArena Logo</title>
+  <desc id="logoDesc">CodeArena logo with a stylized CA monogram and modern wordmark.</desc>
+
+  <defs>
+    <linearGradient id="caGradient" x1="34" y1="28" x2="206" y2="204" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0EA5E9"/>
+      <stop offset="0.55" stop-color="#14B8A6"/>
+      <stop offset="1" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="arenaGlow" x1="24" y1="24" x2="216" y2="216" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E0F2FE"/>
+      <stop offset="1" stop-color="#CCFBF1"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="16" y="16" width="208" height="208" rx="56" fill="url(#arenaGlow)"/>
+  <rect x="24" y="24" width="192" height="192" rx="48" fill="#F8FAFC" stroke="#D1FAE5" stroke-width="2"/>
+
+  <!-- Arena ring -->
+  <circle cx="120" cy="120" r="64" stroke="url(#caGradient)" stroke-width="14"/>
+
+  <!-- Stylized C cut -->
+  <path d="M155 86C146 76 134 70 120 70C92 70 70 92 70 120C70 148 92 170 120 170C134 170 146 164 155 154"
+        stroke="#F8FAFC" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Stylized A inside C -->
+  <path d="M120 80L92 152H107L113 136H127L133 152H148L120 80Z" fill="url(#caGradient)"/>
+  <path d="M117 124L120 116L123 124H117Z" fill="#F8FAFC"/>
+
+  <!-- Subtle spark -->
+  <circle cx="172" cy="68" r="8" fill="#0EA5E9" opacity="0.2"/>
+  <circle cx="172" cy="68" r="4" fill="#0EA5E9"/>
+
+  <!-- Wordmark -->
+  <g transform="translate(258 76)">
+    <text x="0" y="58" fill="#0F172A" font-family="Poppins, Segoe UI, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="-1.5">Code</text>
+    <text x="178" y="58" fill="url(#caGradient)" font-family="Poppins, Segoe UI, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="-1.5">Arena</text>
+    <text x="4" y="98" fill="#475569" font-family="Poppins, Segoe UI, Arial, sans-serif" font-size="24" font-weight="600" letter-spacing="0.3">Practice. Visualize. Master.</text>
+  </g>
+</svg>

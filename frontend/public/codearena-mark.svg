@@ -1,0 +1,21 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="markTitle markDesc">
+  <title id="markTitle">CodeArena Mark</title>
+  <desc id="markDesc">Icon-only mark for CodeArena with CA monogram inside arena ring.</desc>
+
+  <defs>
+    <linearGradient id="markGradient" x1="34" y1="28" x2="206" y2="204" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0EA5E9"/>
+      <stop offset="0.55" stop-color="#14B8A6"/>
+      <stop offset="1" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="16" y="16" width="224" height="224" rx="56" fill="#F8FAFC" stroke="#D1FAE5" stroke-width="2"/>
+  <circle cx="128" cy="128" r="68" stroke="url(#markGradient)" stroke-width="16"/>
+
+  <path d="M166 92C156 81 143 74 128 74C98 74 74 98 74 128C74 158 98 182 128 182C143 182 156 175 166 164"
+        stroke="#F8FAFC" stroke-width="16" stroke-linecap="round"/>
+
+  <path d="M128 84L98 162H114L121 145H135L142 162H158L128 84Z" fill="url(#markGradient)"/>
+  <path d="M124 132L128 121L132 132H124Z" fill="#F8FAFC"/>
+</svg>

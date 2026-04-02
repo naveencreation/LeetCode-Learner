@@ -13,8 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tree Visualizer",
-  description: "Interactive tree traversal learning app",
+  title: "CodeArena",
+  description: "CodeArena - interactive tree traversal learning app",
+  icons: {
+    icon: "/codearena-mark.svg",
+    shortcut: "/codearena-mark.svg",
+    apple: "/codearena-mark.svg",
+  },
 };
 
 export default function RootLayout({

@@ -53,8 +53,21 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
         )}
       >
         {!collapsed ? (
-          <p className="truncate text-sm font-semibold tracking-wide">Tree Learning</p>
-        ) : null}
+          <div className="flex min-w-0 items-center gap-2">
+            <img
+              src="/codearena-mark.svg"
+              alt="CodeArena logo"
+              className="h-7 w-7 shrink-0"
+            />
+            <p className="truncate text-sm font-semibold tracking-wide">CodeArena</p>
+          </div>
+        ) : (
+          <img
+            src="/codearena-mark.svg"
+            alt="CodeArena logo"
+            className="h-7 w-7 shrink-0"
+          />
+        )}
 
         <button
           type="button"
