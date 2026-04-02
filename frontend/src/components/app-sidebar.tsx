@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -36,17 +36,8 @@ export function AppSidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
 
-  useEffect(() => {
-    const stored = window.localStorage.getItem("tree-sidebar-collapsed");
-    setCollapsed(stored === "true");
-  }, []);
-
   const toggleSidebar = () => {
-    setCollapsed((previous) => {
-      const next = !previous;
-      window.localStorage.setItem("tree-sidebar-collapsed", String(next));
-      return next;
-    });
+    setCollapsed((previous) => !previous);
   };
 
   return (

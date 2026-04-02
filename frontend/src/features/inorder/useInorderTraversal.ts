@@ -1,10 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { createSampleTree } from "./constants";
+import { INORDER_TREE_PRESETS, cloneTree, createSampleTree } from "./constants";
 import { generateInorderExecutionSteps } from "./engine";
 import { getCodeLineForStep, getOperationBadge, getPhaseLabel } from "./selectors";
-import type { ExecutionStep, NodeVisualState } from "./types";
+import type {
+  ExecutionStep,
+  NodePosition,
+  NodeVisualState,
+  TreeNode,
+  TreePresetKey,
+} from "./types";
 
 interface StepProjection {
   result: number[];
@@ -51,7 +57,10 @@ function projectStateForStep(
 }
 
 export function useInorderTraversal() {
-  const root = useMemo(() => createSampleTree(), []);
+  const [root, setRoot] = useState<TreeNode>(() => createSampleTree());
+  const [selectedPreset, setSelectedPreset] = useState<TreePresetKey>("complete");
+  const [customNodePositions, setCustomNodePositions] = useState<Record<number, NodePosition>>({});
+
   const { executionSteps, initialNodeStates } = useMemo(
     () => generateInorderExecutionSteps(root),
     [root],
@@ -86,6 +95,26 @@ export function useInorderTraversal() {
     setCurrentStep(executionSteps.length);
   }, [executionSteps.length]);
 
+  const applyTreeConfiguration = useCallback(
+    (
+      nextRoot: TreeNode,
+      nextPositions: Record<number, NodePosition>,
+      preset: TreePresetKey,
+      runImmediately = false,
+    ) => {
+      const clonedRoot = cloneTree(nextRoot);
+      if (!clonedRoot) {
+        return;
+      }
+
+      setRoot(clonedRoot);
+      setCustomNodePositions({ ...nextPositions });
+      setSelectedPreset(preset);
+      setCurrentStep(runImmediately ? 1 : 0);
+    },
+    [],
+  );
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "ArrowRight") {
@@ -114,6 +143,9 @@ export function useInorderTraversal() {
 
   return {
     root,
+    selectedPreset,
+    presets: INORDER_TREE_PRESETS,
+    customNodePositions,
     executionSteps,
     totalSteps: executionSteps.length,
     currentStep,
@@ -135,5 +167,6 @@ export function useInorderTraversal() {
     resetTraversal,
     goToFirst,
     goToLast,
+    applyTreeConfiguration,
   };
 }

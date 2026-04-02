@@ -1,0 +1,10 @@
+Add drag-and-drop positioning in the preview canvas so users can move nodes directly instead of typing x and y.
+Add node editing actions: change node value and remove node/subtree, not only add node.
+Add structure safeguards before apply: prevent cycles, duplicate values, orphan nodes, and invalid parent-child links.
+Add visual warnings in preview: overlapping nodes, off-canvas nodes, and edge crossing hints.
+Add Auto Layout button with layout styles (balanced layout, compact layout) so users can quickly clean a messy custom tree.
+Add draft dirty-state handling: show “unsaved changes” and confirm before closing modal if edits are not applied.
+Add quick templates in presets: complete tree, skewed left, skewed right, sparse random, and custom empty start.
+Add import/export JSON for tree setup so users can save and share custom trees.
+Add “Apply and Run” button to close modal and immediately reset traversal to step 0 with the new tree.
+Add small test coverage for tree setup helpers to keep future traversal modules stable.

@@ -1,20 +1,29 @@
 "use client";
 
+import { useState } from "react";
+
 import { useInorderTraversal } from "../useInorderTraversal";
 import { CallStackPanel } from "./CallStackPanel";
 import { CodePanel } from "./CodePanel";
 import { ControlsBar } from "./ControlsBar";
 import { ExplanationPanel } from "./ExplanationPanel";
 import { ResultPanel } from "./ResultPanel";
+import { TreeSetupModal } from "./TreeSetupModal";
 import { TreePanel } from "./TreePanel";
 
 export function InorderLayout() {
+  const [isTreeSetupOpen, setIsTreeSetupOpen] = useState(false);
+
   const {
     currentCodeLine,
     currentNode,
     currentOperation,
     currentPhase,
     currentStep,
+    root,
+    selectedPreset,
+    presets,
+    customNodePositions,
     executedStep,
     isAtEnd,
     isAtStart,
@@ -27,6 +36,7 @@ export function InorderLayout() {
     totalSteps,
     activeCallStack,
     activeStep,
+    applyTreeConfiguration,
   } = useInorderTraversal();
 
   return (
@@ -75,10 +85,13 @@ export function InorderLayout() {
 
         <div className="min-h-0 xl:col-start-2 xl:row-start-1">
           <TreePanel
+            root={root}
             currentOperation={currentOperation}
             operationBadge={operationBadge}
             nodeStates={nodeStates}
             activeStep={activeStep}
+            customNodePositions={customNodePositions}
+            onOpenTreeSetup={() => setIsTreeSetupOpen(true)}
           />
         </div>
         <div className="min-h-0 xl:col-start-2 xl:row-start-2">
@@ -117,6 +130,22 @@ export function InorderLayout() {
           />
         </div>
       </div>
+
+      {isTreeSetupOpen ? (
+        <TreeSetupModal
+          root={root}
+          selectedPreset={selectedPreset}
+          presets={presets}
+          customNodePositions={customNodePositions}
+          onClose={() => setIsTreeSetupOpen(false)}
+          onApply={(nextRoot, nextPositions, preset) =>
+            applyTreeConfiguration(nextRoot, nextPositions, preset, false)
+          }
+          onApplyAndRun={(nextRoot, nextPositions, preset) =>
+            applyTreeConfiguration(nextRoot, nextPositions, preset, true)
+          }
+        />
+      ) : null}
       </div>
     </section>
   );

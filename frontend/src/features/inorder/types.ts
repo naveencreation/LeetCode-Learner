@@ -18,6 +18,18 @@ export interface TreeNode {
   right: TreeNode | null;
 }
 
+export interface NodePosition {
+  x: number;
+  y: number;
+}
+
+export type TreePresetKey =
+  | "complete"
+  | "left_skewed"
+  | "right_skewed"
+  | "sparse_random"
+  | "custom_empty";
+
 export interface CallStackFrame {
   nodeVal: number;
   depth: number;
