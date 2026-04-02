@@ -60,6 +60,9 @@ export function useInorderTraversal() {
   const [root, setRoot] = useState<TreeNode>(() => createSampleTree());
   const [selectedPreset, setSelectedPreset] = useState<TreePresetKey>("complete");
   const [customNodePositions, setCustomNodePositions] = useState<Record<number, NodePosition>>({});
+  const [controlMode, setControlModeState] = useState<"manual" | "auto">("manual");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [autoPlaySpeedMs, setAutoPlaySpeedMs] = useState(900);
 
   const { executionSteps, initialNodeStates } = useMemo(
     () => generateInorderExecutionSteps(root),
@@ -85,6 +88,14 @@ export function useInorderTraversal() {
 
   const resetTraversal = useCallback(() => {
     setCurrentStep(0);
+    setIsPlaying(false);
+  }, []);
+
+  const setControlMode = useCallback((mode: "manual" | "auto") => {
+    setControlModeState(mode);
+    if (mode === "manual") {
+      setIsPlaying(false);
+    }
   }, []);
 
   const goToFirst = useCallback(() => {
@@ -111,9 +122,38 @@ export function useInorderTraversal() {
       setCustomNodePositions({ ...nextPositions });
       setSelectedPreset(preset);
       setCurrentStep(runImmediately ? 1 : 0);
+      setIsPlaying(false);
     },
     [],
   );
+
+  const playTraversal = useCallback(() => {
+    if (currentStep >= executionSteps.length) {
+      return;
+    }
+
+    setIsPlaying(true);
+  }, [currentStep, executionSteps.length]);
+
+  const pauseTraversal = useCallback(() => {
+    setIsPlaying(false);
+  }, []);
+
+  useEffect(() => {
+    if (controlMode !== "auto" || !isPlaying || currentStep >= executionSteps.length) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setCurrentStep((previous) =>
+        previous < executionSteps.length ? previous + 1 : previous,
+      );
+    }, autoPlaySpeedMs);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [controlMode, isPlaying, currentStep, executionSteps.length, autoPlaySpeedMs]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -140,6 +180,8 @@ export function useInorderTraversal() {
   const activeStep = executionSteps[currentStep];
   const executedStep = currentStep > 0 ? executionSteps[currentStep - 1] : undefined;
   const displayStep = executedStep ?? activeStep;
+  const isAutoPlaying =
+    controlMode === "auto" && isPlaying && currentStep < executionSteps.length;
 
   return {
     root,
@@ -162,6 +204,13 @@ export function useInorderTraversal() {
     activeCallStack: executedStep?.callStack ?? [],
     isAtStart: currentStep === 0,
     isAtEnd: currentStep === executionSteps.length,
+    controlMode,
+    setControlMode,
+    isPlaying: isAutoPlaying,
+    autoPlaySpeedMs,
+    setAutoPlaySpeedMs,
+    playTraversal,
+    pauseTraversal,
     nextStep,
     previousStep,
     resetTraversal,

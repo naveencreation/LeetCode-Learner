@@ -27,6 +27,13 @@ export function InorderLayout() {
     executedStep,
     isAtEnd,
     isAtStart,
+    controlMode,
+    setControlMode,
+    isPlaying,
+    autoPlaySpeedMs,
+    setAutoPlaySpeedMs,
+    playTraversal,
+    pauseTraversal,
     nextStep,
     nodeStates,
     operationBadge,
@@ -124,6 +131,13 @@ export function InorderLayout() {
           <ControlsBar
             isAtStart={isAtStart}
             isAtEnd={isAtEnd}
+            controlMode={controlMode}
+            setControlMode={setControlMode}
+            isPlaying={isPlaying}
+            autoPlaySpeedMs={autoPlaySpeedMs}
+            setAutoPlaySpeedMs={setAutoPlaySpeedMs}
+            playTraversal={playTraversal}
+            pauseTraversal={pauseTraversal}
             nextStep={nextStep}
             previousStep={previousStep}
             resetTraversal={resetTraversal}
