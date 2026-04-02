@@ -21,9 +21,9 @@ export function ResultPanel({
       : `Step ${currentStep + 1}: ${currentOperation}`;
 
   return (
-    <section className="grid h-full min-h-0 overflow-hidden grid-rows-[auto_auto_auto_auto] content-start gap-1.5 rounded-xl border border-slate-200 bg-white p-2 shadow-[0_2px_10px_rgba(17,24,39,0.06)]">
-      <div className="mb-0.5 flex items-center justify-between">
-        <h2 className="text-[13px] font-extrabold uppercase tracking-[0.01em] text-slate-700">
+    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_auto_auto_auto] content-start gap-1.5 p-2">
+      <div className="traversal-panel-header">
+        <h2 className="traversal-panel-title">
           Traversal Progress
         </h2>
       </div>

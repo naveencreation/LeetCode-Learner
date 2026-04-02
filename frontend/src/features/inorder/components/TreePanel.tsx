@@ -248,16 +248,16 @@ export function TreePanel({
       : null;
 
   return (
-    <section className="grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr_auto] gap-2 rounded-xl border border-slate-200 bg-white p-2.5 shadow-[0_2px_10px_rgba(17,24,39,0.06)]">
-      <div className="mb-0.5 flex items-center justify-between">
-        <h2 className="text-[13px] font-extrabold uppercase tracking-[0.01em] text-slate-700">
+    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr_auto] gap-2 p-2.5">
+      <div className="traversal-panel-header">
+        <h2 className="traversal-panel-title">
           Tree Structure
         </h2>
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onOpenTreeSetup}
-            className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-slate-700 hover:bg-slate-50"
+            className="traversal-pill hover:bg-slate-50"
           >
             Select Tree
           </button>

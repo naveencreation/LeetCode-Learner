@@ -316,6 +316,15 @@ export function TreeSetupModal({
   const [setupMode, setSetupMode] = useState<"beginner" | "advanced">("beginner");
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
   const isBeginnerMode = setupMode === "beginner";
+  const maxNodesAllowed = isBeginnerMode ? 10 : 20;
+
+  const currentNodeCount = (() => {
+    const values = new Set<number>();
+    collectValues(draftRoot, values);
+    return values.size;
+  })();
+
+  const isNodeLimitReached = currentNodeCount >= maxNodesAllowed;
 
   const previewEdges: Array<[number, number]> = [];
   collectNodesAndEdges(draftRoot, 0, [], previewEdges);
@@ -468,6 +477,13 @@ export function TreeSetupModal({
   };
 
   const handleAddNode = () => {
+    if (isNodeLimitReached) {
+      setError(
+        `Node limit reached for ${isBeginnerMode ? "Beginner" : "Advanced"} mode (${maxNodesAllowed} nodes).`,
+      );
+      return;
+    }
+
     const parent = Number(parentValue);
     const value = Number(newValue);
 
@@ -485,6 +501,10 @@ export function TreeSetupModal({
     }
 
     const cloned = cloneTree(draftRoot);
+    if (!cloned) {
+      setError("Unable to clone current tree.");
+      return;
+    }
     const parentNode = findNodeByValue(cloned, parent);
 
     if (!parentNode) {
@@ -548,6 +568,10 @@ export function TreeSetupModal({
     }
 
     const cloned = cloneTree(draftRoot);
+    if (!cloned) {
+      setError("Unable to clone current tree.");
+      return;
+    }
     if (!replaceNodeValue(cloned, fromValue, toValue)) {
       setError(`Failed to rename node ${fromValue}.`);
       return;
@@ -579,6 +603,10 @@ export function TreeSetupModal({
     }
 
     const cloned = cloneTree(draftRoot);
+    if (!cloned) {
+      setError("Unable to clone current tree.");
+      return;
+    }
 
     if (cloned.val === parentValueNumber) {
       const target = removeSide === "left" ? cloned.left : cloned.right;
@@ -757,6 +785,20 @@ export function TreeSetupModal({
                 : "Advanced mode: includes manual coordinates, rename, and subtree removal tools."}
             </p>
 
+            <p className="rounded-lg border border-teal-100 bg-teal-50 px-3 py-2 text-xs font-semibold text-teal-800">
+              Best learning experience: up to 10 nodes.
+              <span className="ml-1 text-teal-700">
+                Current: {currentNodeCount} / Limit: {maxNodesAllowed}
+              </span>
+            </p>
+
+            {isNodeLimitReached ? (
+              <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
+                Node limit reached for {isBeginnerMode ? "Beginner" : "Advanced"} mode ({maxNodesAllowed}).
+                Remove or rename existing nodes, or switch mode to continue.
+              </p>
+            ) : null}
+
             <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
               <h4 className="mb-1.5 text-xs font-extrabold uppercase tracking-[0.04em] text-slate-600">
                 Build Tree
@@ -810,7 +852,8 @@ export function TreeSetupModal({
                 <button
                   type="button"
                   onClick={handleAddNode}
-                  className="col-span-4 h-9 rounded-md bg-teal-600 px-3 text-sm font-extrabold text-white transition hover:bg-teal-700 sm:col-span-2"
+                  disabled={isNodeLimitReached}
+                  className="col-span-4 h-9 rounded-md bg-teal-600 px-3 text-sm font-extrabold text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:bg-teal-300 sm:col-span-2"
                 >
                   Add
                 </button>

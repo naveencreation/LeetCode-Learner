@@ -143,3 +143,25 @@ a {
 .ui-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #64748b;
 }
+
+@layer components {
+  .traversal-panel {
+    @apply rounded-xl border border-slate-200 bg-white shadow-[0_2px_10px_rgba(17,24,39,0.06)];
+  }
+
+  .traversal-panel-header {
+    @apply mb-0.5 flex items-center justify-between;
+  }
+
+  .traversal-panel-title {
+    @apply text-[13px] font-extrabold uppercase tracking-[0.01em] text-slate-700;
+  }
+
+  .traversal-pill {
+    @apply rounded-full border border-slate-200 bg-white px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-slate-700;
+  }
+
+  .traversal-kbd {
+    @apply rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-[var(--font-geist-mono)];
+  }
+}

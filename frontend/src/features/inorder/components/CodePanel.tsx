@@ -141,9 +141,9 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
   };
 
   return (
-    <section className="grid h-full min-h-0 grid-rows-[auto_1fr_auto] gap-2 rounded-xl border border-slate-200 bg-white p-2.5 shadow-[0_2px_10px_rgba(17,24,39,0.06)]">
-      <div className="mb-0.5 flex items-center justify-between">
-        <h2 className="text-[13px] font-extrabold uppercase tracking-[0.01em] text-slate-700">
+    <section className="traversal-panel grid h-full min-h-0 grid-rows-[auto_1fr_auto] gap-2 p-2.5">
+      <div className="traversal-panel-header">
+        <h2 className="traversal-panel-title">
           Python Code
         </h2>
         <div className="flex items-center gap-1.5">
@@ -171,7 +171,7 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
               Full Code
             </button>
           </div>
-          <span className="rounded-full border border-[#3872a6] bg-[#0e639c] px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-[#f0f6fc]">
+          <span className="traversal-pill border-[#3872a6] bg-[#0e639c] text-[#f0f6fc]">
             Execution
           </span>
         </div>
