@@ -314,6 +314,7 @@ export function TreeSetupModal({
   const [removeSide, setRemoveSide] = useState<"left" | "right">("left");
   const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>("balanced");
   const [setupMode, setSetupMode] = useState<"beginner" | "advanced">("beginner");
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
   const isBeginnerMode = setupMode === "beginner";
 
   const previewEdges: Array<[number, number]> = [];
@@ -668,18 +669,43 @@ export function TreeSetupModal({
       return;
     }
 
-    const shouldDiscard =
-      typeof window === "undefined"
-        ? true
-        : window.confirm("You have unsaved changes. Discard edits and close Tree Setup?");
-
-    if (shouldDiscard) {
-      onClose();
-    }
+    setShowDiscardConfirm(true);
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/55 p-4 backdrop-blur-[2px]">
+      {showDiscardConfirm ? (
+        <div className="absolute inset-0 z-[1] flex items-center justify-center bg-slate-950/35 p-4">
+          <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.35)]">
+            <h4 className="text-sm font-extrabold uppercase tracking-[0.03em] text-slate-800">
+              Discard Unsaved Changes?
+            </h4>
+            <p className="mt-2 text-sm font-semibold text-slate-600">
+              You have unapplied edits in Tree Setup. If you close now, those changes will be lost.
+            </p>
+            <div className="mt-4 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowDiscardConfirm(false)}
+                className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+              >
+                Continue Editing
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDiscardConfirm(false);
+                  onClose();
+                }}
+                className="rounded-md bg-rose-600 px-3 py-1.5 text-sm font-extrabold text-white transition hover:bg-rose-700"
+              >
+                Discard And Close
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       <div className="flex max-h-[92vh] w-full max-w-[1120px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.35)]">
         <div className="flex items-center justify-between border-b px-5 py-3.5">
           <div>

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
+import { getCodeLineForStep } from "../selectors";
 import { useInorderTraversal } from "../useInorderTraversal";
 import { CallStackPanel } from "./CallStackPanel";
 import { CodePanel } from "./CodePanel";
@@ -20,6 +21,7 @@ export function InorderLayout() {
     currentOperation,
     currentPhase,
     currentStep,
+    executionSteps,
     root,
     selectedPreset,
     presets,
@@ -45,6 +47,16 @@ export function InorderLayout() {
     activeStep,
     applyTreeConfiguration,
   } = useInorderTraversal();
+
+  const executionLineNumbers = useMemo(() => {
+    const lineNumbers = new Set<number>([currentCodeLine, 20]);
+
+    executionSteps.forEach((step) => {
+      lineNumbers.add(getCodeLineForStep(step));
+    });
+
+    return Array.from(lineNumbers).sort((a, b) => a - b);
+  }, [currentCodeLine, executionSteps]);
 
   return (
     <section className="relative h-full min-h-0 overflow-hidden rounded-[18px] border border-white/80 bg-[linear-gradient(140deg,#eff6ff_0%,#fdfdfc_60%,#eefbf9_100%)] p-2.5 shadow-[0_12px_34px_rgba(15,23,42,0.12)]">
@@ -87,7 +99,10 @@ export function InorderLayout() {
 
       <div className="grid min-h-0 overflow-hidden gap-1.5 xl:grid-cols-[minmax(300px,1.2fr)_minmax(380px,1.45fr)_minmax(250px,0.95fr)] xl:grid-rows-[minmax(0,1.26fr)_minmax(0,0.74fr)_auto]">
         <div className="min-h-0 xl:row-span-3">
-          <CodePanel currentCodeLine={currentCodeLine} />
+          <CodePanel
+            currentCodeLine={currentCodeLine}
+            executionLineNumbers={executionLineNumbers}
+          />
         </div>
 
         <div className="min-h-0 xl:col-start-2 xl:row-start-1">
