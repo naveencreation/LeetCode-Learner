@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -32,18 +31,18 @@ const navItems = [
   },
 ];
 
-export function AppSidebar() {
-  const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+interface AppSidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+}
 
-  const toggleSidebar = () => {
-    setCollapsed((previous) => !previous);
-  };
+export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
+  const pathname = usePathname();
 
   return (
     <aside
       className={cn(
-        "shrink-0 border-r bg-sidebar text-sidebar-foreground transition-all duration-300 ease-in-out",
+        "ui-scrollbar fixed left-0 top-0 z-40 h-screen shrink-0 overflow-y-auto border-r bg-sidebar text-sidebar-foreground transition-all duration-300 ease-in-out",
         collapsed ? "w-16" : "w-64",
       )}
     >
@@ -59,7 +58,7 @@ export function AppSidebar() {
 
         <button
           type="button"
-          onClick={toggleSidebar}
+          onClick={onToggle}
           className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-sidebar-border bg-background text-sidebar-foreground transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           aria-expanded={!collapsed}
