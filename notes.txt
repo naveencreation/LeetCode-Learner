@@ -8,3 +8,6 @@ Add quick templates in presets: complete tree, skewed left, skewed right, sparse
 Add import/export JSON for tree setup so users can save and share custom trees.
 Add “Apply and Run” button to close modal and immediately reset traversal to step 0 with the new tree.
 Add small test coverage for tree setup helpers to keep future traversal modules stable.
+
+
+#069494
