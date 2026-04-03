@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Inter } from "next/font/google";
 import styles from "./page.module.css";
+import landingStyles from "./landing.module.css";
+import ScrollReveal from "../components/ScrollReveal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -142,275 +144,122 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Learning Loop Section */}
-        <section className={styles.learningProof}>
-          <div className={styles.learningHeader}>
-            <p className={styles.learningEyebrow}>HOW CODEARENA TEACHES</p>
-            <h2 className={styles.learningTitle}>You do not memorize patterns. You understand algorithms.</h2>
-            <p className={styles.learningSubtitle}>CodeArena connects code, state, and outputs across Trees, Graphs, Dynamic Programming, and Arrays so learners build transferable intuition.</p>
-          </div>
-
-          <div className={styles.learningRows}>
-            <div className={styles.learningRow}>
-            <article className={styles.studyPanel}>
-              <h3 className={styles.panelTitle}>Traditional Study Loop</h3>
-              <ol className={styles.studyList}>
-                <li>Memorize one pattern at a time</li>
-                <li>Dry run with disconnected notes</li>
-                <li>Lose state between recursion, queues, or tables</li>
-                <li>Struggle to transfer learning to new problem types</li>
-              </ol>
-              <p className={styles.panelMeta}>Result: Correct answer sometimes, weak transfer to new problems.</p>
-            </article>
-
-            <article className={styles.learningSvgPanel}>
-              <div className={styles.learningSvgWrap}>
-                <img src="/learning/not-understand.svg" alt="Student struggling with traditional study approach" className={styles.learningSvg} />
-              </div>
-            </article>
+        {/* --- UPGRADED WORLD CLASS SECTIONS --- */}
+        
+        {/* STORYTELLING / LEARNING LOOP */}
+        <section className={landingStyles.sectionPad}>
+          <ScrollReveal>
+            <div className={landingStyles.textCenter}>
+              <span className={landingStyles.eyebrow}>The Old Way is Broken</span>
+              <h2 className={landingStyles.titleMain}>You do not memorize patterns.<br/>You understand algorithms.</h2>
+              <p className={landingStyles.subtitleMain}>
+                CodeArena replaces disjointed notebook scribbles with unified visual execution. 
+                Watch call stacks, memory pointers, and output sync across your actual code.
+              </p>
             </div>
+          </ScrollReveal>
 
-            <div className={styles.learningRow}>
-            <article className={styles.learningSvgPanel}>
-              <div className={styles.learningSvgWrap}>
-                <img src="/learning/visualization.svg" alt="Visual learning illustration" className={styles.learningSvg} />
-              </div>
-            </article>
-
-            <article className={styles.visualPanel}>
-              <h3 className={styles.panelTitle}>CodeArena Learning Loop</h3>
-              <div className={styles.domainTabs}>
-                <span className={styles.tabsGlider}></span>
-                <span className={`${styles.domainTab} ${styles.domainTabActive}`}>Trees</span>
-                <span className={styles.domainTab}>Graphs</span>
-                <span className={styles.domainTab}>Linked List</span>
-                <span className={styles.domainTab}>Queue</span>
-              </div>
-              <div className={styles.visualStage}>
-                <div className={styles.carouselViewport}>
-                  <div className={styles.carouselStack}>
-                    <article className={`${styles.carouselSlide} ${styles.slideTrees}`}>
-                      <h4 className={styles.slideTitle}>Trees: Traversal Intuition</h4>
-                      <p className={styles.slideDesc}>Watch call-stack + node activation together.</p>
-                      <div className={styles.treeSlideLayout}>
-                        <div className={styles.treeCanvas}>
-                          <svg className={styles.slideTreeSvg} viewBox="0 0 220 150">
-                            <path d="M110 26 L70 78" className={styles.slideEdge} />
-                            <path d="M110 26 L150 78" className={`${styles.slideEdge} ${styles.slideEdgeAnimated}`} />
-                            <circle cx="110" cy="26" r="14" className={styles.slideNodeDone} />
-                            <circle cx="70" cy="78" r="14" className={styles.slideNodeDone} />
-                            <circle cx="150" cy="78" r="15" className={styles.slideNodeActive} />
-                            <text x="110" y="31">1</text>
-                            <text x="70" y="83">2</text>
-                            <text x="150" y="83">3</text>
-                          </svg>
-                          <div className={styles.treeOutputChip}>Output so far: [2, 1]</div>
-                        </div>
-
-                        <aside className={styles.treeInsightPanel}>
-                          <p className={styles.treeInsightTitle}>What is happening now</p>
-                          <div className={`${styles.treeInsightRow} ${styles.treeInsightActive}`}>
-                            <span className={styles.treeStepDot}></span>
-                            <span>Current node: 3</span>
-                          </div>
-                          <div className={styles.treeInsightRow}>
-                            <span className={styles.treeStepDot}></span>
-                            <span>Call stack: inorder(1) -&gt; inorder(3)</span>
-                          </div>
-                          <div className={styles.treeInsightRow}>
-                            <span className={styles.treeStepDot}></span>
-                            <span>Next action: visit node then return</span>
-                          </div>
-                          <div className={styles.treeInsightMeta}>Why this matters: learners see recursion flow instead of memorizing order.</div>
-                        </aside>
-                      </div>
-                    </article>
-
-                    <article className={`${styles.carouselSlide} ${styles.slideGraphs}`}>
-                      <h4 className={styles.slideTitle}>Graphs: BFS / DFS Flow</h4>
-                      <p className={styles.slideDesc}>Track visited set, queue, and frontier live.</p>
-                      <div className={styles.graphSlideLayout}>
-                        <div className={styles.graphCanvas}>
-                          <svg className={styles.graphSvg} viewBox="0 0 220 150">
-                            <path className={styles.graphEdge} d="M36 54 L96 32" />
-                            <path className={styles.graphEdge} d="M36 54 L88 98" />
-                            <path className={styles.graphEdge} d="M96 32 L146 54" />
-                            <path className={styles.graphEdge} d="M88 98 L146 54" />
-                            <path className={`${styles.graphEdge} ${styles.graphEdgeActive}`} d="M146 54 L184 100" />
-
-                            <circle className={styles.graphNodeDone} cx="36" cy="54" r="12" />
-                            <circle className={styles.graphNodeDone} cx="96" cy="32" r="12" />
-                            <circle className={styles.graphNodeDone} cx="88" cy="98" r="12" />
-                            <circle className={styles.graphNodeCurrent} cx="146" cy="54" r="13" />
-                            <circle className={styles.graphNodeNext} cx="184" cy="100" r="12" />
-
-                            <text x="36" y="58">A</text>
-                            <text x="96" y="36">B</text>
-                            <text x="88" y="102">C</text>
-                            <text x="146" y="58">D</text>
-                            <text x="184" y="104">E</text>
-                          </svg>
-                          <div className={styles.graphQueue}>Queue: [B, C, E]</div>
-                        </div>
-
-                        <aside className={styles.graphInsightPanel}>
-                          <p className={styles.graphInsightTitle}>What is happening now</p>
-                          <div className={`${styles.graphInsightRow} ${styles.graphInsightActive}`}>
-                            <span className={styles.graphStepDot}></span>
-                            <span>Current node: D</span>
-                          </div>
-                          <div className={styles.graphInsightRow}>
-                            <span className={styles.graphStepDot}></span>
-                            <span>Visited: A, B, C</span>
-                          </div>
-                          <div className={styles.graphInsightRow}>
-                            <span className={styles.graphStepDot}></span>
-                            <span>Next expansion: E</span>
-                          </div>
-                          <div className={styles.graphInsightMeta}>Why this matters: learners understand frontier expansion, not just node order.</div>
-                        </aside>
-                      </div>
-                    </article>
-
-                    <article className={`${styles.carouselSlide} ${styles.slideDp}`}>
-                      <h4 className={styles.slideTitle}>Linked List: Pointer Flow</h4>
-                      <p className={styles.slideDesc}>Understand next-pointer transitions and insertion updates visually.</p>
-                      <div className={styles.linkedSlideLayout}>
-                        <div className={styles.linkedCanvas}>
-                          <div className={styles.linkedListMini}>
-                            <div className={styles.llNode}>12</div>
-                            <span className={`${styles.llArrow} ${styles.llFlow}`}>→</span>
-                            <div className={`${styles.llNode} ${styles.llNodeActive}`}>24</div>
-                            <span className={`${styles.llArrow} ${styles.llFlow}`}>→</span>
-                            <div className={styles.llNode}>31</div>
-                            <span className={styles.llArrow}>→</span>
-                            <div className={styles.llNode}>42</div>
-                          </div>
-                          <div className={styles.llPointers}>
-                            <span>head</span>
-                            <span>current</span>
-                            <span>tail</span>
-                          </div>
-                        </div>
-
-                        <aside className={styles.linkedInsightPanel}>
-                          <p className={styles.linkedInsightTitle}>What is happening now</p>
-                          <div className={`${styles.linkedInsightRow} ${styles.linkedInsightActive}`}>
-                            <span className={styles.linkedStepDot}></span>
-                            <span>Current node: 24</span>
-                          </div>
-                          <div className={styles.linkedInsightRow}>
-                            <span className={styles.linkedStepDot}></span>
-                            <span>next points to: 31</span>
-                          </div>
-                          <div className={styles.linkedInsightRow}>
-                            <span className={styles.linkedStepDot}></span>
-                            <span>Operation: traverse / insert-ready</span>
-                          </div>
-                          <div className={styles.linkedInsightMeta}>Why this matters: learners understand pointer rewiring without guesswork.</div>
-                        </aside>
-                      </div>
-                    </article>
-
-                    <article className={`${styles.carouselSlide} ${styles.slideArrays}`}>
-                      <h4 className={styles.slideTitle}>Queue: First-In First-Out</h4>
-                      <p className={styles.slideDesc}>See enqueue/dequeue order and front/rear updates live.</p>
-                      <div className={styles.queueSlideLayout}>
-                        <div className={styles.queueCanvas}>
-                          <div className={styles.queueMini}>
-                            <span className={styles.queueLabelFront}>Front</span>
-                            <div className={styles.queueCells}>
-                              <div className={styles.queueCell}>14</div>
-                              <div className={styles.queueCell}>21</div>
-                              <div className={`${styles.queueCell} ${styles.queueCellActive}`}>35</div>
-                              <div className={styles.queueCell}>47</div>
-                            </div>
-                            <span className={styles.queueLabelRear}>Rear</span>
-                          </div>
-                          <div className={styles.queueOps}>
-                            <span>enqueue(52)</span>
-                            <span>dequeue()</span>
-                          </div>
-                        </div>
-
-                        <aside className={styles.queueInsightPanel}>
-                          <p className={styles.queueInsightTitle}>What is happening now</p>
-                          <div className={`${styles.queueInsightRow} ${styles.queueInsightActive}`}>
-                            <span className={styles.queueStepDot}></span>
-                            <span>Current front: 14</span>
-                          </div>
-                          <div className={styles.queueInsightRow}>
-                            <span className={styles.queueStepDot}></span>
-                            <span>Current rear: 47</span>
-                          </div>
-                          <div className={styles.queueInsightRow}>
-                            <span className={styles.queueStepDot}></span>
-                            <span>Next operation: enqueue(52)</span>
-                          </div>
-                          <div className={styles.queueInsightMeta}>Why this matters: learners visualize FIFO order and operation effects instantly.</div>
-                        </aside>
-                      </div>
-                    </article>
-                  </div>
+          <div className={landingStyles.storyWrapper}>
+            <div className={landingStyles.storyContent}>
+              <ScrollReveal animation="fade-up" delay={100}>
+                <div className={landingStyles.storyStep}>
+                  <div className={landingStyles.storyNumber}>1</div>
+                  <h3 className={landingStyles.storyStepTitle}>Traditional Study Loop</h3>
+                  <p className={landingStyles.storyStepDesc}>
+                    Developers normally memorize one pattern at a time, dry run with disconnected notes, 
+                    and lose state between recursion or queues. This leads to weak problem retention and struggle when transferring logic to new question types.
+                  </p>
                 </div>
-                <div className={styles.carouselNote}>Carousel previews how CodeArena teaches each algorithm family with visuals + state.</div>
-              </div>
+              </ScrollReveal>
 
-              <ul className={styles.visualList}>
-                <li>See the active state for any algorithm family</li>
-                <li>Track transitions in stacks, queues, tables, and pointers</li>
-                <li>Connect each line of code to immediate visual feedback</li>
-              </ul>
-            </article>
+              <ScrollReveal animation="fade-up" delay={200}>
+                <div className={landingStyles.storyStep}>
+                  <div className={landingStyles.storyNumber}>2</div>
+                  <h3 className={landingStyles.storyStepTitle}>Visual Execution Matrix</h3>
+                  <p className={landingStyles.storyStepDesc}>
+                    Our engine generates state data step-by-step alongside your written code. 
+                    Tracking nodes, paths, visited sets, and memory allocations in real-time gives you the exact mental model required to ace interviews.
+                  </p>
+                </div>
+              </ScrollReveal>
+            </div>
+
+            <div className={landingStyles.storyVisualSticker}>
+              <ScrollReveal animation="scale-up" className={landingStyles.storyVisualInner}>
+                 <div className={landingStyles.storyVisualGraphic}>
+                   <img src="/learning/visualization.svg" alt="Visual learning illustration" />
+                 </div>
+              </ScrollReveal>
             </div>
           </div>
         </section>
 
-        {/* Core Features Grid */}
-        <section className={styles.featuresSection}>
-          <div className={styles.featuresHeader}>
-            <p className={styles.featuresEyebrow}>POWERFUL UNDER THE HOOD</p>
-            <h2 className={styles.featuresTitle}>Built for execution, not just animation.</h2>
-          </div>
-          <div className={styles.featuresGrid}>
+        {/* BENTO BOX FEATURES GRID */}
+        <section className={landingStyles.sectionPad}>
+          <ScrollReveal>
+            <div className={landingStyles.textCenter}>
+              <span className={landingStyles.eyebrow}>Powerful Under The Hood</span>
+              <h2 className={landingStyles.titleMain}>Built for execution, not just animation.</h2>
+              <p className={landingStyles.subtitleMain}>
+                A robust sandbox engine drives every visual. We evaluate your code step-by-step.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <div className={landingStyles.bentoGrid}>
             
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+            <ScrollReveal animation="fade-up" delay={100} className={`${landingStyles.bentoCard} ${landingStyles.bentoLarge}`}>
+              <div className={landingStyles.iconWrap}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
               </div>
-              <h3 className={styles.featureName}>Real Code, Real Execution</h3>
-              <p className={styles.featureDesc}>We don't fake animations. Your code actually runs in our secure sandbox, generating step-by-step state data.</p>
-            </div>
+              <h3 className={landingStyles.bentoTitle}>Real Code, Real Execution</h3>
+              <p className={landingStyles.bentoDesc}>
+                We don't fake animations. Your code actually runs in our secure micro-service sandbox, accurately generating state variables at every single execution step so you see precisely what the computer sees.
+              </p>
+            </ScrollReveal>
 
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>
-                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <ScrollReveal animation="fade-up" delay={200} className={`${landingStyles.bentoCard} ${landingStyles.bentoSmall}`}>
+              <div className={landingStyles.iconWrap}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               </div>
-              <h3 className={styles.featureName}>Time-Travel Debugging</h3>
-              <p className={styles.featureDesc}>Scrub back and forth through your execution history. Found a bug? Rewind to the exact line that broke your state.</p>
-            </div>
+              <h3 className={landingStyles.bentoTitle}>Time-Travel Debugging</h3>
+              <p className={landingStyles.bentoDesc}>
+                Scrub back and forth through execution history. Found a bug? Rewind to the exact logic branch that broke your state.
+              </p>
+            </ScrollReveal>
 
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+            <ScrollReveal animation="fade-up" delay={300} className={`${landingStyles.bentoCard} ${landingStyles.bentoMedium}`}>
+              <div className={landingStyles.iconWrap}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
               </div>
-              <h3 className={styles.featureName}>Memory & Pointers</h3>
-              <p className={styles.featureDesc}>Watch memory allocation live. Pointers, references, and objects are visually tracked so you never lose the head node again.</p>
-            </div>
+              <h3 className={landingStyles.bentoTitle}>Memory & Pointers</h3>
+              <p className={landingStyles.bentoDesc}>
+                Watch memory allocation live. Pointers, arrays, and object references are visually tracked so you never lose the head node again.
+              </p>
+            </ScrollReveal>
+
+            <ScrollReveal animation="fade-up" delay={400} className={`${landingStyles.bentoCard} ${landingStyles.bentoMedium}`}>
+              <div className={landingStyles.iconWrap}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/><path d="m17 19-5 3-5-3"/><path d="M2 12h20"/><path d="m5 7-3 5 3 5"/><path d="m19 7 3 5-3 5"/></svg>
+              </div>
+              <h3 className={landingStyles.bentoTitle}>Multi-Domain Ready</h3>
+              <p className={landingStyles.bentoDesc}>
+                From simple Binary Trees and Linked Lists, to complex Graph BFS/DFS and Dynamic Programming matrices. We support it all.
+              </p>
+            </ScrollReveal>
 
           </div>
         </section>
 
-        {/* Bottom CTA */}
-        <section className={styles.bottomCtaSection}>
-          <div className={styles.bottomCtaBox}>
-            <div className={styles.ctaBlob}></div>
-            <h2 className={styles.ctaTitle}>Ready to stop memorizing?</h2>
-            <p className={styles.ctaDesc}>Join thousands of developers mastering algorithms through true visual execution.</p>
-            <div className={styles.ctaActions}>
-              <Link href="/dashboard" className={styles.btnPrimary}>Start Visualizing Now</Link>
-            </div>
-          </div>
+        {/* BOTTOM MESH CTA */}
+        <section className={landingStyles.meshCtaSection}>
+          <ScrollReveal animation="scale-up" className={landingStyles.meshCtaInner}>
+            <h2 className={landingStyles.meshTitle}>Stop Memorizing. Start Understanding.</h2>
+            <p className={landingStyles.meshDesc}>
+              Join thousands of developers mastering algorithms through true visual execution. Equip yourself with the ultimate study tool.
+            </p>
+            <Link href="/dashboard" className={landingStyles.meshBtn}>Start Visualizing For Free</Link>
+          </ScrollReveal>
         </section>
 
       </main>
