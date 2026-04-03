@@ -13,7 +13,7 @@ const inter = Inter({
 
 export default function Home() {
   return (
-    <div className={`${styles.page} ${inter.className}`}>
+    <div className={`${styles.page} ${styles.focus80} ${inter.className}`}>
       <header className={styles.header}>
         
         {/* Left: Brand / Logo */}

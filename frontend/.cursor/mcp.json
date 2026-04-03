@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "next-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "next-devtools-mcp@latest"
+      ]
+    },
+    "vercel-vercel": {
+      "url": "https://mcp.vercel.com"
+    }
+  }
+}
