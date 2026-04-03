@@ -365,7 +365,96 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Core Features Grid */}
+        <section className={styles.featuresSection}>
+          <div className={styles.featuresHeader}>
+            <p className={styles.featuresEyebrow}>POWERFUL UNDER THE HOOD</p>
+            <h2 className={styles.featuresTitle}>Built for execution, not just animation.</h2>
+          </div>
+          <div className={styles.featuresGrid}>
+            
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+              </div>
+              <h3 className={styles.featureName}>Real Code, Real Execution</h3>
+              <p className={styles.featureDesc}>We don't fake animations. Your code actually runs in our secure sandbox, generating step-by-step state data.</p>
+            </div>
+
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>
+                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <h3 className={styles.featureName}>Time-Travel Debugging</h3>
+              <p className={styles.featureDesc}>Scrub back and forth through your execution history. Found a bug? Rewind to the exact line that broke your state.</p>
+            </div>
+
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+              </div>
+              <h3 className={styles.featureName}>Memory & Pointers</h3>
+              <p className={styles.featureDesc}>Watch memory allocation live. Pointers, references, and objects are visually tracked so you never lose the head node again.</p>
+            </div>
+
+          </div>
+        </section>
+
+        {/* Bottom CTA */}
+        <section className={styles.bottomCtaSection}>
+          <div className={styles.bottomCtaBox}>
+            <div className={styles.ctaBlob}></div>
+            <h2 className={styles.ctaTitle}>Ready to stop memorizing?</h2>
+            <p className={styles.ctaDesc}>Join thousands of developers mastering algorithms through true visual execution.</p>
+            <div className={styles.ctaActions}>
+              <Link href="/dashboard" className={styles.btnPrimary}>Start Visualizing Now</Link>
+            </div>
+          </div>
+        </section>
+
       </main>
+
+      {/* Footer */}
+      <footer className={styles.footer}>
+        <div className={styles.footerContent}>
+          <div className={styles.footerBrand}>
+            <Link href="/" className={styles.brand}>
+              <div className={styles.logoWrapper}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={styles.logoIcon}>
+                  <polyline points="16 18 22 12 16 6" />
+                  <polyline points="8 6 2 12 8 18" />
+                </svg>
+              </div>
+              CodeArena_
+            </Link>
+            <p className={styles.footerTagline}>The visual learning platform for computer science.</p>
+          </div>
+          
+          <div className={styles.footerLinksGroup}>
+            <div className={styles.footerCol}>
+              <span className={styles.footerColTitle}>Product</span>
+              <Link href="/problems" className={styles.footerLink}>Visualizer</Link>
+              <Link href="/problems" className={styles.footerLink}>Problems</Link>
+              <Link href="/pricing" className={styles.footerLink}>Pricing</Link>
+            </div>
+            <div className={styles.footerCol}>
+              <span className={styles.footerColTitle}>Resources</span>
+              <Link href="/docs" className={styles.footerLink}>Documentation</Link>
+              <Link href="/tutorials" className={styles.footerLink}>Tutorials</Link>
+              <Link href="/blog" className={styles.footerLink}>Blog</Link>
+            </div>
+            <div className={styles.footerCol}>
+              <span className={styles.footerColTitle}>Legal</span>
+              <Link href="/privacy" className={styles.footerLink}>Privacy Policy</Link>
+              <Link href="/terms" className={styles.footerLink}>Terms of Service</Link>
+            </div>
+          </div>
+        </div>
+        <div className={styles.footerBottom}>
+          <p>© 2026 CodeArena. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }
