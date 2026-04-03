@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import landingStyles from "./landing.module.css";
 import ScrollReveal from "../components/ScrollReveal";
 import InteractiveShowcase from "../components/InteractiveShowcase";
+import LandingNav from "../components/LandingNav";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,22 +38,7 @@ export default function Home() {
         </Link>
 
         {/* Center: Navigation Pill */}
-        <nav className={styles.navCenter}>
-          <Link href="#home" className={`${styles.navLink} ${styles.navLinkActive}`}>Home</Link>
-          <Link href="#method" className={styles.navLink}>Method</Link>
-          <Link href="#platform" className={styles.navLink}>Platform</Link>
-          <Link href="/problems" className={styles.navLink}>Problems</Link>
-          
-          <div className={styles.navDropdownItem}>
-            <span className={styles.navLink}>
-              Pricing
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginLeft: "4px"}}><path d="m6 9 6 6 6-6"/></svg>
-            </span>
-          </div>
-
-          <Link href="/docs" className={styles.navLink}>Docs</Link>
-          <Link href="/about" className={styles.navLink}>About</Link>
-        </nav>
+        <LandingNav />
 
         {/* Right: CTA Button */}
         <Link href="/dashboard" className={styles.ctaButton}>
@@ -201,7 +187,7 @@ export default function Home() {
         </div>
 
         {/* BOTTOM MESH CTA */}
-        <section className={landingStyles.meshCtaSection}>
+        <section id="cta" className={landingStyles.meshCtaSection}>
           <ScrollReveal animation="scale-up" className={landingStyles.meshCtaInner}>
             <h2 className={landingStyles.meshTitle}>Stop Memorizing. Start Understanding.</h2>
             <p className={landingStyles.meshDesc}>

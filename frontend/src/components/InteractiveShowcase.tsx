@@ -26,7 +26,6 @@ const slides = [
 
 export default function InteractiveShowcase() {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [slideProgress, setSlideProgress] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,7 +38,6 @@ export default function InteractiveShowcase() {
       const scrolled = -rect.top;
       const total = sectionHeight - viewportH;
       const progress = Math.max(0, Math.min(1, scrolled / total));
-      setSlideProgress(progress);
       if (progress < 0.33) setActiveSlide(0);
       else if (progress < 0.66) setActiveSlide(1);
       else setActiveSlide(2);
