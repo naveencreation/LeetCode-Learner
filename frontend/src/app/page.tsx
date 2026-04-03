@@ -150,7 +150,8 @@ export default function Home() {
             <p className={styles.learningSubtitle}>CodeArena connects code, state, and outputs across Trees, Graphs, Dynamic Programming, and Arrays so learners build transferable intuition.</p>
           </div>
 
-          <div className={styles.learningGrid}>
+          <div className={styles.learningRows}>
+            <div className={styles.learningRow}>
             <article className={styles.studyPanel}>
               <h3 className={styles.panelTitle}>Traditional Study Loop</h3>
               <ol className={styles.studyList}>
@@ -160,6 +161,20 @@ export default function Home() {
                 <li>Struggle to transfer learning to new problem types</li>
               </ol>
               <p className={styles.panelMeta}>Result: Correct answer sometimes, weak transfer to new problems.</p>
+            </article>
+
+            <article className={styles.learningSvgPanel}>
+              <div className={styles.learningSvgWrap}>
+                <img src="/learning/not-understand.svg" alt="Student struggling with traditional study approach" className={styles.learningSvg} />
+              </div>
+            </article>
+            </div>
+
+            <div className={styles.learningRow}>
+            <article className={styles.learningSvgPanel}>
+              <div className={styles.learningSvgWrap}>
+                <img src="/learning/visualization.svg" alt="Visual learning illustration" className={styles.learningSvg} />
+              </div>
             </article>
 
             <article className={styles.visualPanel}>
@@ -347,6 +362,7 @@ export default function Home() {
                 <li>Connect each line of code to immediate visual feedback</li>
               </ul>
             </article>
+            </div>
           </div>
         </section>
       </main>
