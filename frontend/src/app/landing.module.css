@@ -1,0 +1,537 @@
+/* 
+  Modern Landing Page Upgrades 
+*/
+
+.sectionPad {
+  padding: 160px 24px;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.eyebrow {
+  color: #a855f7;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.titleMain {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+
+.subtitleMain {
+  font-size: 1.25rem;
+  color: #475569;
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* === Bento Box Features Grid === */
+.bentoGrid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+  margin-top: 64px;
+}
+
+.bentoCard {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 24px;
+  padding: 40px;
+  box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.05);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.bentoCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 60px -15px rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+/* Sub-grid positioning */
+.bentoLarge {
+  grid-column: span 8;
+}
+
+.bentoSmall {
+  grid-column: span 4;
+}
+
+.bentoMedium {
+  grid-column: span 6;
+}
+
+@media (max-width: 1024px) {
+  .bentoLarge, .bentoSmall, .bentoMedium {
+    grid-column: span 12;
+  }
+}
+
+.iconWrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #f3e8ff 0%, #e0e7ff 100%);
+  color: #9333ea;
+}
+
+.iconWrap svg {
+  width: 28px;
+  height: 28px;
+}
+
+.bentoTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+
+.bentoDesc {
+  font-size: 1.05rem;
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* === Sticky Story Section === */
+.storyWrapper {
+  display: flex;
+  gap: 60px;
+  margin-top: 80px;
+  position: relative;
+  align-items: flex-start;
+}
+
+.storyContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 120px; /* Space out the scroll points */
+  padding-bottom: 120px;
+}
+
+.storyStep {
+  max-width: 480px;
+}
+
+.storyNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #0f172a;
+  color: white;
+  font-family: monospace;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.storyStepTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 16px;
+  letter-spacing: -0.03em;
+}
+
+.storyStepDesc {
+  font-size: 1.15rem;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.storyVisualSticker {
+  flex: 1;
+  position: sticky;
+  top: 120px;
+  height: 600px;
+  background: #f8fafc;
+  border-radius: 32px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.08);
+}
+
+.storyVisualInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 50% 50%, #ffffff 0%, #f1f5f9 100%);
+}
+
+.storyVisualGraphic {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.storyVisualGraphic img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1));
+}
+
+@media (max-width: 900px) {
+  .storyWrapper {
+    flex-direction: column;
+  }
+  .storyVisualSticker {
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: 400px;
+    order: -1;
+    margin-bottom: 40px;
+  }
+  .storyContent {
+    gap: 60px;
+    padding-bottom: 0;
+  }
+}
+
+/* === Mesh Gradient CTA === */
+.meshCtaSection {
+  padding: 180px 24px;
+  background-color: #0f172a; /* Slate 900 */
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(168, 85, 247, 0.3) 0px, transparent 50%), 
+    radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.3) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(236, 72, 153, 0.1) 0px, transparent 50%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  border-radius: 40px 40px 0 0; /* Huge rounded corners at bottom */
+  width: 100vw;
+  max-width: 100vw;
+}
+
+.meshCtaInner {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+}
+
+.meshTitle {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.05em;
+  margin-bottom: 24px;
+  line-height: 1.05;
+}
+
+.meshDesc {
+  font-size: 1.3rem;
+  color: #94a3b8;
+  margin-bottom: 48px;
+  line-height: 1.6;
+}
+
+.meshBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  color: white;
+  padding: 18px 48px;
+  border-radius: 9999px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.6);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.meshBtn::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+  transform: rotate(30deg);
+  animation: shine 4s infinite linear;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) rotate(30deg); }
+  20% { transform: translateX(100%) rotate(30deg); }
+  100% { transform: translateX(100%) rotate(30deg); }
+}
+
+.meshBtn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 20px 40px -10px rgba(168, 85, 247, 0.8);
+}
+
+/* === Bento Upgrades / Dark Contexts === */
+
+.bentoBackground {
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 200px;
+}
+
+.bentoContent {
+  position: relative;
+  z-index: 10;
+}
+
+.bentoCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bentoCardDark {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+.bentoCardDark:hover {
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.4);
+  border-color: #334155;
+}
+
+.iconWrapDark {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.textWhite {
+  color: #fff;
+}
+
+.textGray {
+  color: #94a3b8;
+}
+
+/* === Bento Internal Visuals === */
+
+.bentoGraphicLarge {
+  margin-top: 32px;
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+  border: 1px solid #334155;
+  height: 160px;
+  display: flex;
+  align-items: center;
+}
+
+.mockCodeEditor {
+  width: 100%;
+}
+
+.mockCodeHeader {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.mockDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.mockCodeLines {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mockLine {
+  height: 8px;
+  background: #334155;
+  border-radius: 4px;
+}
+
+.mockLineActive {
+  background: #a855f7;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+}
+
+.bentoGraphicSmall {
+  margin-top: 32px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.treeBuilderMock {
+  position: relative;
+  width: 120px;
+  height: 100px;
+}
+
+.treeNodeMock {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  background: white;
+  border: 2px solid #a855f7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #0f172a;
+  z-index: 2;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  left: 42px;
+  top: 0;
+}
+
+.nodeMockLeft {
+  left: 0;
+  top: 50px;
+  border-color: #cbd5e1;
+}
+
+.nodeMockRight {
+  left: 84px;
+  top: 50px;
+  border-color: #e2e8f0;
+  background: #f8fafc;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.treeEdgeLeft {
+  position: absolute;
+  width: 40px;
+  height: 2px;
+  background: #cbd5e1;
+  top: 36px;
+  left: 20px;
+  transform: rotate(50deg);
+  z-index: 1;
+}
+
+.treeEdgeRight {
+  position: absolute;
+  width: 40px;
+  height: 2px;
+  background: #e2e8f0;
+  top: 36px;
+  left: 60px;
+  transform: rotate(-50deg);
+  z-index: 1;
+}
+
+.bentoGraphicMedium {
+  margin-bottom: 32px;
+  height: 120px;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  padding: 16px;
+}
+
+.callStackMock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  max-width: 200px;
+}
+
+.stackFrame {
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #475569;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.stackFrameTop {
+  background: #ec4899;
+  color: white;
+  border-color: #be185d;
+  font-weight: bold;
+  transform: translateY(6px);
+  box-shadow: 0 10px 15px -3px rgba(236, 72, 153, 0.4);
+}
+
+.stackFrameBase {
+  opacity: 0.6;
+}
+
+.bentoGraphicMediumDark {
+  margin-bottom: 32px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(255,255,255,0.1);
+}
+
+.domainIcons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.domainIconBox {
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+}
+
+/* Showcase styles moved to src/components/InteractiveShowcase.module.css */
