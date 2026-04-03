@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import styles from "./page.module.css";
 import landingStyles from "./landing.module.css";
 import ScrollReveal from "../components/ScrollReveal";
+import InteractiveShowcase from "../components/InteractiveShowcase";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,10 +38,10 @@ export default function Home() {
 
         {/* Center: Navigation Pill */}
         <nav className={styles.navCenter}>
-          <Link href="/" className={styles.navLink}>Home</Link>
-          <Link href="/traversals" className={styles.navLink}>Traversals</Link>
-          <Link href="/problems" className={`${styles.navLink} ${styles.navLinkActive}`}>Problems</Link>
-          <Link href="/stook" className={styles.navLink}>Logic</Link>
+          <Link href="#home" className={`${styles.navLink} ${styles.navLinkActive}`}>Home</Link>
+          <Link href="#method" className={styles.navLink}>Method</Link>
+          <Link href="#platform" className={styles.navLink}>Platform</Link>
+          <Link href="/problems" className={styles.navLink}>Problems</Link>
           
           <div className={styles.navDropdownItem}>
             <span className={styles.navLink}>
@@ -61,7 +62,7 @@ export default function Home() {
       </header>
 
       <main className={styles.main}>
-        <section className={styles.hero}>
+        <section id="home" className={styles.hero}>
           <div className={styles.heroContent}>
             {/* Minimal Pill Badge */}
             <div className={styles.heroBadge}>
@@ -147,7 +148,7 @@ export default function Home() {
         {/* --- UPGRADED WORLD CLASS SECTIONS --- */}
         
         {/* STORYTELLING / LEARNING LOOP */}
-        <section className={landingStyles.sectionPad}>
+        <section id="method" className={landingStyles.sectionPad}>
           <ScrollReveal>
             <div className={landingStyles.textCenter}>
               <span className={landingStyles.eyebrow}>The Old Way is Broken</span>
@@ -194,62 +195,10 @@ export default function Home() {
           </div>
         </section>
 
-        {/* BENTO BOX FEATURES GRID */}
-        <section className={landingStyles.sectionPad}>
-          <ScrollReveal>
-            <div className={landingStyles.textCenter}>
-              <span className={landingStyles.eyebrow}>Powerful Under The Hood</span>
-              <h2 className={landingStyles.titleMain}>Built for execution, not just animation.</h2>
-              <p className={landingStyles.subtitleMain}>
-                A robust sandbox engine drives every visual. We evaluate your code step-by-step.
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <div className={landingStyles.bentoGrid}>
-            
-            <ScrollReveal animation="fade-up" delay={100} className={`${landingStyles.bentoCard} ${landingStyles.bentoLarge}`}>
-              <div className={landingStyles.iconWrap}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
-              </div>
-              <h3 className={landingStyles.bentoTitle}>Real Code, Real Execution</h3>
-              <p className={landingStyles.bentoDesc}>
-                We don't fake animations. Your code actually runs in our secure micro-service sandbox, accurately generating state variables at every single execution step so you see precisely what the computer sees.
-              </p>
-            </ScrollReveal>
-
-            <ScrollReveal animation="fade-up" delay={200} className={`${landingStyles.bentoCard} ${landingStyles.bentoSmall}`}>
-              <div className={landingStyles.iconWrap}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              </div>
-              <h3 className={landingStyles.bentoTitle}>Time-Travel Debugging</h3>
-              <p className={landingStyles.bentoDesc}>
-                Scrub back and forth through execution history. Found a bug? Rewind to the exact logic branch that broke your state.
-              </p>
-            </ScrollReveal>
-
-            <ScrollReveal animation="fade-up" delay={300} className={`${landingStyles.bentoCard} ${landingStyles.bentoMedium}`}>
-              <div className={landingStyles.iconWrap}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
-              </div>
-              <h3 className={landingStyles.bentoTitle}>Memory & Pointers</h3>
-              <p className={landingStyles.bentoDesc}>
-                Watch memory allocation live. Pointers, arrays, and object references are visually tracked so you never lose the head node again.
-              </p>
-            </ScrollReveal>
-
-            <ScrollReveal animation="fade-up" delay={400} className={`${landingStyles.bentoCard} ${landingStyles.bentoMedium}`}>
-              <div className={landingStyles.iconWrap}>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/><path d="m17 19-5 3-5-3"/><path d="M2 12h20"/><path d="m5 7-3 5 3 5"/><path d="m19 7 3 5-3 5"/></svg>
-              </div>
-              <h3 className={landingStyles.bentoTitle}>Multi-Domain Ready</h3>
-              <p className={landingStyles.bentoDesc}>
-                From simple Binary Trees and Linked Lists, to complex Graph BFS/DFS and Dynamic Programming matrices. We support it all.
-              </p>
-            </ScrollReveal>
-
-          </div>
-        </section>
+        {/* INTERACTIVE APP SHOWCASE */}
+        <div id="platform">
+          <InteractiveShowcase />
+        </div>
 
         {/* BOTTOM MESH CTA */}
         <section className={landingStyles.meshCtaSection}>
