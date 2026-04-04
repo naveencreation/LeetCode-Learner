@@ -12,9 +12,9 @@ const frameStyles: Record<CallStackFrame["state"], string> = {
 
 export function CallStackPanel({ activeCallStack }: CallStackPanelProps) {
   return (
-    <section className="grid min-h-0 grid-rows-[auto_1fr] gap-2 rounded-xl border border-slate-200 bg-white p-2.5 shadow-[0_2px_10px_rgba(17,24,39,0.06)]">
-      <div className="mb-0.5 flex items-center justify-between">
-        <h2 className="text-[13px] font-extrabold uppercase tracking-[0.01em] text-slate-700">
+    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr] gap-1.5 p-2">
+      <div className="traversal-panel-header mb-px">
+        <h2 className="traversal-panel-title">
           Processing Stack
         </h2>
         <span className="rounded-full bg-gradient-to-r from-amber-500 to-amber-300 px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-white">
@@ -22,9 +22,9 @@ export function CallStackPanel({ activeCallStack }: CallStackPanelProps) {
         </span>
       </div>
 
-      <div className="min-h-0 space-y-1.5 overflow-auto rounded-[10px] border border-slate-200 bg-gradient-to-b from-slate-50 to-slate-100 p-2">
+      <div className="min-h-0 space-y-1.5 overflow-auto rounded-[10px] border border-slate-200 bg-gradient-to-b from-slate-50 to-slate-100 p-1.5">
         {activeCallStack.length === 0 ? (
-          <p className="flex min-h-full items-center justify-center py-8 text-center text-xs italic text-slate-500">
+          <p className="flex min-h-[148px] items-center justify-center py-10 text-center text-xs italic text-slate-500">
             Stack is empty. Click Next to begin!
           </p>
         ) : (

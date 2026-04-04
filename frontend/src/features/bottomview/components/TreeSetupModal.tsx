@@ -167,9 +167,9 @@ function assignBottomViewIndex(
   }
 
   assignBottomViewIndex(node.left, map, counter);
-  assignBottomViewIndex(node.right, map, counter);
   map[node.val] = counter.value;
   counter.value += 1;
+  assignBottomViewIndex(node.right, map, counter);
 }
 
 function buildAutoPositions(

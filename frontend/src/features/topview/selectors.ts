@@ -17,6 +17,8 @@ export function getPhaseLabel(step: ExecutionStep | undefined): string {
       return "Pop Queue";
     case "exit_function":
       return "Done Node";
+    case "finish":
+      return "Complete";
     default:
       return "Complete";
   }

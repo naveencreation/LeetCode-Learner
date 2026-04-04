@@ -1,11 +1,17 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
-import { createSampleTree } from "./constants";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { TOPVIEW_TREE_PRESETS, cloneTree, createSampleTree } from "./constants";
 import { generateTopViewExecutionSteps } from "./engine";
 import { getCodeLineForStep, getOperationBadge, getPhaseLabel } from "./selectors";
 import { useTraversalKeyboardShortcuts } from "../shared/useTraversalKeyboardShortcuts";
-import type { ExecutionStep, NodeVisualState } from "./types";
+import type {
+  ExecutionStep,
+  NodePosition,
+  NodeVisualState,
+  TreeNode,
+  TreePresetKey,
+} from "./types";
 
 interface StepProjection {
   result: number[];
@@ -61,7 +67,13 @@ function projectStateForStep(
 }
 
 export function useTopViewTraversal() {
-  const root = useMemo(() => createSampleTree(), []);
+  const [root, setRoot] = useState<TreeNode | null>(() => createSampleTree());
+  const [selectedPreset, setSelectedPreset] = useState<TreePresetKey>("complete");
+  const [customNodePositions, setCustomNodePositions] = useState<Record<number, NodePosition>>({});
+  const [controlMode, setControlModeState] = useState<"manual" | "auto">("manual");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [autoPlaySpeedMs, setAutoPlaySpeedMs] = useState(900);
+
   const { executionSteps, initialNodeStates } = useMemo(
     () => generateTopViewExecutionSteps(root),
     [root],
@@ -86,23 +98,74 @@ export function useTopViewTraversal() {
 
   const resetTraversal = useCallback(() => {
     setCurrentStep(0);
+    setIsPlaying(false);
   }, []);
 
-  const goToFirst = useCallback(() => {
-    setCurrentStep(0);
+  const setControlMode = useCallback((mode: "manual" | "auto") => {
+    setControlModeState(mode);
+    if (mode === "manual") {
+      setIsPlaying(false);
+    }
   }, []);
 
-  const goToLast = useCallback(() => {
-    setCurrentStep(executionSteps.length);
-  }, [executionSteps.length]);
+  const applyTreeConfiguration = useCallback(
+    (
+      nextRoot: TreeNode | null,
+      nextPositions: Record<number, NodePosition>,
+      preset: TreePresetKey,
+      runImmediately = false,
+    ) => {
+      const clonedRoot = cloneTree(nextRoot);
+      setRoot(clonedRoot);
+      setCustomNodePositions({ ...nextPositions });
+      setSelectedPreset(preset);
+      setCurrentStep(runImmediately ? 1 : 0);
+      setIsPlaying(false);
+    },
+    [],
+  );
+
+  const playTraversal = useCallback(() => {
+    if (currentStep >= executionSteps.length) {
+      return;
+    }
+
+    setIsPlaying(true);
+  }, [currentStep, executionSteps.length]);
+
+  const pauseTraversal = useCallback(() => {
+    setIsPlaying(false);
+  }, []);
+
+  useEffect(() => {
+    if (controlMode !== "auto" || !isPlaying || currentStep >= executionSteps.length) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setCurrentStep((previous) =>
+        previous < executionSteps.length ? previous + 1 : previous,
+      );
+    }, autoPlaySpeedMs);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [controlMode, isPlaying, currentStep, executionSteps.length, autoPlaySpeedMs]);
 
   useTraversalKeyboardShortcuts({ nextStep, previousStep, resetTraversal });
 
   const activeStep = executionSteps[currentStep];
   const executedStep = currentStep > 0 ? executionSteps[currentStep - 1] : undefined;
+  const displayStep = executedStep ?? activeStep;
+  const isAutoPlaying =
+    controlMode === "auto" && isPlaying && currentStep < executionSteps.length;
 
   return {
     root,
+    selectedPreset,
+    presets: TOPVIEW_TREE_PRESETS,
+    customNodePositions,
     executionSteps,
     totalSteps: executionSteps.length,
     currentStep,
@@ -111,19 +174,25 @@ export function useTopViewTraversal() {
     visitedNodes: projectedState.visitedNodes,
     nodeStates: projectedState.nodeStates,
     currentOperation:
-      activeStep?.operation ?? "Ready to begin top-view traversal...",
-    currentPhase: getPhaseLabel(activeStep),
-    currentCodeLine: getCodeLineForStep(activeStep),
-    operationBadge: getOperationBadge(activeStep),
+      displayStep?.operation ?? "Ready to begin top-view traversal...",
+    currentPhase: getPhaseLabel(displayStep),
+    currentCodeLine: getCodeLineForStep(displayStep),
+    operationBadge: getOperationBadge(displayStep),
     activeStep,
     executedStep,
     activeCallStack: executedStep?.callStack ?? [],
     isAtStart: currentStep === 0,
     isAtEnd: currentStep === executionSteps.length,
+    controlMode,
+    setControlMode,
+    isPlaying: isAutoPlaying,
+    autoPlaySpeedMs,
+    setAutoPlaySpeedMs,
+    playTraversal,
+    pauseTraversal,
     nextStep,
     previousStep,
     resetTraversal,
-    goToFirst,
-    goToLast,
+    applyTreeConfiguration,
   };
 }

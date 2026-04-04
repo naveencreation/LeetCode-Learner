@@ -68,7 +68,7 @@ function pushStep(
   });
 }
 
-export function generateTopViewExecutionSteps(root: TreeNode): {
+export function generateTopViewExecutionSteps(root: TreeNode | null): {
   executionSteps: ExecutionStep[];
   initialNodeStates: Record<number, NodeVisualState>;
 } {
@@ -79,6 +79,23 @@ export function generateTopViewExecutionSteps(root: TreeNode): {
 
   initializeNodeStates(root, nodeStates);
   const initialNodeStates = cloneNodeStates(nodeStates);
+
+  if (!root) {
+    executionSteps.push({
+      type: "finish",
+      node: null,
+      value: undefined,
+      hd: 0,
+      operation: "Tree is empty; top view is []",
+      callStack: [],
+      nodeStates: cloneNodeStates(nodeStates),
+    });
+
+    return {
+      executionSteps,
+      initialNodeStates,
+    };
+  }
 
   const queue: Array<{ node: TreeNode; hd: number; level: number }> = [
     { node: root, hd: 0, level: 0 },

@@ -3,7 +3,8 @@ export type InorderOperationType =
   | "traverse_left"
   | "visit"
   | "traverse_right"
-  | "exit_function";
+  | "exit_function"
+  | "finish";
 
 export type NodeVisualState =
   | "unvisited"
@@ -17,6 +18,18 @@ export interface TreeNode {
   left: TreeNode | null;
   right: TreeNode | null;
 }
+
+export interface NodePosition {
+  x: number;
+  y: number;
+}
+
+export type TreePresetKey =
+  | "complete"
+  | "left_skewed"
+  | "right_skewed"
+  | "sparse_random"
+  | "custom_empty";
 
 export interface CallStackFrame {
   nodeVal: number;

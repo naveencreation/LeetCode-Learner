@@ -154,6 +154,8 @@ export function LeftViewLayout() {
             operationBadge={operationBadge}
             nodeStates={nodeStates}
             activeStep={activeStep}
+            currentStep={currentStep}
+            executionSteps={executionSteps}
             customNodePositions={customNodePositions}
             onOpenTreeSetup={openTreeSetup}
           />

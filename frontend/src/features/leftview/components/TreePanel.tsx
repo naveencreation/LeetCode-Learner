@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import type { ExecutionStep, NodePosition, NodeVisualState, TreeNode } from "../types";
 
@@ -8,6 +8,8 @@ interface TreePanelProps {
   operationBadge: string;
   nodeStates: Record<number, NodeVisualState>;
   activeStep: ExecutionStep | undefined;
+  currentStep: number;
+  executionSteps: ExecutionStep[];
   customNodePositions: Record<number, NodePosition>;
   onOpenTreeSetup: () => void;
 }
@@ -203,15 +205,139 @@ function fitPositionsToViewport(
   };
 }
 
+interface ProjectionNodeMeta {
+  value: number;
+  depth: number;
+  bfsOrder: number;
+}
+
+interface LevelRow {
+  level: number;
+  y: number;
+  nodes: ProjectionNodeMeta[];
+}
+
+function collectProjectionNodes(root: TreeNode | null): ProjectionNodeMeta[] {
+  if (!root) {
+    return [];
+  }
+
+  const queue: Array<{ node: TreeNode; depth: number; order: number }> = [{
+    node: root,
+    depth: 0,
+    order: 0,
+  }];
+
+  const nodes: ProjectionNodeMeta[] = [];
+  let nextOrder = 1;
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (!current) {
+      continue;
+    }
+
+    nodes.push({
+      value: current.node.val,
+      depth: current.depth,
+      bfsOrder: current.order,
+    });
+
+    if (current.node.left) {
+      queue.push({
+        node: current.node.left,
+        depth: current.depth + 1,
+        order: nextOrder,
+      });
+      nextOrder += 1;
+    }
+
+    if (current.node.right) {
+      queue.push({
+        node: current.node.right,
+        depth: current.depth + 1,
+        order: nextOrder,
+      });
+      nextOrder += 1;
+    }
+  }
+
+  return nodes;
+}
+
+function buildLevelRows(root: TreeNode | null, viewHeight: number): LevelRow[] {
+  const projectionNodes = collectProjectionNodes(root);
+  if (projectionNodes.length === 0) {
+    return [];
+  }
+
+  const groupedByLevel = new Map<number, ProjectionNodeMeta[]>();
+  projectionNodes.forEach((node) => {
+    const group = groupedByLevel.get(node.depth) ?? [];
+    group.push(node);
+    groupedByLevel.set(node.depth, group);
+  });
+
+  const sortedLevels = Array.from(groupedByLevel.keys()).sort((a, b) => a - b);
+  const minY = 46;
+  const maxY = viewHeight - 72;
+  const yStep = sortedLevels.length > 1 ? (maxY - minY) / (sortedLevels.length - 1) : 0;
+
+  return sortedLevels.map((level, index) => ({
+    level,
+    y: minY + index * yStep,
+    nodes: (groupedByLevel.get(level) ?? []).sort((a, b) => a.bfsOrder - b.bfsOrder),
+  }));
+}
+
+function buildLeftProjectionStepState(
+  executionSteps: ExecutionStep[],
+  currentStep: number,
+): Map<number, number> {
+  const visibleByLevel = new Map<number, number>();
+
+  for (let index = 0; index < currentStep; index += 1) {
+    const step = executionSteps[index];
+    if (
+      step.type === "capture_left_view" &&
+      typeof step.level === "number" &&
+      typeof step.value === "number"
+    ) {
+      visibleByLevel.set(step.level, step.value);
+    }
+  }
+
+  return visibleByLevel;
+}
+
+function getLatestLeftCaptureLevel(
+  executionSteps: ExecutionStep[],
+  currentStep: number,
+): number | null {
+  if (currentStep <= 0) {
+    return null;
+  }
+
+  const latestStep = executionSteps[currentStep - 1];
+  if (latestStep?.type === "capture_left_view" && typeof latestStep.level === "number") {
+    return latestStep.level;
+  }
+
+  return null;
+}
+
 export function TreePanel({
   root,
   currentOperation,
   operationBadge,
   nodeStates,
   activeStep,
+  currentStep,
+  executionSteps,
   customNodePositions,
   onOpenTreeSetup,
 }: TreePanelProps) {
+  const [viewMode, setViewMode] = useState<"tree" | "projection">("tree");
   const viewWidth = 380;
   const viewHeight = 240;
   const nodeRadius = 20;
@@ -243,6 +369,18 @@ export function TreePanel({
     return { edges, positions, sortedPositionEntries };
   }, [root, customNodePositions, viewWidth, viewHeight, nodeRadius]);
 
+  const levelRows = useMemo(() => buildLevelRows(root, viewHeight), [root, viewHeight]);
+
+  const visibleByLevel = useMemo(
+    () => buildLeftProjectionStepState(executionSteps, currentStep),
+    [executionSteps, currentStep],
+  );
+
+  const latestCapturedLevel = useMemo(
+    () => getLatestLeftCaptureLevel(executionSteps, currentStep),
+    [executionSteps, currentStep],
+  );
+
   const sourceNode = activeStep?.node?.val;
   const direction = activeStep ? childByOperation[activeStep.type] : null;
   const targetNode =
@@ -264,6 +402,30 @@ export function TreePanel({
           Tree Structure
         </h2>
         <div className="flex items-center gap-2">
+          <div className="inline-flex items-center rounded-full border border-slate-300 bg-slate-100 p-0.5">
+            <button
+              type="button"
+              onClick={() => setViewMode("tree")}
+              className={`rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
+                viewMode === "tree"
+                  ? "bg-slate-800 text-white"
+                  : "text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              Tree
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("projection")}
+              className={`rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
+                viewMode === "projection"
+                  ? "bg-slate-800 text-white"
+                  : "text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              Left View
+            </button>
+          </div>
           <button
             type="button"
             onClick={onOpenTreeSetup}
@@ -278,116 +440,288 @@ export function TreePanel({
       </div>
 
       <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-gradient-to-b from-[#fcfffe] to-[#f6f8fb] p-2">
-        <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} className="h-full w-full">
-          <defs>
-            <marker
-              id="tree-arrow"
-              markerWidth="8"
-              markerHeight="8"
-              refX="7"
-              refY="4"
-              orient="auto"
-              markerUnits="strokeWidth"
-            >
-              <path d="M0,0 L8,4 L0,8 z" fill="#94a3b8" />
-            </marker>
-            <marker
-              id="tree-arrow-active"
-              markerWidth="9"
-              markerHeight="9"
-              refX="8"
-              refY="4.5"
-              orient="auto"
-              markerUnits="strokeWidth"
-            >
-              <path d="M0,0 L9,4.5 L0,9 z" fill="#14b8a6" />
-            </marker>
-          </defs>
+        {viewMode === "tree" ? (
+          <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} className="h-full w-full">
+            <defs>
+              <marker
+                id="tree-arrow"
+                markerWidth="8"
+                markerHeight="8"
+                refX="7"
+                refY="4"
+                orient="auto"
+                markerUnits="strokeWidth"
+              >
+                <path d="M0,0 L8,4 L0,8 z" fill="#94a3b8" />
+              </marker>
+              <marker
+                id="tree-arrow-active"
+                markerWidth="9"
+                markerHeight="9"
+                refX="8"
+                refY="4.5"
+                orient="auto"
+                markerUnits="strokeWidth"
+              >
+                <path d="M0,0 L9,4.5 L0,9 z" fill="#14b8a6" />
+              </marker>
+            </defs>
 
-          {edges.map(([from, to]) => (
-            <g key={`${from}-${to}`}>
-              {(() => {
-                const connector = getConnectorPoints(
-                  positions[from],
-                  positions[to],
-                );
+            {edges.map(([from, to]) => (
+              <g key={`${from}-${to}`}>
+                {(() => {
+                  const connector = getConnectorPoints(
+                    positions[from],
+                    positions[to],
+                  );
 
-                return (
-                  <>
-                    <line
-                      x1={connector.x1}
-                      y1={connector.y1}
-                      x2={connector.x2}
-                      y2={connector.y2}
-                      stroke="#cbd5e1"
-                      strokeOpacity="0.95"
-                      strokeWidth="2.2"
-                      markerEnd="url(#tree-arrow)"
-                    />
-                    {activeEdgeKey === `${from}-${to}` ? (
+                  return (
+                    <>
                       <line
                         x1={connector.x1}
                         y1={connector.y1}
                         x2={connector.x2}
                         y2={connector.y2}
-                        stroke="#14b8a6"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeDasharray="8 6"
-                        markerEnd="url(#tree-arrow-active)"
+                        stroke="#cbd5e1"
+                        strokeOpacity="0.95"
+                        strokeWidth="2.2"
+                        markerEnd="url(#tree-arrow)"
                       />
-                    ) : null}
-                  </>
-                );
-              })()}
-            </g>
-          ))}
-
-          {sortedPositionEntries.map(([value, point]) => {
-            const nodeValue = Number(value);
-            const nodeState = nodeStates[nodeValue] ?? "unvisited";
-            const styles = stateStyles[nodeState];
-            const isCompleted = nodeState === "completed";
-
-            return (
-              <g key={value}>
-                <circle
-                  cx={point.x}
-                  cy={point.y}
-                  r="27"
-                  fill={styles.glow}
-                />
-                <circle
-                  cx={point.x}
-                  cy={point.y}
-                  r="20"
-                  fill={styles.fill}
-                  stroke={styles.stroke}
-                  strokeWidth="2.2"
-                />
-                <text
-                  x={point.x}
-                  y={point.y + 5}
-                  textAnchor="middle"
-                  fill={styles.text}
-                  className="text-sm font-extrabold"
-                >
-                  {value}
-                </text>
-                {isCompleted ? (
-                  <text
-                    x={point.x + 22}
-                    y={point.y - 18}
-                    textAnchor="middle"
-                    className="fill-emerald-600 text-sm font-black"
-                  >
-                    ✓
-                  </text>
-                ) : null}
+                      {activeEdgeKey === `${from}-${to}` ? (
+                        <line
+                          x1={connector.x1}
+                          y1={connector.y1}
+                          x2={connector.x2}
+                          y2={connector.y2}
+                          stroke="#14b8a6"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeDasharray="8 6"
+                          markerEnd="url(#tree-arrow-active)"
+                        />
+                      ) : null}
+                    </>
+                  );
+                })()}
               </g>
-            );
-          })}
-        </svg>
+            ))}
+
+            {sortedPositionEntries.map(([value, point]) => {
+              const nodeValue = Number(value);
+              const nodeState = nodeStates[nodeValue] ?? "unvisited";
+              const styles = stateStyles[nodeState];
+              const isCompleted = nodeState === "completed";
+
+              return (
+                <g key={value}>
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    r="27"
+                    fill={styles.glow}
+                  />
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    r="20"
+                    fill={styles.fill}
+                    stroke={styles.stroke}
+                    strokeWidth="2.2"
+                  />
+                  <text
+                    x={point.x}
+                    y={point.y + 5}
+                    textAnchor="middle"
+                    fill={styles.text}
+                    className="text-sm font-extrabold"
+                  >
+                    {value}
+                  </text>
+                  {isCompleted ? (
+                    <text
+                      x={point.x + 22}
+                      y={point.y - 18}
+                      textAnchor="middle"
+                      className="fill-emerald-600 text-sm font-black"
+                    >
+                      ✓
+                    </text>
+                  ) : null}
+                </g>
+              );
+            })}
+          </svg>
+        ) : (
+          <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} className="h-full w-full">
+            <defs>
+              <marker
+                id="left-projection-arrow"
+                markerWidth="8"
+                markerHeight="8"
+                refX="7"
+                refY="4"
+                orient="auto"
+                markerUnits="strokeWidth"
+              >
+                <path d="M0,0 L8,4 L0,8 z" fill="#0f766e" />
+              </marker>
+            </defs>
+
+            <text
+              x={viewWidth / 2}
+              y={18}
+              textAnchor="middle"
+              className="fill-slate-500 text-[11px] font-bold"
+            >
+              Level (Depth)
+            </text>
+
+            <line x1="28" y1="30" x2={viewWidth - 28} y2="30" stroke="#cbd5e1" strokeWidth="1.4" />
+
+            {levelRows.map((row) => {
+              const visibleValue = visibleByLevel.get(row.level);
+              const visibleNode =
+                typeof visibleValue === "number"
+                  ? row.nodes.find((node) => node.value === visibleValue)
+                  : undefined;
+              const visibleState =
+                typeof visibleValue === "number"
+                  ? (nodeStates[visibleValue] ?? "completed")
+                  : "unvisited";
+              const visibleStyles = stateStyles[visibleState];
+              const hiddenNodes = row.nodes.filter((node) => node.value !== visibleValue);
+              const hiddenStartX = 152;
+              const hiddenEndX = viewWidth - 28;
+              const hiddenStep =
+                hiddenNodes.length > 1
+                  ? (hiddenEndX - hiddenStartX) / (hiddenNodes.length - 1)
+                  : 0;
+              const isNewlyCaptured = latestCapturedLevel === row.level;
+              const animationToken = isNewlyCaptured ? `${row.level}-${visibleValue}-${currentStep}` : undefined;
+
+              return (
+                <g key={`level-${row.level}`}>
+                  <line
+                    x1="58"
+                    y1={row.y}
+                    x2={viewWidth - 28}
+                    y2={row.y}
+                    stroke="#dbeafe"
+                    strokeWidth="1.5"
+                    strokeDasharray="5 5"
+                  />
+                  <text
+                    x="38"
+                    y={row.y + 4}
+                    textAnchor="middle"
+                    className="fill-slate-500 text-[10px] font-bold"
+                  >
+                    L{row.level}
+                  </text>
+
+                  <g key={animationToken ? `left-capture-${animationToken}` : `left-visible-${row.level}-${visibleValue ?? "pending"}`}>
+                    <circle
+                      cx="84"
+                      cy={row.y}
+                      r={isNewlyCaptured ? "20" : "23"}
+                      fill={visibleStyles.glow}
+                      opacity={isNewlyCaptured ? "0.72" : "1"}
+                    >
+                      {isNewlyCaptured ? (
+                        <>
+                          <animate attributeName="r" from="20" to="23" dur="180ms" fill="freeze" />
+                          <animate attributeName="opacity" from="0.72" to="1" dur="180ms" fill="freeze" />
+                        </>
+                      ) : null}
+                    </circle>
+                    <circle
+                      cx="84"
+                      cy={row.y}
+                      r={isNewlyCaptured ? "15" : "18"}
+                      fill={visibleNode ? visibleStyles.fill : "#f8fafc"}
+                      stroke={visibleNode ? visibleStyles.stroke : "#94a3b8"}
+                      strokeWidth="2.4"
+                      strokeDasharray={visibleNode ? undefined : "4 3"}
+                    >
+                      {isNewlyCaptured ? (
+                        <animate attributeName="r" from="15" to="18" dur="180ms" fill="freeze" />
+                      ) : null}
+                    </circle>
+                    <text
+                      x="84"
+                      y={row.y + 5}
+                      textAnchor="middle"
+                      fill={visibleNode ? visibleStyles.text : "#64748b"}
+                      className="text-sm font-black"
+                    >
+                      {visibleNode ? visibleNode.value : "?"}
+                    </text>
+                  </g>
+
+                  {hiddenNodes.map((hiddenNode, index) => {
+                    const hiddenState = nodeStates[hiddenNode.value] ?? "unvisited";
+                    const hiddenStyles = stateStyles[hiddenState];
+                    const hiddenX = hiddenStartX + index * hiddenStep;
+
+                    return (
+                      <g key={`hidden-${row.level}-${hiddenNode.value}-${index}`} opacity="0.62">
+                        <circle
+                          cx={hiddenX}
+                          cy={row.y}
+                          r="15"
+                          fill={hiddenStyles.fill}
+                          stroke={hiddenStyles.stroke}
+                          strokeWidth="1.8"
+                          strokeDasharray="4 3"
+                        />
+                        <text
+                          x={hiddenX}
+                          y={row.y + 4}
+                          textAnchor="middle"
+                          fill="#475569"
+                          className="text-[11px] font-extrabold"
+                        >
+                          {hiddenNode.value}
+                        </text>
+                      </g>
+                    );
+                  })}
+                </g>
+              );
+            })}
+
+            <line
+              x1="18"
+              y1="34"
+              x2="52"
+              y2="34"
+              stroke="#0f766e"
+              strokeWidth="2"
+              markerEnd="url(#left-projection-arrow)"
+            />
+            <text
+              x="18"
+              y="22"
+              textAnchor="start"
+              className="fill-teal-700 text-[10px] font-extrabold"
+            >
+              View From Left
+            </text>
+
+            <g transform="translate(14, 196)">
+              <circle cx="0" cy="0" r="5" fill="#0f766e" />
+              <text x="10" y="4" className="fill-slate-600 text-[10px] font-semibold">
+                Visible node
+              </text>
+            </g>
+            <g transform="translate(112, 196)" opacity="0.72">
+              <circle cx="0" cy="0" r="5" fill="#94a3b8" />
+              <text x="10" y="4" className="fill-slate-600 text-[10px] font-semibold">
+                Hidden behind
+              </text>
+            </g>
+          </svg>
+        )}
       </div>
 
       <div className="rounded-lg border border-teal-100 bg-teal-50 px-2.5 py-2 text-xs">
@@ -399,6 +733,3 @@ export function TreePanel({
     </section>
   );
 }
-
-
-

@@ -25,7 +25,7 @@ function getExplanation(
   if (currentStep >= totalSteps) {
     return {
       title: "Traversal Complete",
-      description: `All levels processed. Final left view result is [${result.join(", ")}].`,
+      description: `All levels processed. Final top view result is [${result.join(", ")}].`,
       details: [
         `Total execution steps: ${totalSteps}`,
         "Use Previous to replay each BFS action.",
@@ -82,9 +82,9 @@ export function ExplanationPanel({
   const explanation = getExplanation(activeStep, currentStep, totalSteps, result);
 
   return (
-    <section className="grid min-h-0 grid-rows-[auto_1fr_auto] gap-2 rounded-xl border border-slate-200 bg-white p-2.5 shadow-[0_2px_10px_rgba(17,24,39,0.06)]">
-      <div className="mb-0.5 flex items-center justify-between">
-        <h2 className="text-[13px] font-extrabold uppercase tracking-[0.01em] text-slate-700">
+    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr_auto] gap-1.5 p-1.5">
+      <div className="traversal-panel-header mb-px">
+        <h2 className="traversal-panel-title">
           Step Explanation
         </h2>
         <span className="rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-white">
@@ -92,12 +92,12 @@ export function ExplanationPanel({
         </span>
       </div>
 
-      <div className="min-h-0 space-y-2 overflow-auto rounded-[10px] border border-sky-200 bg-gradient-to-b from-cyan-50 to-sky-50 p-2">
-        <h3 className="text-[13px] font-extrabold text-cyan-900">{explanation.title}</h3>
-        <p className="text-[11px] leading-[1.45] text-cyan-800">{explanation.description}</p>
-        <ul className="grid gap-1 text-[11px]">
+      <div className="min-h-0 space-y-1 rounded-[10px] border border-sky-200 bg-gradient-to-b from-cyan-50 to-sky-50 p-1.5">
+        <h3 className="text-[12px] font-extrabold text-cyan-900">{explanation.title}</h3>
+        <p className="text-[10px] leading-[1.35] text-cyan-800">{explanation.description}</p>
+        <ul className="grid max-h-[180px] gap-1 overflow-auto pr-0.5 text-[9px]">
           {explanation.details.map((detail) => (
-            <li key={detail} className="rounded-lg border border-sky-200 bg-white/80 px-2 py-1 text-cyan-900">
+            <li key={detail} className="rounded border border-sky-200 bg-white/90 px-1.5 py-0.5 text-cyan-900">
               &gt; {detail}
             </li>
           ))}

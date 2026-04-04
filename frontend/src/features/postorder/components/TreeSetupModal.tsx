@@ -167,9 +167,9 @@ function assignPostorderIndex(
   }
 
   assignPostorderIndex(node.left, map, counter);
-  assignPostorderIndex(node.right, map, counter);
   map[node.val] = counter.value;
   counter.value += 1;
+  assignPostorderIndex(node.right, map, counter);
 }
 
 function buildAutoPositions(

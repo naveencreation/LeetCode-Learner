@@ -167,9 +167,9 @@ function assignLeftViewIndex(
   }
 
   assignLeftViewIndex(node.left, map, counter);
-  assignLeftViewIndex(node.right, map, counter);
   map[node.val] = counter.value;
   counter.value += 1;
+  assignLeftViewIndex(node.right, map, counter);
 }
 
 function buildAutoPositions(
