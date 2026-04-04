@@ -154,6 +154,8 @@ export function BottomViewLayout() {
             operationBadge={operationBadge}
             nodeStates={nodeStates}
             activeStep={activeStep}
+            currentStep={currentStep}
+            executionSteps={executionSteps}
             customNodePositions={customNodePositions}
             onOpenTreeSetup={openTreeSetup}
           />

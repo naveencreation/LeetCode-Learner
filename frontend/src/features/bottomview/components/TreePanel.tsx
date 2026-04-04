@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import type { ExecutionStep, NodePosition, NodeVisualState, TreeNode } from "../types";
 
@@ -8,6 +8,8 @@ interface TreePanelProps {
   operationBadge: string;
   nodeStates: Record<number, NodeVisualState>;
   activeStep: ExecutionStep | undefined;
+  currentStep: number;
+  executionSteps: ExecutionStep[];
   customNodePositions: Record<number, NodePosition>;
   onOpenTreeSetup: () => void;
 }
@@ -203,15 +205,173 @@ function fitPositionsToViewport(
   };
 }
 
+interface ProjectionNodeMeta {
+  value: number;
+  depth: number;
+  hd: number;
+  bfsOrder: number;
+}
+
+interface ProjectionColumn {
+  hd: number;
+  x: number;
+  nodes: ProjectionNodeMeta[];
+}
+
+interface ProjectionStepState {
+  visibleByHd: Map<number, number>;
+  replacement: { hd: number; from: number; to: number } | null;
+}
+
+function collectProjectionNodes(root: TreeNode | null): ProjectionNodeMeta[] {
+  if (!root) {
+    return [];
+  }
+
+  const queue: Array<{ node: TreeNode; depth: number; hd: number; order: number }> = [
+    { node: root, depth: 0, hd: 0, order: 0 },
+  ];
+
+  const nodes: ProjectionNodeMeta[] = [];
+  let nextOrder = 1;
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    if (!current) {
+      continue;
+    }
+
+    nodes.push({
+      value: current.node.val,
+      depth: current.depth,
+      hd: current.hd,
+      bfsOrder: current.order,
+    });
+
+    if (current.node.left) {
+      queue.push({
+        node: current.node.left,
+        depth: current.depth + 1,
+        hd: current.hd - 1,
+        order: nextOrder,
+      });
+      nextOrder += 1;
+    }
+
+    if (current.node.right) {
+      queue.push({
+        node: current.node.right,
+        depth: current.depth + 1,
+        hd: current.hd + 1,
+        order: nextOrder,
+      });
+      nextOrder += 1;
+    }
+  }
+
+  return nodes;
+}
+
+function buildProjectionColumns(root: TreeNode | null, viewWidth: number): ProjectionColumn[] {
+  const projectionNodes = collectProjectionNodes(root);
+  if (projectionNodes.length === 0) {
+    return [];
+  }
+
+  const groupedByHd = new Map<number, ProjectionNodeMeta[]>();
+  projectionNodes.forEach((node) => {
+    const group = groupedByHd.get(node.hd) ?? [];
+    group.push(node);
+    groupedByHd.set(node.hd, group);
+  });
+
+  const sortedHds = Array.from(groupedByHd.keys()).sort((a, b) => a - b);
+  const minX = 44;
+  const maxX = viewWidth - 44;
+  const xStep = sortedHds.length > 1 ? (maxX - minX) / (sortedHds.length - 1) : 0;
+
+  return sortedHds.map((hd, index) => {
+    const group = (groupedByHd.get(hd) ?? []).sort((a, b) => {
+      if (a.depth !== b.depth) {
+        return b.depth - a.depth;
+      }
+
+      return b.bfsOrder - a.bfsOrder;
+    });
+
+    return {
+      hd,
+      x: minX + index * xStep,
+      nodes: group,
+    };
+  });
+}
+
+function buildProjectionStepState(
+  executionSteps: ExecutionStep[],
+  currentStep: number,
+): ProjectionStepState {
+  const visibleByHd = new Map<number, number>();
+
+  for (let index = 0; index < currentStep; index += 1) {
+    const step = executionSteps[index];
+    if (
+      step.type === "capture_bottom_view" &&
+      typeof step.hd === "number" &&
+      typeof step.value === "number"
+    ) {
+      visibleByHd.set(step.hd, step.value);
+    }
+  }
+
+  let replacement: { hd: number; from: number; to: number } | null = null;
+  const latestStep = currentStep > 0 ? executionSteps[currentStep - 1] : undefined;
+
+  if (
+    latestStep?.type === "capture_bottom_view" &&
+    typeof latestStep.hd === "number" &&
+    typeof latestStep.value === "number"
+  ) {
+    const previousByHd = new Map<number, number>();
+    for (let index = 0; index < currentStep - 1; index += 1) {
+      const step = executionSteps[index];
+      if (
+        step.type === "capture_bottom_view" &&
+        typeof step.hd === "number" &&
+        typeof step.value === "number"
+      ) {
+        previousByHd.set(step.hd, step.value);
+      }
+    }
+
+    const previousVisible = previousByHd.get(latestStep.hd);
+    if (typeof previousVisible === "number" && previousVisible !== latestStep.value) {
+      replacement = {
+        hd: latestStep.hd,
+        from: previousVisible,
+        to: latestStep.value,
+      };
+    }
+  }
+
+  return {
+    visibleByHd,
+    replacement,
+  };
+}
+
 export function TreePanel({
   root,
   currentOperation,
   operationBadge,
   nodeStates,
   activeStep,
+  currentStep,
+  executionSteps,
   customNodePositions,
   onOpenTreeSetup,
 }: TreePanelProps) {
+  const [viewMode, setViewMode] = useState<"tree" | "projection">("tree");
   const viewWidth = 380;
   const viewHeight = 240;
   const nodeRadius = 20;
@@ -243,6 +403,16 @@ export function TreePanel({
     return { edges, positions, sortedPositionEntries };
   }, [root, customNodePositions, viewWidth, viewHeight, nodeRadius]);
 
+  const projectionColumns = useMemo(
+    () => buildProjectionColumns(root, viewWidth),
+    [root, viewWidth],
+  );
+
+  const projectionStepState = useMemo(
+    () => buildProjectionStepState(executionSteps, currentStep),
+    [executionSteps, currentStep],
+  );
+
   const sourceNode = activeStep?.node?.val;
   const direction = activeStep ? childByOperation[activeStep.type] : null;
   const targetNode =
@@ -264,6 +434,30 @@ export function TreePanel({
           Tree Structure
         </h2>
         <div className="flex items-center gap-2">
+          <div className="inline-flex items-center rounded-full border border-slate-300 bg-slate-100 p-0.5">
+            <button
+              type="button"
+              onClick={() => setViewMode("tree")}
+              className={`rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
+                viewMode === "tree"
+                  ? "bg-slate-800 text-white"
+                  : "text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              Tree
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("projection")}
+              className={`rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
+                viewMode === "projection"
+                  ? "bg-slate-800 text-white"
+                  : "text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              Bottom View
+            </button>
+          </div>
           <button
             type="button"
             onClick={onOpenTreeSetup}
@@ -278,116 +472,336 @@ export function TreePanel({
       </div>
 
       <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-gradient-to-b from-[#fcfffe] to-[#f6f8fb] p-2">
-        <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} className="h-full w-full">
-          <defs>
-            <marker
-              id="tree-arrow"
-              markerWidth="8"
-              markerHeight="8"
-              refX="7"
-              refY="4"
-              orient="auto"
-              markerUnits="strokeWidth"
-            >
-              <path d="M0,0 L8,4 L0,8 z" fill="#94a3b8" />
-            </marker>
-            <marker
-              id="tree-arrow-active"
-              markerWidth="9"
-              markerHeight="9"
-              refX="8"
-              refY="4.5"
-              orient="auto"
-              markerUnits="strokeWidth"
-            >
-              <path d="M0,0 L9,4.5 L0,9 z" fill="#14b8a6" />
-            </marker>
-          </defs>
+        {viewMode === "tree" ? (
+          <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} className="h-full w-full">
+            <defs>
+              <marker
+                id="tree-arrow"
+                markerWidth="8"
+                markerHeight="8"
+                refX="7"
+                refY="4"
+                orient="auto"
+                markerUnits="strokeWidth"
+              >
+                <path d="M0,0 L8,4 L0,8 z" fill="#94a3b8" />
+              </marker>
+              <marker
+                id="tree-arrow-active"
+                markerWidth="9"
+                markerHeight="9"
+                refX="8"
+                refY="4.5"
+                orient="auto"
+                markerUnits="strokeWidth"
+              >
+                <path d="M0,0 L9,4.5 L0,9 z" fill="#14b8a6" />
+              </marker>
+            </defs>
 
-          {edges.map(([from, to]) => (
-            <g key={`${from}-${to}`}>
-              {(() => {
-                const connector = getConnectorPoints(
-                  positions[from],
-                  positions[to],
-                );
+            {edges.map(([from, to]) => (
+              <g key={`${from}-${to}`}>
+                {(() => {
+                  const connector = getConnectorPoints(
+                    positions[from],
+                    positions[to],
+                  );
 
-                return (
-                  <>
-                    <line
-                      x1={connector.x1}
-                      y1={connector.y1}
-                      x2={connector.x2}
-                      y2={connector.y2}
-                      stroke="#cbd5e1"
-                      strokeOpacity="0.95"
-                      strokeWidth="2.2"
-                      markerEnd="url(#tree-arrow)"
-                    />
-                    {activeEdgeKey === `${from}-${to}` ? (
+                  return (
+                    <>
                       <line
                         x1={connector.x1}
                         y1={connector.y1}
                         x2={connector.x2}
                         y2={connector.y2}
-                        stroke="#14b8a6"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeDasharray="8 6"
-                        markerEnd="url(#tree-arrow-active)"
+                        stroke="#cbd5e1"
+                        strokeOpacity="0.95"
+                        strokeWidth="2.2"
+                        markerEnd="url(#tree-arrow)"
                       />
-                    ) : null}
-                  </>
-                );
-              })()}
-            </g>
-          ))}
-
-          {sortedPositionEntries.map(([value, point]) => {
-            const nodeValue = Number(value);
-            const nodeState = nodeStates[nodeValue] ?? "unvisited";
-            const styles = stateStyles[nodeState];
-            const isCompleted = nodeState === "completed";
-
-            return (
-              <g key={value}>
-                <circle
-                  cx={point.x}
-                  cy={point.y}
-                  r="27"
-                  fill={styles.glow}
-                />
-                <circle
-                  cx={point.x}
-                  cy={point.y}
-                  r="20"
-                  fill={styles.fill}
-                  stroke={styles.stroke}
-                  strokeWidth="2.2"
-                />
-                <text
-                  x={point.x}
-                  y={point.y + 5}
-                  textAnchor="middle"
-                  fill={styles.text}
-                  className="text-sm font-extrabold"
-                >
-                  {value}
-                </text>
-                {isCompleted ? (
-                  <text
-                    x={point.x + 22}
-                    y={point.y - 18}
-                    textAnchor="middle"
-                    className="fill-emerald-600 text-sm font-black"
-                  >
-                    ✓
-                  </text>
-                ) : null}
+                      {activeEdgeKey === `${from}-${to}` ? (
+                        <line
+                          x1={connector.x1}
+                          y1={connector.y1}
+                          x2={connector.x2}
+                          y2={connector.y2}
+                          stroke="#14b8a6"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeDasharray="8 6"
+                          markerEnd="url(#tree-arrow-active)"
+                        />
+                      ) : null}
+                    </>
+                  );
+                })()}
               </g>
-            );
-          })}
-        </svg>
+            ))}
+
+            {sortedPositionEntries.map(([value, point]) => {
+              const nodeValue = Number(value);
+              const nodeState = nodeStates[nodeValue] ?? "unvisited";
+              const styles = stateStyles[nodeState];
+              const isCompleted = nodeState === "completed";
+
+              return (
+                <g key={value}>
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    r="27"
+                    fill={styles.glow}
+                  />
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    r="20"
+                    fill={styles.fill}
+                    stroke={styles.stroke}
+                    strokeWidth="2.2"
+                  />
+                  <text
+                    x={point.x}
+                    y={point.y + 5}
+                    textAnchor="middle"
+                    fill={styles.text}
+                    className="text-sm font-extrabold"
+                  >
+                    {value}
+                  </text>
+                  {isCompleted ? (
+                    <text
+                      x={point.x + 22}
+                      y={point.y - 18}
+                      textAnchor="middle"
+                      className="fill-emerald-600 text-sm font-black"
+                    >
+                      ✓
+                    </text>
+                  ) : null}
+                </g>
+              );
+            })}
+          </svg>
+        ) : (
+          <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} className="h-full w-full">
+            <defs>
+              <marker
+                id="projection-arrow"
+                markerWidth="8"
+                markerHeight="8"
+                refX="7"
+                refY="4"
+                orient="auto"
+                markerUnits="strokeWidth"
+              >
+                <path d="M0,0 L8,4 L0,8 z" fill="#0f766e" />
+              </marker>
+            </defs>
+
+            <text
+              x={viewWidth / 2}
+              y={18}
+              textAnchor="middle"
+              className="fill-slate-500 text-[11px] font-bold"
+            >
+              Horizontal Distance (HD)
+            </text>
+
+            <line x1="28" y1="30" x2={viewWidth - 28} y2="30" stroke="#cbd5e1" strokeWidth="1.4" />
+
+            {projectionColumns.map((column) => {
+              const visibleValue = projectionStepState.visibleByHd.get(column.hd);
+              const visibleNode =
+                typeof visibleValue === "number"
+                  ? column.nodes.find((node) => node.value === visibleValue)
+                  : undefined;
+              const visibleState =
+                typeof visibleValue === "number"
+                  ? (nodeStates[visibleValue] ?? "completed")
+                  : "unvisited";
+              const visibleStyles = stateStyles[visibleState];
+              const hiddenNodes = column.nodes
+                .filter((node) => node.value !== visibleValue)
+                .sort((a, b) => {
+                  if (a.depth !== b.depth) {
+                    return b.depth - a.depth;
+                  }
+
+                  return b.bfsOrder - a.bfsOrder;
+                });
+              const replacementAtColumn =
+                projectionStepState.replacement?.hd === column.hd
+                  ? projectionStepState.replacement
+                  : null;
+              const replacementToken = replacementAtColumn
+                ? `${column.hd}-${replacementAtColumn.from}-${replacementAtColumn.to}-${currentStep}`
+                : undefined;
+
+              return (
+                <g key={`hd-${column.hd}`}>
+                  <line
+                    x1={column.x}
+                    y1="38"
+                    x2={column.x}
+                    y2="196"
+                    stroke="#dbeafe"
+                    strokeWidth="1.6"
+                    strokeDasharray="5 5"
+                  />
+
+                  <text
+                    x={column.x}
+                    y="26"
+                    textAnchor="middle"
+                    className="fill-slate-500 text-[10px] font-bold"
+                  >
+                    {column.hd}
+                  </text>
+
+                  {hiddenNodes.map((hiddenNode, hiddenIndex) => {
+                    const hiddenState = nodeStates[hiddenNode.value] ?? "unvisited";
+                    const hiddenStyles = stateStyles[hiddenState];
+                    const hiddenY = 146 - hiddenIndex * 20;
+
+                    return (
+                      <g key={`hidden-${column.hd}-${hiddenNode.value}-${hiddenIndex}`} opacity="0.52">
+                        <circle
+                          cx={column.x}
+                          cy={hiddenY}
+                          r="16"
+                          fill={hiddenStyles.fill}
+                          stroke={hiddenStyles.stroke}
+                          strokeWidth="1.8"
+                          strokeDasharray="4 3"
+                        />
+                        <text
+                          x={column.x}
+                          y={hiddenY + 4}
+                          textAnchor="middle"
+                          fill={hiddenStyles.text}
+                          className="text-[11px] font-extrabold"
+                        >
+                          {hiddenNode.value}
+                        </text>
+                      </g>
+                    );
+                  })}
+
+                  {replacementAtColumn ? (
+                    <g key={`old-winner-${replacementToken}`}>
+                      <circle
+                        cx={column.x}
+                        cy="182"
+                        r="16"
+                        fill="#cbd5e1"
+                        stroke="#94a3b8"
+                        strokeWidth="1.8"
+                        opacity="0.85"
+                      >
+                        <animate attributeName="opacity" from="0.85" to="0" dur="220ms" fill="freeze" />
+                        <animate attributeName="cy" from="182" to="152" dur="220ms" fill="freeze" />
+                      </circle>
+                      <text
+                        x={column.x}
+                        y="186"
+                        textAnchor="middle"
+                        fill="#475569"
+                        className="text-[11px] font-extrabold"
+                        opacity="0.85"
+                      >
+                        {replacementAtColumn.from}
+                        <animate attributeName="opacity" from="0.85" to="0" dur="220ms" fill="freeze" />
+                        <animate attributeName="y" from="186" to="156" dur="220ms" fill="freeze" />
+                      </text>
+                    </g>
+                  ) : null}
+
+                  <g key={replacementToken ? `new-winner-${replacementToken}` : `winner-${column.hd}-${visibleNode?.value ?? "pending"}`}>
+                    <circle
+                      cx={column.x}
+                      cy="182"
+                      r={replacementAtColumn ? "20" : "23"}
+                      fill={visibleStyles.glow}
+                      opacity={replacementAtColumn ? "0.75" : "1"}
+                    >
+                      {replacementAtColumn ? (
+                        <>
+                          <animate attributeName="r" from="20" to="23" begin="50ms" dur="180ms" fill="freeze" />
+                          <animate attributeName="opacity" from="0.75" to="1" begin="50ms" dur="180ms" fill="freeze" />
+                        </>
+                      ) : null}
+                    </circle>
+                    <circle
+                      cx={column.x}
+                      cy="182"
+                      r={replacementAtColumn ? "15" : "18"}
+                      fill={visibleNode ? visibleStyles.fill : "#f8fafc"}
+                      stroke={visibleNode ? visibleStyles.stroke : "#94a3b8"}
+                      strokeWidth="2.4"
+                      strokeDasharray={visibleNode ? undefined : "4 3"}
+                    >
+                      {replacementAtColumn ? (
+                        <animate attributeName="r" from="15" to="18" begin="50ms" dur="180ms" fill="freeze" />
+                      ) : null}
+                    </circle>
+                    <text
+                      x={column.x}
+                      y="187"
+                      textAnchor="middle"
+                      fill={visibleNode ? visibleStyles.text : "#64748b"}
+                      className="text-sm font-black"
+                    >
+                      {visibleNode ? visibleNode.value : "?"}
+                    </text>
+                  </g>
+
+                  {replacementAtColumn ? (
+                    <text
+                      x={column.x}
+                      y="162"
+                      textAnchor="middle"
+                      className="fill-amber-700 text-[9px] font-black"
+                    >
+                      {`replaced ${replacementAtColumn.from}`}
+                    </text>
+                  ) : null}
+                </g>
+              );
+            })}
+
+            <line
+              x1={viewWidth / 2}
+              y1="232"
+              x2={viewWidth / 2}
+              y2="205"
+              stroke="#0f766e"
+              strokeWidth="2"
+              markerEnd="url(#projection-arrow)"
+            />
+            <text
+              x={viewWidth / 2}
+              y="238"
+              textAnchor="middle"
+              className="fill-teal-700 text-[10px] font-extrabold"
+            >
+              View From Bottom
+            </text>
+
+            <g transform="translate(14, 210)">
+              <circle cx="0" cy="0" r="5" fill="#0f766e" />
+              <text x="10" y="4" className="fill-slate-600 text-[10px] font-semibold">
+                Visible node
+              </text>
+            </g>
+            <g transform="translate(112, 210)" opacity="0.6">
+              <circle cx="0" cy="0" r="5" fill="#94a3b8" />
+              <text x="10" y="4" className="fill-slate-600 text-[10px] font-semibold">
+                Hidden behind
+              </text>
+            </g>
+          </svg>
+        )}
       </div>
 
       <div className="rounded-lg border border-teal-100 bg-teal-50 px-2.5 py-2 text-xs">
@@ -395,6 +809,11 @@ export function TreePanel({
           <span className="font-bold text-slate-500">Operation:</span>
           <span className="max-w-[72%] truncate text-right font-extrabold text-teal-700">{currentOperation}</span>
         </div>
+        {viewMode === "projection" && projectionStepState.replacement ? (
+          <div className="mt-1 text-[11px] font-bold text-amber-700">
+            HD {projectionStepState.replacement.hd}: {projectionStepState.replacement.from} -&gt; {projectionStepState.replacement.to}
+          </div>
+        ) : null}
       </div>
     </section>
   );
