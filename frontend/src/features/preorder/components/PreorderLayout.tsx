@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 
 import { getCodeLineForStep } from "../selectors";
@@ -9,9 +10,12 @@ import { CallStackPanel } from "./CallStackPanel";
 import { CodePanel } from "./CodePanel";
 import { ControlsBar } from "./ControlsBar";
 import { ExplanationPanel } from "./ExplanationPanel";
-import { TreeSetupModal } from "./TreeSetupModal";
 import { ResultPanel } from "./ResultPanel";
 import { TreePanel } from "./TreePanel";
+
+const TreeSetupModal = dynamic(() =>
+  import("./TreeSetupModal").then((module) => module.TreeSetupModal),
+);
 
 export function PreorderLayout() {
   const [isTreeSetupOpen, setIsTreeSetupOpen] = useState(false);
@@ -50,7 +54,7 @@ export function PreorderLayout() {
   } = usePreorderTraversal();
 
   const executionLineNumbers = useMemo(() => {
-    const lineNumbers = new Set<number>([currentCodeLine, 20]);
+    const lineNumbers = new Set<number>([currentCodeLine]);
 
     executionSteps.forEach((step) => {
       lineNumbers.add(getCodeLineForStep(step));
@@ -75,6 +79,12 @@ export function PreorderLayout() {
         </div>
 
         <div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
+            <Link
+              href="/problems/binary-tree/preorder-guide"
+              className="inline-flex items-center gap-1 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[12px] font-extrabold text-teal-700 transition hover:bg-teal-100"
+            >
+              Read Here
+            </Link>
           <div className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5">
             <span className="text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
               Step

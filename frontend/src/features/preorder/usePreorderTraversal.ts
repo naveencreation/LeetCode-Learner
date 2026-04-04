@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { PREORDER_TREE_PRESETS, cloneTree, createSampleTree } from "./constants";
 import { generatePreorderExecutionSteps } from "./engine";
 import { getCodeLineForStep, getOperationBadge, getPhaseLabel } from "./selectors";
+import { useTraversalKeyboardShortcuts } from "../shared/useTraversalKeyboardShortcuts";
 import type {
   ExecutionStep,
   NodePosition,
@@ -155,27 +156,7 @@ export function usePreorderTraversal() {
     };
   }, [controlMode, isPlaying, currentStep, executionSteps.length, autoPlaySpeedMs]);
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        nextStep();
-      }
-
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        previousStep();
-      }
-
-      if (event.key.toLowerCase() === "r") {
-        event.preventDefault();
-        resetTraversal();
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [nextStep, previousStep, resetTraversal]);
+  useTraversalKeyboardShortcuts({ nextStep, previousStep, resetTraversal });
 
   const activeStep = executionSteps[currentStep];
   const executedStep = currentStep > 0 ? executionSteps[currentStep - 1] : undefined;

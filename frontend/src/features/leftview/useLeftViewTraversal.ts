@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { LEFTVIEW_TREE_PRESETS, cloneTree, createSampleTree } from "./constants";
 import { generateLeftViewExecutionSteps } from "./engine";
 import { getCodeLineForStep, getOperationBadge, getPhaseLabel } from "./selectors";
+import { useTraversalKeyboardShortcuts } from "../shared/useTraversalKeyboardShortcuts";
 import type {
   ExecutionStep,
   NodePosition,
@@ -57,7 +58,7 @@ function projectStateForStep(
 }
 
 export function useLeftViewTraversal() {
-  const [root, setRoot] = useState<TreeNode>(() => createSampleTree());
+  const [root, setRoot] = useState<TreeNode | null>(() => createSampleTree());
   const [selectedPreset, setSelectedPreset] = useState<TreePresetKey>("complete");
   const [customNodePositions, setCustomNodePositions] = useState<Record<number, NodePosition>>({});
   const [controlMode, setControlModeState] = useState<"manual" | "auto">("manual");
@@ -108,16 +109,12 @@ export function useLeftViewTraversal() {
 
   const applyTreeConfiguration = useCallback(
     (
-      nextRoot: TreeNode,
+      nextRoot: TreeNode | null,
       nextPositions: Record<number, NodePosition>,
       preset: TreePresetKey,
       runImmediately = false,
     ) => {
       const clonedRoot = cloneTree(nextRoot);
-      if (!clonedRoot) {
-        return;
-      }
-
       setRoot(clonedRoot);
       setCustomNodePositions({ ...nextPositions });
       setSelectedPreset(preset);
@@ -155,27 +152,7 @@ export function useLeftViewTraversal() {
     };
   }, [controlMode, isPlaying, currentStep, executionSteps.length, autoPlaySpeedMs]);
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        nextStep();
-      }
-
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        previousStep();
-      }
-
-      if (event.key.toLowerCase() === "r") {
-        event.preventDefault();
-        resetTraversal();
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [nextStep, previousStep, resetTraversal]);
+  useTraversalKeyboardShortcuts({ nextStep, previousStep, resetTraversal });
 
   const activeStep = executionSteps[currentStep];
   const executedStep = currentStep > 0 ? executionSteps[currentStep - 1] : undefined;

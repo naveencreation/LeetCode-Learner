@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   ChevronLeft,
@@ -54,17 +55,21 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
       >
         {!collapsed ? (
           <div className="flex min-w-0 items-center gap-2">
-            <img
+            <Image
               src="/codearena-mark.svg"
               alt="CodeArena logo"
+              width={28}
+              height={28}
               className="h-7 w-7 shrink-0"
             />
             <p className="truncate text-sm font-semibold tracking-wide">CodeArena</p>
           </div>
         ) : (
-          <img
+          <Image
             src="/codearena-mark.svg"
             alt="CodeArena logo"
+            width={28}
+            height={28}
             className="h-7 w-7 shrink-0"
           />
         )}

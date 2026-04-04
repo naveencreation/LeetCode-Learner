@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function DashboardPage() {
   return (
@@ -35,10 +36,13 @@ export default function DashboardPage() {
 
       <div className="flex min-h-0 items-center justify-center overflow-hidden">
         <div className="flex h-full w-full max-w-[980px] flex-col items-center justify-center gap-3 text-center">
-          <img
+          <Image
             src="/telecommuting.svg"
             alt="Under development illustration"
+            width={760}
+            height={520}
             className="mx-auto h-auto max-h-[44dvh] w-full max-w-[760px] object-contain md:max-h-[48dvh]"
+            priority
           />
           <div className="shrink-0 space-y-1">
             <h2 className="text-[clamp(26px,2.1vw,34px)] font-extrabold tracking-tight text-slate-900">CodeArena Dashboard</h2>

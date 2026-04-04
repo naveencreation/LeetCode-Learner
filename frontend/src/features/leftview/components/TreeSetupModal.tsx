@@ -6,18 +6,18 @@ import type { NodePosition, TreeNode, TreePresetKey } from "../types";
 type LayoutStyle = "balanced" | "compact";
 
 interface TreeSetupModalProps {
-  root: TreeNode;
+  root: TreeNode | null;
   selectedPreset: TreePresetKey;
-  presets: Record<TreePresetKey, { label: string; create: () => TreeNode }>;
+  presets: Record<TreePresetKey, { label: string; create: () => TreeNode | null }>;
   customNodePositions: Record<number, NodePosition>;
   onClose: () => void;
   onApply: (
-    root: TreeNode,
+    root: TreeNode | null,
     positions: Record<number, NodePosition>,
     preset: TreePresetKey,
   ) => void;
   onApplyAndRun: (
-    root: TreeNode,
+    root: TreeNode | null,
     positions: Record<number, NodePosition>,
     preset: TreePresetKey,
   ) => void;
@@ -78,7 +78,7 @@ function collectSubtreeValues(node: TreeNode | null, values: Set<number>): void 
 }
 
 function validateDraftTree(
-  root: TreeNode,
+  root: TreeNode | null,
   draftPositions: Record<number, NodePosition>,
 ): { valid: boolean; message: string | null } {
   const seenValues = new Set<number>();
@@ -173,7 +173,7 @@ function assignLeftViewIndex(
 }
 
 function buildAutoPositions(
-  root: TreeNode,
+  root: TreeNode | null,
   style: LayoutStyle = "balanced",
 ): Record<number, NodePosition> {
   const nodes: Array<{ value: number; depth: number }> = [];
@@ -291,7 +291,7 @@ export function TreeSetupModal({
 }: TreeSetupModalProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
-  const [draftRoot, setDraftRoot] = useState<TreeNode>(cloneTree(root) as TreeNode);
+  const [draftRoot, setDraftRoot] = useState<TreeNode | null>(cloneTree(root));
   const [draftPreset, setDraftPreset] = useState<TreePresetKey>(selectedPreset);
   const [draftPositions, setDraftPositions] = useState<Record<number, NodePosition>>({
     ...customNodePositions,
@@ -484,8 +484,26 @@ export function TreeSetupModal({
       return;
     }
 
-    const parent = Number(parentValue);
     const value = Number(newValue);
+
+    if (draftRoot === null) {
+      if (!Number.isFinite(value)) {
+        setError("Root node value must be a valid number.");
+        return;
+      }
+
+      setDraftRoot({
+        val: value,
+        left: null,
+        right: null,
+      });
+      setParentValue(String(value));
+      setNewValue("");
+      setError(null);
+      return;
+    }
+
+    const parent = Number(parentValue);
 
     if (!Number.isFinite(parent) || !Number.isFinite(value)) {
       setError("Parent and new node value must be valid numbers.");
@@ -546,6 +564,11 @@ export function TreeSetupModal({
   };
 
   const handleRenameNode = () => {
+    if (!draftRoot) {
+      setError("Tree is empty. Add a root node first.");
+      return;
+    }
+
     const fromValue = Number(editFromValue);
     const toValue = Number(editToValue);
 
@@ -596,6 +619,11 @@ export function TreeSetupModal({
   };
 
   const handleRemoveSubtree = () => {
+    if (!draftRoot) {
+      setError("Tree is empty. Nothing to remove.");
+      return;
+    }
+
     const parentValueNumber = Number(removeParentValue);
     if (!Number.isFinite(parentValueNumber)) {
       setError("Parent value must be a valid number.");
@@ -662,7 +690,7 @@ export function TreeSetupModal({
 
   const handleApplyAction = (
     applyHandler: (
-      root: TreeNode,
+      root: TreeNode | null,
       positions: Record<number, NodePosition>,
       preset: TreePresetKey,
     ) => void,
@@ -804,7 +832,7 @@ export function TreeSetupModal({
                 Build Tree
               </h4>
               <p className="mb-2 text-xs font-semibold text-slate-500">
-                Pick a template first, then add children to specific parent nodes.
+                Pick a template first. If tree is empty, add a node to create the root.
               </p>
 
               <div className="rounded-lg border border-slate-200 bg-white p-2.5">
@@ -832,12 +860,14 @@ export function TreeSetupModal({
                 <input
                   value={parentValue}
                   onChange={(event) => setParentValue(event.target.value)}
-                  placeholder="Parent"
+                  placeholder={draftRoot ? "Parent" : "Parent (after root)"}
+                  disabled={!draftRoot}
                   className="col-span-12 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500 sm:col-span-4"
                 />
                 <select
                   value={side}
                   onChange={(event) => setSide(event.target.value as "left" | "right")}
+                  disabled={!draftRoot}
                   className="col-span-12 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500 sm:col-span-3"
                 >
                   <option value="left">Left</option>

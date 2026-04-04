@@ -32,15 +32,18 @@ function getExplanation(
 ) {
   const lineGuide = LEFTVIEW_LINE_GUIDE[currentCodeLine];
   const lineLabel = LEFTVIEW_LINE_LABELS[currentCodeLine] ?? "Traversal Context";
+  const resultSnapshot = result.length > 0 ? `[${result.join(", ")}]` : "[]";
+  const queueBeforeText = queueBefore.length > 0 ? `[${queueBefore.join(", ")}]` : "[]";
+  const queueAfterText = queueAfter.length > 0 ? `[${queueAfter.join(", ")}]` : "[]";
 
   if (!step && currentStep === 0) {
     return {
       title: "Ready to Start",
-      reason:
-        'Click "Next Step" to begin. We will process tree level by level and capture the first node from each level.',
+      reason: 'Click "Next Step". We will read one level at a time and keep only the first node of each level.',
       details: [
-        "Start from leftView(root).",
-        "Watch queue, highlighted line, and result array together.",
+        "Think of standing on the left side of the tree.",
+        "At each level, only the first seen node is added.",
+        `Current result: ${resultSnapshot}`,
       ],
     };
   }
@@ -48,24 +51,24 @@ function getExplanation(
   if (currentStep >= totalSteps) {
     return {
       title: "Traversal Complete",
-      reason: `All steps finished. Final leftview result is [${result.join(", ")}].`,
+      reason: `Done. Final left view is ${resultSnapshot}.`,
       details: [
-        `Total execution steps: ${totalSteps}`,
-        "Use Previous to replay each recursive action slowly.",
+        `Total steps played: ${totalSteps}`,
+        "Use Previous to replay slowly and verify each level.",
       ],
     };
   }
 
   if (lineGuide) {
     return {
-      title: `Line ${currentCodeLine + 1}: ${lineLabel}`,
+      title: `Now: ${lineLabel}`,
       reason: lineGuide.meaning,
       details: [
-        `Why this line matters: ${lineGuide.why}`,
-        `What happens next: ${lineGuide.next}`,
-        `Queue before -> after: [${queueBefore.join(", ")}] -> [${queueAfter.join(", ")}]`,
-        `Level ${currentLevel}, index ${indexInLevel}`,
-        `Current result snapshot: [${result.join(", ")}]`,
+        `Why it matters: ${lineGuide.why}`,
+        `Next: ${lineGuide.next}`,
+        `Queue: ${queueBeforeText} -> ${queueAfterText}`,
+        `Level ${currentLevel}, position ${indexInLevel}`,
+        `Result so far: ${resultSnapshot}`,
       ],
     };
   }
@@ -74,62 +77,62 @@ function getExplanation(
     case "start_level":
       return {
         title: `Start Level ${currentLevel}`,
-        reason: "A new level is about to be processed in BFS order.",
+        reason: "We are entering a new level.",
         details: [
-          "Next action: iterate nodes in this level.",
-          `Queue: [${queueAfter.join(", ")}]`,
+          `Nodes waiting in queue: ${queueAfterText}`,
+          "Next, we process nodes from left to right in this level.",
         ],
       };
     case "dequeue":
       return {
-        title: `Dequeue Node ${dequeuedNode ?? step.value}`,
-        reason: "The front node is removed from the queue for processing.",
+        title: `Process Node ${dequeuedNode ?? step.value}`,
+        reason: "We removed the front node to handle it now.",
         details: [
-          `Queue before pop: [${queueBefore.join(", ")}]`,
-          `Queue after pop: [${queueAfter.join(", ")}]`,
+          `Queue before: ${queueBeforeText}`,
+          `Queue after: ${queueAfterText}`,
         ],
       };
     case "enqueue_left":
       return {
-        title: `Queue Left Child from ${step.value}`,
-        reason: "Left child is queued for the next BFS level.",
+        title: `Queue Left Child of ${step.value}`,
+        reason: "Left child is saved for the next level.",
         details: [
-          `Enqueued: [${enqueuedNodes.join(", ")}]`,
-          `Queue now: [${queueAfter.join(", ")}]`,
+          `Added node(s): ${enqueuedNodes.length > 0 ? `[${enqueuedNodes.join(", ")}]` : "[]"}`,
+          `Queue now: ${queueAfterText}`,
         ],
       };
     case "capture_left_view":
       return {
-        title: `Capture Left View Node ${capturedNode ?? step.value}`,
-        reason: "This is the first node in current level, so it enters left view.",
+        title: `Add ${capturedNode ?? step.value} to Left View`,
+        reason: "This node is the first one in this level, so it is visible from the left side.",
         details: [
-          `Level ${currentLevel}, index ${indexInLevel} -> captured`,
-          `Result length after this step: ${result.length + 1}`,
+          `Level ${currentLevel}, position ${indexInLevel}`,
+          `Result becomes: ${resultSnapshot}`,
         ],
       };
     case "enqueue_right":
       return {
-        title: `Queue Right Child from ${step.value}`,
-        reason: "Right child is also queued for the next BFS level.",
+        title: `Queue Right Child of ${step.value}`,
+        reason: "Right child is also saved for the next level.",
         details: [
-          `Enqueued: [${enqueuedNodes.join(", ")}]`,
-          `Queue now: [${queueAfter.join(", ")}]`,
+          `Added node(s): ${enqueuedNodes.length > 0 ? `[${enqueuedNodes.join(", ")}]` : "[]"}`,
+          `Queue now: ${queueAfterText}`,
         ],
       };
     case "end_level":
       return {
         title: `Complete Level ${currentLevel}`,
-        reason: "Current level is done; move on to next queued level.",
+        reason: "This level is finished. We move to the next level in the queue.",
         details: [
-          `Queue ready for next level: [${queueAfter.join(", ")}]`,
-          "Loop continues until queue becomes empty.",
+          `Queue for next level: ${queueAfterText}`,
+          `Result so far: ${resultSnapshot}`,
         ],
       };
     case "finish":
       return {
         title: "Traversal Complete",
-        reason: `Final left view is [${result.join(", ")}].`,
-        details: ["Queue is empty; traversal finished."],
+        reason: `Final left view is ${resultSnapshot}.`,
+        details: ["Queue is empty, so the traversal is complete."],
       };
     default:
       return {
@@ -181,8 +184,8 @@ export function ExplanationPanel({
       </div>
 
       <div className="min-h-0 space-y-1 rounded-[10px] border border-sky-200 bg-gradient-to-b from-cyan-50 to-sky-50 p-1.5">
-        <h3 className="line-clamp-1 text-[12px] font-extrabold text-cyan-900">{explanation.title}</h3>
-        <p className="line-clamp-2 text-[10px] leading-[1.35] text-cyan-800">{explanation.reason}</p>
+        <h3 className="text-[12px] font-extrabold text-cyan-900">{explanation.title}</h3>
+        <p className="text-[10px] leading-[1.35] text-cyan-800">{explanation.reason}</p>
 
         <div className="grid grid-cols-2 gap-1 text-[9px] font-semibold text-cyan-900">
           <span className="truncate rounded-md border border-sky-200 bg-white/80 px-1.5 py-0.5">Line {currentCodeLine + 1}</span>
@@ -191,9 +194,9 @@ export function ExplanationPanel({
 
         <details className="group rounded-md border border-sky-200 bg-white/75 px-1.5 py-0.5 text-[9px]">
           <summary className="cursor-pointer list-none font-bold uppercase tracking-[0.03em] text-cyan-800">
-            Show Internals
+            Show More Detail
           </summary>
-          <ul className="mt-1 grid max-h-[110px] gap-1 overflow-auto pr-0.5 text-[9px] text-cyan-900">
+          <ul className="mt-1 grid max-h-[180px] gap-1 overflow-auto pr-0.5 text-[9px] text-cyan-900">
             {explanation.details.map((detail) => (
               <li key={detail} className="rounded border border-sky-200 bg-white/90 px-1.5 py-0.5">
                 &gt; {detail}

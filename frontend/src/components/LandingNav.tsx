@@ -1,25 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "../app/page.module.css";
 
 const SECTION_IDS = ["home", "method", "platform", "cta"] as const;
+const NAV_ITEMS = [
+  { id: "home" as const, label: "Home" },
+  { id: "method" as const, label: "Method" },
+  { id: "platform" as const, label: "Platform" },
+  { id: "cta" as const, label: "Start" },
+];
 
 type SectionId = (typeof SECTION_IDS)[number];
 
 export default function LandingNav() {
   const [activeSection, setActiveSection] = useState<SectionId>("home");
-
-  const navItems = useMemo(
-    () => [
-      { id: "home" as const, label: "Home" },
-      { id: "method" as const, label: "Method" },
-      { id: "platform" as const, label: "Platform" },
-      { id: "cta" as const, label: "Start" },
-    ],
-    []
-  );
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -62,7 +58,7 @@ export default function LandingNav() {
 
   return (
     <nav className={styles.navCenter} aria-label="Landing sections">
-      {navItems.map((item) => (
+      {NAV_ITEMS.map((item) => (
         <Link
           key={item.id}
           href={`#${item.id}`}

@@ -1,10 +1,13 @@
 import Link from "next/link";
+import Image from "next/image";
+import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 import styles from "./page.module.css";
 import landingStyles from "./landing.module.css";
 import ScrollReveal from "../components/ScrollReveal";
-import InteractiveShowcase from "../components/InteractiveShowcase";
 import LandingNav from "../components/LandingNav";
+
+const InteractiveShowcase = dynamic(() => import("../components/InteractiveShowcase"));
 
 const inter = Inter({
   subsets: ["latin"],
@@ -174,7 +177,12 @@ export default function Home() {
             <div className={landingStyles.storyVisualSticker}>
               <ScrollReveal animation="scale-up" className={landingStyles.storyVisualInner}>
                  <div className={landingStyles.storyVisualGraphic}>
-                   <img src="/learning/visualization.svg" alt="Visual learning illustration" />
+                   <Image
+                     src="/learning/visualization.svg"
+                     alt="Visual learning illustration"
+                     width={520}
+                     height={360}
+                   />
                  </div>
               </ScrollReveal>
             </div>

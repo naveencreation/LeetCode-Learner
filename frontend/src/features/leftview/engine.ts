@@ -51,7 +51,7 @@ function initializeNodeStates(
 function pushStep(
   steps: ExecutionStep[],
   type: ExecutionStep["type"],
-  node: TreeNode,
+  node: TreeNode | null,
   operation: string,
   level: number,
   indexInLevel: number,
@@ -64,7 +64,7 @@ function pushStep(
   steps.push({
     type,
     node,
-    value: node.val,
+    value: node?.val,
     operation,
     level,
     indexInLevel,
@@ -82,7 +82,7 @@ function queueValues(queue: TreeNode[]): number[] {
   return queue.map((item) => item.val);
 }
 
-export function generateLeftViewExecutionSteps(root: TreeNode): {
+export function generateLeftViewExecutionSteps(root: TreeNode | null): {
   executionSteps: ExecutionStep[];
   initialNodeStates: Record<number, NodeVisualState>;
 } {
@@ -93,6 +93,27 @@ export function generateLeftViewExecutionSteps(root: TreeNode): {
 
   initializeNodeStates(root, nodeStates);
   const initialNodeStates = cloneNodeStates(nodeStates);
+
+  if (root === null) {
+    pushStep(
+      executionSteps,
+      "finish",
+      null,
+      "Tree is empty; left view is []",
+      0,
+      0,
+      [],
+      [],
+      {},
+      [],
+      nodeStates,
+    );
+
+    return {
+      executionSteps,
+      initialNodeStates,
+    };
+  }
 
   const queue: TreeNode[] = [root];
   let level = 0;

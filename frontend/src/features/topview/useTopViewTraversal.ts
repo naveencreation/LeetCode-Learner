@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { createSampleTree } from "./constants";
 import { generateTopViewExecutionSteps } from "./engine";
 import { getCodeLineForStep, getOperationBadge, getPhaseLabel } from "./selectors";
+import { useTraversalKeyboardShortcuts } from "../shared/useTraversalKeyboardShortcuts";
 import type { ExecutionStep, NodeVisualState } from "./types";
 
 interface StepProjection {
@@ -95,27 +96,7 @@ export function useTopViewTraversal() {
     setCurrentStep(executionSteps.length);
   }, [executionSteps.length]);
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        nextStep();
-      }
-
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        previousStep();
-      }
-
-      if (event.key.toLowerCase() === "r") {
-        event.preventDefault();
-        resetTraversal();
-      }
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [nextStep, previousStep, resetTraversal]);
+  useTraversalKeyboardShortcuts({ nextStep, previousStep, resetTraversal });
 
   const activeStep = executionSteps[currentStep];
   const executedStep = currentStep > 0 ? executionSteps[currentStep - 1] : undefined;

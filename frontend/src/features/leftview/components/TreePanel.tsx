@@ -1,7 +1,9 @@
+import { useMemo } from "react";
+
 import type { ExecutionStep, NodePosition, NodeVisualState, TreeNode } from "../types";
 
 interface TreePanelProps {
-  root: TreeNode;
+  root: TreeNode | null;
   currentOperation: string;
   operationBadge: string;
   nodeStates: Record<number, NodeVisualState>;
@@ -92,7 +94,7 @@ function assignLeftViewIndex(
   assignLeftViewIndex(node.right, map, counter);
 }
 
-function buildAutoPositions(root: TreeNode): Record<number, NodePosition> {
+function buildAutoPositions(root: TreeNode | null): Record<number, NodePosition> {
   const nodes: Array<{ value: number; depth: number }> = [];
   const edges: Array<[number, number]> = [];
   collectNodesAndEdges(root, 0, nodes, edges);
@@ -214,24 +216,32 @@ export function TreePanel({
   const viewHeight = 240;
   const nodeRadius = 20;
 
-  const nodes: Array<{ value: number; depth: number }> = [];
-  const edges: Array<[number, number]> = [];
-  collectNodesAndEdges(root, 0, nodes, edges);
+  const { edges, positions, sortedPositionEntries } = useMemo(() => {
+    const nodes: Array<{ value: number; depth: number }> = [];
+    const edges: Array<[number, number]> = [];
+    collectNodesAndEdges(root, 0, nodes, edges);
 
-  const autoPositions = buildAutoPositions(root);
-  const mergedPositions: Record<number, NodePosition> = {
-    ...autoPositions,
-    ...customNodePositions,
-  };
+    const autoPositions = buildAutoPositions(root);
+    const mergedPositions: Record<number, NodePosition> = {
+      ...autoPositions,
+      ...customNodePositions,
+    };
 
-  const nodeValues = nodes.map((node) => node.value);
-  const positions = fitPositionsToViewport(
-    mergedPositions,
-    nodeValues,
-    viewWidth,
-    viewHeight,
-    nodeRadius,
-  );
+    const nodeValues = nodes.map((node) => node.value);
+    const positions = fitPositionsToViewport(
+      mergedPositions,
+      nodeValues,
+      viewWidth,
+      viewHeight,
+      nodeRadius,
+    );
+
+    const sortedPositionEntries = Object.entries(positions).sort(
+      (a, b) => Number(a[0]) - Number(b[0]),
+    );
+
+    return { edges, positions, sortedPositionEntries };
+  }, [root, customNodePositions, viewWidth, viewHeight, nodeRadius]);
 
   const sourceNode = activeStep?.node?.val;
   const direction = activeStep ? childByOperation[activeStep.type] : null;
@@ -333,9 +343,7 @@ export function TreePanel({
             </g>
           ))}
 
-          {Object.entries(positions)
-            .sort((a, b) => Number(a[0]) - Number(b[0]))
-            .map(([value, point]) => {
+          {sortedPositionEntries.map(([value, point]) => {
             const nodeValue = Number(value);
             const nodeState = nodeStates[nodeValue] ?? "unvisited";
             const styles = stateStyles[nodeState];

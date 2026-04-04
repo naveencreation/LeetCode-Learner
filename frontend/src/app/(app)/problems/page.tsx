@@ -457,6 +457,14 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return "/problems/binary-tree/postorder-traversal";
   }
 
+  if (sectionName === "Binary Tree" && problemName === "LeftView Of Binary Tree") {
+    return "/problems/binary-tree/leftview-of-binary-tree";
+  }
+
+  if (sectionName === "Binary Tree" && problemName === "Bottom View of Binary Tree") {
+    return "/problems/binary-tree/bottom-view-of-binary-tree";
+  }
+
   if (sectionName === "Binary Tree") {
     return `/problems/binary-tree/${toSlug(problemName)}`;
   }

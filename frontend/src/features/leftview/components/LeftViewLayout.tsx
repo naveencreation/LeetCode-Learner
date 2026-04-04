@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import dynamic from "next/dynamic";
+import { useCallback, useMemo, useState } from "react";
 
 import { getCodeLineForStep } from "../selectors";
 import { useLeftViewTraversal } from "../useLeftViewTraversal";
@@ -9,9 +10,12 @@ import { CallStackPanel } from "./CallStackPanel";
 import { CodePanel } from "./CodePanel";
 import { ControlsBar } from "./ControlsBar";
 import { ExplanationPanel } from "./ExplanationPanel";
-import { TreeSetupModal } from "./TreeSetupModal";
 import { ResultPanel } from "./ResultPanel";
 import { TreePanel } from "./TreePanel";
+
+const TreeSetupModal = dynamic(() =>
+  import("./TreeSetupModal").then((module) => module.TreeSetupModal),
+);
 
 export function LeftViewLayout() {
   const [isTreeSetupOpen, setIsTreeSetupOpen] = useState(false);
@@ -56,7 +60,7 @@ export function LeftViewLayout() {
   } = useLeftViewTraversal();
 
   const executionLineNumbers = useMemo(() => {
-    const lineNumbers = new Set<number>([currentCodeLine, 20]);
+    const lineNumbers = new Set<number>([currentCodeLine]);
 
     executionSteps.forEach((step) => {
       lineNumbers.add(getCodeLineForStep(step));
@@ -64,6 +68,28 @@ export function LeftViewLayout() {
 
     return Array.from(lineNumbers).sort((a, b) => a - b);
   }, [currentCodeLine, executionSteps]);
+
+  const openTreeSetup = useCallback(() => {
+    setIsTreeSetupOpen(true);
+  }, []);
+
+  const closeTreeSetup = useCallback(() => {
+    setIsTreeSetupOpen(false);
+  }, []);
+
+  const applyConfiguration = useCallback(
+    (nextRoot: typeof root, nextPositions: typeof customNodePositions, preset: typeof selectedPreset) => {
+      applyTreeConfiguration(nextRoot, nextPositions, preset, false);
+    },
+    [applyTreeConfiguration],
+  );
+
+  const applyAndRunConfiguration = useCallback(
+    (nextRoot: typeof root, nextPositions: typeof customNodePositions, preset: typeof selectedPreset) => {
+      applyTreeConfiguration(nextRoot, nextPositions, preset, true);
+    },
+    [applyTreeConfiguration],
+  );
 
   return (
     <section className="relative h-full min-h-0 overflow-hidden rounded-[18px] border border-white/80 bg-[linear-gradient(140deg,#eff6ff_0%,#fdfdfc_60%,#eefbf9_100%)] p-2.5 shadow-[0_12px_34px_rgba(15,23,42,0.12)]">
@@ -81,6 +107,12 @@ export function LeftViewLayout() {
         </div>
 
         <div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
+          <Link
+            href="/problems/binary-tree/leftview-guide"
+            className="inline-flex items-center gap-1 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[12px] font-extrabold text-teal-700 transition hover:bg-teal-100"
+          >
+            Read Here
+          </Link>
           <div className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5">
             <span className="text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
               Step
@@ -123,7 +155,7 @@ export function LeftViewLayout() {
             nodeStates={nodeStates}
             activeStep={activeStep}
             customNodePositions={customNodePositions}
-            onOpenTreeSetup={() => setIsTreeSetupOpen(true)}
+            onOpenTreeSetup={openTreeSetup}
           />
         </div>
 
@@ -140,7 +172,7 @@ export function LeftViewLayout() {
           />
         </div>
 
-        <div className="min-h-0 grid gap-1 xl:col-start-3 xl:row-span-3 xl:grid-rows-[minmax(0,1.55fr)_minmax(0,0.45fr)]">
+        <div className="min-h-0 grid gap-1 xl:col-start-3 xl:row-span-3 xl:grid-rows-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
           <div className="min-h-0">
             <CallStackPanel
               queueBefore={queueBefore}
@@ -194,13 +226,9 @@ export function LeftViewLayout() {
           selectedPreset={selectedPreset}
           presets={presets}
           customNodePositions={customNodePositions}
-          onClose={() => setIsTreeSetupOpen(false)}
-          onApply={(nextRoot, nextPositions, preset) =>
-            applyTreeConfiguration(nextRoot, nextPositions, preset, false)
-          }
-          onApplyAndRun={(nextRoot, nextPositions, preset) =>
-            applyTreeConfiguration(nextRoot, nextPositions, preset, true)
-          }
+          onClose={closeTreeSetup}
+          onApply={applyConfiguration}
+          onApplyAndRun={applyAndRunConfiguration}
         />
       ) : null}
       </div>

@@ -167,17 +167,13 @@ function createSparseRandomTree(): TreeNode {
   };
 }
 
-function createCustomEmptyTree(): TreeNode {
-  return {
-    val: 1,
-    left: null,
-    right: null,
-  };
+function createCustomEmptyTree(): TreeNode | null {
+  return null;
 }
 
 export const LEFTVIEW_TREE_PRESETS: Record<
   TreePresetKey,
-  { label: string; create: () => TreeNode }
+  { label: string; create: () => TreeNode | null }
 > = {
   complete: { label: "Complete Tree", create: createCompleteTree },
   left_skewed: { label: "Skewed Left", create: createLeftSkewedTree },

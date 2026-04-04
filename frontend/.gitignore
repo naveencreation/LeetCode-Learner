@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local temp tooling repo
+.tmp-awesome-copilot/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
