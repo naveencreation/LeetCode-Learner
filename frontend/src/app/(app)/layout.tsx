@@ -14,6 +14,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     pathname.startsWith("/problems/binary-tree/inorder-traversal") ||
     pathname.startsWith("/problems/binary-tree/preorder-traversal") ||
     pathname.startsWith("/problems/binary-tree/postorder-traversal") ||
+    pathname.startsWith("/problems/binary-tree/preorder-inorder-postorder-in-a-single-traversal") ||
     pathname.startsWith("/problems/binary-tree/leftview-of-binary-tree") ||
     pathname.startsWith("/problems/binary-tree/bottom-view-of-binary-tree") ||
     pathname.startsWith("/problems/binary-tree/top-view-of-binary-tree");
