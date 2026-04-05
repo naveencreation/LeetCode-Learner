@@ -17,7 +17,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     pathname.startsWith("/problems/binary-tree/preorder-inorder-postorder-in-a-single-traversal") ||
     pathname.startsWith("/problems/binary-tree/leftview-of-binary-tree") ||
     pathname.startsWith("/problems/binary-tree/bottom-view-of-binary-tree") ||
-    pathname.startsWith("/problems/binary-tree/top-view-of-binary-tree");
+    pathname.startsWith("/problems/binary-tree/top-view-of-binary-tree") ||
+    pathname.startsWith("/problems/binary-tree/vertical-order-traversal") ||
+    pathname.startsWith("/problems/binary-tree/root-to-node-path-in-a-binary-tree") ||
+    pathname.startsWith("/problems/binary-tree/max-width-of-a-binary-tree");
 
   return (
     <div className="flex min-h-screen bg-muted/30">
