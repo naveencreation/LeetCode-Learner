@@ -91,10 +91,10 @@ export function PreInPostLayout() {
 
         <div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
             <Link
-              href="/problems/binary-tree/preorder-inorder-postorder-in-a-single-traversal"
+              href="/problems/binary-tree/preorder-inorder-postorder-single-guide"
               className="inline-flex items-center gap-1 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[12px] font-extrabold text-teal-700 transition hover:bg-teal-100"
             >
-              Problem Notes
+              Read Here
             </Link>
           <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.04em] ${phaseBadgeClass}`}>
             Phase: {currentPhase}
