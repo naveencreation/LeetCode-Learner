@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ProblemFocusHeader } from "@/components/problem-focus-header";
 
 type TreeNodePoint = {
   id: number;
@@ -83,28 +84,21 @@ function TreeDiagram({ visited }: { visited: number[] }) {
 
 export default function InorderGuidePage() {
   return (
-    <section className="mx-auto max-w-6xl space-y-4 rounded-2xl border border-emerald-200 bg-[linear-gradient(140deg,#f0fdf4_0%,#f7fee7_55%,#fffbeb_100%)] p-4 shadow-[0_14px_38px_rgba(21,128,61,0.15)] md:p-6">
-      <header className="rounded-xl border border-emerald-200 bg-white/90 p-4">
-        <p className="text-xs font-extrabold uppercase tracking-[0.06em] text-emerald-700">Read Here</p>
-        <h1 className="mt-1 text-2xl font-black tracking-[-0.02em] text-slate-900 md:text-3xl">Inorder Traversal</h1>
-        <p className="mt-2 text-sm font-semibold text-slate-600">
-          Inorder means: go Left, then Root, then Right. For BSTs, this gives sorted order.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-2">
+    <section className="w-full space-y-4 bg-[linear-gradient(140deg,#f0fdf4_0%,#f7fee7_55%,#fffbeb_100%)] p-4 md:p-6">
+      <ProblemFocusHeader
+        title="Inorder Traversal"
+        subtitle="Inorder means: go Left, then Root, then Right. For BSTs, this gives sorted order."
+        extraActions={
           <Link
             href="/problems/binary-tree/inorder-traversal"
-            className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 transition hover:bg-slate-100"
+            className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[12px] font-bold text-slate-700 transition hover:bg-slate-100"
           >
             Open Inorder Visualizer
           </Link>
-          <Link
-            href="/problems/topics/trees#problem-list"
-            className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100"
-          >
-            Back To Tree Problems
-          </Link>
-        </div>
-      </header>
+        }
+        stats={[]}
+        backLabel="Back To Tree Problems"
+      />
 
       <div className="grid gap-3 lg:grid-cols-2">
         <article className="rounded-xl border border-emerald-200 bg-white p-4">
@@ -154,3 +148,4 @@ export default function InorderGuidePage() {
     </section>
   );
 }
+

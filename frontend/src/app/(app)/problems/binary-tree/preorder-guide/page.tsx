@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ProblemFocusHeader } from "@/components/problem-focus-header";
 
 type TreeNodePoint = {
   id: number;
@@ -83,28 +84,21 @@ function TreeDiagram({ visited }: { visited: number[] }) {
 
 export default function PreorderGuidePage() {
   return (
-    <section className="mx-auto max-w-6xl space-y-4 rounded-2xl border border-blue-200 bg-[linear-gradient(140deg,#eff6ff_0%,#f0f9ff_55%,#f8fafc_100%)] p-4 shadow-[0_14px_38px_rgba(30,64,175,0.15)] md:p-6">
-      <header className="rounded-xl border border-blue-200 bg-white/90 p-4">
-        <p className="text-xs font-extrabold uppercase tracking-[0.06em] text-blue-700">Read Here</p>
-        <h1 className="mt-1 text-2xl font-black tracking-[-0.02em] text-slate-900 md:text-3xl">Preorder Traversal</h1>
-        <p className="mt-2 text-sm font-semibold text-slate-600">
-          Preorder means: visit Root first, then Left subtree, then Right subtree.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-2">
+    <section className="w-full space-y-4 bg-[linear-gradient(140deg,#eff6ff_0%,#f0f9ff_55%,#f8fafc_100%)] p-4 md:p-6">
+      <ProblemFocusHeader
+        title="Preorder Traversal"
+        subtitle="Preorder means: visit Root first, then Left subtree, then Right subtree."
+        extraActions={
           <Link
             href="/problems/binary-tree/preorder-traversal"
             className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 transition hover:bg-slate-100"
           >
             Open Preorder Visualizer
           </Link>
-          <Link
-            href="/problems/topics/trees#problem-list"
-            className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 transition hover:bg-blue-100"
-          >
-            Back To Tree Problems
-          </Link>
-        </div>
-      </header>
+        }
+        stats={[]}
+        backLabel="Back To Tree Problems"
+      />
 
       <div className="grid gap-3 lg:grid-cols-2">
         <article className="rounded-xl border border-blue-200 bg-white p-4">
@@ -154,3 +148,4 @@ export default function PreorderGuidePage() {
     </section>
   );
 }
+

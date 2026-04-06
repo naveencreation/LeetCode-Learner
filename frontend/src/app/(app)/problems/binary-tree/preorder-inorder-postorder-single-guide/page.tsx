@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ProblemFocusHeader } from "@/components/problem-focus-header";
 
 import { binaryTreeProblemData } from "@/features/binary-tree/problemData";
 
@@ -134,28 +135,21 @@ const sampleSteps = [
 
 export default function PreInPostSingleGuidePage() {
   return (
-    <section className="mx-auto max-w-6xl space-y-4 rounded-2xl border border-teal-200 bg-[linear-gradient(140deg,#ecfeff_0%,#f0fdfa_55%,#f8fafc_100%)] p-4 shadow-[0_14px_38px_rgba(13,148,136,0.15)] md:p-6">
-      <header className="rounded-xl border border-teal-200 bg-white/90 p-4">
-        <p className="text-xs font-extrabold uppercase tracking-[0.06em] text-teal-700">Read Here</p>
-        <h1 className="mt-1 text-2xl font-black tracking-[-0.02em] text-slate-900 md:text-3xl">
-          {problem.title}
-        </h1>
-        <p className="mt-2 text-sm font-semibold text-slate-600">{problem.intuition}</p>
-        <div className="mt-3 flex flex-wrap gap-2">
+    <section className="w-full space-y-4 bg-[linear-gradient(140deg,#ecfeff_0%,#f0fdfa_55%,#f8fafc_100%)] p-4 md:p-6">
+      <ProblemFocusHeader
+        title={problem.title}
+        subtitle={problem.intuition}
+        extraActions={
           <Link
             href="/problems/binary-tree/preorder-inorder-postorder-in-a-single-traversal"
             className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 transition hover:bg-slate-100"
           >
             Open Visualizer
           </Link>
-          <Link
-            href="/problems/topics/trees#problem-list"
-            className="inline-flex items-center rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-xs font-bold text-teal-700 transition hover:bg-teal-100"
-          >
-            Back To Tree Problems
-          </Link>
-        </div>
-      </header>
+        }
+        stats={[]}
+        backLabel="Back To Tree Problems"
+      />
 
       <article className="rounded-xl border border-teal-200 bg-white p-4">
         <h2 className="text-base font-extrabold text-slate-900">Approach Summary</h2>
@@ -291,3 +285,4 @@ export default function PreInPostSingleGuidePage() {
     </section>
   );
 }
+
