@@ -1,0 +1,346 @@
+
+<style>
+  * { box-sizing: border-box; }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; font-family: var(--font-sans); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber { background: #FAEEDA; color: #854F0B; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+  .rule-box { background: #E1F5EE; padding: 1rem 1.25rem; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .rule-text { font-size: 20px; font-weight: 500; color: #085041; }
+  .step-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: #EEEDFE; color: #3C3489; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13.5px; line-height: 2; }
+  .c-kw { color: #cba6f7; } .c-fn { color: #89b4fa; } .c-cm { color: #6c7086; font-style:italic; } .c-plain { color: #cdd6f4; }
+  .dry-run-row { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .dry-run-row:last-child { border-bottom: none; }
+  .dry-cell { padding: 10px 14px; font-size: 13.5px; color: var(--color-text-primary); line-height: 1.5; }
+  .dry-head { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); padding: 8px 14px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .complexity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why { font-size: 13px; margin-top: 6px; }
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot { width: 8px; height: 8px; border-radius: 50%; background: #1D9E75; flex-shrink: 0; margin-top: 7px; }
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+  .analogy-box { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+  .highlight-row { background: var(--color-background-secondary); }
+
+  /* toggle */
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+
+  /* deep mode specifics */
+  .deep-section { margin-bottom: 3rem; }
+  .callout { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+  .trace-step { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge { min-width: 60px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; }
+  .trace-going { background: #E6F1FB; color: #185FA5; }
+  .trace-visiting { background: #E1F5EE; color: #0F6E56; }
+  .trace-back { background: #EEEDFE; color: #534AB7; }
+  .trace-content { flex: 1; }
+  .trace-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+  .stack-visual { font-family: var(--font-mono); font-size: 13px; background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .stack-frame { padding: 5px 10px; border-radius: 4px; margin-bottom: 4px; color: #cdd6f4; }
+  .stack-top { background: #313244; border-left: 2px solid #89b4fa; }
+  .stack-mid { background: #1e1e2e; border-left: 2px solid #45475a; color: #6c7086; }
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .mistake-check { width: 20px; height: 20px; border-radius: 50%; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+</style>
+
+<div class="page">
+
+  <div class="section">
+    <p class="section-label">Binary Tree · Traversal</p>
+    <h1 class="hero-title">Inorder Traversal</h1>
+    <p class="hero-sub">Visit nodes in Left → Root → Right order. For a BST, this gives you a sorted sequence.</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-teal">Recursion</span>
+      <span class="badge badge-purple">DFS</span>
+      <span class="badge badge-amber">Interview Essential</span>
+    </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn" id="btn-deep" onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ═══════════════ QUICK MODE ═══════════════ -->
+  <div id="quick-mode">
+    <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);margin-bottom:2rem;">
+
+    <div class="section">
+      <p class="section-label">01 · The rule</p>
+      <div class="rule-box" style="margin-bottom:0.75rem;">
+        <p class="rule-text">Left → Root → Right</p>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">For BSTs, this always produces values in ascending sorted order.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">02 · How to think</p>
+      <div class="card">
+        <div class="step-row"><div class="step-num">1</div><div><div class="step-text">Keep going left until you hit <code style="font-size:13px;background:var(--color-background-secondary);padding:2px 5px;border-radius:4px;">None</code></div><div class="step-sub">Dive to the deepest left leaf first.</div></div></div>
+        <div class="step-row"><div class="step-num">2</div><div><div class="step-text">Visit (record) the current node</div><div class="step-sub">Only after the full left subtree is done.</div></div></div>
+        <div class="step-row" style="margin-bottom:0;"><div class="step-num">3</div><div><div class="step-text">Repeat the same logic for the right subtree</div><div class="step-sub">Apply Left → Root → Right recursively.</div></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">03 · Code</p>
+      <div class="code-block">
+        <div><span class="c-kw">def</span> <span class="c-fn">inorder</span><span class="c-plain">(node, result):</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> node </span><span class="c-kw">is</span><span class="c-plain"> </span><span class="c-kw">None</span><span class="c-plain">: </span><span class="c-kw">return</span> <span class="c-cm"># base case</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-fn">inorder</span><span class="c-plain">(node.left, result) &nbsp;</span><span class="c-cm"># 1. left</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;result.</span><span class="c-fn">append</span><span class="c-plain">(node.val) &nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># 2. root</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-fn">inorder</span><span class="c-plain">(node.right, result)</span><span class="c-cm"># 3. right</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">04 · Complexity</p>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E1F5EE;"><div class="complexity-label" style="color:#0F6E56;">Time</div><div class="complexity-value" style="color:#085041;">O(n)</div><div class="complexity-why" style="color:#0F6E56;">Every node visited once.</div></div>
+        <div class="complexity-card" style="background:#EEEDFE;"><div class="complexity-label" style="color:#534AB7;">Space</div><div class="complexity-value" style="color:#3C3489;">O(h)</div><div class="complexity-why" style="color:#534AB7;">Stack depth = tree height.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">05 · Interview uses</p>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Kth smallest in BST</strong> — kth element in inorder sequence.</p></div>
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Validate a BST</strong> — inorder must be strictly increasing.</p></div>
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Convert BST to sorted array</strong> — collect inorder result.</p></div>
+        <div class="interview-item" style="border:none;"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Recover BST</strong> — find where inorder order breaks.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DEEP MODE ═══════════════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);margin-bottom:2rem;">
+
+    <div class="deep-section">
+      <p class="section-label">01 · Start here — what even is a binary tree?</p>
+      <h2 class="section-title">Build the foundation first</h2>
+      <p class="deep-para">Before traversal makes sense, you need to picture the structure. A binary tree is a collection of nodes where each node has at most two children — called the <strong style="font-weight:500;">left child</strong> and the <strong style="font-weight:500;">right child</strong>. The topmost node is called the <strong style="font-weight:500;">root</strong>. Nodes with no children are called <strong style="font-weight:500;">leaves</strong>.</p>
+      <div style="display:flex;justify-content:center;margin:1.5rem 0;">
+        <svg viewBox="0 0 320 200" width="300" height="180" xmlns="http://www.w3.org/2000/svg">
+          <line x1="160" y1="36" x2="96" y2="90" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="160" y1="36" x2="224" y2="90" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="96" y1="90" x2="60" y2="152" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="96" y1="90" x2="132" y2="152" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="224" y1="90" x2="192" y2="152" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="224" y1="90" x2="260" y2="152" stroke="#B5D4F4" stroke-width="1.5"/>
+          <circle cx="160" cy="36" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="160" y="41" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">1</text>
+          <text x="160" y="20" text-anchor="middle" font-size="10" fill="#378ADD">root</text>
+          <circle cx="96" cy="90" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="96" y="95" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">2</text>
+          <circle cx="224" cy="90" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="224" y="95" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">3</text>
+          <circle cx="60" cy="152" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="60" y="157" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">4</text>
+          <text x="60" y="182" text-anchor="middle" font-size="10" fill="#1D9E75">leaf</text>
+          <circle cx="132" cy="152" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="132" y="157" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">5</text>
+          <text x="132" y="182" text-anchor="middle" font-size="10" fill="#1D9E75">leaf</text>
+          <circle cx="192" cy="152" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="192" y="157" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">6</text>
+          <text x="192" y="182" text-anchor="middle" font-size="10" fill="#1D9E75">leaf</text>
+          <circle cx="260" cy="152" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="260" y="157" text-anchor="middle" font-size="13" font-weight="500" fill="#085041">7</text>
+          <text x="260" y="182" text-anchor="middle" font-size="10" fill="#1D9E75">leaf</text>
+        </svg>
+      </div>
+      <div class="callout callout-info"><p>The blue node is the <strong style="font-weight:500;">root</strong>. The green nodes are <strong style="font-weight:500;">leaves</strong> — they have no children. Every other node is an internal node.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">02 · What does "traversal" mean?</p>
+      <h2 class="section-title">Visiting every node — in what order?</h2>
+      <p class="deep-para">Traversal simply means visiting every node in the tree exactly once. The question is — in what order do you visit them? There are three classic DFS orders:</p>
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+          <div style="text-align:center;padding:12px 8px;background:#EEEDFE;border-radius:var(--border-radius-md);">
+            <p style="font-size:12px;font-weight:500;color:#534AB7;margin:0 0 4px;">Preorder</p>
+            <p style="font-size:13px;color:#3C3489;margin:0;font-family:var(--font-mono);">Root→L→R</p>
+          </div>
+          <div style="text-align:center;padding:12px 8px;background:#E1F5EE;border-radius:var(--border-radius-md);border:2px solid #1D9E75;">
+            <p style="font-size:12px;font-weight:500;color:#0F6E56;margin:0 0 4px;">Inorder ← you are here</p>
+            <p style="font-size:13px;color:#085041;margin:0;font-family:var(--font-mono);">L→Root→R</p>
+          </div>
+          <div style="text-align:center;padding:12px 8px;background:#FAEEDA;border-radius:var(--border-radius-md);">
+            <p style="font-size:12px;font-weight:500;color:#854F0B;margin:0 0 4px;">Postorder</p>
+            <p style="font-size:13px;color:#633806;margin:0;font-family:var(--font-mono);">L→R→Root</p>
+          </div>
+        </div>
+      </div>
+      <p class="deep-para">Inorder means: for any node, always finish the entire left subtree first, then visit that node, then finish the entire right subtree.</p>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">03 · The real-world analogy</p>
+      <h2 class="section-title">Think of it like reading a book shelf</h2>
+      <div class="analogy-box" style="margin-bottom:1rem;">
+        <p class="analogy-text">Imagine a bookshelf where books are arranged from left to right in sorted order. Inorder traversal is exactly like reading them in that order — you always finish everything to the left before reading the current book, and only then move to the right. The "current book" (root) sits between everything on its left and everything on its right.</p>
+      </div>
+      <div class="callout callout-success"><p><strong style="font-weight:500;">The BST superpower:</strong> If the tree is a Binary Search Tree (BST), inorder traversal always gives you values in ascending sorted order. This is one of the most tested facts in tree interviews.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">04 · Understanding recursion here</p>
+      <h2 class="section-title">What is the function actually doing?</h2>
+      <p class="deep-para">Recursion is when a function calls itself. The trick is that each call handles one node, and trusts that the same function will correctly handle the subtrees. Here is how to read the code line by line:</p>
+      <div class="code-block" style="margin-bottom:1.25rem;">
+        <div><span class="c-kw">def</span> <span class="c-fn">inorder</span><span class="c-plain">(node, result):</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> node </span><span class="c-kw">is</span><span class="c-plain"> </span><span class="c-kw">None</span><span class="c-plain">: </span><span class="c-kw">return</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-fn">inorder</span><span class="c-plain">(node.left, result)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;result.</span><span class="c-fn">append</span><span class="c-plain">(node.val)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-fn">inorder</span><span class="c-plain">(node.right, result)</span></div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why do we check <code style="font-size:13px;">if node is None: return</code>?</div>
+        <div class="qa-a">This is the base case — it stops the recursion. Without it, the function would keep calling itself forever. When a node has no left child, <code style="font-size:13px;">node.left</code> is None, so we call <code style="font-size:13px;">inorder(None)</code> which immediately returns. This is how recursion knows when to stop going deeper.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why does the <code style="font-size:13px;">append</code> line come in the middle — not first or last?</div>
+        <div class="qa-a">Because inorder means Left first, then Root, then Right. Appending in the middle means we only record the current node after the entire left subtree is finished. If you moved the append line to the top, you'd get preorder. If you moved it to the bottom, you'd get postorder.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What does the recursion stack look like at the deepest point?</div>
+        <div class="qa-a">
+          When we first reach node 4 (the leftmost leaf), the call stack looks like this — inorder(4) is on top, waiting to run:
+          <div class="stack-visual" style="margin-top:10px;">
+            <div class="stack-frame stack-top">→ inorder(node=4) &nbsp;<span style="color:#6c7086;">← currently here</span></div>
+            <div class="stack-frame stack-mid">&nbsp;&nbsp; inorder(node=2)</div>
+            <div class="stack-frame stack-mid">&nbsp;&nbsp; inorder(node=1) &nbsp;<span style="color:#45475a;">← original call</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">05 · Full trace — every step explained</p>
+      <h2 class="section-title">Walking through the example tree</h2>
+      <p class="deep-para" style="margin-bottom:1.5rem;">Let's trace every single action the algorithm takes on this tree, narrated step by step.</p>
+
+      <div class="trace-step"><span class="trace-badge trace-going">Going</span><div class="trace-content"><p class="trace-title">Enter inorder(1) — the root</p><p class="trace-desc">We start at 1. Rule says go left first, so we call inorder(1.left) = inorder(2). Node 1 is now waiting.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-going">Going</span><div class="trace-content"><p class="trace-title">Enter inorder(2)</p><p class="trace-desc">At node 2. Go left first → call inorder(2.left) = inorder(4). Node 2 is now waiting.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-going">Going</span><div class="trace-content"><p class="trace-title">Enter inorder(4) — leftmost leaf</p><p class="trace-desc">At node 4. Try to go left → inorder(None) → base case, returns immediately. Now visit node 4.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-visiting">Visit</span><div class="trace-content"><p class="trace-title">Record 4 → result = [4]</p><p class="trace-desc">Node 4 has no left, no right. We're done with it. Return back to node 2.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-visiting">Visit</span><div class="trace-content"><p class="trace-title">Record 2 → result = [4, 2]</p><p class="trace-desc">Left subtree of 2 is finished. Now visit node 2 itself. Then go right → inorder(5).</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-visiting">Visit</span><div class="trace-content"><p class="trace-title">Record 5 → result = [4, 2, 5]</p><p class="trace-desc">Node 5 has no children. Visit it and return. Left subtree of root (1) is now fully done.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-visiting">Visit</span><div class="trace-content"><p class="trace-title">Record 1 → result = [4, 2, 5, 1]</p><p class="trace-desc">Entire left subtree finished. Now visit the root itself. Then go right → inorder(3).</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-visiting">Visit</span><div class="trace-content"><p class="trace-title">Record 6 → result = [4, 2, 5, 1, 6]</p><p class="trace-desc">Enter node 3, go left to 6. Node 6 is a leaf. Visit it and return to 3.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-visiting">Visit</span><div class="trace-content"><p class="trace-title">Record 3 → result = [4, 2, 5, 1, 6, 3]</p><p class="trace-desc">Left of 3 is done. Visit node 3. Go right → inorder(7).</p></div></div>
+      <div class="trace-step" style="margin-bottom:0;"><span class="trace-badge trace-visiting">Visit</span><div class="trace-content"><p class="trace-title">Record 7 → result = [4, 2, 5, 1, 6, 3, 7] ✓</p><p class="trace-desc">Node 7 is a leaf. Visit it. All done — this is the final inorder sequence.</p></div></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">06 · Common beginner mistakes</p>
+      <h2 class="section-title">What trips people up</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting the base case</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Without <code style="font-size:12px;">if node is None: return</code>, the function crashes with a recursion error when it tries to access <code style="font-size:12px;">None.left</code>.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Mixing up the order</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Moving the <code style="font-size:12px;">append</code> before the left call gives preorder. Moving it after both calls gives postorder. Position of append defines the traversal.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Thinking inorder = sorted for all trees</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Inorder only gives sorted output for a <strong style="font-weight:500;">BST</strong>. For a random binary tree, the output order depends entirely on node placement.</p></div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Not passing result by reference</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">In Python, lists are passed by reference — all recursive calls share the same list. If you create a new list inside each call instead, results will be lost.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">07 · Complexity — the full explanation</p>
+      <h2 class="section-title">Why O(n) time and O(h) space?</h2>
+      <div class="complexity-grid" style="margin-bottom:1rem;">
+        <div class="complexity-card" style="background:#E1F5EE;"><div class="complexity-label" style="color:#0F6E56;">Time</div><div class="complexity-value" style="color:#085041;">O(n)</div><div class="complexity-why" style="color:#0F6E56;">We visit every node exactly once — no node is skipped or revisited — so time grows linearly with the number of nodes.</div></div>
+        <div class="complexity-card" style="background:#EEEDFE;"><div class="complexity-label" style="color:#534AB7;">Space</div><div class="complexity-value" style="color:#3C3489;">O(h)</div><div class="complexity-why" style="color:#534AB7;">The call stack holds one frame per level of depth. h = log n for balanced trees, h = n for skewed (like a linked list).</div></div>
+      </div>
+      <div class="callout callout-warn"><p><strong style="font-weight:500;">Interview tip:</strong> If they ask "what is the space complexity?", always clarify — O(log n) for a balanced tree, O(n) worst case for a skewed tree. Showing you know both impresses interviewers.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">08 · Interview context</p>
+      <h2 class="section-title">Where you'll actually use this</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Kth smallest element in BST</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Inorder gives sorted order. Count to the kth element — done. No sorting needed.</p></div></div>
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Validate a Binary Search Tree</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Run inorder. If the result is not strictly increasing at every step, the BST property is violated.</p></div></div>
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Convert BST to sorted array</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Simply collect the inorder result. That is your sorted array — O(n) time, no extra sorting.</p></div></div>
+        <div class="interview-item" style="border:none;"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Recover BST (two nodes swapped)</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Run inorder. Find where the sequence breaks (a larger value before a smaller one). Those two nodes are the swapped pair.</p></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Ready to see it in action?</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">Step through the visualizer to watch the recursion stack live.</p>
+    </div>
+    <button style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);cursor:pointer;">Open visualizer ↗</button>
+  </div>
+
+</div>
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep = document.getElementById('deep-mode');
+  const btnQ = document.getElementById('btn-quick');
+  const btnD = document.getElementById('btn-deep');
+  const desc = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>

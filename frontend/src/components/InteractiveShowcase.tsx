@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./InteractiveShowcase.module.css";
+import styles from "./InteractiveShowcaseView.module.css";
 
 const slides = [
   {
