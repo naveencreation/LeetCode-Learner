@@ -1,0 +1,427 @@
+
+<style>
+  * { box-sizing: border-box; }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; font-family: var(--font-sans); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber { background: #FAEEDA; color: #854F0B; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+  .rule-box { background: #E6F1FB; padding: 1rem 1.25rem; border-left: 3px solid #378ADD; border-radius: 0; }
+  .rule-text { font-size: 20px; font-weight: 500; color: #0C447C; }
+  .step-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13.5px; line-height: 2; }
+  .c-kw { color: #cba6f7; } .c-fn { color: #89b4fa; } .c-cm { color: #6c7086; font-style:italic; } .c-plain { color: #cdd6f4; }
+  .dry-run-row { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .dry-run-row:last-child { border-bottom: none; }
+  .dry-cell { padding: 10px 14px; font-size: 13.5px; color: var(--color-text-primary); line-height: 1.5; }
+  .dry-head { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); padding: 8px 14px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .complexity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why { font-size: 13px; margin-top: 6px; }
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot { width: 8px; height: 8px; border-radius: 50%; background: #378ADD; flex-shrink: 0; margin-top: 7px; }
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+  .analogy-box { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+  .highlight-row { background: var(--color-background-secondary); }
+
+  /* toggle */
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+
+  /* deep mode specifics */
+  .deep-section { margin-bottom: 3rem; }
+  .callout { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+  .trace-step { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge { min-width: 68px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; }
+  .trace-going { background: #E6F1FB; color: #185FA5; }
+  .trace-record { background: #E1F5EE; color: #0F6E56; }
+  .trace-skip { background: #EEEDFE; color: #534AB7; }
+  .trace-back { background: #FAEEDA; color: #854F0B; }
+  .trace-content { flex: 1; }
+  .trace-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+  .stack-visual { font-family: var(--font-mono); font-size: 13px; background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .stack-frame { padding: 5px 10px; border-radius: 4px; margin-bottom: 4px; color: #cdd6f4; }
+  .stack-top { background: #313244; border-left: 2px solid #89b4fa; }
+  .stack-mid { background: #1e1e2e; border-left: 2px solid #45475a; color: #6c7086; }
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .mistake-check { width: 20px; height: 20px; border-radius: 50%; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+</style>
+
+<div class="page">
+
+  <div class="section">
+    <p class="section-label">Binary Tree · Views</p>
+    <h1 class="hero-title">Bottom View of Binary Tree</h1>
+    <p class="hero-sub">The last node visible at each horizontal distance when the tree is seen from the bottom.</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-teal">BFS + HashMap</span>
+      <span class="badge badge-purple">Horizontal Distance</span>
+      <span class="badge badge-amber">Interview Essential</span>
+    </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn" id="btn-deep" onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ═══════════════ QUICK MODE ═══════════════ -->
+  <div id="quick-mode">
+    <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);margin-bottom:2rem;">
+
+    <div class="section">
+      <p class="section-label">01 · The rule</p>
+      <div class="rule-box" style="margin-bottom:0.75rem;">
+        <p class="rule-text">Last node seen at each horizontal distance from the root</p>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">Assign root HD=0. Left child gets HD−1, right child HD+1. For each HD, the deepest node wins — if two nodes share the same HD and depth, the one processed later (right-wards in BFS) wins.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">02 · How to think</p>
+      <div class="card">
+        <div class="step-row"><div class="step-num">1</div><div><div class="step-text">Do a BFS, tracking each node's horizontal distance (HD)</div><div class="step-sub">Root starts at HD = 0. Left child: HD − 1. Right child: HD + 1.</div></div></div>
+        <div class="step-row"><div class="step-num">2</div><div><div class="step-text">For every HD, keep overwriting the map with the current node</div><div class="step-sub">BFS visits nodes top-to-bottom, so later overwrites = deeper nodes. That's the bottom view.</div></div></div>
+        <div class="step-row" style="margin-bottom:0;"><div class="step-num">3</div><div><div class="step-text">Read the map sorted by HD from min to max</div><div class="step-sub">Gives you the bottom view left-to-right as it would appear from underneath the tree.</div></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">03 · Code</p>
+      <div class="code-block">
+        <div><span class="c-kw">from</span> <span class="c-plain">collections </span><span class="c-kw">import</span><span class="c-plain"> deque</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-kw">def</span> <span class="c-fn">bottom_view</span><span class="c-plain">(root):</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if not</span><span class="c-plain"> root: </span><span class="c-kw">return</span><span class="c-plain"> []</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;hd_map = {} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># hd → node value</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;queue = deque([(root, 0)]) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># (node, hd)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">while</span><span class="c-plain"> queue:</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node, hd = queue.</span><span class="c-fn">popleft</span><span class="c-plain">()</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hd_map[hd] = node.val &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># always overwrite → last = deepest</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> node.left:  queue.</span><span class="c-fn">append</span><span class="c-plain">((node.left,  hd - 1))</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> node.right: queue.</span><span class="c-fn">append</span><span class="c-plain">((node.right, hd + 1))</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-plain"> [hd_map[k] </span><span class="c-kw">for</span><span class="c-plain"> k </span><span class="c-kw">in</span><span class="c-plain"> </span><span class="c-fn">sorted</span><span class="c-plain">(hd_map)]</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">04 · Example</p>
+      <div style="display:flex;justify-content:center;margin-bottom:1rem;">
+        <svg viewBox="0 0 360 230" width="340" height="210" xmlns="http://www.w3.org/2000/svg">
+          <!-- HD labels at top -->
+          <text x="44"  y="16" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">HD=−2</text>
+          <text x="104" y="16" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">HD=−1</text>
+          <text x="180" y="16" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">HD=0</text>
+          <text x="256" y="16" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">HD=+1</text>
+          <text x="316" y="16" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">HD=+2</text>
+          <!-- Vertical dashed HD grid lines -->
+          <line x1="44"  y1="22" x2="44"  y2="210" stroke="#45475a" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <line x1="104" y1="22" x2="104" y2="210" stroke="#45475a" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <line x1="180" y1="22" x2="180" y2="210" stroke="#45475a" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <line x1="256" y1="22" x2="256" y2="210" stroke="#45475a" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <line x1="316" y1="22" x2="316" y2="210" stroke="#45475a" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <!-- Edges -->
+          <line x1="180" y1="58"  x2="104" y2="112" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="180" y1="58"  x2="256" y2="112" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="104" y1="112" x2="44"  y2="172" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="104" y1="112" x2="180" y2="172" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="256" y1="112" x2="180" y2="172" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="256" y1="112" x2="316" y2="172" stroke="#B5D4F4" stroke-width="1.5"/>
+          <!-- Root: 1, HD=0 — NOT bottom view (overwritten by 5 or 6 below) -->
+          <circle cx="180" cy="58" r="22" fill="var(--color-background-secondary)" stroke="var(--color-border-tertiary)" stroke-width="1.5"/>
+          <text x="180" y="63" text-anchor="middle" font-size="13" font-weight="500" fill="var(--color-text-secondary)">1</text>
+          <!-- Level 1: 2 (HD=−1), 3 (HD=+1) — overwritten -->
+          <circle cx="104" cy="112" r="22" fill="var(--color-background-secondary)" stroke="var(--color-border-tertiary)" stroke-width="1.5"/>
+          <text x="104" y="117" text-anchor="middle" font-size="13" font-weight="500" fill="var(--color-text-secondary)">2</text>
+          <circle cx="256" cy="112" r="22" fill="var(--color-background-secondary)" stroke="var(--color-border-tertiary)" stroke-width="1.5"/>
+          <text x="256" y="117" text-anchor="middle" font-size="13" font-weight="500" fill="var(--color-text-secondary)">3</text>
+          <!-- Level 2: 4 (HD=−2), 5 (HD=0), 6 (HD=0→overwrite by right), 7 (HD=+2) -->
+          <!-- 4: HD=−2, bottom view ✓ -->
+          <circle cx="44"  cy="172" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="44"  y="177" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">4</text>
+          <!-- 5: HD=0, overwritten by 6 (same HD, 6 is processed after) — not bottom view -->
+          <circle cx="180" cy="172" r="22" fill="var(--color-background-secondary)" stroke="var(--color-border-tertiary)" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="180" y="177" text-anchor="middle" font-size="13" font-weight="500" fill="var(--color-text-secondary)">5</text>
+          <!-- 6: HD=0, wins over 5 — bottom view ✓ (overlapping position, show slightly right for clarity) -->
+          <circle cx="196" cy="172" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="196" y="177" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">6</text>
+          <!-- 7: HD=+2, bottom view ✓ -->
+          <circle cx="316" cy="172" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="316" y="177" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">7</text>
+          <!-- HD=−1 has no leaf, so 2 is bottom view for that column -->
+          <!-- Re-colour 2 as bottom view -->
+          <circle cx="104" cy="112" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="104" y="117" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">2</text>
+          <!-- Re-colour 3 as bottom view for HD=+1 -->
+          <circle cx="256" cy="112" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="256" y="117" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">3</text>
+        </svg>
+      </div>
+      <div class="card" style="padding:0.75rem 1.5rem; margin-bottom:0.75rem;">
+        <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+          <span style="font-size:13px;color:var(--color-text-secondary);">Bottom View:</span>
+          <span style="font-family:var(--font-mono);font-size:14px;font-weight:500;color:#0C447C;background:#E6F1FB;padding:3px 12px;border-radius:6px;">[ 4, 2, 6, 3, 7 ]</span>
+          <span style="font-size:12px;color:var(--color-text-tertiary);">(sorted by HD: −2, −1, 0, +1, +2)</span>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">Node 5 and Node 6 both land on HD=0. In BFS order, 6 is processed after 5, so 6 overwrites 5 in the map and appears in the result.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">05 · Dry run</p>
+      <div class="card" style="padding:0;">
+        <div style="display:grid;grid-template-columns:1.6fr 0.7fr 1.2fr 1.5fr;" class="dry-head">
+          <div class="dry-cell" style="padding:8px 14px;">Node dequeued</div>
+          <div class="dry-cell" style="padding:8px 14px;">HD</div>
+          <div class="dry-cell" style="padding:8px 14px;">hd_map update</div>
+          <div class="dry-cell" style="padding:8px 14px;">Queue after</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell" style="flex:1.6;">1 (root)</div>
+          <div class="dry-cell" style="flex:0.7;">0</div>
+          <div class="dry-cell" style="flex:1.2;">{0:1}</div>
+          <div class="dry-cell" style="flex:1.5;">(2,−1), (3,+1)</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell" style="flex:1.6;">2</div>
+          <div class="dry-cell" style="flex:0.7;">−1</div>
+          <div class="dry-cell" style="flex:1.2;">{0:1, −1:2}</div>
+          <div class="dry-cell" style="flex:1.5;">(3,+1),(4,−2),(5,0)</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell" style="flex:1.6;">3</div>
+          <div class="dry-cell" style="flex:0.7;">+1</div>
+          <div class="dry-cell" style="flex:1.2;">{…, +1:3}</div>
+          <div class="dry-cell" style="flex:1.5;">(4,−2),(5,0),(6,0),(7,+2)</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell" style="flex:1.6;">4</div>
+          <div class="dry-cell" style="flex:0.7;">−2</div>
+          <div class="dry-cell" style="flex:1.2;">{…, −2:4}</div>
+          <div class="dry-cell" style="flex:1.5;">(5,0),(6,0),(7,+2)</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell" style="flex:1.6;">5</div>
+          <div class="dry-cell" style="flex:0.7;">0</div>
+          <div class="dry-cell" style="flex:1.2;">{0:5} ← overwrites 1</div>
+          <div class="dry-cell" style="flex:1.5;">(6,0),(7,+2)</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell" style="flex:1.6;">6</div>
+          <div class="dry-cell" style="flex:0.7;">0</div>
+          <div class="dry-cell" style="flex:1.2;">{0:6} ← overwrites 5</div>
+          <div class="dry-cell" style="flex:1.5;">(7,+2)</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell" style="flex:1.6;">7</div>
+          <div class="dry-cell" style="flex:0.7;">+2</div>
+          <div class="dry-cell" style="flex:1.2;">{…, +2:7}</div>
+          <div class="dry-cell" style="flex:1.5;">empty — done ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">06 · Complexity</p>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E6F1FB;"><div class="complexity-label" style="color:#185FA5;">Time</div><div class="complexity-value" style="color:#0C447C;">O(n log n)</div><div class="complexity-why" style="color:#185FA5;">BFS visits every node once — O(n). Sorting the HD keys at the end adds O(n log n) in the worst case.</div></div>
+        <div class="complexity-card" style="background:#EEEDFE;"><div class="complexity-label" style="color:#534AB7;">Space</div><div class="complexity-value" style="color:#3C3489;">O(n)</div><div class="complexity-why" style="color:#534AB7;">The queue holds at most the widest level (O(w)). The HashMap stores one entry per unique HD, bounded by n.</div></div>
+      </div>
+    </div>
+
+  </div><!-- end quick-mode -->
+
+  <!-- ═══════════════ DEEP MODE ═══════════════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);margin-bottom:2rem;">
+
+    <div class="deep-section">
+      <p class="section-label">01 · What does "bottom view" actually mean?</p>
+      <h2 class="section-title">Seeing the tree from underneath</h2>
+      <p class="deep-para">Imagine you're lying flat on the ground looking up at a binary tree. For every vertical column, you can only see the lowest-hanging node — everything above it is hidden. That's the bottom view: the last (deepest) node at every horizontal position.</p>
+      <div class="callout callout-info"><p>The key concept is <strong style="font-weight:500;">Horizontal Distance (HD)</strong>. Root is at HD = 0. Going left subtracts 1; going right adds 1. Two nodes that share the same HD fall in the same vertical column — only the one at the greatest depth (or rightmost if tied) is visible from below.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">02 · Why BFS, not DFS?</p>
+      <h2 class="section-title">Two approaches — one is much cleaner</h2>
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="text-align:center;padding:12px 8px;background:#E6F1FB;border-radius:var(--border-radius-md);border:2px solid #378ADD;">
+            <p style="font-size:12px;font-weight:500;color:#185FA5;margin:0 0 4px;">BFS ← natural fit</p>
+            <p style="font-size:13px;color:#0C447C;margin:0;">Always overwrites earlier entries. Because BFS is level-by-level, a later write is always deeper. No depth tracking needed.</p>
+          </div>
+          <div style="text-align:center;padding:12px 8px;background:#EEEDFE;border-radius:var(--border-radius-md);">
+            <p style="font-size:12px;font-weight:500;color:#534AB7;margin:0 0 4px;">DFS (recursive)</p>
+            <p style="font-size:13px;color:#3C3489;margin:0;">Must track depth explicitly and only overwrite when the new depth is ≥ stored depth. More error-prone.</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-warn"><p><strong style="font-weight:500;">Interview tip:</strong> Always lead with BFS. If pressed for a DFS alternative, say: "I'd track (hd, depth) in the map and only overwrite when the new node's depth ≥ the stored depth."</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">03 · The real-world analogy</p>
+      <h2 class="section-title">Think of it like shadows on the ground</h2>
+      <div class="analogy-box" style="margin-bottom:1rem;">
+        <p class="analogy-text">Hang the tree from the ceiling with the root at top. Shine a light directly downward. Each node casts a shadow on the floor. Where two nodes share the same vertical column, the lower node's shadow completely covers the upper one's. The bottom view is precisely the set of nodes whose shadows reach the floor unobstructed — one per column.</p>
+      </div>
+      <div class="callout callout-success"><p><strong style="font-weight:500;">Key insight:</strong> The number of nodes in the bottom view equals the number of distinct horizontal distances in the tree. Unlike the left/right view (which is always exactly height+1 nodes), the bottom view size depends on the tree's width and structure.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">04 · Understanding the code line by line</p>
+      <h2 class="section-title">What the code is actually doing</h2>
+      <p class="deep-para">The trick is deceptively simple: store each node's HD alongside it in the queue. As we dequeue nodes, we unconditionally overwrite <code style="font-size:13px;background:var(--color-background-secondary);padding:2px 5px;border-radius:4px;">hd_map[hd]</code>. Because BFS processes nodes level by level (top to bottom), a later overwrite is guaranteed to be from a deeper level — which is exactly what the bottom view needs.</p>
+      <div class="code-block" style="margin-bottom:1.25rem;">
+        <div><span class="c-kw">from</span> <span class="c-plain">collections </span><span class="c-kw">import</span><span class="c-plain"> deque</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-kw">def</span> <span class="c-fn">bottom_view</span><span class="c-plain">(root):</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if not</span><span class="c-plain"> root: </span><span class="c-kw">return</span><span class="c-plain"> []</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;hd_map = {}</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;queue = deque([(root, 0)])</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">while</span><span class="c-plain"> queue:</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node, hd = queue.</span><span class="c-fn">popleft</span><span class="c-plain">()</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hd_map[hd] = node.val </span><span class="c-cm"># always overwrite — deeper = bottom</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> node.left:  queue.</span><span class="c-fn">append</span><span class="c-plain">((node.left,  hd - 1))</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> node.right: queue.</span><span class="c-fn">append</span><span class="c-plain">((node.right, hd + 1))</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-plain"> [hd_map[k] </span><span class="c-kw">for</span><span class="c-plain"> k </span><span class="c-kw">in</span><span class="c-plain"> </span><span class="c-fn">sorted</span><span class="c-plain">(hd_map)]</span></div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q">Why do we always overwrite <code style="font-size:13px;">hd_map[hd]</code> without checking depth?</div>
+        <div class="qa-a">BFS processes nodes level-by-level, which means any node processed after a previous one at the same HD is necessarily at a greater or equal depth. Unconditional overwrite is correct — you never risk overwriting a deeper node with a shallower one when using BFS.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What happens when two nodes share the same HD and same depth?</div>
+        <div class="qa-a">If two nodes are at the same depth and HD (like nodes 5 and 6 both at HD=0, depth=2 in our example), the one encountered last in BFS order wins — which is the right-side node (since we always enqueue left then right). This is the standard convention for the bottom view.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why sort the map keys at the end?</div>
+        <div class="qa-a">A Python dictionary preserves insertion order, but HD values can be inserted in any order during BFS (depending on tree shape). To guarantee left-to-right output (smallest HD first), we must sort the keys explicitly. This adds O(n log n) to the overall time complexity.</div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">05 · Full trace — every step explained</p>
+      <h2 class="section-title">Walking through the example tree</h2>
+      <p class="deep-para" style="margin-bottom:1.5rem;">Tree: root=1 (HD=0). Left=2 (HD=−1) with children 4 (HD=−2) and 5 (HD=0). Right=3 (HD=+1) with children 6 (HD=0) and 7 (HD=+2). Let's trace every BFS action.</p>
+
+      <div class="trace-step"><span class="trace-badge trace-going">Start</span><div class="trace-content"><p class="trace-title">Queue = [(1, 0)]</p><p class="trace-desc">Root enters the queue with HD = 0.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Write</span><div class="trace-content"><p class="trace-title">Dequeue (1, HD=0) → hd_map = {0: 1}</p><p class="trace-desc">First node at HD=0. Enqueue children: (2, −1) and (3, +1).</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Write</span><div class="trace-content"><p class="trace-title">Dequeue (2, HD=−1) → hd_map = {0:1, −1:2}</p><p class="trace-desc">New HD column. Enqueue (4, −2) and (5, 0).</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Write</span><div class="trace-content"><p class="trace-title">Dequeue (3, HD=+1) → hd_map = {…, +1:3}</p><p class="trace-desc">New HD column. Enqueue (6, 0) and (7, +2).</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Write</span><div class="trace-content"><p class="trace-title">Dequeue (4, HD=−2) → hd_map = {…, −2:4}</p><p class="trace-desc">New HD column. Leaf — nothing enqueued.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-back">Overwrite</span><div class="trace-content"><p class="trace-title">Dequeue (5, HD=0) → hd_map[0] = 5 (was 1)</p><p class="trace-desc">HD=0 already has node 1 (root). Node 5 is deeper, so it overwrites. Leaf — nothing enqueued.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-back">Overwrite</span><div class="trace-content"><p class="trace-title">Dequeue (6, HD=0) → hd_map[0] = 6 (was 5)</p><p class="trace-desc">Same HD=0, same depth as 5 but processed after (BFS right-side bias). 6 wins. Leaf — nothing enqueued.</p></div></div>
+      <div class="trace-step" style="margin-bottom:0;"><span class="trace-badge trace-record">Write</span><div class="trace-content"><p class="trace-title">Dequeue (7, HD=+2) → hd_map = {−2:4, −1:2, 0:6, +1:3, +2:7}</p><p class="trace-desc">Queue empty. Sort keys → <strong style="font-weight:500;">Bottom View = [4, 2, 6, 3, 7]</strong> ✓</p></div></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">06 · Common beginner mistakes</p>
+      <h2 class="section-title">What trips people up</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Using DFS and forgetting to check depth before overwriting</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">In DFS, traversal order is not depth-ordered. You must explicitly store the depth alongside the value and only overwrite when <code style="font-size:12px;">new_depth &gt;= stored_depth</code>. Unconditional overwrite in DFS produces wrong answers.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting to sort the map keys before returning</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Insertion order in the map depends on BFS traversal, not HD order. Without <code style="font-size:12px;">sorted(hd_map)</code>, the result may be scrambled. Always sort by HD to get a left-to-right answer.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Confusing Bottom View with Leaf nodes</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Bottom view nodes are not necessarily leaves. If a non-leaf node is the deepest at its HD column, it still appears in the bottom view. Example: if node 2 (HD=−1) has no children, it appears in the bottom view even though it's an internal node.</p></div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Using a regular list as queue (pop from front)</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;"><code style="font-size:12px;">list.pop(0)</code> shifts every element — O(n) per dequeue. Always use <code style="font-size:12px;">collections.deque</code> for O(1) <code style="font-size:12px;">popleft()</code>.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">07 · Complexity — the full explanation</p>
+      <h2 class="section-title">Why O(n log n) time and O(n) space?</h2>
+      <div class="complexity-grid" style="margin-bottom:1rem;">
+        <div class="complexity-card" style="background:#E6F1FB;"><div class="complexity-label" style="color:#185FA5;">Time</div><div class="complexity-value" style="color:#0C447C;">O(n log n)</div><div class="complexity-why" style="color:#185FA5;">BFS is O(n) — each node enqueued and dequeued once. Sorting HD keys at the end adds O(n log n). If sorted output isn't required, the algorithm is O(n).</div></div>
+        <div class="complexity-card" style="background:#EEEDFE;"><div class="complexity-label" style="color:#534AB7;">Space</div><div class="complexity-value" style="color:#3C3489;">O(n)</div><div class="complexity-why" style="color:#534AB7;">The queue holds at most O(w) nodes (widest level). The HashMap has at most n entries (one per node at worst). Both bounded by O(n).</div></div>
+      </div>
+      <div class="callout callout-warn"><p><strong style="font-weight:500;">Interview tip:</strong> Mention both components of time complexity: "O(n) for the BFS traversal plus O(n log n) for sorting HD keys — dominated by the sort. If the interviewer asks for O(n), you can use a sorted insertion structure like a TreeMap (Java) or SortedDict (Python's sortedcontainers) to avoid the final sort."</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">08 · Interview context</p>
+      <h2 class="section-title">Where you'll actually use this</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Top View of Binary Tree</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Identical setup — track HD with BFS — but record only the first node seen at each HD (not the last). One character change: don't overwrite if HD already in map.</p></div></div>
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Vertical Order Traversal (LeetCode 987)</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Same HD tracking but collect all nodes per column, then sort by (row, value). The bottom view is a special case of vertical order.</p></div></div>
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Width of Binary Tree at each level</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The HD range (max HD − min HD + 1) at any given level is the width of that level. Reuse the same BFS + HD setup.</p></div></div>
+        <div class="interview-item" style="border:none;"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Diagonal Traversal of Binary Tree</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Uses a similar column-mapping idea but defines diagonals differently (right edges stay same diagonal, left edges move to next). Related conceptually.</p></div></div>
+      </div>
+    </div>
+
+  </div><!-- end deep-mode -->
+
+  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Ready to see it in action?</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">Step through the visualizer to watch the HD map fill in live at each BFS step.</p>
+    </div>
+    <button style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);cursor:pointer;">Open visualizer ↗</button>
+  </div>
+
+</div>
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep  = document.getElementById('deep-mode');
+  const btnQ  = document.getElementById('btn-quick');
+  const btnD  = document.getElementById('btn-deep');
+  const desc  = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display  = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display  = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>
