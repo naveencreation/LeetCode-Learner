@@ -101,7 +101,6 @@ export function InorderLayout() {
     pauseTraversal,
     nextStep,
     nodeStates,
-    operationBadge,
     previousStep,
     resetTraversal,
     result,
@@ -339,9 +338,6 @@ export function InorderLayout() {
               >
                 Reset Layout
               </button>
-              <span className="hidden rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.04em] text-slate-600 xl:inline-flex">
-                Drag or double-click dividers
-              </span>
             </div>
           }
           stats={[
@@ -373,7 +369,6 @@ export function InorderLayout() {
               <TreePanel
                 root={root}
                 currentOperation={currentOperation}
-                operationBadge={operationBadge}
                 nodeStates={nodeStates}
                 activeStep={activeStep}
                 customNodePositions={customNodePositions}
