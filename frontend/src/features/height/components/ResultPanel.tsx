@@ -1,0 +1,116 @@
+import type { ExecutionStep } from "../types";
+
+interface ResultPanelProps {
+  currentNode: number | null;
+  currentDepth: number | null;
+  currentComputedHeight: number;
+  maxHeight: number;
+  currentPhase: string;
+  result: Array<{ node: number; height: number }>;
+  currentStep: number;
+  totalSteps: number;
+  currentOperation: string;
+  activeStep: ExecutionStep | undefined;
+}
+
+export function ResultPanel({
+  currentNode,
+  currentDepth,
+  currentComputedHeight,
+  maxHeight,
+  currentPhase,
+  result,
+  currentStep,
+  totalSteps,
+  currentOperation,
+  activeStep,
+}: ResultPanelProps) {
+  const completionMessage =
+    currentStep >= totalSteps
+      ? `Perfect! Traversal complete. Maximum depth is ${maxHeight}.`
+      : `Step ${currentStep + 1}: ${currentOperation}`;
+
+  return (
+    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_minmax(0,1fr)] gap-1 p-2">
+      <div className="traversal-panel-header mb-px">
+        <h2 className="traversal-panel-title">
+          Traversal Progress
+        </h2>
+      </div>
+
+      <div className="ui-scrollbar min-h-0 overflow-y-auto pr-1">
+        <div className="grid gap-1 content-start">
+          <div className="grid grid-cols-2 gap-1">
+            <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1 text-center text-white">
+              <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-teal-100">
+                Current Node
+              </p>
+              <p className="mt-0.5 text-lg font-extrabold">{currentNode ?? "-"}</p>
+            </div>
+            <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1 text-center text-white">
+              <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-teal-100">
+                Current Depth
+              </p>
+              <p className="mt-0.5 truncate text-lg font-extrabold">{currentDepth ?? "-"}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-1">
+            <div className="rounded-lg border bg-gradient-to-br from-cyan-700 to-cyan-500 p-1 text-center text-white">
+              <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-cyan-100">
+                Current Height
+              </p>
+              <p className="mt-0.5 text-lg font-extrabold">{currentComputedHeight || 0}</p>
+            </div>
+            <div className="rounded-lg border bg-gradient-to-br from-emerald-700 to-emerald-500 p-1 text-center text-white">
+              <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-emerald-100">
+                Max Depth
+              </p>
+              <p className="mt-0.5 truncate text-lg font-extrabold">{maxHeight}</p>
+            </div>
+          </div>
+
+          <div className="grid gap-1 rounded-lg min-h-0">
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.03em] text-slate-700">
+              Computed Node Heights
+            </p>
+            <div className="flex min-h-[32px] flex-wrap items-center gap-1 rounded-lg border border-slate-200 bg-white p-1">
+              {result.length === 0 ? (
+                <span className="text-[11px] text-slate-400">
+                  Node heights appear here...
+                </span>
+              ) : (
+                result.map((value, index) => (
+                  <span
+                    key={`${value.node}-${value.height}-${index}`}
+                    className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-teal-700 to-teal-400 px-2.5 py-1 text-xs font-extrabold text-white"
+                  >
+                    Node {value.node}: {value.height}
+                  </span>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] text-slate-700">
+            <span className="font-bold">Phase:</span> {currentPhase}
+            {activeStep?.index !== undefined ? (
+              <span className="ml-2 font-semibold">Index: {activeStep.index}</span>
+            ) : null}
+          </div>
+
+          <div
+            className={`rounded-lg border px-2.5 py-2 text-xs leading-snug ${
+              currentStep >= totalSteps
+                ? "border-emerald-200 bg-emerald-50 font-bold text-emerald-900"
+                : "border-amber-200 bg-amber-50 text-amber-900"
+            }`}
+          >
+            {currentStep >= totalSteps ? "✅ " : "👉 "}
+            <span className="font-bold">{completionMessage}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

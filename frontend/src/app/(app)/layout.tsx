@@ -21,7 +21,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     pathname.startsWith("/problems/binary-tree/vertical-order-traversal") ||
     pathname.startsWith("/problems/binary-tree/root-to-node-path-in-a-binary-tree") ||
     pathname.startsWith("/problems/binary-tree/max-width-of-a-binary-tree") ||
-    pathname.startsWith("/problems/binary-tree/level-order-traversal");
+    pathname.startsWith("/problems/binary-tree/level-order-traversal") ||
+    pathname.startsWith("/problems/binary-tree/height-of-a-binary-tree");
   const isBinaryTreeProblemRoute = pathname.startsWith("/problems/binary-tree/");
   const isProblemFocusPage = isTraversalPage || isBinaryTreeProblemRoute;
 
