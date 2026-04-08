@@ -1,0 +1,424 @@
+<style>
+  * { box-sizing: border-box; }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; font-family: var(--font-sans); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber { background: #FAEEDA; color: #854F0B; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .badge-coral { background: #FAECE7; color: #993C1D; }
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+  .rule-box { background: #EEEDFE; padding: 1rem 1.25rem; border-left: 3px solid #7F77DD; border-radius: 0; }
+  .rule-text { font-size: 18px; font-weight: 500; color: #26215C; line-height: 1.8; }
+  .step-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: #EEEDFE; color: #3C3489; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13.5px; line-height: 2; }
+  .c-kw { color: #cba6f7; } .c-fn { color: #89b4fa; } .c-cm { color: #6c7086; font-style:italic; } .c-plain { color: #cdd6f4; } .c-num { color: #fab387; }
+  .dry-run-row { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .dry-run-row:last-child { border-bottom: none; }
+  .dry-cell { padding: 10px 14px; font-size: 13px; color: var(--color-text-primary); line-height: 1.5; }
+  .dry-head { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); padding: 8px 14px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .complexity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why { font-size: 13px; margin-top: 6px; }
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot { width: 8px; height: 8px; border-radius: 50%; background: #7F77DD; flex-shrink: 0; margin-top: 7px; }
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+  .analogy-box { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+  .highlight-row { background: var(--color-background-secondary); }
+
+  /* toggle */
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+
+  /* deep mode */
+  .deep-section { margin-bottom: 3rem; }
+  .callout { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-purple { background: #EEEDFE; border-left: 3px solid #7F77DD; border-radius: 0; }
+  .callout-purple p { color: #26215C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+  .trace-step { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge { min-width: 68px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; white-space: nowrap; }
+  .trace-pre  { background: #E6F1FB; color: #185FA5; }
+  .trace-in   { background: #E1F5EE; color: #0F6E56; }
+  .trace-post { background: #FAECE7; color: #993C1D; }
+  .trace-push { background: #EEEDFE; color: #534AB7; }
+  .trace-pop  { background: #FAEEDA; color: #854F0B; }
+  .trace-content { flex: 1; }
+  .trace-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+  .stack-visual { font-family: var(--font-mono); font-size: 13px; background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .stack-frame { padding: 5px 10px; border-radius: 4px; margin-bottom: 4px; color: #cdd6f4; }
+  .stack-top { background: #313244; border-left: 2px solid #89b4fa; }
+  .stack-mid { background: #1e1e2e; border-left: 2px solid #45475a; color: #6c7086; }
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+  /* state pill */
+  .state-pill { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+  .s1 { background: #E6F1FB; color: #185FA5; }
+  .s2 { background: #E1F5EE; color: #0F6E56; }
+  .s3 { background: #FAECE7; color: #993C1D; }
+
+  /* three-col traversal compare */
+  .trav-compare { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+  .trav-col { border-radius: var(--border-radius-md); padding: 1rem; }
+  .trav-col-pre  { background: #E6F1FB; }
+  .trav-col-in   { background: #E1F5EE; }
+  .trav-col-post { background: #FAECE7; }
+  .trav-col-title { font-size: 12px; font-weight: 500; margin: 0 0 6px; }
+  .trav-col-pre  .trav-col-title { color: #185FA5; }
+  .trav-col-in   .trav-col-title { color: #0F6E56; }
+  .trav-col-post .trav-col-title { color: #993C1D; }
+  .trav-col-order { font-size: 13px; font-family: var(--font-mono); margin: 0 0 6px; }
+  .trav-col-pre  .trav-col-order { color: #0C447C; }
+  .trav-col-in   .trav-col-order { color: #085041; }
+  .trav-col-post .trav-col-order { color: #712B13; }
+  .trav-col-result { font-size: 12px; color: var(--color-text-secondary); margin: 0; }
+</style>
+
+<div class="page">
+
+  <div class="section">
+    <p class="section-label">Binary Tree · DFS</p>
+    <h1 class="hero-title">Pre, In & Post Order in One Traversal</h1>
+    <p class="hero-sub">Compute all three DFS traversals simultaneously in a single pass using an explicit stack and a visit-count per node.</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-purple">Stack</span>
+      <span class="badge badge-teal">DFS</span>
+      <span class="badge badge-amber">Optimization</span>
+      <span class="badge badge-coral">Interview Hard</span>
+    </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn" id="btn-deep" onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ═══════ QUICK MODE ═══════ -->
+  <div id="quick-mode">
+    <hr class="divider">
+
+    <div class="section">
+      <p class="section-label">01 · The core idea</p>
+      <div class="rule-box" style="margin-bottom:0.75rem;">
+        <p class="rule-text">
+          Each node is pushed onto the stack with a counter starting at <strong style="font-weight:500;">1</strong>.<br>
+          State 1 → record <span class="state-pill s1">Preorder</span>, push left<br>
+          State 2 → record <span class="state-pill s2">Inorder</span>, push right<br>
+          State 3 → record <span class="state-pill s3">Postorder</span>, pop
+        </p>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">Every node is visited exactly 3 times. The state counter decides what to do on each visit.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">02 · The three traversals compared</p>
+      <div class="trav-compare">
+        <div class="trav-col trav-col-pre">
+          <p class="trav-col-title">Preorder</p>
+          <p class="trav-col-order">Root → L → R</p>
+          <p class="trav-col-result">Result: [1,2,4,5,3,6,7]</p>
+        </div>
+        <div class="trav-col trav-col-in">
+          <p class="trav-col-title">Inorder</p>
+          <p class="trav-col-order">L → Root → R</p>
+          <p class="trav-col-result">Result: [4,2,5,1,6,3,7]</p>
+        </div>
+        <div class="trav-col trav-col-post">
+          <p class="trav-col-title">Postorder</p>
+          <p class="trav-col-order">L → R → Root</p>
+          <p class="trav-col-result">Result: [4,5,2,6,7,3,1]</p>
+        </div>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">Normally these need 3 separate DFS passes. This algorithm does all three in one pass.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">03 · Algorithm steps</p>
+      <div class="card">
+        <div class="step-row"><div class="step-num">1</div><div><div class="step-text">Push <code style="font-size:13px;background:var(--color-background-secondary);padding:2px 5px;border-radius:4px;">(root, state=1)</code> onto the stack</div><div class="step-sub">Each stack frame is a (node, count) pair.</div></div></div>
+        <div class="step-row"><div class="step-num">2</div><div><div class="step-text">Pop top frame. Check the state counter.</div><div class="step-sub">Increment counter and push the frame back before doing any child push.</div></div></div>
+        <div class="step-row"><div class="step-num">3</div><div><div class="step-text"><span class="state-pill s1">State 1</span> → add to pre[], push left child (state=1)</div></div></div>
+        <div class="step-row"><div class="step-num">4</div><div><div class="step-text"><span class="state-pill s2">State 2</span> → add to in[], push right child (state=1)</div></div></div>
+        <div class="step-row" style="margin-bottom:0;"><div class="step-num">5</div><div><div class="step-text"><span class="state-pill s3">State 3</span> → add to post[], do not push back</div><div class="step-sub">Node is fully processed. Naturally falls off the stack.</div></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">04 · Code</p>
+      <div class="code-block">
+        <div><span class="c-kw">def</span> <span class="c-fn">allTraversals</span><span class="c-plain">(root):</span></div>
+        <div><span class="c-plain">    pre, ino, post = [], [], []</span></div>
+        <div><span class="c-plain">    stack = [(root, </span><span class="c-num">1</span><span class="c-plain">)]  </span><span class="c-cm"># (node, state)</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">while</span><span class="c-plain"> stack:</span></div>
+        <div><span class="c-plain">        node, state = stack.pop()</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">if</span><span class="c-plain"> state == </span><span class="c-num">1</span><span class="c-plain">:              </span><span class="c-cm"># first visit → preorder</span></div>
+        <div><span class="c-plain">            pre.append(node.val)</span></div>
+        <div><span class="c-plain">            stack.append((node, </span><span class="c-num">2</span><span class="c-plain">))   </span><span class="c-cm"># come back at state 2</span></div>
+        <div><span class="c-plain">            </span><span class="c-kw">if</span><span class="c-plain"> node.left: stack.append((node.left, </span><span class="c-num">1</span><span class="c-plain">))</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">elif</span><span class="c-plain"> state == </span><span class="c-num">2</span><span class="c-plain">:             </span><span class="c-cm"># second visit → inorder</span></div>
+        <div><span class="c-plain">            ino.append(node.val)</span></div>
+        <div><span class="c-plain">            stack.append((node, </span><span class="c-num">3</span><span class="c-plain">))   </span><span class="c-cm"># come back at state 3</span></div>
+        <div><span class="c-plain">            </span><span class="c-kw">if</span><span class="c-plain"> node.right: stack.append((node.right, </span><span class="c-num">1</span><span class="c-plain">))</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">else</span><span class="c-plain">:                       </span><span class="c-cm"># third visit → postorder</span></div>
+        <div><span class="c-plain">            post.append(node.val)</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">return</span><span class="c-plain"> pre, ino, post</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">05 · Complexity</p>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#EEEDFE;"><div class="complexity-label" style="color:#534AB7;">Time</div><div class="complexity-value" style="color:#3C3489;">O(n)</div><div class="complexity-why" style="color:#534AB7;">Each node is pushed/popped exactly 3 times. Total operations = 3n.</div></div>
+        <div class="complexity-card" style="background:#FAECE7;"><div class="complexity-label" style="color:#993C1D;">Space</div><div class="complexity-value" style="color:#712B13;">O(n)</div><div class="complexity-why" style="color:#993C1D;">Stack holds at most O(h) frames at once. Output arrays together hold 3n values.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">06 · Interview uses</p>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Optimize multiple traversal calls</strong> — when a problem requires more than one traversal result, this avoids repeated tree walks.</p></div>
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Iterative DFS mastery</strong> — demonstrates deep understanding of the call stack and how recursion works under the hood.</p></div>
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Tree reconstruction</strong> — preorder + inorder together uniquely identify a binary tree. Getting both in one pass is efficient.</p></div>
+        <div class="interview-item" style="border:none;"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Space-constrained environments</strong> — avoids 3× recursion overhead when working with very deep or large trees.</p></div>
+      </div>
+    </div>
+  </div><!-- end quick-mode -->
+
+  <!-- ═══════ DEEP MODE ═══════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr class="divider">
+
+    <div class="deep-section">
+      <p class="section-label">01 · Why do we need this at all?</p>
+      <h2 class="section-title">The problem with three separate traversals</h2>
+      <p class="deep-para">You already know how to do inorder, preorder, and postorder traversal individually — each is a clean recursive function. But what if you need all three results from the same tree? The naive approach is to call three separate functions, each walking every node once. That works, but it means three full passes over the tree.</p>
+      <div class="callout callout-purple"><p>This algorithm does all three traversals in a single pass — O(n) time, touching each node exactly 3 times instead of n×3 = 3n separate function calls spread across three traversals.</p></div>
+      <p class="deep-para">The key insight: when recursion traverses a tree, every node is actually encountered three times — once going in (before left), once between left and right, and once coming back up (after right). Those three moments are exactly when preorder, inorder, and postorder record their values.</p>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">02 · The three moments of a node</p>
+      <h2 class="section-title">When does each traversal "see" a node?</h2>
+      <p class="deep-para">Think about what happens when the recursive call stack visits any node during a normal DFS. It passes through that node three distinct times:</p>
+      <div class="card" style="padding:0; overflow:hidden; margin-bottom:1rem;">
+        <div style="display:grid;grid-template-columns:80px 1fr 1fr;">
+          <div class="dry-head" style="border-right:0.5px solid var(--color-border-tertiary);">Visit</div>
+          <div class="dry-head" style="border-right:0.5px solid var(--color-border-tertiary);">When it happens</div>
+          <div class="dry-head">Which traversal records here</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);"><span class="state-pill s1">1st</span></div>
+          <div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);">Just entered the node, before going left</div>
+          <div class="dry-cell"><strong style="font-weight:500;">Preorder</strong> — Root before children</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);"><span class="state-pill s2">2nd</span></div>
+          <div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);">Returned from left subtree, before going right</div>
+          <div class="dry-cell"><strong style="font-weight:500;">Inorder</strong> — Root between children</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);"><span class="state-pill s3">3rd</span></div>
+          <div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);">Returned from right subtree, about to go up</div>
+          <div class="dry-cell"><strong style="font-weight:500;">Postorder</strong> — Root after children</div>
+        </div>
+      </div>
+      <div class="callout callout-info"><p>This is the fundamental insight. All three traversals are just different "checkpoints" at the same node during a single DFS walk. The algorithm makes this explicit with a state counter.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">03 · The state counter — the key mechanism</p>
+      <h2 class="section-title">How the stack tracks which visit this is</h2>
+      <p class="deep-para">Since we're implementing this iteratively (without recursion), we need to manually track "which visit is this for this node." We do this by storing a state counter alongside each node on the stack.</p>
+      <p class="deep-para">Each stack entry is a pair: <code style="font-size:13px;background:var(--color-background-secondary);padding:2px 6px;border-radius:4px;">(node, state)</code> where state starts at 1 and increments each time we revisit the node.</p>
+      <div class="trav-compare">
+        <div class="trav-col trav-col-pre">
+          <p class="trav-col-title">State = 1</p>
+          <p class="trav-col-order">First arrival</p>
+          <p class="trav-col-result">→ Record for preorder, push left child</p>
+        </div>
+        <div class="trav-col trav-col-in">
+          <p class="trav-col-title">State = 2</p>
+          <p class="trav-col-order">Back from left</p>
+          <p class="trav-col-result">→ Record for inorder, push right child</p>
+        </div>
+        <div class="trav-col trav-col-post">
+          <p class="trav-col-title">State = 3</p>
+          <p class="trav-col-order">Back from right</p>
+          <p class="trav-col-result">→ Record for postorder, done</p>
+        </div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why do we push the node back with an incremented state before pushing the child?</div>
+        <div class="qa-a">Because we want to return to this node after the child is fully processed. The stack is LIFO — last in, first out. So we push the node back first (it will be processed later), then push the child on top (it will be processed next). When the child finishes, the parent node is waiting on the stack at the next state.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What if a node has no left or no right child?</div>
+        <div class="qa-a">We simply skip the push. If <code style="font-size:13px;">node.left</code> is None at state 1, we don't push anything for the left child — we just push the node back at state 2. The algorithm handles missing children naturally with the <code style="font-size:13px;">if node.left:</code> guard.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What does the stack look like at its deepest point?</div>
+        <div class="qa-a">
+          When we first reach node 4 (leftmost leaf) from root 1, the stack looks like this:
+          <div class="stack-visual" style="margin-top:10px;">
+            <div class="stack-frame stack-top">→ (node=4, state=1) &nbsp;<span style="color:#6c7086;">← about to process</span></div>
+            <div class="stack-frame stack-mid">&nbsp;&nbsp; (node=2, state=2) &nbsp;<span style="color:#45475a;">← waiting for left to finish</span></div>
+            <div class="stack-frame stack-mid">&nbsp;&nbsp; (node=1, state=2) &nbsp;<span style="color:#45475a;">← waiting for left to finish</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">04 · Code — line by line</p>
+      <h2 class="section-title">Understanding every line</h2>
+      <div class="code-block" style="margin-bottom:1.25rem;">
+        <div><span class="c-kw">def</span> <span class="c-fn">allTraversals</span><span class="c-plain">(root):</span></div>
+        <div><span class="c-plain">    pre, ino, post = [], [], []</span></div>
+        <div><span class="c-plain">    stack = [(root, </span><span class="c-num">1</span><span class="c-plain">)]  </span><span class="c-cm"># start: root at state 1</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">while</span><span class="c-plain"> stack:           </span><span class="c-cm"># keep going until stack empty</span></div>
+        <div><span class="c-plain">        node, state = stack.pop()</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">if</span><span class="c-plain"> state == </span><span class="c-num">1</span><span class="c-plain">:</span></div>
+        <div><span class="c-plain">            pre.append(node.val)          </span><span class="c-cm"># 1st visit = preorder</span></div>
+        <div><span class="c-plain">            stack.append((node, </span><span class="c-num">2</span><span class="c-plain">))        </span><span class="c-cm"># come back at state 2</span></div>
+        <div><span class="c-plain">            </span><span class="c-kw">if</span><span class="c-plain"> node.left:                  </span><span class="c-cm"># push left child if exists</span></div>
+        <div><span class="c-plain">                stack.append((node.left, </span><span class="c-num">1</span><span class="c-plain">))</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">elif</span><span class="c-plain"> state == </span><span class="c-num">2</span><span class="c-plain">:</span></div>
+        <div><span class="c-plain">            ino.append(node.val)           </span><span class="c-cm"># 2nd visit = inorder</span></div>
+        <div><span class="c-plain">            stack.append((node, </span><span class="c-num">3</span><span class="c-plain">))        </span><span class="c-cm"># come back at state 3</span></div>
+        <div><span class="c-plain">            </span><span class="c-kw">if</span><span class="c-plain"> node.right:                 </span><span class="c-cm"># push right child if exists</span></div>
+        <div><span class="c-plain">                stack.append((node.right, </span><span class="c-num">1</span><span class="c-plain">))</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">else</span><span class="c-plain">:                            </span><span class="c-cm"># 3rd visit = postorder, done</span></div>
+        <div><span class="c-plain">            post.append(node.val)</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">return</span><span class="c-plain"> pre, ino, post</span></div>
+      </div>
+      <div class="callout callout-warn"><p><strong style="font-weight:500;">Key detail:</strong> At state 3, we do NOT push the node back. It simply exits the loop. This is what makes the node "fully done" — no more revisits scheduled.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">05 · Full trace — every stack operation</p>
+      <h2 class="section-title">Step-by-step on the example tree</h2>
+      <p class="deep-para" style="margin-bottom:1.5rem;">Tree: 1 → left: 2 (children: 4, 5), right: 3 (children: 6, 7). We trace every single push, pop, and record.</p>
+
+      <div class="trace-step"><span class="trace-badge trace-push">Push</span><div class="trace-content"><p class="trace-title">Stack init: [(1,1)]</p><p class="trace-desc">Start with root node 1 at state 1.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-pre">Pre ✓</span><div class="trace-content"><p class="trace-title">Pop (1,1) → pre=[1]. Push (1,2), push (2,1)</p><p class="trace-desc">State 1: record 1 for preorder. Push 1 back at state 2, then push left child 2 at state 1. Stack: [(1,2),(2,1)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-pre">Pre ✓</span><div class="trace-content"><p class="trace-title">Pop (2,1) → pre=[1,2]. Push (2,2), push (4,1)</p><p class="trace-desc">State 1: record 2 for preorder. Push 2 back at state 2, push left child 4. Stack: [(1,2),(2,2),(4,1)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-pre">Pre ✓</span><div class="trace-content"><p class="trace-title">Pop (4,1) → pre=[1,2,4]. Push (4,2). No left child.</p><p class="trace-desc">State 1: record 4. Push 4 back at state 2. Node 4 has no left, so nothing else pushed. Stack: [(1,2),(2,2),(4,2)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-in">In ✓</span><div class="trace-content"><p class="trace-title">Pop (4,2) → ino=[4]. Push (4,3). No right child.</p><p class="trace-desc">State 2: record 4 for inorder. Push 4 at state 3. No right child. Stack: [(1,2),(2,2),(4,3)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-post">Post ✓</span><div class="trace-content"><p class="trace-title">Pop (4,3) → post=[4]. Done with node 4.</p><p class="trace-desc">State 3: record 4 for postorder. Do not push back. Node 4 fully processed. Stack: [(1,2),(2,2)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-in">In ✓</span><div class="trace-content"><p class="trace-title">Pop (2,2) → ino=[4,2]. Push (2,3), push (5,1)</p><p class="trace-desc">State 2: record 2 for inorder. Push 2 at state 3, push right child 5 at state 1. Stack: [(1,2),(2,3),(5,1)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-pre">Pre ✓</span><div class="trace-content"><p class="trace-title">Pop (5,1) → pre=[1,2,4,5]. Push (5,2). No left child.</p><p class="trace-desc">State 1: record 5 for preorder. No left child. Stack: [(1,2),(2,3),(5,2)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-in">In ✓</span><div class="trace-content"><p class="trace-title">Pop (5,2) → ino=[4,2,5]. Push (5,3). No right child.</p><p class="trace-desc">State 2: record 5 for inorder. No right child. Stack: [(1,2),(2,3),(5,3)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-post">Post ✓</span><div class="trace-content"><p class="trace-title">Pop (5,3) → post=[4,5]. Done with node 5.</p><p class="trace-desc">State 3: record 5 for postorder. Stack: [(1,2),(2,3)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-post">Post ✓</span><div class="trace-content"><p class="trace-title">Pop (2,3) → post=[4,5,2]. Done with node 2.</p><p class="trace-desc">State 3: record 2 for postorder. Left subtree of root fully done. Stack: [(1,2)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-in">In ✓</span><div class="trace-content"><p class="trace-title">Pop (1,2) → ino=[4,2,5,1]. Push (1,3), push (3,1)</p><p class="trace-desc">State 2: record root 1 for inorder. Push 1 at state 3, push right child 3 at state 1. Stack: [(1,3),(3,1)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-pre">Pre ✓</span><div class="trace-content"><p class="trace-title">Pop (3,1) → pre=[1,2,4,5,3]. Push (3,2), push (6,1)</p><p class="trace-desc">State 1: record 3 for preorder. Push right subtree next. Stack: [(1,3),(3,2),(6,1)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-in">In ✓</span><div class="trace-content"><p class="trace-title">Pop (6,1)→pre=[…,6], (6,2)→ino=[…,6], (6,3)→post=[…,6]</p><p class="trace-desc">Node 6 is a leaf — state 1, 2, 3 processed back-to-back rapidly. pre=[1,2,4,5,3,6], ino=[4,2,5,1,6], post=[4,5,2,6]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-in">In ✓</span><div class="trace-content"><p class="trace-title">Pop (3,2) → ino=[4,2,5,1,6,3]. Push (3,3), push (7,1)</p><p class="trace-desc">State 2: record 3 for inorder. Push right child 7. Stack: [(1,3),(3,3),(7,1)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-post">Post ✓</span><div class="trace-content"><p class="trace-title">Node 7 processed (leaf), then (3,3)→post=[…,3], then (1,3)→post=[…,1]</p><p class="trace-desc">Final results: pre=[1,2,4,5,3,6,7] · ino=[4,2,5,1,6,3,7] · post=[4,5,2,6,7,3,1] ✓ Stack empty.</p></div></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">06 · Common beginner mistakes</p>
+      <h2 class="section-title">What trips people up</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting to push the node back before pushing the child</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">At state 1, you must push <code style="font-size:12px;">(node, 2)</code> before pushing the left child. If you push the child first, the parent will be processed immediately after the child is pushed — before the child's subtree is done.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Pushing the right child at state 1 instead of state 2</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The right child must only be pushed at state 2 — after the left subtree is completely done. Pushing it at state 1 causes the right subtree to be traversed before the left, breaking all three orders.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Pushing the node back at state 3</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">At state 3, the node is done — do not push it back. Doing so creates an infinite loop. The node only records for postorder and exits.</p></div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Using recursion and thinking this algorithm applies</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">This state-counter trick is specific to the iterative approach. In recursion, the call stack does the state tracking implicitly — you can't attach a counter to a recursive call the same way.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">07 · Complexity — the full explanation</p>
+      <h2 class="section-title">Why O(n) time and O(n) space?</h2>
+      <div class="complexity-grid" style="margin-bottom:1rem;">
+        <div class="complexity-card" style="background:#EEEDFE;"><div class="complexity-label" style="color:#534AB7;">Time</div><div class="complexity-value" style="color:#3C3489;">O(n)</div><div class="complexity-why" style="color:#534AB7;">Each of the n nodes is pushed and popped exactly 3 times — for states 1, 2, and 3. Total stack operations = 3n = O(n).</div></div>
+        <div class="complexity-card" style="background:#FAECE7;"><div class="complexity-label" style="color:#993C1D;">Space</div><div class="complexity-value" style="color:#712B13;">O(n)</div><div class="complexity-why" style="color:#993C1D;">Stack holds O(h) frames at once (h = tree height). The three output arrays hold n values each = 3n total. Combined: O(n).</div></div>
+      </div>
+      <div class="callout callout-warn"><p><strong style="font-weight:500;">Interview tip:</strong> Compared to three separate recursive traversals (each O(n) time, O(h) space), this algorithm uses the same asymptotic complexity but better constant factors — one tree walk, one stack, no repeated traversal overhead. Mention this trade-off explicitly.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">08 · Interview context</p>
+      <h2 class="section-title">Where you'll actually use this</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Tree reconstruction from traversals</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">You need both preorder and inorder to reconstruct a unique binary tree. Getting both in one pass is more efficient than two separate traversals.</p></div></div>
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Iterative DFS — signal of advanced understanding</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Implementing this iteratively shows you understand what the call stack is doing during recursion — a strong signal in senior-level interviews.</p></div></div>
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Serialize and deserialize binary tree</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Collecting preorder + inorder in one pass can feed directly into a deserialization algorithm without a second traversal.</p></div></div>
+        <div class="interview-item" style="border:none;"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Understanding all three orders simultaneously</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">If asked "explain how preorder, inorder, and postorder differ," this algorithm is the clearest way to demonstrate it — same tree, same walk, just different checkpoints.</p></div></div>
+      </div>
+    </div>
+
+  </div><!-- end deep-mode -->
+
+  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Ready to see it in action?</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">Step through the visualizer to watch all three arrays build simultaneously at each stack operation.</p>
+    </div>
+    <button style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);cursor:pointer;">Open visualizer ↗</button>
+  </div>
+
+</div>
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep  = document.getElementById('deep-mode');
+  const btnQ  = document.getElementById('btn-quick');
+  const btnD  = document.getElementById('btn-deep');
+  const desc  = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display  = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display  = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>
