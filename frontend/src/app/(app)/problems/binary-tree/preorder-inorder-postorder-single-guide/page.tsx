@@ -181,46 +181,54 @@ export default function Page() {
           </button>
         </div>
         
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-500 mb-8">
           {mode === "quick" ? "Key concepts at a glance — for those who already know the basics." : "A full beginner-friendly walkthrough — understand it from scratch."}
         </p>
       </div>
 
-      <hr className="border-gray-200 my-8" />
+      <hr className="border-t border-gray-200 mb-8" />
 
       {/* Quick Mode */}
       {mode === "quick" && (
         <div className="space-y-12">
           {/* 01 Core Idea */}
-          <section>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">01 · The core idea</p>
-            <div className="p-4 rounded" style={{background: "#EEEDFE", borderLeft: "3px solid #7F77DD"}}>
-              <p className="text-lg font-semibold text-gray-900">
-                Every node is visited exactly 3 times. The state counter decides what to do on each visit.
-              </p>
+          <div className="mb-12">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">01 · The core idea</p>
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-500 to-fuchsia-500 p-6 text-white shadow-lg shadow-violet-500/20">
+              <div className="absolute top-0 right-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-white/10" />
+              <div className="absolute bottom-0 left-0 h-24 w-24 -translate-x-6 translate-y-6 rounded-full bg-white/10" />
+              <div className="relative">
+                <p className="text-[18px] leading-relaxed font-semibold tracking-wide mb-2">
+                  Every node is visited exactly 3 times. The state counter decides what to do on each visit.
+                </p>
+                <p className="text-violet-100 text-[14px]">
+                  Normally, these need 3 separate DFS passes. This algorithm does all three in one pass.
+                </p>
+              </div>
             </div>
-            <p className="text-sm text-gray-600 mt-3">Every node is visited exactly 3 times. The state counter decides what to do on each visit.</p>
-          </section>
+          </div>
 
           {/* 02 Three Traversals Compared */}
-          <section>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">02 · The three traversals compared</p>
-            <div className="grid grid-cols-3 gap-3 mb-4">
-              <div className="p-4 rounded" style={{background: "#E6F1FB"}}>
-                <p className="text-xs font-medium text-blue-700 mb-2">Preorder</p>
-                <p className="font-mono text-sm font-semibold text-blue-900">[1,2,4,5,3,6,7]</p>
+          <div className="mb-12">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">02 · The three traversals compared</p>
+            <div className="grid grid-cols-3 gap-4 mb-4">
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600 mb-3">1</div>
+                <p className="text-sm font-semibold text-slate-900 mb-1">Preorder</p>
+                <p className="font-mono text-[13px] font-medium text-blue-700">[1, 2, 4, 5, 3, 6, 7]</p>
               </div>
-              <div className="p-4 rounded" style={{background: "#E1F5EE"}}>
-                <p className="text-xs font-medium text-teal-700 mb-2">Inorder</p>
-                <p className="font-mono text-sm font-semibold text-teal-900">[4,2,5,1,6,3,7]</p>
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 mb-3">2</div>
+                <p className="text-sm font-semibold text-slate-900 mb-1">Inorder</p>
+                <p className="font-mono text-[13px] font-medium text-emerald-700">[4, 2, 5, 1, 6, 3, 7]</p>
               </div>
-              <div className="p-4 rounded" style={{background: "#FAECE7"}}>
-                <p className="text-xs font-medium text-orange-700 mb-2">Postorder</p>
-                <p className="font-mono text-sm font-semibold text-orange-900">[4,5,2,6,7,3,1]</p>
+              <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-50 text-orange-600 mb-3">3</div>
+                <p className="text-sm font-semibold text-slate-900 mb-1">Postorder</p>
+                <p className="font-mono text-[13px] font-medium text-orange-700">[4, 5, 2, 6, 7, 3, 1]</p>
               </div>
             </div>
-            <p className="text-sm text-gray-600">Normally these need 3 separate DFS passes. This algorithm does all three in one pass.</p>
-          </section>
+          </div>
 
           {/* 03 Algorithm Steps */}
           <section>
@@ -289,7 +297,7 @@ export default function Page() {
                   <div className="flex-shrink-0 w-2 h-2 rounded-full mt-2" style={{background: "#7F77DD"}}></div>
                   <div>
                     <p className="text-sm font-medium text-gray-900">{item.title}</p>
-                    <p className="text-sm text-gray-600">— {item.desc}</p>
+                    <p className="text-[14px] leading-relaxed text-slate-700">— {item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -303,7 +311,7 @@ export default function Page() {
         <div className="space-y-12">
           {/* 01 Why do we need this */}
           <section>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">01 · Why do we need this at all?</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">01 · Why do we need this at all?</p>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">The problem with three separate traversals</h2>
             <p className="text-sm text-gray-700 mb-4 leading-relaxed">
               You already know how to do inorder, preorder, and postorder traversal individually — each is a clean recursive function. But what if you need all three results from the same tree? The naive approach is to call three separate functions, each walking every node once. That works, but it means three full passes over the tree.
@@ -320,7 +328,7 @@ export default function Page() {
 
           {/* 02 Three moments */}
           <section>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">02 · The three moments of a node</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">02 · The three moments of a node</p>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">When does each traversal "see" a node?</h2>
             <p className="text-sm text-gray-700 mb-4 leading-relaxed">
               Think about what happens when the recursive call stack visits any node during a normal DFS. It passes through that node three distinct times:
@@ -356,7 +364,7 @@ export default function Page() {
 
           {/* 03 State Counter */}
           <section>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">03 · The state counter — the key mechanism</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">03 · The state counter — the key mechanism</p>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">How the stack tracks which visit this is</h2>
             <p className="text-sm text-gray-700 mb-4 leading-relaxed">
               Since we're implementing this iteratively (without recursion), we need to manually track which visit this is for this node. We do this by storing a state counter alongside each node on the stack.
@@ -396,29 +404,21 @@ export default function Page() {
 
           {/* 04 Full Trace */}
           <section>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">04 · Full trace — every stack operation</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">04 · Full trace — every stack operation</p>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Step-by-step on the example tree</h2>
             <p className="text-sm text-gray-600 mb-4">Tree: 1 → left: 2 (children: 4, 5), right: 3 (children: 6, 7). We trace every single push, pop, and record.</p>
             
-            <div className="space-y-3">
+            <div className="space-y-4">
               {TRACE_STEPS.map((step, idx) => (
-                <div key={idx} className="flex gap-3">
+                <div key={idx} className="flex gap-4 items-start">
                   <span
-                    className="inline-block px-2 py-1 rounded-full text-xs font-bold flex-shrink-0 text-center min-w-12 whitespace-nowrap"
-                    style={{
-                      background: step.badge === "push" ? "#EEEDFE" : 
-                               step.badge === "pre" ? "#E6F1FB" :
-                               step.badge === "in" ? "#E1F5EE" : "#FAECE7",
-                      color: step.badge === "push" ? "#534AB7" : 
-                             step.badge === "pre" ? "#185FA5" :
-                             step.badge === "in" ? "#0F6E56" : "#993C1D"
-                    }}
+                    className={`shrink-0 text-[11px] font-semibold px-3 py-1 rounded-full text-center ${step.badge === 'push' ? 'bg-violet-100 text-violet-700' : step.badge === 'pre' ? 'bg-blue-100 text-blue-700' : step.badge === 'in' ? 'bg-emerald-100 text-emerald-700' : 'bg-orange-100 text-orange-700'}`}
                   >
                     {step.badge === "push" ? "Push" : step.badge === "pre" ? "Pre ✓" : step.badge === "in" ? "In ✓" : "Post ✓"}
                   </span>
                   <div className="flex-1">
-                    <p className="font-semibold text-sm text-gray-900">{step.title}</p>
-                    <p className="text-sm text-gray-600 mt-1">{step.desc}</p>
+                    <p className="text-sm font-medium text-slate-800 mb-0.5">{step.title}</p>
+                    <p className="text-[13px] text-slate-500 leading-relaxed mt-0">{step.desc}</p>
                   </div>
                 </div>
               ))}
@@ -427,7 +427,7 @@ export default function Page() {
 
           {/* 05 Beginner Mistakes */}
           <section>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">05 · Common beginner mistakes</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">05 · Common beginner mistakes</p>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">What trips people up</h2>
             <div className="space-y-3 bg-white border border-gray-200 p-4 rounded-lg">
               {BEGINNER_MISTAKES.map((mistake, idx) => (
@@ -446,7 +446,7 @@ export default function Page() {
 
           {/* 06 Complexity */}
           <section>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">06 · Complexity — the full explanation</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">06 · Complexity — the full explanation</p>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Why O(n) time and O(n) space?</h2>
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div className="p-4 rounded" style={{background: "#EEEDFE"}}>
@@ -467,7 +467,7 @@ export default function Page() {
 
           {/* 07 Interview Context */}
           <section>
-            <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-2">07 · Interview context</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">07 · Interview context</p>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Where you'll actually use this</h2>
             <div className="space-y-3 bg-white border border-gray-200 p-4 rounded-lg">
               {INTERVIEW_ITEMS.map((item, idx) => (
@@ -475,7 +475,7 @@ export default function Page() {
                   <div className="flex-shrink-0 w-2 h-2 rounded-full mt-2" style={{background: "#7F77DD"}}></div>
                   <div>
                     <p className="text-sm font-medium text-gray-900">{item.title}</p>
-                    <p className="text-sm text-gray-600">— {item.desc}</p>
+                    <p className="text-[14px] leading-relaxed text-slate-700">— {item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -485,7 +485,7 @@ export default function Page() {
       )}
 
       {/* CTA */}
-      <hr className="border-gray-200 my-8" />
+      <hr className="border-t border-gray-200 mb-8 mt-12" />
       <div className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-lg flex-wrap">
         <div>
           <p className="font-semibold text-sm text-gray-900">Ready to see it in action?</p>
