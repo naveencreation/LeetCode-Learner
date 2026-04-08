@@ -154,11 +154,11 @@ a {
 
 @layer components {
   .traversal-panel {
-    @apply rounded-xl border border-slate-200 bg-white shadow-[0_2px_10px_rgba(17,24,39,0.06)];
+    @apply rounded-xl border border-slate-100 bg-white shadow-[0_1px_6px_rgba(17,24,39,0.04)];
   }
 
   .traversal-panel-header {
-    @apply mb-0.5 flex items-center justify-between;
+    @apply mb-1 flex items-center justify-between border-b border-slate-100/90 pb-1;
   }
 
   .traversal-panel-title {

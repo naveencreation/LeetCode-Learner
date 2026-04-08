@@ -31,7 +31,7 @@ export function ProblemFocusHeader({
   backLabel = "Back To Trees List",
 }: ProblemFocusHeaderProps) {
   return (
-    <header className="sticky top-0 z-20 grid shrink-0 items-center gap-1.5 border-b border-slate-200/70 bg-white/85 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-white/70 lg:grid-cols-[minmax(280px,1fr)_auto] md:px-4">
+    <header className="sticky top-0 z-20 grid shrink-0 items-center gap-1.5 border-b border-slate-100/90 bg-white/85 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-white/70 lg:grid-cols-[minmax(280px,1fr)_auto] md:px-4">
       <div className="min-w-0">
         <h1 className="text-[clamp(20px,2vw,28px)] font-extrabold leading-[1.15] tracking-[-0.02em] text-slate-900">
           {title}
