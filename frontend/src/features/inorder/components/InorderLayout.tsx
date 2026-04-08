@@ -45,6 +45,28 @@ function getHeaderMinimumHeight(panelRef: RefObject<HTMLDivElement | null>): num
   return Math.ceil(headerElement.getBoundingClientRect().height + HEADER_COLLAPSE_PADDING_PX);
 }
 
+function getHeaderMinimumWidth(
+  panelRef: RefObject<HTMLDivElement | null>,
+  fallback: number,
+): number {
+  const panel = panelRef.current;
+  if (!panel) {
+    return fallback;
+  }
+
+  const headerElement = panel.querySelector<HTMLElement>(".traversal-panel-header");
+  if (!headerElement) {
+    return fallback;
+  }
+
+  const measured = Math.ceil(headerElement.scrollWidth + 20);
+  if (!Number.isFinite(measured) || measured <= 0) {
+    return fallback;
+  }
+
+  return Math.max(fallback, measured);
+}
+
 function setCollapsedVisualState(
   panelWrapperRef: RefObject<HTMLDivElement | null>,
   isCollapsed: boolean,
@@ -77,6 +99,71 @@ function normalizeDistribution(
   return values.map((value) => (value / total) * 100);
 }
 
+function getGridAvailableWidth(gridElement: HTMLDivElement): number {
+  const rect = gridElement.getBoundingClientRect();
+  return Math.max(rect.width - COLUMN_GAP_PX * 2, 1);
+}
+
+function getEffectiveColumnMinimums(
+  availableWidth: number,
+  requestedMins: [number, number, number],
+): [number, number, number] {
+  const baseMins = [...requestedMins] as [number, number, number];
+  const totalBaseMins = baseMins[0] + baseMins[1] + baseMins[2];
+
+  if (availableWidth >= totalBaseMins) {
+    return baseMins;
+  }
+
+  const scale = availableWidth / totalBaseMins;
+  return [
+    Math.max(baseMins[0] * scale, 1),
+    Math.max(baseMins[1] * scale, 1),
+    Math.max(baseMins[2] * scale, 1),
+  ];
+}
+
+function constrainColumnPercents(
+  percents: [number, number, number],
+  availableWidth: number,
+  requestedMins: [number, number, number],
+): [number, number, number] {
+  const mins = getEffectiveColumnMinimums(availableWidth, requestedMins);
+  let widths = percents.map((percent) => (percent / 100) * availableWidth) as [
+    number,
+    number,
+    number,
+  ];
+
+  widths = widths.map((width, index) => Math.max(width, mins[index])) as [number, number, number];
+
+  const overflow = widths[0] + widths[1] + widths[2] - availableWidth;
+  if (overflow > 0) {
+    const reducible = widths.map((width, index) => width - mins[index]) as [number, number, number];
+    const totalReducible = reducible[0] + reducible[1] + reducible[2];
+
+    if (totalReducible > 0) {
+      widths = widths.map((width, index) => {
+        const reduction = (overflow * reducible[index]) / totalReducible;
+        return width - reduction;
+      }) as [number, number, number];
+    } else {
+      widths = mins;
+    }
+  }
+
+  const total = widths[0] + widths[1] + widths[2];
+  if (total <= 0) {
+    return DEFAULT_COLUMN_PERCENTS;
+  }
+
+  return [
+    (widths[0] / total) * 100,
+    (widths[1] / total) * 100,
+    (widths[2] / total) * 100,
+  ];
+}
+
 export function InorderLayout() {
   const pathname = usePathname();
   const [isTreeSetupOpen, setIsTreeSetupOpen] = useState(false);
@@ -101,6 +188,18 @@ export function InorderLayout() {
   const middleBottomPanelRef = useRef<HTMLDivElement | null>(null);
   const rightTopPanelRef = useRef<HTMLDivElement | null>(null);
   const rightBottomPanelRef = useRef<HTMLDivElement | null>(null);
+  const persistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const getRequestedColumnMinimums = useCallback(
+    (): [number, number, number] => [
+      MIN_COLUMN_WIDTHS[0],
+      getHeaderMinimumWidth(middleTopPanelRef, MIN_COLUMN_WIDTHS[1]),
+      Math.max(
+        getHeaderMinimumWidth(rightTopPanelRef, MIN_COLUMN_WIDTHS[2]),
+        getHeaderMinimumWidth(rightBottomPanelRef, MIN_COLUMN_WIDTHS[2]),
+      ),
+    ],
+    [],
+  );
   const layoutStorageKey = useMemo(() => {
     if (!pathname) {
       return null;
@@ -196,21 +295,77 @@ export function InorderLayout() {
       return;
     }
 
-    window.localStorage.setItem(
-      layoutStorageKey,
-      JSON.stringify({
-        columnPercents,
-        middleRowPercents,
-        rightRowPercents,
-      }),
-    );
+    const isDragging = activeDivider !== null || activeRowDivider !== null;
+    if (isDragging) {
+      if (persistTimerRef.current) {
+        clearTimeout(persistTimerRef.current);
+        persistTimerRef.current = null;
+      }
+      return;
+    }
+
+    persistTimerRef.current = setTimeout(() => {
+      window.localStorage.setItem(
+        layoutStorageKey,
+        JSON.stringify({
+          columnPercents,
+          middleRowPercents,
+          rightRowPercents,
+        }),
+      );
+      persistTimerRef.current = null;
+    }, 200);
+
+    return () => {
+      if (persistTimerRef.current) {
+        clearTimeout(persistTimerRef.current);
+        persistTimerRef.current = null;
+      }
+    };
   }, [
     layoutStorageKey,
     hasLoadedLayoutMemory,
+    activeDivider,
+    activeRowDivider,
     columnPercents,
     middleRowPercents,
     rightRowPercents,
   ]);
+
+  useEffect(() => {
+    if (!isXlLayout) {
+      return;
+    }
+
+    const gridElement = gridRef.current;
+    if (!gridElement) {
+      return;
+    }
+
+    const reconcileColumns = () => {
+      const availableWidth = getGridAvailableWidth(gridElement);
+      const requestedColumnMinimums = getRequestedColumnMinimums();
+      setColumnPercents((previous) => {
+        const next = constrainColumnPercents(previous, availableWidth, requestedColumnMinimums);
+        const maxDiff = Math.max(
+          Math.abs(previous[0] - next[0]),
+          Math.abs(previous[1] - next[1]),
+          Math.abs(previous[2] - next[2]),
+        );
+
+        return maxDiff > 0.05 ? next : previous;
+      });
+    };
+
+    reconcileColumns();
+
+    const observer = new ResizeObserver(reconcileColumns);
+    observer.observe(gridElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [getRequestedColumnMinimums, isXlLayout]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 1280px)");
@@ -238,10 +393,12 @@ export function InorderLayout() {
       }
 
       const rect = gridElement.getBoundingClientRect();
-      const availableWidth = Math.max(rect.width - COLUMN_GAP_PX * 2, 1);
-      const minWidth1 = MIN_COLUMN_WIDTHS[0];
-      const minWidth2 = MIN_COLUMN_WIDTHS[1];
-      const minWidth3 = MIN_COLUMN_WIDTHS[2];
+      const availableWidth = getGridAvailableWidth(gridElement);
+      const requestedColumnMinimums = getRequestedColumnMinimums();
+      const [minWidth1, minWidth2, minWidth3] = getEffectiveColumnMinimums(
+        availableWidth,
+        requestedColumnMinimums,
+      );
 
       let [column1, column2, column3] = columnPercents.map(
         (percent) => (percent / 100) * availableWidth,
@@ -272,11 +429,13 @@ export function InorderLayout() {
       }
 
       const total = column1 + column2 + column3;
-      setColumnPercents([
+      const nextPercents: [number, number, number] = [
         (column1 / total) * 100,
         (column2 / total) * 100,
         (column3 / total) * 100,
-      ]);
+      ];
+
+      setColumnPercents(constrainColumnPercents(nextPercents, availableWidth, requestedColumnMinimums));
     };
 
     const onMouseUp = () => {
@@ -295,7 +454,7 @@ export function InorderLayout() {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
     };
-  }, [activeDivider, columnPercents, isXlLayout]);
+  }, [activeDivider, columnPercents, getRequestedColumnMinimums, isXlLayout]);
 
   useEffect(() => {
     if (!isXlLayout || activeRowDivider === null) {
@@ -444,14 +603,14 @@ export function InorderLayout() {
         className="relative grid min-h-0 overflow-hidden gap-1.5 px-2 pb-2 md:px-3 md:pb-3 xl:grid-cols-[minmax(300px,1.2fr)_minmax(380px,1.45fr)_minmax(250px,0.95fr)] xl:grid-rows-[minmax(0,1.26fr)_minmax(0,0.74fr)_auto]"
         style={gridTemplateColumns ? { gridTemplateColumns } : undefined}
       >
-        <div className="min-h-0 xl:row-span-3">
+        <div className="min-h-0 min-w-0 xl:row-span-3">
           <CodePanel
             currentCodeLine={currentCodeLine}
             executionLineNumbers={executionLineNumbers}
           />
         </div>
 
-        <div className="min-h-0 xl:col-start-2 xl:row-span-3">
+        <div className="min-h-0 min-w-0 xl:col-start-2 xl:row-span-3">
           <div
             ref={middleStackRef}
             className="grid h-full min-h-0 gap-1.5 xl:gap-0"
@@ -514,7 +673,7 @@ export function InorderLayout() {
           </div>
         </div>
 
-        <div className="min-h-0 xl:col-start-3 xl:row-span-3">
+        <div className="min-h-0 min-w-0 xl:col-start-3 xl:row-span-3">
           <div
             ref={rightStackRef}
             className="grid h-full min-h-0 gap-1.5 xl:gap-0"
