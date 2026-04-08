@@ -221,57 +221,82 @@ export default function VerticalOrderGuidePage() {
   const [mode, setMode] = useState<"quick" | "deep">("quick");
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-12 font-sans">
+    <section className="relative min-h-0 overflow-hidden bg-gradient-to-br from-slate-50 via-white to-sky-50/30">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,#e0f2fe_0%,transparent_50%),radial-gradient(ellipse_at_bottom_left,#fef3c7_0%,transparent_50%)]" />
+
+      <div className="relative z-[1] mx-auto max-w-[860px] px-6 py-6">
       <div className="mb-8">
-        <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Binary Tree - BFS + Sorting</p>
-        <h1 className="mb-2 text-3xl font-semibold text-slate-900">Vertical Order Traversal</h1>
-        <p className="mb-5 text-[15px] text-slate-600">
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="h-px w-8 bg-sky-500" />
+            <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-sky-600">Binary Tree · BFS + Sorting</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/problems/binary-tree/vertical-order-traversal"
+              className="inline-flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-xs font-medium text-sky-700 transition hover:bg-sky-100"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              Visual Editor
+            </Link>
+            <Link
+              href="/problems/topics/trees"
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+              Tree Problems
+            </Link>
+          </div>
+        </div>
+
+        <h1 className="text-3xl font-semibold text-slate-900 mb-2">Vertical Order Traversal</h1>
+        <p className="text-base text-slate-500 mb-5 max-w-xl">
           Group all nodes by column, then by row, then by value; return columns from left to right.
         </p>
 
-        <div className="mb-6 flex flex-wrap gap-2">
-          <span className="inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">BFS</span>
-          <span className="inline-block rounded-full bg-violet-100 px-3 py-1 text-xs font-medium text-violet-700">Sorting</span>
-          <span className="inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700">HashMap</span>
-          <span className="inline-block rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-700">LeetCode 987</span>
+        <div className="flex flex-wrap gap-2 mb-6">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1.5 text-xs font-medium text-emerald-700"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />BFS</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 border border-purple-200 px-3 py-1.5 text-xs font-medium text-purple-700"><span className="h-1.5 w-1.5 rounded-full bg-purple-500" />Sorting</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-3 py-1.5 text-xs font-medium text-amber-700"><span className="h-1.5 w-1.5 rounded-full bg-amber-500" />HashMap</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 border border-sky-200 px-3 py-1.5 text-xs font-medium text-sky-700"><span className="h-1.5 w-1.5 rounded-full bg-sky-500" />LeetCode 987</span>
         </div>
 
-        <div className="mb-3 inline-flex rounded-xl border border-slate-200 bg-slate-100/80 p-1">
+        <div className="inline-flex items-center rounded-xl bg-slate-100 p-1 gap-1 border border-slate-200">
           <button
             onClick={() => setMode("quick")}
-            className={`rounded-lg px-4 py-2 text-[13px] font-semibold transition-colors ${
+            className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all ${
               mode === "quick"
-                ? "bg-white text-slate-900 shadow-[0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-slate-200/50"
-                : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                ? "bg-white text-slate-900 shadow-sm border border-slate-200"
+                : "text-slate-500 hover:text-slate-700"
             }`}
           >
             Quick Recap
           </button>
           <button
             onClick={() => setMode("deep")}
-            className={`rounded-lg px-4 py-2 text-[13px] font-semibold transition-colors ${
+            className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all ${
               mode === "deep"
-                ? "bg-white text-slate-900 shadow-[0_1px_2px_rgba(0,0,0,0.04)] ring-1 ring-slate-200/50"
-                : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                ? "bg-white text-slate-900 shadow-sm border border-slate-200"
+                : "text-slate-500 hover:text-slate-700"
             }`}
           >
             Deep Explain
           </button>
         </div>
 
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-slate-400 mt-3">
           {mode === "quick"
-            ? "Key concepts at a glance - for those who already know the basics."
-            : "A full beginner-friendly walkthrough - understand it from scratch."}
+            ? "Key concepts at a glance — for those who already know the basics."
+            : "A full beginner-friendly walkthrough — understand it from scratch."}
         </p>
       </div>
 
-      <hr className="mb-8 border-t border-slate-200" />
+      <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent mb-8" />
 
       {mode === "quick" && (
         <div className="space-y-12">
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">01 - The rule</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">01 · The rule</p>
             <div className="rounded-xl border-l-4 border-blue-500 bg-blue-50 p-4">
               <p className="text-[16px] leading-relaxed text-blue-900">
                 Assign each node a (col,row), group by col, sort each group by (row,val), then return columns left to right.
@@ -281,7 +306,7 @@ export default function VerticalOrderGuidePage() {
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">02 - The key difference</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">02 · The key difference</p>
             <div className="grid gap-3 md:grid-cols-2">
               <div className="rounded-xl border border-slate-200 bg-white p-4">
                 <p className="mb-1 text-sm font-semibold text-blue-800">Top/Bottom view</p>
@@ -295,7 +320,7 @@ export default function VerticalOrderGuidePage() {
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">03 - How to think</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">03 · How to think</p>
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               <div className="space-y-4">
                 {QUICK_STEPS.map((step) => (
@@ -312,7 +337,7 @@ export default function VerticalOrderGuidePage() {
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">04 - Diagram</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">04 · Diagram</p>
             <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               <TreeDiagram />
             </div>
@@ -352,7 +377,7 @@ export default function VerticalOrderGuidePage() {
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">05 - Code</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">05 · Code</p>
             <div className="overflow-hidden rounded-2xl bg-[#1e1e2e] shadow-lg shadow-slate-900/20">
               <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-7 text-[#cdd6f4]">
 {`from collections import defaultdict, deque
@@ -381,7 +406,7 @@ def verticalOrder(root):
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">06 - Complexity</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">06 · Complexity</p>
             <div className="grid gap-3 md:grid-cols-2">
               <div className="rounded-xl bg-blue-50 p-4">
                 <p className="text-xs font-semibold uppercase tracking-wider text-blue-700">Time</p>
@@ -397,7 +422,7 @@ def verticalOrder(root):
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">07 - Interview uses</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">07 · Interview uses</p>
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               <div className="space-y-3">
                 {INTERVIEW_CONTEXT.map((item) => (
@@ -415,7 +440,7 @@ def verticalOrder(root):
       {mode === "deep" && (
         <div className="space-y-12">
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">01 - What does vertical order actually mean?</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">01 · What does vertical order actually mean?</p>
             <h2 className="mb-3 text-xl font-semibold text-slate-900">Imagining the tree as a grid</h2>
             <p className="mb-4 text-[15px] leading-relaxed text-slate-700">
               Draw the tree on graph paper: each node has a column and row. Root is (0,0). Left shifts column left, right shifts column right, depth increases row.
@@ -431,7 +456,7 @@ def verticalOrder(root):
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">02 - Why this is harder than top/bottom view</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">02 · Why this is harder than top/bottom view</p>
             <h2 className="mb-3 text-xl font-semibold text-slate-900">Three things that make it tricky</h2>
             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               <div className="grid grid-cols-[34px_1fr] bg-slate-50">
@@ -457,7 +482,7 @@ def verticalOrder(root):
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">03 - Why BFS with (col,row)</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">03 · Why BFS with (col,row)</p>
             <h2 className="mb-3 text-xl font-semibold text-slate-900">Why not DFS?</h2>
             <p className="mb-4 text-[15px] leading-relaxed text-slate-700">Both BFS and DFS are valid. BFS is usually easier to explain and reason about for row tracking.</p>
             <div className="grid gap-3 md:grid-cols-2">
@@ -476,7 +501,7 @@ def verticalOrder(root):
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">04 - Real-world analogy</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">04 · Real-world analogy</p>
             <h2 className="mb-3 text-xl font-semibold text-slate-900">Think of a city skyline</h2>
             <div className="rounded-xl bg-amber-50 p-4">
               <p className="text-[15px] leading-relaxed text-amber-900">
@@ -489,7 +514,7 @@ def verticalOrder(root):
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">05 - Code line by line</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">05 · Code line by line</p>
             <h2 className="mb-4 text-xl font-semibold text-slate-900">Understanding each decision</h2>
             <div className="overflow-hidden rounded-2xl bg-[#1e1e2e] shadow-lg shadow-slate-900/20">
               <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-7 text-[#cdd6f4]">
@@ -530,7 +555,7 @@ def verticalOrder(root):
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">06 - Full trace</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">06 · Full trace</p>
             <h2 className="mb-4 text-xl font-semibold text-slate-900">Every BFS step on the sample tree</h2>
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               <div className="space-y-4">
@@ -548,7 +573,7 @@ def verticalOrder(root):
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">07 - Common beginner mistakes</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">07 · Common beginner mistakes</p>
             <h2 className="mb-4 text-xl font-semibold text-slate-900">What trips people up</h2>
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               <div className="space-y-3">
@@ -566,7 +591,7 @@ def verticalOrder(root):
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">08 - Complexity full explanation</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">08 · Complexity full explanation</p>
             <h2 className="mb-3 text-xl font-semibold text-slate-900">Why O(n log n) time and O(n) space</h2>
             <div className="mb-4 grid gap-3 md:grid-cols-2">
               <div className="rounded-xl bg-blue-50 p-4">
@@ -586,7 +611,7 @@ def verticalOrder(root):
           </section>
 
           <section>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">09 - Interview context</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">09 · Interview context</p>
             <h2 className="mb-4 text-xl font-semibold text-slate-900">Where this shows up in interviews</h2>
             <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               <div className="space-y-3">
@@ -605,18 +630,22 @@ def verticalOrder(root):
         </div>
       )}
 
-      <div className="mt-12 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+      <div className="rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 to-sky-50/30 p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-slate-900">Ready to see it in action?</p>
-          <p className="text-[13px] text-slate-500">Step through the visualizer to watch col_map fill column by column.</p>
+          <p className="text-[15px] font-medium text-slate-800">Ready to see it in action?</p>
+          <p className="text-[13px] text-slate-500 mt-0.5">Step through the visualizer to watch col_map fill column by column.</p>
         </div>
         <Link
           href="/problems/binary-tree/vertical-order-traversal"
-          className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-[13px] font-semibold text-slate-700 transition hover:bg-slate-100"
+          className="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-medium text-white shadow-md shadow-sky-600/20 transition hover:bg-sky-700 hover:shadow-lg hover:shadow-sky-600/25"
         >
           Open Visualizer
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
         </Link>
+        </div>
       </div>
-    </div>
+      </div>
+    </section>
   );
 }
