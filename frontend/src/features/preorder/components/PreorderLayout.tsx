@@ -20,6 +20,7 @@ const TreeSetupModal = dynamic(() =>
 
 export function PreorderLayout() {
   const [isTreeSetupOpen, setIsTreeSetupOpen] = useState(false);
+  const [resetLayout, setResetLayout] = useState<(() => void) | null>(null);
 
   const {
     currentCodeLine,
@@ -72,6 +73,18 @@ export function PreorderLayout() {
           title="Preorder Tree Traversal"
           subtitle="Root -> Left -> Right recursion visualizer"
           guideHref="/problems/binary-tree/preorder-guide"
+          extraActions={
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => resetLayout?.()}
+                className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.04em] text-slate-700 transition hover:bg-slate-50"
+                title="Reset all panel sizes"
+              >
+                Reset Layout
+              </button>
+            </div>
+          }
           stats={[
             { label: "Step", value: `${currentStep}/${totalSteps}` },
             { label: "Visited", value: result.length },
@@ -132,6 +145,7 @@ export function PreorderLayout() {
             currentCodeLine={currentCodeLine}
           />
         }
+        onResetReady={(resetFn) => setResetLayout(() => resetFn)}
         className="xl:grid-cols-[minmax(300px,1.2fr)_minmax(380px,1.45fr)_minmax(250px,0.95fr)]"
       />
 

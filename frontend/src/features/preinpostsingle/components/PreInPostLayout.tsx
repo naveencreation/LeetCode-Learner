@@ -20,6 +20,7 @@ const TreeSetupModal = dynamic(() =>
 
 export function PreInPostLayout() {
   const [isTreeSetupOpen, setIsTreeSetupOpen] = useState(false);
+  const [resetLayout, setResetLayout] = useState<(() => void) | null>(null);
 
   const {
     currentCodeLine,
@@ -84,9 +85,20 @@ export function PreInPostLayout() {
           subtitle="One stack with state machine (1=PRE, 2=IN, 3=POST)"
           guideHref="/problems/binary-tree/preorder-inorder-postorder-single-guide"
           extraActions={
-            <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.04em] ${phaseBadgeClass}`}>
-              Phase: {currentPhase}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.04em] ${phaseBadgeClass}`}>
+                Phase: {currentPhase}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => resetLayout?.()}
+                className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.04em] text-slate-700 transition hover:bg-slate-50"
+                title="Reset all panel sizes"
+              >
+                Reset Layout
+              </button>
+            </div>
           }
           stats={[
             { label: "Step", value: `${currentStep}/${totalSteps}` },
@@ -152,6 +164,7 @@ export function PreInPostLayout() {
             currentCodeLine={currentCodeLine}
           />
         }
+        onResetReady={(resetFn) => setResetLayout(() => resetFn)}
         className="xl:grid-cols-[minmax(300px,1.2fr)_minmax(380px,1.45fr)_minmax(250px,0.95fr)]"
       />
 

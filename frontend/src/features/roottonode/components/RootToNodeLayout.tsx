@@ -20,6 +20,7 @@ const TreeSetupModal = dynamic(() =>
 
 export function RootToNodeLayout() {
   const [isTreeSetupOpen, setIsTreeSetupOpen] = useState(false);
+  const [resetLayout, setResetLayout] = useState<(() => void) | null>(null);
 
   const {
     currentCodeLine,
@@ -77,21 +78,32 @@ export function RootToNodeLayout() {
           subtitle="DFS with backtracking path visualizer"
           guideHref="/problems/binary-tree/roottonode-guide"
           extraActions={
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5">
-              <span className="text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
-                Target
-              </span>
-              <select
-                value={String(targetValue)}
-                onChange={(event) => setTargetValue(Number(event.target.value))}
-                className="h-6 rounded border border-slate-300 bg-white px-1.5 text-[11px] font-extrabold text-slate-900 outline-none"
+            <div className="flex items-center gap-1.5">
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
+                  Target
+                </span>
+                <select
+                  value={String(targetValue)}
+                  onChange={(event) => setTargetValue(Number(event.target.value))}
+                  className="h-6 rounded border border-slate-300 bg-white px-1.5 text-[11px] font-extrabold text-slate-900 outline-none"
+                >
+                  {nodeValues.map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => resetLayout?.()}
+                className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.04em] text-slate-700 transition hover:bg-slate-50"
+                title="Reset all panel sizes"
               >
-                {nodeValues.map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))}
-              </select>
+                Reset Layout
+              </button>
             </div>
           }
           stats={[
@@ -157,6 +169,7 @@ export function RootToNodeLayout() {
             currentCodeLine={currentCodeLine}
           />
         }
+        onResetReady={(resetFn) => setResetLayout(() => resetFn)}
         className="xl:grid-cols-[minmax(300px,1.2fr)_minmax(380px,1.45fr)_minmax(250px,0.95fr)]"
       />
 

@@ -16,6 +16,9 @@ const MIN_COLUMN_WIDTHS = [300, 360, 250] as const;
 const HEADER_COLLAPSE_PADDING_PX = 10;
 const HEADER_COLLAPSE_FALLBACK_PX = 56;
 const LAYOUT_STORAGE_PREFIX = "traversal-layout:";
+const DEFAULT_COLUMN_PERCENTS: [number, number, number] = [33, 40, 27];
+const DEFAULT_MIDDLE_ROW_PERCENTS: [number, number] = [62, 38];
+const DEFAULT_RIGHT_ROW_PERCENTS: [number, number] = [36, 64];
 
 type RowDivider = "middle" | "right";
 
@@ -152,9 +155,9 @@ export function ResizableTraversalGrid({
   middleFooter,
   rightTop,
   rightBottom,
-  initialColumnPercents = [33, 40, 27],
-  initialMiddleRowPercents = [62, 38],
-  initialRightRowPercents = [36, 64],
+  initialColumnPercents = DEFAULT_COLUMN_PERCENTS,
+  initialMiddleRowPercents = DEFAULT_MIDDLE_ROW_PERCENTS,
+  initialRightRowPercents = DEFAULT_RIGHT_ROW_PERCENTS,
   storageKey,
   className,
   onResetReady,
@@ -176,6 +179,7 @@ export function ResizableTraversalGrid({
   const middleBottomPanelRef = useRef<HTMLDivElement | null>(null);
   const rightTopPanelRef = useRef<HTMLDivElement | null>(null);
   const rightBottomPanelRef = useRef<HTMLDivElement | null>(null);
+  const onResetReadyRef = useRef(onResetReady);
 
   const resolvedStorageKey = useMemo(() => {
     if (storageKey) {
@@ -293,8 +297,12 @@ export function ResizableTraversalGrid({
   }, [initialColumnPercents, initialMiddleRowPercents, initialRightRowPercents]);
 
   useEffect(() => {
-    onResetReady?.(resetLayout);
-  }, [onResetReady, resetLayout]);
+    onResetReadyRef.current = onResetReady;
+  }, [onResetReady]);
+
+  useEffect(() => {
+    onResetReadyRef.current?.(resetLayout);
+  }, [resetLayout]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 1280px)");
