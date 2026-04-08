@@ -52,28 +52,6 @@ function getHeaderMinimumHeight(panelRef: RefObject<HTMLDivElement | null>): num
   return Math.ceil(headerElement.getBoundingClientRect().height + HEADER_COLLAPSE_PADDING_PX);
 }
 
-function getHeaderMinimumWidth(
-  panelRef: RefObject<HTMLDivElement | null>,
-  fallback: number,
-): number {
-  const panel = panelRef.current;
-  if (!panel) {
-    return fallback;
-  }
-
-  const headerElement = panel.querySelector<HTMLElement>(".traversal-panel-header");
-  if (!headerElement) {
-    return fallback;
-  }
-
-  const measured = Math.ceil(headerElement.scrollWidth + 20);
-  if (!Number.isFinite(measured) || measured <= 0) {
-    return fallback;
-  }
-
-  return Math.max(fallback, measured);
-}
-
 function setCollapsedVisualState(
   panelWrapperRef: RefObject<HTMLDivElement | null>,
   isCollapsed: boolean,
@@ -111,11 +89,8 @@ function getGridAvailableWidth(gridElement: HTMLDivElement): number {
   return Math.max(rect.width - COLUMN_GAP_PX * 2, 1);
 }
 
-function getEffectiveColumnMinimums(
-  availableWidth: number,
-  requestedMins: [number, number, number],
-): [number, number, number] {
-  const baseMins = [...requestedMins] as [number, number, number];
+function getEffectiveColumnMinimums(availableWidth: number): [number, number, number] {
+  const baseMins = [...MIN_COLUMN_WIDTHS] as [number, number, number];
   const totalBaseMins = baseMins[0] + baseMins[1] + baseMins[2];
 
   if (availableWidth >= totalBaseMins) {
@@ -133,9 +108,8 @@ function getEffectiveColumnMinimums(
 function constrainColumnPercents(
   percents: [number, number, number],
   availableWidth: number,
-  requestedMins: [number, number, number],
 ): [number, number, number] {
-  const mins = getEffectiveColumnMinimums(availableWidth, requestedMins);
+  const mins = getEffectiveColumnMinimums(availableWidth);
   let widths = percents.map((percent) => (percent / 100) * availableWidth) as [
     number,
     number,
@@ -202,19 +176,6 @@ export function ResizableTraversalGrid({
   const middleBottomPanelRef = useRef<HTMLDivElement | null>(null);
   const rightTopPanelRef = useRef<HTMLDivElement | null>(null);
   const rightBottomPanelRef = useRef<HTMLDivElement | null>(null);
-  const persistTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const getRequestedColumnMinimums = useCallback(
-    (): [number, number, number] => [
-      MIN_COLUMN_WIDTHS[0],
-      getHeaderMinimumWidth(middleTopPanelRef, MIN_COLUMN_WIDTHS[1]),
-      Math.max(
-        getHeaderMinimumWidth(rightTopPanelRef, MIN_COLUMN_WIDTHS[2]),
-        getHeaderMinimumWidth(rightBottomPanelRef, MIN_COLUMN_WIDTHS[2]),
-      ),
-    ],
-    [],
-  );
 
   const resolvedStorageKey = useMemo(() => {
     if (storageKey) {
@@ -273,38 +234,17 @@ export function ResizableTraversalGrid({
       return;
     }
 
-    const isDragging = activeDivider !== null || activeRowDivider !== null;
-    if (isDragging) {
-      if (persistTimerRef.current) {
-        clearTimeout(persistTimerRef.current);
-        persistTimerRef.current = null;
-      }
-      return;
-    }
-
-    persistTimerRef.current = setTimeout(() => {
-      window.localStorage.setItem(
-        resolvedStorageKey,
-        JSON.stringify({
-          columnPercents,
-          middleRowPercents,
-          rightRowPercents,
-        }),
-      );
-      persistTimerRef.current = null;
-    }, 200);
-
-    return () => {
-      if (persistTimerRef.current) {
-        clearTimeout(persistTimerRef.current);
-        persistTimerRef.current = null;
-      }
-    };
+    window.localStorage.setItem(
+      resolvedStorageKey,
+      JSON.stringify({
+        columnPercents,
+        middleRowPercents,
+        rightRowPercents,
+      }),
+    );
   }, [
     resolvedStorageKey,
     hasLoadedLayoutMemory,
-    activeDivider,
-    activeRowDivider,
     columnPercents,
     middleRowPercents,
     rightRowPercents,
@@ -322,9 +262,8 @@ export function ResizableTraversalGrid({
 
     const reconcileColumns = () => {
       const availableWidth = getGridAvailableWidth(gridElement);
-      const requestedColumnMinimums = getRequestedColumnMinimums();
       setColumnPercents((previous) => {
-        const next = constrainColumnPercents(previous, availableWidth, requestedColumnMinimums);
+        const next = constrainColumnPercents(previous, availableWidth);
         const maxDiff = Math.max(
           Math.abs(previous[0] - next[0]),
           Math.abs(previous[1] - next[1]),
@@ -343,7 +282,7 @@ export function ResizableTraversalGrid({
     return () => {
       observer.disconnect();
     };
-  }, [getRequestedColumnMinimums, isXlLayout]);
+  }, [isXlLayout]);
 
   const resetLayout = useCallback(() => {
     setColumnPercents(initialColumnPercents);
@@ -384,11 +323,7 @@ export function ResizableTraversalGrid({
 
       const rect = gridElement.getBoundingClientRect();
       const availableWidth = getGridAvailableWidth(gridElement);
-      const requestedColumnMinimums = getRequestedColumnMinimums();
-      const [minWidth1, minWidth2, minWidth3] = getEffectiveColumnMinimums(
-        availableWidth,
-        requestedColumnMinimums,
-      );
+      const [minWidth1, minWidth2, minWidth3] = getEffectiveColumnMinimums(availableWidth);
 
       let [column1, column2, column3] = columnPercents.map(
         (percent) => (percent / 100) * availableWidth,
@@ -425,7 +360,7 @@ export function ResizableTraversalGrid({
         (column3 / total) * 100,
       ];
 
-      setColumnPercents(constrainColumnPercents(nextPercents, availableWidth, requestedColumnMinimums));
+      setColumnPercents(constrainColumnPercents(nextPercents, availableWidth));
     };
 
     const onMouseUp = () => setActiveDivider(null);
@@ -441,7 +376,7 @@ export function ResizableTraversalGrid({
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
     };
-  }, [activeDivider, columnPercents, getRequestedColumnMinimums, isXlLayout]);
+  }, [activeDivider, columnPercents, isXlLayout]);
 
   useEffect(() => {
     if (!isXlLayout || activeRowDivider === null) {
