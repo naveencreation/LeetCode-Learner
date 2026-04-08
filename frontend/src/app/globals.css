@@ -172,4 +172,16 @@ a {
   .traversal-kbd {
     @apply rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-[var(--font-geist-mono)];
   }
+
+  .traversal-panel[data-collapsed="true"] {
+    @apply shadow-none;
+  }
+
+  .traversal-panel[data-collapsed="true"] > :not(.traversal-panel-header) {
+    display: none !important;
+  }
+
+  .traversal-panel[data-collapsed="true"] .traversal-panel-header {
+    @apply mb-0;
+  }
 }

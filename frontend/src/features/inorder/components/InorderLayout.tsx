@@ -43,6 +43,18 @@ function getHeaderMinimumHeight(panelRef: RefObject<HTMLDivElement | null>): num
   return Math.ceil(headerElement.getBoundingClientRect().height + HEADER_COLLAPSE_PADDING_PX);
 }
 
+function setCollapsedVisualState(
+  panelWrapperRef: RefObject<HTMLDivElement | null>,
+  isCollapsed: boolean,
+): void {
+  const panelElement = panelWrapperRef.current?.querySelector<HTMLElement>(".traversal-panel");
+  if (!panelElement) {
+    return;
+  }
+
+  panelElement.setAttribute("data-collapsed", isCollapsed ? "true" : "false");
+}
+
 export function InorderLayout() {
   const [isTreeSetupOpen, setIsTreeSetupOpen] = useState(false);
   const [isXlLayout, setIsXlLayout] = useState(false);
@@ -296,6 +308,18 @@ export function InorderLayout() {
     setActiveRowDivider(null);
   }, []);
 
+  const middleTopCollapsed = middleRowPercents[0] <= 11;
+  const middleBottomCollapsed = middleRowPercents[1] <= 11;
+  const rightTopCollapsed = rightRowPercents[0] <= 11;
+  const rightBottomCollapsed = rightRowPercents[1] <= 11;
+
+  useEffect(() => {
+    setCollapsedVisualState(middleTopPanelRef, middleTopCollapsed);
+    setCollapsedVisualState(middleBottomPanelRef, middleBottomCollapsed);
+    setCollapsedVisualState(rightTopPanelRef, rightTopCollapsed);
+    setCollapsedVisualState(rightBottomPanelRef, rightBottomCollapsed);
+  }, [middleTopCollapsed, middleBottomCollapsed, rightTopCollapsed, rightBottomCollapsed]);
+
   return (
     <section className="relative h-full min-h-0 overflow-hidden bg-[linear-gradient(140deg,#eff6ff_0%,#fdfdfc_60%,#eefbf9_100%)]">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_15%_20%,#dff6f2_0%,transparent_30%),radial-gradient(circle_at_82%_10%,#fff4e8_0%,transparent_24%)]" />
@@ -362,9 +386,15 @@ export function InorderLayout() {
               aria-label="Resize between tree and traversal progress panels"
               onMouseDown={() => setActiveRowDivider("middle")}
               onDoubleClick={resetLayout}
-              className="hidden cursor-row-resize items-center justify-center xl:flex"
+              className="group hidden cursor-row-resize items-center justify-center xl:flex"
             >
-              <span className="h-[2px] w-full rounded-full bg-slate-300 transition hover:bg-teal-500" />
+              <span
+                className={`h-[2px] w-9 rounded-full transition-all ${
+                  activeRowDivider === "middle"
+                    ? "bg-slate-400"
+                    : "bg-transparent group-hover:bg-slate-300"
+                }`}
+              />
             </button>
 
             <div ref={middleBottomPanelRef} className="min-h-0">
@@ -412,9 +442,15 @@ export function InorderLayout() {
               aria-label="Resize between recursion stack and explanation panels"
               onMouseDown={() => setActiveRowDivider("right")}
               onDoubleClick={resetLayout}
-              className="hidden cursor-row-resize items-center justify-center xl:flex"
+              className="group hidden cursor-row-resize items-center justify-center xl:flex"
             >
-              <span className="h-[2px] w-full rounded-full bg-slate-300 transition hover:bg-teal-500" />
+              <span
+                className={`h-[2px] w-9 rounded-full transition-all ${
+                  activeRowDivider === "right"
+                    ? "bg-slate-400"
+                    : "bg-transparent group-hover:bg-slate-300"
+                }`}
+              />
             </button>
 
             <div ref={rightBottomPanelRef} className="min-h-0">
@@ -435,10 +471,16 @@ export function InorderLayout() {
             aria-label="Resize between code and visual columns"
             onMouseDown={() => setActiveDivider(0)}
             onDoubleClick={resetLayout}
-            className="pointer-events-auto absolute bottom-0 top-0 w-2 -translate-x-1/2 cursor-col-resize"
+            className="group pointer-events-auto absolute bottom-0 top-0 w-2 -translate-x-1/2 cursor-col-resize"
             style={{ left: `${dividerOneLeft}%` }}
           >
-            <span className="absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2 rounded-full bg-slate-300 transition hover:bg-teal-500" />
+            <span
+              className={`absolute left-1/2 top-1/2 h-11 w-[2px] -translate-x-1/2 -translate-y-1/2 rounded-full transition-all ${
+                activeDivider === 0
+                  ? "bg-slate-400"
+                  : "bg-transparent group-hover:bg-slate-300"
+              }`}
+            />
           </button>
 
           <button
@@ -446,10 +488,16 @@ export function InorderLayout() {
             aria-label="Resize between visual and debug columns"
             onMouseDown={() => setActiveDivider(1)}
             onDoubleClick={resetLayout}
-            className="pointer-events-auto absolute bottom-0 top-0 w-2 -translate-x-1/2 cursor-col-resize"
+            className="group pointer-events-auto absolute bottom-0 top-0 w-2 -translate-x-1/2 cursor-col-resize"
             style={{ left: `${dividerTwoLeft}%` }}
           >
-            <span className="absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2 rounded-full bg-slate-300 transition hover:bg-teal-500" />
+            <span
+              className={`absolute left-1/2 top-1/2 h-11 w-[2px] -translate-x-1/2 -translate-y-1/2 rounded-full transition-all ${
+                activeDivider === 1
+                  ? "bg-slate-400"
+                  : "bg-transparent group-hover:bg-slate-300"
+              }`}
+            />
           </button>
         </div>
       </div>
