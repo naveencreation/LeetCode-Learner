@@ -17,10 +17,7 @@ export function CallStackPanel({ activeCallStack }: CallStackPanelProps) {
         <h2 className="traversal-panel-title">
           Processing Stack
         </h2>
-        <span className="rounded-full bg-gradient-to-r from-amber-500 to-amber-300 px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-white">
-          Live
-        </span>
-      </div>
+</div>
 
       <div className="min-h-0 space-y-1.5 overflow-auto rounded-[10px] border border-slate-200 bg-gradient-to-b from-slate-50 to-slate-100 p-1.5">
         {activeCallStack.length === 0 ? (
@@ -47,3 +44,4 @@ export function CallStackPanel({ activeCallStack }: CallStackPanelProps) {
     </section>
   );
 }
+

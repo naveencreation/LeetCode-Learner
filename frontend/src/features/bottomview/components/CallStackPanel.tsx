@@ -120,10 +120,7 @@ export function CallStackPanel({
         <h2 className="traversal-panel-title">
           Queue State
         </h2>
-        <span className="rounded-full bg-gradient-to-r from-amber-500 to-amber-300 px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-white shadow-sm">
-          Live
-        </span>
-      </div>
+</div>
 
       <div className="min-h-0 grid grid-rows-[auto_minmax(0,1fr)_auto] gap-1.5 rounded-[10px] border border-slate-200 bg-gradient-to-b from-slate-50 to-slate-100 p-1.5">
         <div className="grid grid-cols-2 gap-1.5 rounded-lg border border-slate-200 bg-white p-1.5 text-[10px] font-extrabold uppercase tracking-[0.04em] text-slate-600">
@@ -201,5 +198,6 @@ export function CallStackPanel({
     </section>
   );
 }
+
 
 

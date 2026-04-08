@@ -5,7 +5,6 @@ import type { ExecutionStep, NodePosition, NodeVisualState, TreeNode } from "../
 interface TreePanelProps {
   root: TreeNode;
   currentOperation: string;
-  operationBadge: string;
   nodeStates: Record<number, NodeVisualState>;
   activeStep: ExecutionStep | undefined;
   customNodePositions: Record<number, NodePosition>;
@@ -206,7 +205,6 @@ function fitPositionsToViewport(
 export function TreePanel({
   root,
   currentOperation,
-  operationBadge,
   nodeStates,
   activeStep,
   customNodePositions,
@@ -271,10 +269,7 @@ export function TreePanel({
           >
             Select Tree
           </button>
-          <span className="rounded-full bg-gradient-to-r from-teal-700 to-teal-400 px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-white">
-            {operationBadge}
-          </span>
-        </div>
+</div>
       </div>
 
       <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-gradient-to-b from-[#fcfffe] to-[#f6f8fb] p-2">
@@ -399,3 +394,4 @@ export function TreePanel({
     </section>
   );
 }
+

@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { ProblemFocusHeader } from "@/components/problem-focus-header";
+import { ResizableTraversalGrid } from "@/features/shared/components/ResizableTraversalGrid";
 
 import { getCodeLineForStep } from "../selectors";
 import { usePreorderTraversal } from "../usePreorderTraversal";
@@ -43,7 +44,6 @@ export function PreorderLayout() {
     pauseTraversal,
     nextStep,
     nodeStates,
-    operationBadge,
     previousStep,
     resetTraversal,
     result,
@@ -79,26 +79,24 @@ export function PreorderLayout() {
           ]}
         />
 
-      <div className="grid min-h-0 overflow-hidden gap-1.5 px-2 pb-2 md:px-3 md:pb-3 xl:grid-cols-[minmax(300px,1.2fr)_minmax(380px,1.45fr)_minmax(250px,0.95fr)] xl:grid-rows-[minmax(0,1.26fr)_minmax(0,0.74fr)_auto]">
-        <div className="min-h-0 xl:row-span-3">
+      <ResizableTraversalGrid
+        left={
           <CodePanel
             currentCodeLine={currentCodeLine}
             executionLineNumbers={executionLineNumbers}
           />
-        </div>
-
-        <div className="min-h-0 xl:col-start-2 xl:row-start-1">
+        }
+        middleTop={
           <TreePanel
             root={root}
             currentOperation={currentOperation}
-            operationBadge={operationBadge}
             nodeStates={nodeStates}
             activeStep={activeStep}
             customNodePositions={customNodePositions}
             onOpenTreeSetup={() => setIsTreeSetupOpen(true)}
           />
-        </div>
-        <div className="min-h-0 xl:col-start-2 xl:row-start-2">
+        }
+        middleBottom={
           <ResultPanel
             currentNode={currentNode}
             currentPhase={currentPhase}
@@ -107,24 +105,8 @@ export function PreorderLayout() {
             totalSteps={totalSteps}
             currentOperation={currentOperation}
           />
-        </div>
-
-        <div className="min-h-0 grid gap-1.5 xl:col-start-3 xl:row-span-3 xl:grid-rows-[minmax(0,0.72fr)_minmax(0,1.28fr)]">
-          <div className="min-h-0">
-            <CallStackPanel activeCallStack={activeCallStack} />
-          </div>
-          <div className="min-h-0">
-            <ExplanationPanel
-              currentStep={currentStep}
-              totalSteps={totalSteps}
-              result={result}
-              activeStep={executedStep}
-              currentCodeLine={currentCodeLine}
-            />
-          </div>
-        </div>
-
-        <div className="min-h-0 xl:col-start-2 xl:row-start-3">
+        }
+        middleFooter={
           <ControlsBar
             isAtStart={isAtStart}
             isAtEnd={isAtEnd}
@@ -139,8 +121,19 @@ export function PreorderLayout() {
             previousStep={previousStep}
             resetTraversal={resetTraversal}
           />
-        </div>
-      </div>
+        }
+        rightTop={<CallStackPanel activeCallStack={activeCallStack} />}
+        rightBottom={
+          <ExplanationPanel
+            currentStep={currentStep}
+            totalSteps={totalSteps}
+            result={result}
+            activeStep={executedStep}
+            currentCodeLine={currentCodeLine}
+          />
+        }
+        className="xl:grid-cols-[minmax(300px,1.2fr)_minmax(380px,1.45fr)_minmax(250px,0.95fr)]"
+      />
 
       {isTreeSetupOpen ? (
         <TreeSetupModal
@@ -161,4 +154,5 @@ export function PreorderLayout() {
     </section>
   );
 }
+
 

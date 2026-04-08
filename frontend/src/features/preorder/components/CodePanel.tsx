@@ -171,10 +171,7 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
               Full Code
             </button>
           </div>
-          <span className="traversal-pill border-[#3872a6] bg-[#0e639c] text-[#f0f6fc]">
-            Execution
-          </span>
-        </div>
+</div>
       </div>
 
       <div className="min-h-0 overflow-hidden rounded-[10px] border border-[#3c3c3c] bg-[#1e1e1e] p-2">
@@ -242,4 +239,5 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
     </section>
   );
 }
+
 

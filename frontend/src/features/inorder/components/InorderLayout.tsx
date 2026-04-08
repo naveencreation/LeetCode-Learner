@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { ProblemFocusHeader } from "@/components/problem-focus-header";
 
@@ -21,6 +22,7 @@ const COLUMN_GAP_PX = 6;
 const MIN_COLUMN_WIDTHS = [300, 360, 250] as const;
 const HEADER_COLLAPSE_PADDING_PX = 10;
 const HEADER_COLLAPSE_FALLBACK_PX = 56;
+const LAYOUT_STORAGE_PREFIX = "traversal-layout:";
 const DEFAULT_COLUMN_PERCENTS: [number, number, number] = [33, 40, 27];
 const DEFAULT_MIDDLE_ROW_PERCENTS: [number, number] = [62, 38];
 const DEFAULT_RIGHT_ROW_PERCENTS: [number, number] = [36, 64];
@@ -55,7 +57,28 @@ function setCollapsedVisualState(
   panelElement.setAttribute("data-collapsed", isCollapsed ? "true" : "false");
 }
 
+function normalizeDistribution(
+  values: number[] | undefined,
+  expectedLength: number,
+): number[] | null {
+  if (!values || values.length !== expectedLength) {
+    return null;
+  }
+
+  if (values.some((value) => !Number.isFinite(value) || value <= 0)) {
+    return null;
+  }
+
+  const total = values.reduce((sum, value) => sum + value, 0);
+  if (total <= 0) {
+    return null;
+  }
+
+  return values.map((value) => (value / total) * 100);
+}
+
 export function InorderLayout() {
+  const pathname = usePathname();
   const [isTreeSetupOpen, setIsTreeSetupOpen] = useState(false);
   const [isXlLayout, setIsXlLayout] = useState(false);
   const [columnPercents, setColumnPercents] = useState<[number, number, number]>(
@@ -69,6 +92,7 @@ export function InorderLayout() {
     DEFAULT_RIGHT_ROW_PERCENTS,
   );
   const [activeRowDivider, setActiveRowDivider] = useState<"middle" | "right" | null>(null);
+  const [hasLoadedLayoutMemory, setHasLoadedLayoutMemory] = useState(false);
   const gridRef = useRef<HTMLDivElement | null>(null);
   const middleStackRef = useRef<HTMLDivElement | null>(null);
   const middleControlsRef = useRef<HTMLDivElement | null>(null);
@@ -77,6 +101,13 @@ export function InorderLayout() {
   const middleBottomPanelRef = useRef<HTMLDivElement | null>(null);
   const rightTopPanelRef = useRef<HTMLDivElement | null>(null);
   const rightBottomPanelRef = useRef<HTMLDivElement | null>(null);
+  const layoutStorageKey = useMemo(() => {
+    if (!pathname) {
+      return null;
+    }
+
+    return `${LAYOUT_STORAGE_PREFIX}${pathname}`;
+  }, [pathname]);
 
   const {
     currentCodeLine,
@@ -119,6 +150,67 @@ export function InorderLayout() {
 
     return Array.from(lineNumbers).sort((a, b) => a - b);
   }, [currentCodeLine, executionSteps]);
+
+  useEffect(() => {
+    if (!layoutStorageKey) {
+      setHasLoadedLayoutMemory(true);
+      return;
+    }
+
+    try {
+      const raw = window.localStorage.getItem(layoutStorageKey);
+      if (!raw) {
+        return;
+      }
+
+      const parsed = JSON.parse(raw) as {
+        columnPercents?: number[];
+        middleRowPercents?: number[];
+        rightRowPercents?: number[];
+      };
+
+      const persistedColumns = normalizeDistribution(parsed.columnPercents, 3);
+      const persistedMiddleRows = normalizeDistribution(parsed.middleRowPercents, 2);
+      const persistedRightRows = normalizeDistribution(parsed.rightRowPercents, 2);
+
+      if (persistedColumns) {
+        setColumnPercents(persistedColumns as [number, number, number]);
+      }
+
+      if (persistedMiddleRows) {
+        setMiddleRowPercents(persistedMiddleRows as [number, number]);
+      }
+
+      if (persistedRightRows) {
+        setRightRowPercents(persistedRightRows as [number, number]);
+      }
+    } catch {
+      // Ignore malformed data and continue with defaults.
+    } finally {
+      setHasLoadedLayoutMemory(true);
+    }
+  }, [layoutStorageKey]);
+
+  useEffect(() => {
+    if (!layoutStorageKey || !hasLoadedLayoutMemory) {
+      return;
+    }
+
+    window.localStorage.setItem(
+      layoutStorageKey,
+      JSON.stringify({
+        columnPercents,
+        middleRowPercents,
+        rightRowPercents,
+      }),
+    );
+  }, [
+    layoutStorageKey,
+    hasLoadedLayoutMemory,
+    columnPercents,
+    middleRowPercents,
+    rightRowPercents,
+  ]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 1280px)");

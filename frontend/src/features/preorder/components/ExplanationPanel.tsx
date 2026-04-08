@@ -115,10 +115,7 @@ export function ExplanationPanel({
         <h2 className="traversal-panel-title">
           Step Explanation
         </h2>
-        <span className="rounded-full bg-gradient-to-r from-cyan-500 to-teal-500 px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-white">
-          Info
-        </span>
-      </div>
+</div>
 
       <div className="min-h-0 space-y-2 overflow-auto rounded-[10px] border border-sky-200 bg-gradient-to-b from-cyan-50 to-sky-50 p-2">
         <h3 className="text-[13px] font-extrabold text-cyan-900">{explanation.title}</h3>
@@ -162,4 +159,5 @@ export function ExplanationPanel({
     </section>
   );
 }
+
 

@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import { ProblemFocusHeader } from "@/components/problem-focus-header";
+import { ResizableTraversalGrid } from "@/features/shared/components/ResizableTraversalGrid";
 
 import { getCodeLineForStep } from "../selectors";
 import { useVerticalOrderTraversal } from "../useTopViewTraversal";
@@ -43,7 +44,6 @@ export function TopViewLayout() {
     pauseTraversal,
     nextStep,
     nodeStates,
-    operationBadge,
     previousStep,
     resetTraversal,
     result,
@@ -107,16 +107,12 @@ export function TopViewLayout() {
           ]}
         />
 
-      <div className="grid min-h-0 overflow-hidden gap-1.5 px-2 pb-2 md:px-3 md:pb-3 xl:grid-cols-[minmax(300px,1.2fr)_minmax(380px,1.45fr)_minmax(280px,1.05fr)] xl:grid-rows-[minmax(0,1.08fr)_minmax(0,0.92fr)_auto]">
-        <div className="min-h-0 xl:row-span-3">
-          <CodePanel currentCodeLine={currentCodeLine} executionLineNumbers={executionLineNumbers} />
-        </div>
-
-        <div className="min-h-0 xl:col-start-2 xl:row-start-1">
+      <ResizableTraversalGrid
+        left={<CodePanel currentCodeLine={currentCodeLine} executionLineNumbers={executionLineNumbers} />}
+        middleTop={
           <TreePanel
             root={root}
             currentOperation={currentOperation}
-            operationBadge={operationBadge}
             nodeStates={nodeStates}
             activeStep={activeStep}
             currentStep={currentStep}
@@ -124,8 +120,8 @@ export function TopViewLayout() {
             customNodePositions={customNodePositions}
             onOpenTreeSetup={openTreeSetup}
           />
-        </div>
-        <div className="min-h-0 xl:col-start-2 xl:row-start-2">
+        }
+        middleBottom={
           <ResultPanel
             currentNode={currentNode}
             currentPhase={currentPhase}
@@ -135,24 +131,8 @@ export function TopViewLayout() {
             totalSteps={totalSteps}
             currentOperation={currentOperation}
           />
-        </div>
-
-        <div className="min-h-0 grid gap-1 xl:col-start-3 xl:row-span-3 xl:grid-rows-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-          <div className="min-h-0">
-            <CallStackPanel activeCallStack={activeCallStack} />
-          </div>
-          <div className="min-h-0">
-            <ExplanationPanel
-              currentStep={currentStep}
-              totalSteps={totalSteps}
-              result={result}
-              columnKeys={columnKeys}
-              activeStep={executedStep}
-            />
-          </div>
-        </div>
-
-        <div className="min-h-0 self-end xl:col-start-2 xl:row-start-3">
+        }
+        middleFooter={
           <ControlsBar
             isAtStart={isAtStart}
             isAtEnd={isAtEnd}
@@ -167,8 +147,19 @@ export function TopViewLayout() {
             previousStep={previousStep}
             resetTraversal={resetTraversal}
           />
-        </div>
-      </div>
+        }
+        rightTop={<CallStackPanel activeCallStack={activeCallStack} />}
+        rightBottom={
+          <ExplanationPanel
+            currentStep={currentStep}
+            totalSteps={totalSteps}
+            result={result}
+            columnKeys={columnKeys}
+            activeStep={executedStep}
+          />
+        }
+        className="xl:grid-cols-[minmax(300px,1.2fr)_minmax(380px,1.45fr)_minmax(280px,1.05fr)]"
+      />
 
       {isTreeSetupOpen ? (
         <TreeSetupModal
@@ -187,3 +178,4 @@ export function TopViewLayout() {
 }
 
 export const VerticalOrderLayout = TopViewLayout;
+
