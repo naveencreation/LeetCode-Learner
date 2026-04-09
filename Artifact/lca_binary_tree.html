@@ -1,0 +1,548 @@
+
+<style>
+  * { box-sizing: border-box; }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; font-family: var(--font-sans); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal   { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber  { background: #FAEEDA; color: #854F0B; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+  .rule-box { background: #E6F1FB; padding: 1rem 1.25rem; border-left: 3px solid #378ADD; border-radius: 0; }
+  .rule-text { font-size: 20px; font-weight: 500; color: #0C447C; }
+  .step-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub  { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13.5px; line-height: 2; }
+  .c-kw { color: #cba6f7; } .c-fn { color: #89b4fa; } .c-cm { color: #6c7086; font-style:italic; } .c-plain { color: #cdd6f4; } .c-str { color: #a6e3a1; }
+  .dry-run-row { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .dry-run-row:last-child { border-bottom: none; }
+  .dry-cell { padding: 10px 14px; font-size: 13.5px; color: var(--color-text-primary); line-height: 1.5; flex: 1; }
+  .dry-head { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); padding: 8px 14px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; }
+  .complexity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why { font-size: 13px; margin-top: 6px; }
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot { width: 8px; height: 8px; border-radius: 50%; background: #378ADD; flex-shrink: 0; margin-top: 7px; }
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub   { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags  { display: flex; gap: 8px; flex-wrap: wrap; }
+  .divider    { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+  .analogy-box  { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+  .highlight-row { background: var(--color-background-secondary); }
+
+  /* toggle */
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+
+  /* deep mode */
+  .deep-section { margin-bottom: 3rem; }
+  .callout { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+  .trace-step { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge { min-width: 72px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; }
+  .trace-going   { background: #E6F1FB; color: #185FA5; }
+  .trace-record  { background: #E1F5EE; color: #0F6E56; }
+  .trace-skip    { background: #EEEDFE; color: #534AB7; }
+  .trace-back    { background: #FAEEDA; color: #854F0B; }
+  .trace-found   { background: #FCF0E6; color: #7A3B00; }
+  .trace-content { flex: 1; }
+  .trace-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc  { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x     { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .mistake-check { width: 20px; height: 20px; border-radius: 50%; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+</style>
+
+<div class="page">
+
+  <div class="section">
+    <p class="section-label">Binary Tree · Recursion</p>
+    <h1 class="hero-title">Lowest Common Ancestor of a Binary Tree</h1>
+    <p class="hero-sub">Find the deepest node that is an ancestor of both p and q — even when one might be the ancestor of the other.</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-teal">Post-order DFS</span>
+      <span class="badge badge-purple">Tree Recursion</span>
+      <span class="badge badge-amber">Interview Essential</span>
+    </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn"        id="btn-deep"  onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ═══════════════════ QUICK MODE ═══════════════════ -->
+  <div id="quick-mode">
+    <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);margin-bottom:2rem;">
+
+    <div class="section">
+      <p class="section-label">01 · The rule</p>
+      <div class="rule-box" style="margin-bottom:0.75rem;">
+        <p class="rule-text">First node from which both p and q are reachable (downward)</p>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">Run post-order DFS. Return a node only when you've confirmed targets on both sides — or when the node itself is p or q. The first node to receive non-null from both children is the LCA.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">02 · How to think</p>
+      <div class="card">
+        <div class="step-row"><div class="step-num">1</div><div><div class="step-text">Base case: if node is null, p, or q — return node</div><div class="step-sub">Null propagates "not found". Returning p or q itself signals "I found a target here".</div></div></div>
+        <div class="step-row"><div class="step-num">2</div><div><div class="step-text">Recurse left and right, collecting results</div><div class="step-sub">left = lca(node.left, p, q) &nbsp;|&nbsp; right = lca(node.right, p, q)</div></div></div>
+        <div class="step-row"><div class="step-num">3</div><div><div class="step-text">If both sides returned non-null → current node is the LCA</div><div class="step-sub">p is in one subtree, q is in the other. This node is the split point — return it.</div></div></div>
+        <div class="step-row" style="margin-bottom:0;"><div class="step-num">4</div><div><div class="step-text">Otherwise return whichever side is non-null</div><div class="step-sub">Both targets are in the same subtree — bubble the non-null result up.</div></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">03 · Code</p>
+      <div class="code-block">
+        <div><span class="c-kw">def</span> <span class="c-fn">lowestCommonAncestor</span><span class="c-plain">(root, p, q):</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># Base case: null → not found; p/q → signal "found target"</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if not</span><span class="c-plain"> root </span><span class="c-kw">or</span><span class="c-plain"> root </span><span class="c-kw">is</span><span class="c-plain"> p </span><span class="c-kw">or</span><span class="c-plain"> root </span><span class="c-kw">is</span><span class="c-plain"> q:</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-plain"> root</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;left  = </span><span class="c-fn">lowestCommonAncestor</span><span class="c-plain">(root.left,  p, q)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;right = </span><span class="c-fn">lowestCommonAncestor</span><span class="c-plain">(root.right, p, q)</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># Both subtrees found a target → this node is the LCA</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> left </span><span class="c-kw">and</span><span class="c-plain"> right:</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-plain"> root</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># Only one side found something → propagate it upward</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-plain"> left </span><span class="c-kw">if</span><span class="c-plain"> left </span><span class="c-kw">else</span><span class="c-plain"> right</span></div>
+      </div>
+    </div>
+
+    <!-- ── DIAGRAM ── -->
+    <div class="section">
+      <p class="section-label">04 · Diagram — LCA(p=5, q=1)</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 0.75rem;">Tree: 3→(5,1); 5→(6,2); 2→(7,4); 1→(0,8). Find LCA of 5 and 1.</p>
+      <div style="display:flex;justify-content:center;margin-bottom:1rem;overflow-x:auto;">
+        <svg viewBox="0 0 480 310" width="460" height="295" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif;">
+
+          <!-- ── Level labels ── -->
+          <text x="12" y="72"  font-size="11" fill="#6c7086" font-family="monospace">L0</text>
+          <text x="12" y="142" font-size="11" fill="#6c7086" font-family="monospace">L1</text>
+          <text x="12" y="212" font-size="11" fill="#6c7086" font-family="monospace">L2</text>
+          <text x="12" y="282" font-size="11" fill="#6c7086" font-family="monospace">L3</text>
+
+          <!-- ── Edges ── -->
+          <line x1="240" y1="80"  x2="140" y2="150" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="240" y1="80"  x2="340" y2="150" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="140" y1="150" x2="90"  y2="220" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="140" y1="150" x2="190" y2="220" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="190" y1="220" x2="160" y2="285" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="190" y1="220" x2="220" y2="285" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="340" y1="150" x2="295" y2="220" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="340" y1="150" x2="385" y2="220" stroke="#B5D4F4" stroke-width="1.5"/>
+
+          <!-- ── Node 3 (root) → LCA result ── -->
+          <circle cx="240" cy="68" r="24" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2.5"/>
+          <text x="240" y="73" text-anchor="middle" font-size="14" font-weight="600" fill="#085041">3</text>
+          <!-- LCA badge -->
+          <rect x="252" y="48" width="34" height="16" rx="8" fill="#1D9E75"/>
+          <text x="269" y="59" text-anchor="middle" font-size="9" font-weight="600" fill="white">LCA</text>
+
+          <!-- ── Node 5 (p, target) ── -->
+          <circle cx="140" cy="150" r="24" fill="#E6F1FB" stroke="#378ADD" stroke-width="2.5"/>
+          <text x="140" y="155" text-anchor="middle" font-size="14" font-weight="600" fill="#0C447C">5</text>
+          <!-- p badge -->
+          <rect x="152" y="130" width="20" height="16" rx="8" fill="#378ADD"/>
+          <text x="162" y="141" text-anchor="middle" font-size="9" font-weight="600" fill="white">p</text>
+
+          <!-- ── Node 1 (q, target) ── -->
+          <circle cx="340" cy="150" r="24" fill="#EEEDFE" stroke="#7C70E8" stroke-width="2.5"/>
+          <text x="340" y="155" text-anchor="middle" font-size="14" font-weight="600" fill="#3C3489">1</text>
+          <!-- q badge -->
+          <rect x="352" y="130" width="20" height="16" rx="8" fill="#7C70E8"/>
+          <text x="362" y="141" text-anchor="middle" font-size="9" font-weight="600" fill="white">q</text>
+
+          <!-- ── Node 6 (leaf, returns null up) ── -->
+          <circle cx="90" cy="220" r="22" fill="var(--color-background-secondary,#f5f5f5)" stroke="#45475a" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="90" y="225" text-anchor="middle" font-size="13" fill="#6c7086">6</text>
+
+          <!-- ── Node 2 (returns p up, p is ancestor here) ── -->
+          <circle cx="190" cy="220" r="22" fill="var(--color-background-secondary,#f5f5f5)" stroke="#45475a" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="190" y="225" text-anchor="middle" font-size="13" fill="#6c7086">2</text>
+
+          <!-- ── Node 7, 4 (leaves under 2, return null) ── -->
+          <circle cx="160" cy="285" r="18" fill="var(--color-background-secondary,#f5f5f5)" stroke="#45475a" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="160" y="290" text-anchor="middle" font-size="12" fill="#6c7086">7</text>
+          <circle cx="220" cy="285" r="18" fill="var(--color-background-secondary,#f5f5f5)" stroke="#45475a" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="220" y="290" text-anchor="middle" font-size="12" fill="#6c7086">4</text>
+
+          <!-- ── Node 0, 8 (leaves under 1, return null) ── -->
+          <circle cx="295" cy="220" r="22" fill="var(--color-background-secondary,#f5f5f5)" stroke="#45475a" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="295" y="225" text-anchor="middle" font-size="13" fill="#6c7086">0</text>
+          <circle cx="385" cy="220" r="22" fill="var(--color-background-secondary,#f5f5f5)" stroke="#45475a" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="385" y="225" text-anchor="middle" font-size="13" fill="#6c7086">8</text>
+
+          <!-- ── Return-value arrows ── -->
+          <!-- 5 returns itself up to 3's left -->
+          <path d="M 128 128 Q 100 100 185 90" fill="none" stroke="#378ADD" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr-blue)"/>
+          <text x="105" y="102" font-size="10" fill="#378ADD" font-weight="500">returns p(5)</text>
+
+          <!-- 1 returns itself up to 3's right -->
+          <path d="M 352 128 Q 375 100 292 90" fill="none" stroke="#7C70E8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr-purple)"/>
+          <text x="348" y="100" font-size="10" fill="#7C70E8" font-weight="500">returns q(1)</text>
+
+          <!-- Arrow markers -->
+          <defs>
+            <marker id="arr-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#378ADD"/>
+            </marker>
+            <marker id="arr-purple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#7C70E8"/>
+            </marker>
+          </defs>
+
+          <!-- ── Legend ── -->
+          <circle cx="32"  cy="296" r="7" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="43" y="300" font-size="11" fill="#6c7086">= p (target)</text>
+          <circle cx="130" cy="296" r="7" fill="#EEEDFE" stroke="#7C70E8" stroke-width="1.5"/>
+          <text x="141" y="300" font-size="11" fill="#6c7086">= q (target)</text>
+          <circle cx="228" cy="296" r="7" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="239" y="300" font-size="11" fill="#6c7086">= LCA answer</text>
+          <circle cx="346" cy="296" r="7" fill="#f5f5f5" stroke="#45475a" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="357" y="300" font-size="11" fill="#6c7086">= irrelevant</text>
+        </svg>
+      </div>
+      <div class="card" style="padding:0.75rem 1.5rem;margin-bottom:0.75rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+          <span style="font-size:13px;color:var(--color-text-secondary);">LCA(p=5, q=1) =</span>
+          <span style="font-family:var(--font-mono);font-size:14px;font-weight:500;color:#085041;background:#E1F5EE;padding:3px 12px;border-radius:6px;">Node 3 (root)</span>
+          <span style="font-size:12px;color:var(--color-text-tertiary);">← left returned p, right returned q</span>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">Node 3's left subtree returned node 5 (p was found there). Node 3's right subtree returned node 1 (q was found there). Both sides non-null → 3 is the LCA.</p>
+    </div>
+
+    <!-- ── DIAGRAM 2: edge case ── -->
+    <div class="section">
+      <p class="section-label">04b · Edge case — LCA(p=5, q=4)</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 0.75rem;">Same tree. Now q=4 is a descendant of p=5. LCA is still 5.</p>
+      <div style="display:flex;justify-content:center;margin-bottom:1rem;overflow-x:auto;">
+        <svg viewBox="0 0 380 270" width="360" height="255" xmlns="http://www.w3.org/2000/svg" style="font-family:system-ui,sans-serif;">
+          <!-- Edges -->
+          <line x1="190" y1="60"  x2="110" y2="130" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="190" y1="60"  x2="270" y2="130" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="110" y1="130" x2="70"  y2="200" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="110" y1="130" x2="150" y2="200" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="150" y1="200" x2="128" y2="255" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="150" y1="200" x2="172" y2="255" stroke="#B5D4F4" stroke-width="1.5"/>
+
+          <!-- Node 3 (root, not LCA this time) -->
+          <circle cx="190" cy="60" r="22" fill="var(--color-background-secondary,#f5f5f5)" stroke="#45475a" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="190" y="65" text-anchor="middle" font-size="13" fill="#6c7086">3</text>
+
+          <!-- Node 5 = p = LCA -->
+          <circle cx="110" cy="130" r="24" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2.5"/>
+          <text x="110" y="135" text-anchor="middle" font-size="14" font-weight="600" fill="#085041">5</text>
+          <rect x="122" y="110" width="34" height="16" rx="8" fill="#1D9E75"/>
+          <text x="139" y="121" text-anchor="middle" font-size="9" font-weight="600" fill="white">p+LCA</text>
+
+          <!-- Node 1 (right, returns null back up — q not in this subtree) -->
+          <circle cx="270" cy="130" r="22" fill="var(--color-background-secondary,#f5f5f5)" stroke="#45475a" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="270" y="135" text-anchor="middle" font-size="13" fill="#6c7086">1</text>
+
+          <!-- Node 6 (leaf, null) -->
+          <circle cx="70" cy="200" r="20" fill="var(--color-background-secondary,#f5f5f5)" stroke="#45475a" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="70" y="205" text-anchor="middle" font-size="12" fill="#6c7086">6</text>
+
+          <!-- Node 2 (returns q=4 upward) -->
+          <circle cx="150" cy="200" r="22" fill="var(--color-background-secondary,#f5f5f5)" stroke="#45475a" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="150" y="205" text-anchor="middle" font-size="13" fill="#6c7086">2</text>
+
+          <!-- Node 7 (leaf, null) -->
+          <circle cx="128" cy="255" r="18" fill="var(--color-background-secondary,#f5f5f5)" stroke="#45475a" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="128" y="260" text-anchor="middle" font-size="12" fill="#6c7086">7</text>
+
+          <!-- Node 4 = q -->
+          <circle cx="172" cy="255" r="20" fill="#EEEDFE" stroke="#7C70E8" stroke-width="2.5"/>
+          <text x="172" y="260" text-anchor="middle" font-size="13" font-weight="600" fill="#3C3489">4</text>
+          <rect x="182" y="238" width="20" height="14" rx="7" fill="#7C70E8"/>
+          <text x="192" y="248" text-anchor="middle" font-size="9" font-weight="600" fill="white">q</text>
+
+          <!-- KEY INSIGHT CALLOUT -->
+          <rect x="210" y="175" width="155" height="62" rx="6" fill="#FFF8EE" stroke="#EF9F27" stroke-width="1"/>
+          <text x="218" y="192" font-size="11" font-weight="500" fill="#854F0B">Key insight:</text>
+          <text x="218" y="207" font-size="10" fill="#854F0B">5 hits base case first.</text>
+          <text x="218" y="220" font-size="10" fill="#854F0B">Returns itself without</text>
+          <text x="218" y="233" font-size="10" fill="#854F0B">searching deeper.</text>
+          <defs>
+            <marker id="arr-orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#EF9F27"/>
+            </marker>
+          </defs>
+          <path d="M 210 195 Q 175 180 134 148" fill="none" stroke="#EF9F27" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+        </svg>
+      </div>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+          <span style="font-size:13px;color:var(--color-text-secondary);">LCA(p=5, q=4) =</span>
+          <span style="font-family:var(--font-mono);font-size:14px;font-weight:500;color:#085041;background:#E1F5EE;padding:3px 12px;border-radius:6px;">Node 5</span>
+          <span style="font-size:12px;color:var(--color-text-tertiary);">← p itself is the LCA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DRY RUN ── -->
+    <div class="section">
+      <p class="section-label">05 · Dry run — LCA(p=5, q=1)</p>
+      <div class="card" style="padding:0;">
+        <div class="dry-head">
+          <div class="dry-cell" style="flex:1.8;">Call</div>
+          <div class="dry-cell" style="flex:1;">left returns</div>
+          <div class="dry-cell" style="flex:1;">right returns</div>
+          <div class="dry-cell" style="flex:1.2;">this node returns</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell" style="flex:1.8;">lca(3, 5, 1)</div>
+          <div class="dry-cell" style="flex:1;">node 5</div>
+          <div class="dry-cell" style="flex:1;">node 1</div>
+          <div class="dry-cell" style="flex:1.2;font-weight:500;color:#085041;">node 3 ← LCA</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell" style="flex:1.8;">lca(5, 5, 1)</div>
+          <div class="dry-cell" style="flex:1;">—</div>
+          <div class="dry-cell" style="flex:1;">—</div>
+          <div class="dry-cell" style="flex:1.2;">node 5 (base case)</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell" style="flex:1.8;">lca(1, 5, 1)</div>
+          <div class="dry-cell" style="flex:1;">—</div>
+          <div class="dry-cell" style="flex:1;">—</div>
+          <div class="dry-cell" style="flex:1.2;">node 1 (base case)</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell" style="flex:1.8;">lca(6, 5, 1)</div>
+          <div class="dry-cell" style="flex:1;">null</div>
+          <div class="dry-cell" style="flex:1;">null</div>
+          <div class="dry-cell" style="flex:1.2;">null</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell" style="flex:1.8;">lca(2, 5, 1)</div>
+          <div class="dry-cell" style="flex:1;">null</div>
+          <div class="dry-cell" style="flex:1;">null</div>
+          <div class="dry-cell" style="flex:1.2;">null</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell" style="flex:1.8;">lca(0, 5, 1)</div>
+          <div class="dry-cell" style="flex:1;">null</div>
+          <div class="dry-cell" style="flex:1;">null</div>
+          <div class="dry-cell" style="flex:1.2;">null</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell" style="flex:1.8;">lca(8, 5, 1)</div>
+          <div class="dry-cell" style="flex:1;">null</div>
+          <div class="dry-cell" style="flex:1;">null</div>
+          <div class="dry-cell" style="flex:1.2;">null</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">06 · Complexity</p>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E6F1FB;"><div class="complexity-label" style="color:#185FA5;">Time</div><div class="complexity-value" style="color:#0C447C;">O(n)</div><div class="complexity-why" style="color:#185FA5;">Every node is visited exactly once during the post-order traversal. No extra passes.</div></div>
+        <div class="complexity-card" style="background:#EEEDFE;"><div class="complexity-label" style="color:#534AB7;">Space</div><div class="complexity-value" style="color:#3C3489;">O(h)</div><div class="complexity-why" style="color:#534AB7;">Recursion stack depth equals tree height h. Worst case O(n) for a skewed tree; O(log n) for balanced.</div></div>
+      </div>
+    </div>
+
+  </div><!-- end quick-mode -->
+
+  <!-- ═══════════════════ DEEP MODE ═══════════════════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);margin-bottom:2rem;">
+
+    <div class="deep-section">
+      <p class="section-label">01 · What does "lowest common ancestor" actually mean?</p>
+      <h2 class="section-title">Defining the problem precisely</h2>
+      <p class="deep-para">A <strong style="font-weight:500;">common ancestor</strong> of two nodes p and q is any node that has both p and q as descendants (where a node is considered a descendant of itself). The <strong style="font-weight:500;">lowest</strong> one is simply the deepest — the one farthest from the root that still qualifies.</p>
+      <div class="callout callout-info"><p>The problem guarantees p and q both exist in the tree and are distinct. Notice that a node can be its own ancestor — so if p is a direct ancestor of q, then LCA(p, q) = p, not some higher node. This is the edge case that trips most people.</p></div>
+      <p class="deep-para">Visually: draw the path from root to p and the path from root to q. The LCA is the last node where these two paths share a common node before they diverge.</p>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">02 · Why post-order DFS?</p>
+      <h2 class="section-title">The traversal order that makes this elegant</h2>
+      <p class="deep-para">Post-order DFS means we process children <em>before</em> the parent. This is crucial: we need to know what both subtrees found before we can decide whether the current node is the LCA.</p>
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="text-align:center;padding:12px 8px;background:#E6F1FB;border-radius:var(--border-radius-md);border:2px solid #378ADD;">
+            <p style="font-size:12px;font-weight:500;color:#185FA5;margin:0 0 4px;">Post-order DFS ← natural fit</p>
+            <p style="font-size:13px;color:#0C447C;margin:0;">Recurse left, recurse right, then decide at the current node. Children report findings up to parent via return values. Clean and elegant.</p>
+          </div>
+          <div style="text-align:center;padding:12px 8px;background:#EEEDFE;border-radius:var(--border-radius-md);">
+            <p style="font-size:12px;font-weight:500;color:#534AB7;margin:0 0 4px;">Iterative with parent map</p>
+            <p style="font-size:13px;color:#3C3489;margin:0;">Store parent pointers for all nodes, collect ancestors of p in a set, then walk q's ancestors to find the first match. O(n) time but O(n) extra space and more code.</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-warn"><p><strong style="font-weight:500;">Interview tip:</strong> Always lead with the recursive approach. If the interviewer asks about iterative, mention the parent-pointer approach and note it requires O(n) extra space vs. O(h) for recursion stack. </p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">03 · The real-world analogy</p>
+      <h2 class="section-title">Two people searching for each other in a family tree</h2>
+      <div class="analogy-box" style="margin-bottom:1rem;">
+        <p class="analogy-text">Imagine you're a detective hired to find the nearest shared ancestor of two people in a family tree. You send out two search parties — one to find person p, one to find person q. Each party reports back to their parent: "found p", "found q", or "found nothing". The first family member who hears back from both sides is the common ancestor you're looking for.</p>
+      </div>
+      <div class="callout callout-success"><p><strong style="font-weight:500;">Key insight:</strong> The function doesn't just return the answer — it also acts as a messenger. When it finds p or q, it returns that node upward as a signal. A node receiving two non-null signals becomes the LCA and returns itself — which then propagates all the way up to the root unchanged, because no ancestor above will receive two non-null signals again.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">04 · Understanding the code line by line</p>
+      <h2 class="section-title">What every line is actually doing</h2>
+      <p class="deep-para">The elegance of this solution is that it uses the return value for two different purposes simultaneously: as a search signal going up, and as the final answer once the LCA is locked in.</p>
+      <div class="code-block" style="margin-bottom:1.25rem;">
+        <div><span class="c-kw">def</span> <span class="c-fn">lowestCommonAncestor</span><span class="c-plain">(root, p, q):</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># 1. null → not in this branch → report "nothing found"</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># 2. root == p → signal "p is here" (don't go deeper — even if q is</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm">#    below, p is still the LCA per problem definition)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># 3. root == q → same logic, signal "q is here"</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if not</span><span class="c-plain"> root </span><span class="c-kw">or</span><span class="c-plain"> root </span><span class="c-kw">is</span><span class="c-plain"> p </span><span class="c-kw">or</span><span class="c-plain"> root </span><span class="c-kw">is</span><span class="c-plain"> q:</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-plain"> root</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># Post-order: get answers from both subtrees first</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;left  = </span><span class="c-fn">lowestCommonAncestor</span><span class="c-plain">(root.left,  p, q)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;right = </span><span class="c-fn">lowestCommonAncestor</span><span class="c-plain">(root.right, p, q)</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># Both non-null → one target in each subtree → this is the split point</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> left </span><span class="c-kw">and</span><span class="c-plain"> right:</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-plain"> root &nbsp;&nbsp;&nbsp;</span><span class="c-cm"># THIS node is the LCA</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># Only one side has something — bubble it up unchanged</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-plain"> left </span><span class="c-kw">if</span><span class="c-plain"> left </span><span class="c-kw">else</span><span class="c-plain"> right</span></div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q">Why do we return root immediately when root is p or q, without searching deeper?</div>
+        <div class="qa-a">Because the problem guarantees both p and q exist in the tree. If we've reached p, then q must be somewhere — either in p's subtree (making p the LCA) or in another part of the tree entirely. Either way, the correct answer is p itself or something above p. We don't need to know where q is; returning p as a signal is sufficient for the parent node to decide.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">After the LCA is found and returned, what happens to all the calls above it?</div>
+        <div class="qa-a">Once the LCA (say node 3) is returned by lca(3, p, q), every ancestor of node 3 will receive that node as either its left or right result — but never both (since both targets are now "accounted for" in node 3's subtree). So the other side will return null, and the LCA node just gets propagated upward unchanged until it reaches the root call.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What if neither target is found in a subtree?</div>
+        <div class="qa-a">Both left and right will be null. The last line <code style="font-size:13px;background:var(--color-background-secondary);padding:2px 5px;border-radius:4px;">return left if left else right</code> will return null (right), which correctly signals "nothing found here" to the parent node.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Can the return value be ambiguous — signaling a "found target" vs "this is the LCA"?</div>
+        <div class="qa-a">Yes — intentionally. The function is dual-purpose: before the LCA is found, returned nodes are signals ("target found here"). After the LCA is found, the returned node is the actual answer bubbling up. From the caller's perspective (root call), this doesn't matter — the final return is always the LCA.</div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">05 · Full trace — every call explained</p>
+      <h2 class="section-title">Walking through LCA(root=3, p=5, q=1)</h2>
+      <p class="deep-para" style="margin-bottom:1.5rem;">Tree: 3→(5,1); 5→(6,2); 2→(7,4); 1→(0,8). Full post-order DFS trace — calls resolve bottom-up.</p>
+
+      <div class="trace-step"><span class="trace-badge trace-going">Call</span><div class="trace-content"><p class="trace-title">lca(3, 5, 1) — start at root</p><p class="trace-desc">Root is not null, not p, not q. Recurse left and right.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-going">Call</span><div class="trace-content"><p class="trace-title">lca(5, 5, 1) — root == p</p><p class="trace-desc">Base case hit. Return node 5 immediately as a signal. Children of 5 are never visited.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Return</span><div class="trace-content"><p class="trace-title">lca(5) → returns node 5 up to node 3's left</p><p class="trace-desc">left = node 5 (non-null signal)</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-going">Call</span><div class="trace-content"><p class="trace-title">lca(1, 5, 1) — root == q</p><p class="trace-desc">Base case hit. Return node 1 immediately as a signal. Children of 1 are never visited.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Return</span><div class="trace-content"><p class="trace-title">lca(1) → returns node 1 up to node 3's right</p><p class="trace-desc">right = node 1 (non-null signal)</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-found" style="background:#E1F5EE;color:#085041;">LCA Found</span><div class="trace-content"><p class="trace-title">Back at lca(3): left=node 5, right=node 1 — both non-null</p><p class="trace-desc">The split point is here. Return root (node 3). This is the final answer that propagates to the top-level caller.</p></div></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">06 · Common beginner mistakes</p>
+      <h2 class="section-title">What trips people up</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting that a node can be its own ancestor</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">LCA(5, 4) in our example is 5 because 4 is in 5's subtree. The base case handles this correctly — we return 5 without searching its subtree, and 5 is propagated as the answer. Never special-case this — the algorithm handles it automatically.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Comparing node values instead of node references</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Use <code style="font-size:12px;">root is p</code> (identity check), not <code style="font-size:12px;">root.val == p.val</code>. In a tree, duplicate values can exist. The problem gives you actual node objects as p and q, so reference comparison is both correct and safe.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Searching deeper after finding p (or q) to locate the other target</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Unnecessary. Once you hit p, returning p is the correct signal. If q is a descendant of p, the parent of p will receive p from one side and null from the other, and will propagate p upward — which is exactly the correct LCA result.</p></div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Using pre-order instead of post-order (checking node before recursing)</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Pre-order returns as soon as it finds p or q — it can't know whether both are in one subtree or split across two. Post-order (recurse first, then decide) is essential here. The decision at a node depends on its children's results.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">07 · Complexity — the full explanation</p>
+      <h2 class="section-title">Why O(n) time and O(h) space?</h2>
+      <div class="complexity-grid" style="margin-bottom:1rem;">
+        <div class="complexity-card" style="background:#E6F1FB;"><div class="complexity-label" style="color:#185FA5;">Time</div><div class="complexity-value" style="color:#0C447C;">O(n)</div><div class="complexity-why" style="color:#185FA5;">Every node is visited exactly once. There's no revisiting or extra passes. In the best case (p or q is root), we return immediately — but worst case is still O(n).</div></div>
+        <div class="complexity-card" style="background:#EEEDFE;"><div class="complexity-label" style="color:#534AB7;">Space</div><div class="complexity-value" style="color:#3C3489;">O(h)</div><div class="complexity-why" style="color:#534AB7;">The implicit recursion stack can be at most h frames deep, where h is tree height. O(log n) balanced, O(n) worst case (skewed tree).</div></div>
+      </div>
+      <div class="callout callout-warn"><p><strong style="font-weight:500;">Interview tip:</strong> When asked about space, distinguish between the recursion stack (O(h)) and the iterative parent-map approach (O(n) for the hash map). State clearly: "This recursive approach uses O(h) call stack space — O(log n) for a balanced tree, O(n) worst case." Interviewers appreciate the nuance.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">08 · Interview context</p>
+      <h2 class="section-title">Related problems to know</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">LCA of BST (LeetCode 235)</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">With a BST, you don't need full post-order DFS. Use node values: if both p and q are less than root, go left; both greater, go right; split means current node is LCA. O(h) time and O(1) space (iterative).</p></div></div>
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">LCA with parent pointers</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Walk from p to root collecting ancestors in a set. Then walk from q to root and return the first node already in the set. O(h) time and O(h) space. Useful when the tree gives you parent pointers.</p></div></div>
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">LCA of Deepest Leaves (LeetCode 1123)</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Same post-order DFS structure, but instead of targets p and q, you track depth and return the LCA of all nodes at max depth. A natural extension of this technique.</p></div></div>
+        <div class="interview-item" style="border:none;"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Distance Between Two Nodes</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">dist(p, q) = depth(p) + depth(q) − 2 × depth(LCA(p, q)). Find the LCA first using this algorithm, then compute depths. Classic multi-step tree problem.</p></div></div>
+      </div>
+    </div>
+
+  </div><!-- end deep-mode -->
+
+  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Ready to practise?</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">Try the exact same technique on LCA of BST (LC 235) and LCA of Deepest Leaves (LC 1123).</p>
+    </div>
+    <a href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/" target="_blank" style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);cursor:pointer;text-decoration:none;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);">Open on LeetCode ↗</a>
+  </div>
+
+</div>
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep  = document.getElementById('deep-mode');
+  const btnQ  = document.getElementById('btn-quick');
+  const btnD  = document.getElementById('btn-deep');
+  const desc  = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display  = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display  = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>
