@@ -250,7 +250,7 @@ export const sections = [
     solved: 0,
     problems: [
       "Diameter of Binary Tree",
-      "Check if the Binary tree is height-balanced or not",
+      "Balanced Binary Tree",
       "LCA in Binary Tree",
       "Check if two trees are identical or not",
       "Zig Zag Traversal of Binary Tree",
@@ -471,6 +471,10 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
 
   if (sectionName === "Binary Tree Part-II" && problemName === "Diameter of Binary Tree") {
     return "/problems/binary-tree/diameter-of-binary-tree";
+  }
+
+  if (sectionName === "Binary Tree Part-II" && problemName === "Balanced Binary Tree") {
+    return "/problems/binary-tree/balanced-check";
   }
 
   if (sectionName === "Binary Tree") {
