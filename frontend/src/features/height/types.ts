@@ -42,6 +42,7 @@ export interface ExecutionStep {
   type: HeightOperationType;
   node: TreeNode | null;
   value: number | undefined;
+  index?: number;
   depth?: number;
   leftHeight?: number;
   rightHeight?: number;
