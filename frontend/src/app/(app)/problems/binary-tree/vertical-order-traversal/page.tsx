@@ -1,4 +1,4 @@
-import { VerticalOrderLayout } from "@/features/verticalorder/components/TopViewLayout";
+import { VerticalOrderLayout } from "@/features/verticalorder/components/VerticalOrderLayout";
 
 export default function VerticalOrderTraversalPage() {
   return <VerticalOrderLayout />;
