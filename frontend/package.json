@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "tree:micro:test": "node scripts/tree-micro-compliance.cjs",
+    "tree:micro:fix": "node scripts/tree-micro-compliance.cjs --fix"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

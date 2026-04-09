@@ -133,7 +133,7 @@ const BEGINNER_MISTAKES = [
   { x: "Not checking if children exist", desc: "If node.left or node.right is None, pushing it creates a NullPointerException." },
 ];
 
-export default function Page() {
+export default function PageGuidePage() {
   const [mode, setMode] = useState<"quick" | "deep">("quick");
   const [highlightPre, setHighlightPre] = useState(false);
   const [highlightIn, setHighlightIn] = useState(false);

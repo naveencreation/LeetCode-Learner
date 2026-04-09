@@ -469,6 +469,10 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return "/problems/binary-tree/top-view-of-binary-tree";
   }
 
+  if (sectionName === "Binary Tree Part-II" && problemName === "Diameter of Binary Tree") {
+    return "/problems/binary-tree/diameter-of-binary-tree";
+  }
+
   if (sectionName === "Binary Tree") {
     return `/problems/binary-tree/${toSlug(problemName)}`;
   }

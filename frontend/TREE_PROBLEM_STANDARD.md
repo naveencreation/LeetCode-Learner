@@ -1,175 +1,226 @@
-# Tree Problem Implementation Standard
+# Tree Problem Standard (Authoritative)
 
-This document defines the minimum quality standard for all future tree problems.
-Any new tree feature should match or exceed the implementation quality of inorder traversal.
+Use this document as the contract for any new tree problem.
+Goal: if a new problem is added, it should feel identical in structure and interaction quality to existing implemented problems.
 
-## 1) Product Goal
+## 1) Non-Negotiable Outcomes
 
-- Teach tree concepts clearly with step-by-step visual execution.
-- Keep UI intuitive for beginners and powerful for advanced users.
-- Maintain consistent design language across all tree modules.
+- Same learning flow across all problems: code, tree, progress, stack/queue, explanation, controls.
+- Same interaction model: drag-resizable layout, reset behavior, saved splitter memory.
+- Same design language: panel primitives, spacing rhythm, typography hierarchy, button styles.
+- Same engineering baseline: strict TypeScript, lint clean, reusable architecture.
+- Minimal-change delivery: avoid broad rewrites when a targeted patch or shared reuse solves the requirement.
 
-## 2) Required UX Pattern
+## 2) Required File Structure for a New Problem
 
-- Use the same core panel structure:
-  - Code panel
-  - Tree structure panel
-  - Traversal progress panel
-  - Recursion stack panel
-  - Explanation panel
-  - Controls bar
-- Keep panel spacing, border radius, shadows, typography, and badge styles consistent.
-- Avoid introducing one-off visual patterns for single modules.
+Create a dedicated feature folder under `src/features/<problem-key>/` with:
 
-## 3) Tree Setup Modal Standard
+- `constants.ts`
+- `types.ts`
+- `engine.ts`
+- `selectors.ts`
+- `use<ProblemName>Traversal.ts`
+- `components/`
+  - `<ProblemName>Layout.tsx`
+  - `CodePanel.tsx`
+  - `TreePanel.tsx`
+  - `ResultPanel.tsx`
+  - `CallStackPanel.tsx` (or queue/state panel equivalent)
+  - `ExplanationPanel.tsx`
+  - `ControlsBar.tsx`
+  - `TreeSetupModal.tsx`
 
-- Tree setup must open from tree panel, not inline.
-- Keep two modes:
-  - Beginner: essential controls only
-  - Advanced: full editing controls
-- Keep right-side live tree preview fixed.
-- Keep left-side controls scrollable with themed scrollbar.
-- Use dedicated in-app confirm dialog for unsaved close behavior (no browser alert/confirm).
+Also create route pages:
 
-### Required Setup Capabilities
+- Problem page: `src/app/(app)/problems/binary-tree/<slug>/page.tsx`
+- Guide page: `src/app/(app)/problems/binary-tree/<slug>-guide/page.tsx`
 
-- Presets/templates
-- Add node by parent + side
-- Drag-and-drop positioning in preview
-- Auto layout styles
-- Rename node value
-- Remove subtree
-- Structural validation before apply
-- Visual warning hints for layout issues
+Also register catalog wiring:
 
-### Node Limits
+- Add/update `getProblemHref` mapping in `src/app/(app)/problems/page.tsx`.
+- Ensure section-aware mapping exists for `Binary Tree Part-II` / `Binary Tree Part-III` problems.
+- If study-mode fallback is needed, add/update `src/features/binary-tree/problemData.ts` entry.
+- Add/update traversal route detection in `src/app/(app)/layout.tsx` so interactive pages render in fixed viewport shell (not scroll shell).
 
-- Beginner mode max nodes: 10
-- Advanced mode max nodes: 20
-- Show helper text: Best learning experience: up to 10 nodes.
-- Show clear limit-reached message and disable Add action when cap is hit.
+Read Here guide-page contract:
 
-## 4) Controls Bar Standard
+- `TREE_READ_HERE_PAGE_MICRO_STANDARD.md` is mandatory when creating or updating any `/<slug>-guide/page.tsx` file.
 
-- Support manual stepping and auto-play mode.
-- Include Play/Pause and speed control in auto mode.
-- Use consistent icon set (Lucide) and avoid emoji icons.
-- Keep button size, spacing, and interaction states consistent.
+Architecture guardrails (mandatory):
 
-## 5) Code Panel Standard
+- Layouts must use `src/features/shared/components/ResizableTraversalGrid.tsx` for resizing and persistence.
+- Do not implement custom drag/splitter engines in problem layout files.
+- Do not import panels from another concrete problem folder.
+- Allowed imports for panels: same feature folder or shared panel modules.
+- Prefer extending shared modules over cloning large blocks into each problem feature.
 
-- Include Snippet and Full Code view toggle.
-- Snippet mode must be execution-path aware, not only local line window.
-- Active-line highlight must be clear but not flashy.
-- Ensure full code is always scroll-accessible.
-- Keep code theme consistent with approved design direction.
+## 3) Layout and Header Standard
 
-## 6) Visual Quality Rules
+All new problems must use shared layout engine:
 
-- Prefer restrained, enterprise-premium styling over flashy effects.
-- Use semantic color roles consistently (info, success, warning, error, active).
-- Keep micro-interactions subtle and purposeful.
-- Maintain readability at common laptop resolutions.
+- `src/features/shared/components/ResizableTraversalGrid.tsx`
 
-## 7) Engineering Rules
+Layout assembly rules:
 
-- Keep TypeScript strict-safe.
-- Reuse shared primitives from global styles where possible.
-- Do not duplicate style logic across modules when a shared class/pattern exists.
-- Preserve keyboard accessibility and predictable focus states.
+- Provide `left`, `middleTop`, `middleBottom`, `middleFooter`, `rightTop`, `rightBottom`.
+- Use a `ProblemFocusHeader` above the grid.
+- Include top `Reset Layout` action in header `extraActions` with existing button style.
+- Wire header reset to shared grid reset callback.
 
-## 8) Validation Checklist (Before Merge)
+Safe callback pattern (required):
 
-- No new lint errors.
-- Existing known warnings only in legacy prototype script.
-- Manual QA completed:
-  - Tree setup flow (open, edit, apply, apply-and-run, unsaved close)
-  - Manual mode controls
-  - Auto mode controls
-  - Snippet and Full code behavior
-  - Responsive checks on common viewport sizes
+- Never pass state setter directly to `onResetReady`.
+- Use function-wrapper storage pattern:
+  - `onResetReady={(resetFn) => setResetLayout(() => resetFn)}`
 
-## 9) Expansion Rule for Future Tree Problems
+## 4) Resizable Layout Behavior (Must Match Existing)
 
-For each new tree problem (for example top view, bottom view, level order, zigzag, etc.):
+- Column drag: left/middle/right splitters.
+- Row drag: middle and right vertical stacks.
+- Divider double-click resets layout.
+- Header `Reset Layout` button resets layout.
+- Splitter positions persist per route using `localStorage` through shared grid.
+- Max-drag must remain safe (no panel overlap).
 
-- Start from this standard.
-- Reuse shared components/patterns wherever possible.
-- Only problem-specific logic should differ; UX quality should remain consistent.
+Do not re-implement drag logic in each feature unless explicitly required.
 
-## 10) Micro-Level UI/UX Implementation Checklist
+## 5) Panel Content Standard
 
-These are mandatory polish details for all tree modules.
+### Code Panel
 
-### A) Panel Surface Consistency
+- Snippet vs Full code toggle.
+- Execution-aware highlighted lines.
+- Clear active-line state.
+- Full code remains scroll-accessible.
 
-- Use shared panel primitives from global styles (`traversal-panel`, `traversal-panel-header`, `traversal-panel-title`, `traversal-pill`, `traversal-kbd`).
-- Keep panel corner radius, border, and shadow consistent across code/tree/result/stack/explanation panels.
-- Keep panel header spacing and title size consistent.
+### Tree Panel
 
-### B) Spacing Rhythm
+- Visual node-state rendering tied to active step.
+- Entry point to open `TreeSetupModal`.
+- Keep panel primitives consistent.
 
-- Follow one spacing rhythm only (`1.5`, `2`, `2.5`, `3` style increments used in current app).
-- Keep inline control gaps consistent in each row.
-- Avoid cramped 3-control rows; use equal grid distribution where possible.
+### Result Panel
 
-### C) Button and Toggle Standards
+- Current operation state + output state.
+- Clear per-step progression context.
+- Output semantics must match the problem result contract (do not force traversal-array semantics onto scalar-output problems).
 
-- Primary control height should be consistent inside a panel.
-- Use one icon family only (Lucide).
-- No emoji icons in action buttons.
-- Ensure disabled states reduce contrast and show `not-allowed` cursor when applicable.
-- Add subtle directional hover motion for next/previous where used.
-- Segmented toggles must keep consistent shape, padding, and active-state treatment.
+### Stack/Queue Panel
 
-### D) Form Ergonomics
+- Use the problem-appropriate execution structure (stack/queue/state list).
+- Empty-state message when no active frames/items.
 
-- Inputs/selects/buttons in the same row must align vertically.
-- Keep focus ring and focus border behavior consistent across all form controls.
-- Show clear inline helper text when the action has constraints.
-- For limit rules (like node count), show both current value and max value.
+### Explanation Panel
 
-### E) Status and Feedback
+- Step narrative tied to active execution step.
+- Clear user-facing guidance language.
 
-- Use semantic status chips with consistent color intent:
-  - Info
-  - Success
-  - Warning
-  - Error
-- Messages must be action-oriented and concise.
-- Error surfaces should tell user exactly what to do next.
+### Controls Bar
 
-### F) Tree Setup Modal Micro Rules
+- Manual mode: previous/next/reset.
+- Auto mode: play/pause + speed selection.
+- Consistent button sizing, spacing, and icon set.
 
-- Left control area scrolls; right preview remains fixed.
-- Scrollbar must use themed style (`ui-scrollbar`) and match app look.
-- Unsaved changes confirmation must be in-app UI (never native browser confirm).
-- Advanced features should be collapsed by default unless context requires otherwise.
+## 6) Tree Setup Modal Standard
 
-### G) Code Panel Micro Rules
+- Must open from `TreePanel` action.
+- Two modes:
+  - Beginner mode (essential controls)
+  - Advanced mode (full editing)
+- Left controls scroll, right preview fixed.
+- In-app unsaved-changes confirmation only (no native browser confirm).
+- Required capabilities:
+  - Presets/templates
+  - Add node by parent + side
+  - Drag/drop node positioning in preview
+  - Auto-layout options
+  - Rename node value
+  - Remove subtree
+  - Structural validation before apply
 
-- Snippet and Full Code toggle must remain visible and clear.
-- Snippet mode must represent execution-path relevance.
-- Active line must be obvious but not visually loud.
-- Line numbers should be readable but lower emphasis than code text.
-- Full code must remain fully scroll-accessible.
+Node limits:
 
-### H) Motion and Transition Rules
+- Beginner max: 10
+- Advanced max: 20
+- Display explicit helper text and limit-reached feedback.
 
-- Keep transitions short and subtle.
-- Use motion to indicate state change, not decoration.
-- Avoid multiple competing animations in a single panel at once.
+## 7) Visual and Interaction Consistency Rules
 
-### I) Accessibility and Keyboard
+- Reuse shared classes from global styles:
+  - `traversal-panel`
+  - `traversal-panel-header`
+  - `traversal-panel-title`
+  - `traversal-pill`
+  - `traversal-kbd`
+- Preserve spacing rhythm already used in implemented problems.
+- Keep hover/active/focus behavior subtle and consistent.
+- Avoid one-off decorative styles for a single problem.
+- Avoid ad-hoc status badges that diverge from current problems.
 
-- Tab order must follow visual order.
-- Enter/Escape behaviors must be predictable in modals/dialogs.
-- Keep focus indicators visible and consistent.
-- Maintain readable contrast for text and controls.
+## 8) Accessibility and Reliability Rules
 
-### J) Responsive Micro QA
+- Keyboard reachable actions for all important controls.
+- Predictable focus order.
+- Visible focus states.
+- Readable contrast for text and control labels.
+- No React render/update loop warnings.
+- No console errors during common interaction paths.
 
-- Validate at least these widths: 1366, 1536, 1920.
-- Ensure no panel clipping at common laptop heights.
-- Ensure control rows wrap gracefully without overlap.
-- Confirm all important actions remain reachable without layout break.
+## 9) Quality Gates Before Merge
+
+### Static checks
+
+- `npx eslint` must pass for all newly created/edited files.
+- TypeScript compile must stay clean for changed scope.
+- New feature files must not introduce `any` or `Record<number, any>`.
+- Diff scope should remain focused:
+  - no unnecessary edits in unrelated features
+  - no large copied blocks where shared extraction is possible
+
+### Manual behavior QA
+
+- Drag columns to both extremes: no overlap, no clipping.
+- Drag rows to both extremes: headers remain usable.
+- Divider double-click reset works.
+- Header `Reset Layout` works.
+- Refresh page: splitter positions restore correctly.
+- Change route and return: route-specific layout state is preserved.
+- Tree setup flow works: open, edit, apply, apply-and-run, unsaved-close path.
+- Problem card is `Live` (not `Planned`) in `/problems` and opens the correct route.
+- Code panel and Explanation panel content is problem-specific (not inherited from a different problem module).
+- Interactive shell is fixed-height (no outer page scroll caused by app layout routing).
+
+### Responsive QA
+
+- Validate at minimum widths: 1366, 1536, 1920.
+- No control overlap in header or controls bar.
+- No panel overflow causing broken layout.
+
+## 10) New Problem Checklist (Copy/Paste)
+
+- [ ] Created `src/features/<problem-key>/` with standard files.
+- [ ] Added problem route page and guide route page.
+- [ ] Added `getProblemHref` catalog wiring so problem appears as Live.
+- [ ] Added app-layout traversal route wiring (`src/app/(app)/layout.tsx`) for fixed interactive shell.
+- [ ] Built layout using `ResizableTraversalGrid`.
+- [ ] Avoided custom splitter implementation in layout file.
+- [ ] Added header `Reset Layout` action.
+- [ ] Wired `onResetReady` with safe wrapper callback pattern.
+- [ ] Implemented required panels and controls.
+- [ ] Avoided cross-problem component imports.
+- [ ] Avoided unnecessary broad rewrites outside new feature scope.
+- [ ] Integrated `TreeSetupModal` with standard capabilities.
+- [ ] Result panel semantics match the problem output contract.
+- [ ] Kept visual style and shared classes consistent.
+- [ ] Lint/typecheck passed.
+- [ ] Manual QA passed for drag/reset/persistence/responsive.
+
+## 11) Recommended Implementation Sequence
+
+1. Duplicate a stable, shared-grid-based layout from an existing problem.
+2. Replace only problem-specific engine/types/selectors/hooks.
+3. Keep panel shell and controls structure unchanged.
+4. Validate behavior with manual + autoplay flows.
+5. Run lint/typecheck and complete checklist above.
+
+Following this standard is mandatory for any new tree problem so all modules remain consistent with implemented pages.
