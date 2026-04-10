@@ -6,18 +6,18 @@ import type { NodePosition, TreeNode, TreePresetKey } from "../types";
 type LayoutStyle = "balanced" | "compact";
 
 interface TreeSetupModalProps {
-  root: TreeNode;
+  root: TreeNode | null;
   selectedPreset: TreePresetKey;
-  presets: Record<TreePresetKey, { label: string; create: () => TreeNode }>;
+  presets: Record<TreePresetKey, { label: string; create: () => TreeNode | null }>;
   customNodePositions: Record<number, NodePosition>;
   onClose: () => void;
   onApply: (
-    root: TreeNode,
+    root: TreeNode | null,
     positions: Record<number, NodePosition>,
     preset: TreePresetKey,
   ) => void;
   onApplyAndRun: (
-    root: TreeNode,
+    root: TreeNode | null,
     positions: Record<number, NodePosition>,
     preset: TreePresetKey,
   ) => void;
@@ -471,7 +471,10 @@ export function TreeSetupModal({
 
   const handlePresetChange = (preset: TreePresetKey) => {
     setDraftPreset(preset);
-    setDraftRoot(presets[preset].create());
+    const presetRoot = presets[preset].create();
+    if (presetRoot) {
+      setDraftRoot(presetRoot);
+    }
     setDraftPositions({});
     setError(null);
   };
@@ -662,8 +665,8 @@ export function TreeSetupModal({
 
   const handleApplyAction = (
     applyHandler: (
-      root: TreeNode,
-      positions: Record<number, NodePosition>,
+      root: TreeNode | null,
+    positions: Record<number, NodePosition>,
       preset: TreePresetKey,
     ) => void,
   ) => {

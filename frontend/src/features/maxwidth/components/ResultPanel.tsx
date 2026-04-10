@@ -31,7 +31,7 @@ export function ResultPanel({
       : `Step ${currentStep + 1}: ${currentOperation}`;
 
   return (
-    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_auto_auto_auto] content-start gap-1 p-2">
+    <section className="traversal-panel ui-scrollbar grid h-full min-h-0 auto-rows-min content-start gap-1.5 overflow-auto p-2 pr-1">
       <div className="traversal-panel-header mb-px">
         <h2 className="traversal-panel-title">
           Traversal Progress
@@ -47,7 +47,7 @@ export function ResultPanel({
         </div>
         <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1 text-center text-white">
           <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-teal-100">
-            Current Width
+            Level Width
           </p>
           <p className="mt-0.5 truncate text-lg font-extrabold">{currentWidth || 0}</p>
         </div>
@@ -72,7 +72,7 @@ export function ResultPanel({
         <p className="text-[11px] font-extrabold uppercase tracking-[0.03em] text-slate-700">
           Width Per Level
         </p>
-        <div className="flex min-h-[32px] flex-wrap items-center gap-1 rounded-lg border border-slate-200 bg-white p-1">
+        <div className="ui-scrollbar flex max-h-[96px] min-h-[36px] flex-wrap items-center gap-1 overflow-auto rounded-lg border border-slate-200 bg-white p-1.5">
           {result.length === 0 ? (
             <span className="text-[11px] text-slate-400">
               Level widths appear here...

@@ -67,12 +67,16 @@ function pushStep(
   });
 }
 
-export function generateDiameterExecutionSteps(root: TreeNode) {
+export function generateDiameterExecutionSteps(root: TreeNode | null) {
   const executionSteps: ExecutionStep[] = [];
   const nodeStates: Record<number, NodeVisualState> = {};
   const callStack: InternalFrame[] = [];
   let frameCounter = 0;
   let maxDiameter = 0;
+
+  if (root === null) {
+    return { executionSteps, initialNodeStates: nodeStates };
+  }
 
   initializeNodeStates(root, nodeStates);
   const initialNodeStates = cloneNodeStates(nodeStates);

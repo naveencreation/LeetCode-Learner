@@ -66,7 +66,7 @@ function pushStep(
   });
 }
 
-export function generatePostorderExecutionSteps(root: TreeNode): {
+export function generatePostorderExecutionSteps(root: TreeNode | null): {
   executionSteps: ExecutionStep[];
   initialNodeStates: Record<number, NodeVisualState>;
 } {
@@ -74,6 +74,10 @@ export function generatePostorderExecutionSteps(root: TreeNode): {
   const nodeStates: Record<number, NodeVisualState> = {};
   const callStack: InternalFrame[] = [];
   let frameCounter = 0;
+
+  if (root === null) {
+    return { executionSteps, initialNodeStates: nodeStates };
+  }
 
   initializeNodeStates(root, nodeStates);
   const initialNodeStates = cloneNodeStates(nodeStates);

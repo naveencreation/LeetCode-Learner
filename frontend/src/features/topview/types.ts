@@ -1,4 +1,6 @@
-export type InorderOperationType =
+import type { NodeVisualState } from "../shared/types";
+
+export type TopViewOperationType =
   | "enter_function"
   | "traverse_left"
   | "visit"
@@ -6,12 +8,7 @@ export type InorderOperationType =
   | "exit_function"
   | "finish";
 
-export type NodeVisualState =
-  | "unvisited"
-  | "exploring_left"
-  | "current"
-  | "exploring_right"
-  | "completed";
+export type { NodeVisualState };
 
 export interface TreeNode {
   val: number;
@@ -39,7 +36,7 @@ export interface CallStackFrame {
 }
 
 export interface ExecutionStep {
-  type: InorderOperationType;
+  type: TopViewOperationType;
   node: TreeNode | null;
   value: number | undefined;
   hd?: number;
@@ -48,7 +45,7 @@ export interface ExecutionStep {
   nodeStates: Record<number, NodeVisualState>;
 }
 
-export interface InorderTraversalState {
+export interface TopViewTraversalState {
   currentStep: number;
   result: number[];
   visitedNodes: Set<number>;

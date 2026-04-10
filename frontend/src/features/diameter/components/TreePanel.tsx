@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import type { ExecutionStep, NodePosition, NodeVisualState, TreeNode } from "../types";
 
 interface TreePanelProps {
-  root: TreeNode;
+  root: TreeNode | null;
   currentOperation: string;
   nodeStates: Record<number, NodeVisualState>;
   activeStep: ExecutionStep | undefined;
@@ -11,8 +11,7 @@ interface TreePanelProps {
   onOpenTreeSetup: () => void;
 }
 
-const stateStyles: Record<
-  NodeVisualState,
+const stateStyles: Record<string,
   { fill: string; stroke: string; text: string; glow: string }
 > = {
   unvisited: {
@@ -93,7 +92,11 @@ function assignInorderIndex(
   assignInorderIndex(node.right, map, counter);
 }
 
-function buildAutoPositions(root: TreeNode): Record<number, NodePosition> {
+function buildAutoPositions(root: TreeNode | null): Record<number, NodePosition> {
+  if (!root) {
+    return {};
+  }
+
   const nodes: Array<{ value: number; depth: number }> = [];
   const edges: Array<[number, number]> = [];
   collectNodesAndEdges(root, 0, nodes, edges);

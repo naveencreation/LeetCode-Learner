@@ -13,8 +13,7 @@ interface TreePanelProps {
   onOpenTreeSetup: () => void;
 }
 
-const stateStyles: Record<
-  NodeVisualState,
+const stateStyles: Record<string,
   { fill: string; stroke: string; text: string; glow: string }
 > = {
   unvisited: {

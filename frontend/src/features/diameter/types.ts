@@ -1,3 +1,5 @@
+import type { NodeVisualState } from "../shared/types";
+
 export type DiameterOperationType =
   | "enter_function"
   | "compute_left"
@@ -5,12 +7,7 @@ export type DiameterOperationType =
   | "update_diameter"
   | "return_height";
 
-export type NodeVisualState =
-  | "unvisited"
-  | "exploring_left"
-  | "processing"
-  | "exploring_right"
-  | "completed";
+export type { NodeVisualState };
 
 export interface TreeNode {
   val: number;

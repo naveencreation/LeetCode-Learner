@@ -1,3 +1,5 @@
+import type { NodeVisualState } from "../shared/types";
+
 export type BottomViewOperationType =
   | "start_level"
   | "dequeue"
@@ -7,12 +9,7 @@ export type BottomViewOperationType =
   | "end_level"
   | "finish";
 
-export type NodeVisualState =
-  | "unvisited"
-  | "exploring_left"
-  | "current"
-  | "exploring_right"
-  | "completed";
+export type { NodeVisualState };
 
 export interface TreeNode {
   val: number;

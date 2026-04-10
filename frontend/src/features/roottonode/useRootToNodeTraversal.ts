@@ -1,31 +1,22 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ROOT_TO_NODE_TREE_PRESETS, cloneTree, createSampleTree } from "./constants";
 import { generateRootToNodeExecutionSteps } from "./engine";
 import { getCodeLineForStep, getOperationBadge, getPhaseLabel } from "./selectors";
-import { useTraversalKeyboardShortcuts } from "../shared/useTraversalKeyboardShortcuts";
+import { useGenericTraversal } from "../shared/useGenericTraversal";
 import type {
   ExecutionStep,
-  NodePosition,
   NodeVisualState,
   TreeNode,
   TreePresetKey,
 } from "./types";
-
-interface StepProjection {
-  result: number[];
-  found: boolean;
-  visitedNodes: Set<number>;
-  currentNode: number | null;
-  nodeStates: Record<number, NodeVisualState>;
-}
+import type { StepProjection } from "../shared/useGenericTraversal";
 
 function collectNodeValues(node: TreeNode | null, values: number[]): void {
   if (!node) {
     return;
   }
-
   values.push(node.val);
   collectNodeValues(node.left, values);
   collectNodeValues(node.right, values);
@@ -35,7 +26,7 @@ function projectStateForStep(
   currentStep: number,
   executionSteps: ExecutionStep[],
   initialNodeStates: Record<number, NodeVisualState>,
-): StepProjection {
+): StepProjection & { found: boolean } {
   if (currentStep <= 0) {
     return {
       result: [],
@@ -53,34 +44,29 @@ function projectStateForStep(
   for (let index = 0; index < currentStep; index += 1) {
     const step = executionSteps[index];
     if ((step.type === "visit" || step.type === "backtrack") && typeof step.value === "number") {
-      result = [...step.pathSnapshot];
+      result = [...(step as any).pathSnapshot];
       visitedNodes.add(step.value);
     }
-
     if (step.type === "found_target") {
-      result = [...step.pathSnapshot];
+      result = [...(step as any).pathSnapshot];
       found = true;
       if (typeof step.value === "number") {
         visitedNodes.add(step.value);
       }
     }
-
     if (step.type === "traverse_left" || step.type === "traverse_right") {
       if (typeof step.value === "number") {
         visitedNodes.add(step.value);
       }
     }
-
     if (step.type === "finish") {
       found = false;
       result = [];
     }
-
-    if (step.type === "exit_function" && step.found) {
+    if (step.type === "exit_function" && (step as any).found) {
       found = true;
-      result = [...step.pathSnapshot];
+      result = [...(step as any).pathSnapshot];
     }
-
     if (step.type === "enter_function" && typeof step.value === "number") {
       visitedNodes.add(step.value);
     }
@@ -102,162 +88,70 @@ function projectStateForStep(
 export function useRootToNodeTraversal() {
   const [root, setRoot] = useState<TreeNode>(() => createSampleTree());
   const [targetValue, setTargetValue] = useState<number>(7);
-  const [selectedPreset, setSelectedPreset] = useState<TreePresetKey>("complete");
-  const [customNodePositions, setCustomNodePositions] = useState<Record<number, NodePosition>>({});
-  const [controlMode, setControlModeState] = useState<"manual" | "auto">("manual");
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [autoPlaySpeedMs, setAutoPlaySpeedMs] = useState(900);
 
-  const { executionSteps, initialNodeStates } = useMemo(
-    () => generateRootToNodeExecutionSteps(root, targetValue),
-    [root, targetValue],
+  const generateSteps = useCallback(
+    (node: TreeNode | null) => {
+      if (!node) {
+        return {
+          executionSteps: [],
+          initialNodeStates: {},
+        };
+      }
+
+      return generateRootToNodeExecutionSteps(node, targetValue);
+    },
+    [targetValue],
   );
+
+  const config = useMemo(
+    () => ({
+      generateSteps,
+      presets: ROOT_TO_NODE_TREE_PRESETS,
+      cloneTree,
+      createSampleTree,
+      getCodeLineForStep,
+      getOperationBadge,
+      getPhaseLabel,
+      projectStateForStep,
+    }),
+    [generateSteps],
+  );
+
+  const state = useGenericTraversal(config);
 
   const nodeValues = useMemo(() => {
     const values: number[] = [];
-    collectNodeValues(root, values);
+    collectNodeValues(state.root, values);
     return Array.from(new Set(values)).sort((a, b) => a - b);
-  }, [root]);
+  }, [state.root]);
 
-  const [currentStep, setCurrentStep] = useState(0);
-
-  const projectedState = useMemo(
-    () => projectStateForStep(currentStep, executionSteps, initialNodeStates),
-    [currentStep, executionSteps, initialNodeStates],
-  );
-
-  const nextStep = useCallback(() => {
-    setCurrentStep((previous) =>
-      previous < executionSteps.length ? previous + 1 : previous,
-    );
-  }, [executionSteps.length]);
-
-  const previousStep = useCallback(() => {
-    setCurrentStep((previous) => (previous > 0 ? previous - 1 : previous));
-  }, []);
-
-  const resetTraversal = useCallback(() => {
-    setCurrentStep(0);
-    setIsPlaying(false);
-  }, []);
-
-  const setControlMode = useCallback((mode: "manual" | "auto") => {
-    setControlModeState(mode);
-    if (mode === "manual") {
-      setIsPlaying(false);
-    }
-  }, []);
-
-  const goToFirst = useCallback(() => {
-    setCurrentStep(0);
-  }, []);
-
-  const goToLast = useCallback(() => {
-    setCurrentStep(executionSteps.length);
-  }, [executionSteps.length]);
-
-  const applyTreeConfiguration = useCallback(
+  const applyTreeConfigurationWithTarget = useCallback(
     (
       nextRoot: TreeNode,
-      nextPositions: Record<number, NodePosition>,
+      nextPositions: Record<number, any>,
       preset: TreePresetKey,
       runImmediately = false,
     ) => {
       const clonedRoot = cloneTree(nextRoot);
-      if (!clonedRoot) {
-        return;
-      }
-
-      setRoot(clonedRoot);
-      setCustomNodePositions({ ...nextPositions });
-      setSelectedPreset(preset);
+      if (!clonedRoot) return;
       const values: number[] = [];
       collectNodeValues(clonedRoot, values);
       const hasTarget = values.includes(targetValue);
       if (!hasTarget && values.length > 0) {
         setTargetValue(values[0]);
       }
-      setCurrentStep(runImmediately ? 1 : 0);
-      setIsPlaying(false);
+      state.applyTreeConfiguration(clonedRoot, nextPositions, preset, runImmediately);
     },
-    [targetValue],
+    [targetValue, state],
   );
 
-  const playTraversal = useCallback(() => {
-    if (currentStep >= executionSteps.length) {
-      return;
-    }
-
-    setIsPlaying(true);
-  }, [currentStep, executionSteps.length]);
-
-  const pauseTraversal = useCallback(() => {
-    setIsPlaying(false);
-  }, []);
-
-  useEffect(() => {
-    if (controlMode !== "auto" || !isPlaying || currentStep >= executionSteps.length) {
-      return;
-    }
-
-    const intervalId = window.setInterval(() => {
-      setCurrentStep((previous) =>
-        previous < executionSteps.length ? previous + 1 : previous,
-      );
-    }, autoPlaySpeedMs);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
-  }, [controlMode, isPlaying, currentStep, executionSteps.length, autoPlaySpeedMs]);
-
-  useTraversalKeyboardShortcuts({ nextStep, previousStep, resetTraversal });
-
-  const activeStep = executionSteps[currentStep];
-  const executedStep = currentStep > 0 ? executionSteps[currentStep - 1] : undefined;
-  const displayStep = executedStep ?? activeStep;
-  const isAutoPlaying =
-    controlMode === "auto" && isPlaying && currentStep < executionSteps.length;
-
   return {
-    root,
-    selectedPreset,
-    presets: ROOT_TO_NODE_TREE_PRESETS,
-    customNodePositions,
-    executionSteps,
-    totalSteps: executionSteps.length,
-    currentStep,
-    currentNode: projectedState.currentNode,
-    result: projectedState.result,
-    found: projectedState.found,
+    ...state,
+    result: state.result as number[],
     targetValue,
     setTargetValue,
     nodeValues,
-    visitedNodes: projectedState.visitedNodes,
-    nodeStates: projectedState.nodeStates,
-    currentOperation: displayStep?.operation ?? "Ready to search path...",
-    currentPhase: getPhaseLabel(displayStep),
-    currentCodeLine: getCodeLineForStep(displayStep),
-    operationBadge: getOperationBadge(displayStep),
-    activeStep,
-    executedStep,
-    activeCallStack: executedStep?.callStack ?? [],
-    isAtStart: currentStep === 0,
-    isAtEnd: currentStep === executionSteps.length,
-    controlMode,
-    setControlMode,
-    isPlaying: isAutoPlaying,
-    autoPlaySpeedMs,
-    setAutoPlaySpeedMs,
-    playTraversal,
-    pauseTraversal,
-    nextStep,
-    previousStep,
-    resetTraversal,
-    goToFirst,
-    goToLast,
-    applyTreeConfiguration,
+    found: (state as any).found ?? false,
+    applyTreeConfiguration: applyTreeConfigurationWithTarget,
   };
 }
-
-

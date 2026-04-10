@@ -6,9 +6,9 @@ import { TraversalShell } from "@/features/shared/components/TraversalShell";
 
 import { getCodeLineForStep } from "../selectors";
 import { useRootToNodeTraversal } from "../useRootToNodeTraversal";
-import { CallStackPanel } from "./CallStackPanel";
+import { UnifiedControlsBar } from "@/features/shared/components/UnifiedControlsBar";
+import { UnifiedCallStackPanel } from "@/features/shared/components/UnifiedCallStackPanel";
 import { CodePanel } from "./CodePanel";
-import { ControlsBar } from "./ControlsBar";
 import { ExplanationPanel } from "./ExplanationPanel";
 import { ResultPanel } from "./ResultPanel";
 import { TreePanel } from "./TreePanel";
@@ -122,7 +122,7 @@ export function RootToNodeLayout() {
         />
       }
       middleFooter={
-        <ControlsBar
+        <UnifiedControlsBar
           isAtStart={isAtStart}
           isAtEnd={isAtEnd}
           controlMode={controlMode}
@@ -137,7 +137,13 @@ export function RootToNodeLayout() {
           resetTraversal={resetTraversal}
         />
       }
-      rightTop={<CallStackPanel activeCallStack={activeCallStack} />}
+      rightTop={
+        <UnifiedCallStackPanel 
+          activeCallStack={activeCallStack}
+          title="Recursion Stack"
+          frameFormatter={(frame) => `dfs(${frame.nodeVal})`}
+        />
+      }
       rightBottom={
         <ExplanationPanel
           currentStep={currentStep}
@@ -158,10 +164,14 @@ export function RootToNodeLayout() {
             customNodePositions={customNodePositions}
             onClose={() => setIsTreeSetupOpen(false)}
             onApply={(nextRoot, nextPositions, preset) =>
-              applyTreeConfiguration(nextRoot, nextPositions, preset, false)
+              nextRoot
+                ? applyTreeConfiguration(nextRoot, nextPositions, preset, false)
+                : undefined
             }
             onApplyAndRun={(nextRoot, nextPositions, preset) =>
-              applyTreeConfiguration(nextRoot, nextPositions, preset, true)
+              nextRoot
+                ? applyTreeConfiguration(nextRoot, nextPositions, preset, true)
+                : undefined
             }
           />
         ) : null

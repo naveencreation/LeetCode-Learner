@@ -1,35 +1,41 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { MAX_WIDTH_TREE_PRESETS, cloneTree, createSampleTree } from "./constants";
 import { generateMaxWidthExecutionSteps } from "./engine";
 import { getCodeLineForStep, getOperationBadge, getPhaseLabel } from "./selectors";
-import { useTraversalKeyboardShortcuts } from "../shared/useTraversalKeyboardShortcuts";
+import { useGenericTraversal } from "../shared/useGenericTraversal";
 import type {
   ExecutionStep,
-  NodePosition,
   NodeVisualState,
   TreeNode,
   TreePresetKey,
 } from "./types";
+import type { StepProjection } from "../shared/useGenericTraversal";
 
-interface StepProjection {
-  levelWidths: number[];
+interface MaxWidthStepProjection extends StepProjection {
   maxWidth: number;
-  visitedNodes: Set<number>;
-  currentNode: number | null;
+  levelWidths: number[];
   currentLevel: number | null;
   currentWidth: number;
-  nodeStates: Record<number, NodeVisualState>;
+}
+
+interface MaxWidthTraversalReturn {
+  result: number[];
+  maxWidth: number;
+  levelWidths: number[];
+  currentLevel: number | null;
+  currentWidth: number;
 }
 
 function projectStateForStep(
   currentStep: number,
   executionSteps: ExecutionStep[],
   initialNodeStates: Record<number, NodeVisualState>,
-): StepProjection {
+): MaxWidthStepProjection {
   if (currentStep <= 0) {
     return {
+      result: [],
       levelWidths: [],
       maxWidth: 0,
       visitedNodes: new Set<number>(),
@@ -71,6 +77,7 @@ function projectStateForStep(
   const nodeStates = previousStep?.nodeStates ?? { ...initialNodeStates };
 
   return {
+    result,
     levelWidths: result,
     maxWidth,
     visitedNodes,
@@ -82,135 +89,32 @@ function projectStateForStep(
 }
 
 export function useMaxWidthTraversal() {
-  const [root, setRoot] = useState<TreeNode | null>(() => createSampleTree());
-  const [selectedPreset, setSelectedPreset] = useState<TreePresetKey>("complete");
-  const [customNodePositions, setCustomNodePositions] = useState<Record<number, NodePosition>>({});
-  const [controlMode, setControlModeState] = useState<"manual" | "auto">("manual");
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [autoPlaySpeedMs, setAutoPlaySpeedMs] = useState(900);
-
-  const { executionSteps, initialNodeStates } = useMemo(
-    () => generateMaxWidthExecutionSteps(root),
-    [root],
-  );
-
-  const [currentStep, setCurrentStep] = useState(0);
-
-  const projectedState = useMemo(
-    () => projectStateForStep(currentStep, executionSteps, initialNodeStates),
-    [currentStep, executionSteps, initialNodeStates],
-  );
-
-  const nextStep = useCallback(() => {
-    setCurrentStep((previous) =>
-      previous < executionSteps.length ? previous + 1 : previous,
-    );
-  }, [executionSteps.length]);
-
-  const previousStep = useCallback(() => {
-    setCurrentStep((previous) => (previous > 0 ? previous - 1 : previous));
-  }, []);
-
-  const resetTraversal = useCallback(() => {
-    setCurrentStep(0);
-    setIsPlaying(false);
-  }, []);
-
-  const setControlMode = useCallback((mode: "manual" | "auto") => {
-    setControlModeState(mode);
-    if (mode === "manual") {
-      setIsPlaying(false);
-    }
-  }, []);
-
-  const applyTreeConfiguration = useCallback(
-    (
-      nextRoot: TreeNode | null,
-      nextPositions: Record<number, NodePosition>,
-      preset: TreePresetKey,
-      runImmediately = false,
-    ) => {
-      const clonedRoot = cloneTree(nextRoot);
-      setRoot(clonedRoot);
-      setCustomNodePositions({ ...nextPositions });
-      setSelectedPreset(preset);
-      setCurrentStep(runImmediately ? 1 : 0);
-      setIsPlaying(false);
-    },
+  const config = useMemo(
+    () => ({
+      generateSteps: generateMaxWidthExecutionSteps,
+      presets: MAX_WIDTH_TREE_PRESETS,
+      cloneTree,
+      createSampleTree,
+      getCodeLineForStep,
+      getOperationBadge,
+      getPhaseLabel,
+      projectStateForStep,
+    }),
     [],
   );
 
-  const playTraversal = useCallback(() => {
-    if (currentStep >= executionSteps.length) {
-      return;
-    }
-
-    setIsPlaying(true);
-  }, [currentStep, executionSteps.length]);
-
-  const pauseTraversal = useCallback(() => {
-    setIsPlaying(false);
-  }, []);
-
-  useEffect(() => {
-    if (controlMode !== "auto" || !isPlaying || currentStep >= executionSteps.length) {
-      return;
-    }
-
-    const intervalId = window.setInterval(() => {
-      setCurrentStep((previous) =>
-        previous < executionSteps.length ? previous + 1 : previous,
-      );
-    }, autoPlaySpeedMs);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
-  }, [controlMode, isPlaying, currentStep, executionSteps.length, autoPlaySpeedMs]);
-
-  useTraversalKeyboardShortcuts({ nextStep, previousStep, resetTraversal });
-
-  const activeStep = executionSteps[currentStep];
-  const executedStep = currentStep > 0 ? executionSteps[currentStep - 1] : undefined;
-  const displayStep = executedStep ?? activeStep;
-  const isAutoPlaying =
-    controlMode === "auto" && isPlaying && currentStep < executionSteps.length;
+  const state = useGenericTraversal(config);
+  const result = state.result as number[];
 
   return {
-    root,
-    selectedPreset,
-    presets: MAX_WIDTH_TREE_PRESETS,
-    customNodePositions,
-    executionSteps,
-    totalSteps: executionSteps.length,
-    currentStep,
-    currentNode: projectedState.currentNode,
-    currentLevel: projectedState.currentLevel,
-    currentWidth: projectedState.currentWidth,
-    result: projectedState.levelWidths,
-    maxWidth: projectedState.maxWidth,
-    visitedNodes: projectedState.visitedNodes,
-    nodeStates: projectedState.nodeStates,
-    currentOperation:
-      displayStep?.operation ?? "Ready to begin max-width traversal...",
-    currentPhase: getPhaseLabel(displayStep),
-    currentCodeLine: getCodeLineForStep(displayStep),
-    operationBadge: getOperationBadge(displayStep),
-    activeStep,
-    executedStep,
-    activeCallStack: executedStep?.callStack ?? [],
-    isAtStart: currentStep === 0,
-    isAtEnd: currentStep === executionSteps.length,
-    controlMode,
-    setControlMode,
-    isPlaying: isAutoPlaying,
-    autoPlaySpeedMs,
-    setAutoPlaySpeedMs,
-    playTraversal,
-    pauseTraversal,
-    nextStep,
-    previousStep,
-    resetTraversal,
-    applyTreeConfiguration,
-  };
+    ...state,
+    result,
+    maxWidth: (state as any).maxWidth || 0,
+    levelWidths: result,
+    currentLevel: (state as any).currentLevel,
+    currentWidth: (state as any).currentWidth,
+  } as typeof state & MaxWidthTraversalReturn;
 }
+
+// Export for levelorder which uses maxwidth
+export { useMaxWidthTraversal as useLevelOrderTraversal };

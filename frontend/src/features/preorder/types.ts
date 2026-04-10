@@ -1,3 +1,5 @@
+import type { NodeVisualState } from "../shared/types";
+
 export type PreorderOperationType =
   | "enter_function"
   | "traverse_left"
@@ -5,12 +7,7 @@ export type PreorderOperationType =
   | "traverse_right"
   | "exit_function";
 
-export type NodeVisualState =
-  | "unvisited"
-  | "exploring_left"
-  | "current"
-  | "exploring_right"
-  | "completed";
+export type { NodeVisualState };
 
 export interface TreeNode {
   val: number;

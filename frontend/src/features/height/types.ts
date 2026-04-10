@@ -1,3 +1,5 @@
+import type { NodeVisualState } from "../shared/types";
+
 export type HeightOperationType =
   | "enter_function"
   | "traverse_left"
@@ -6,12 +8,7 @@ export type HeightOperationType =
   | "exit_function"
   | "finish";
 
-export type NodeVisualState =
-  | "unvisited"
-  | "exploring_left"
-  | "current"
-  | "exploring_right"
-  | "completed";
+export type { NodeVisualState };
 
 export interface TreeNode {
   val: number;

@@ -140,53 +140,89 @@ export default function PageGuidePage() {
   const [highlightPost, setHighlightPost] = useState(false);
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-12 font-sans">
+    <section className="relative min-h-0 overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/30 font-sans">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,#dbeafe_0%,transparent_50%),radial-gradient(ellipse_at_bottom_left,#fef3c7_0%,transparent_50%)]" />
+
+      <div className="relative z-[1] mx-auto max-w-[860px] px-6 py-6">
       {/* Header */}
       <div className="mb-8">
-        <p className="text-xs font-medium uppercase tracking-wider text-gray-500">Binary Tree · DFS</p>
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2">Pre, In & Post Order in One Traversal</h1>
-        <p className="text-base text-gray-600 mb-4">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="h-px w-8 bg-blue-500" />
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-blue-600">Binary Tree · DFS</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/problems/binary-tree/preorder-inorder-postorder-in-a-single-traversal"
+              className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 transition hover:bg-blue-100"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              Visualizer
+            </Link>
+            <Link
+              href="/problems/topics/trees"
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+              Tree Problems
+            </Link>
+          </div>
+        </div>
+        <h1 className="mb-2 text-3xl font-semibold text-slate-900">Pre, In & Post Order in One Traversal</h1>
+        <p className="mb-5 max-w-2xl text-base text-slate-500">
           Compute all three DFS traversals simultaneously in a single pass using an explicit stack and a visit-count per node.
         </p>
         
         {/* Badges */}
-        <div className="flex gap-2 flex-wrap mb-6">
-          <span className="inline-block text-xs font-medium px-3 py-1 rounded-full" style={{background: "#EEEDFE", color: "#3C3489"}}>Stack</span>
-          <span className="inline-block text-xs font-medium px-3 py-1 rounded-full" style={{background: "#E1F5EE", color: "#0F6E56"}}>DFS</span>
-          <span className="inline-block text-xs font-medium px-3 py-1 rounded-full" style={{background: "#FAEEDA", color: "#854F0B"}}>Optimization</span>
-          <span className="inline-block text-xs font-medium px-3 py-1 rounded-full" style={{background: "#FAECE7", color: "#993C1D"}}>Interview Hard</span>
+        <div className="mb-6 flex flex-wrap gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-violet-500" />
+            Stack
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            DFS
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+            Optimization
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+            Interview Hard
+          </span>
         </div>
 
         {/* Mode Toggle */}
-        <div className="flex gap-1 p-1 bg-gray-100 rounded-lg w-fit border border-gray-200 mb-4">
+        <div className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-100 p-1">
           <button
             onClick={() => setMode("quick")}
-            className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${
+            className={`rounded-lg px-5 py-2 text-sm font-medium transition-all ${
               mode === "quick" 
-                ? "bg-white text-gray-900 border border-gray-200" 
-                : "bg-transparent text-gray-600"
+                ? "border border-slate-200 bg-white text-slate-900 shadow-sm" 
+                : "bg-transparent text-slate-500 hover:text-slate-700"
             }`}
           >
             Quick Recap
           </button>
           <button
             onClick={() => setMode("deep")}
-            className={`px-5 py-2 text-sm font-medium rounded-lg transition-all ${
+            className={`rounded-lg px-5 py-2 text-sm font-medium transition-all ${
               mode === "deep" 
-                ? "bg-white text-gray-900 border border-gray-200" 
-                : "bg-transparent text-gray-600"
+                ? "border border-slate-200 bg-white text-slate-900 shadow-sm" 
+                : "bg-transparent text-slate-500 hover:text-slate-700"
             }`}
           >
             Deep Explain
           </button>
         </div>
         
-        <p className="text-xs text-gray-500 mb-8">
+        <p className="mt-3 text-xs text-slate-400">
           {mode === "quick" ? "Key concepts at a glance — for those who already know the basics." : "A full beginner-friendly walkthrough — understand it from scratch."}
         </p>
       </div>
 
-      <hr className="border-t border-gray-200 mb-8" />
+      <div className="mb-8 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 
       {/* Quick Mode */}
       {mode === "quick" && (
@@ -194,14 +230,12 @@ export default function PageGuidePage() {
           {/* 01 Core Idea */}
           <div className="mb-12">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">01 · The core idea</p>
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-500 to-fuchsia-500 p-6 text-white shadow-lg shadow-violet-500/20">
-              <div className="absolute top-0 right-0 h-32 w-32 translate-x-8 -translate-y-8 rounded-full bg-white/10" />
-              <div className="absolute bottom-0 left-0 h-24 w-24 -translate-x-6 translate-y-6 rounded-full bg-white/10" />
-              <div className="relative">
-                <p className="text-[18px] leading-relaxed font-semibold tracking-wide mb-2">
+            <div className="rounded-2xl border border-violet-200 bg-gradient-to-r from-violet-50 via-fuchsia-50 to-rose-50 p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+              <div className="border-l-4 border-violet-400 pl-4">
+                <p className="mb-2 text-[18px] font-semibold leading-relaxed tracking-wide text-violet-900">
                   Every node is visited exactly 3 times. The state counter decides what to do on each visit.
                 </p>
-                <p className="text-violet-100 text-[14px]">
+                <p className="text-[14px] text-violet-700">
                   Normally, these need 3 separate DFS passes. This algorithm does all three in one pass.
                 </p>
               </div>
@@ -233,7 +267,7 @@ export default function PageGuidePage() {
           {/* 03 Algorithm Steps */}
           <section>
             <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-3">03 · Algorithm steps</p>
-            <div className="space-y-4 bg-white border border-gray-200 p-6 rounded-lg">
+            <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               {QUICK_STEPS.map((step) => (
                 <div key={step.num} className="flex gap-3">
                   <div className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-semibold text-sm" style={{background: "#EEEDFE", color: "#3C3489"}}>
@@ -251,7 +285,7 @@ export default function PageGuidePage() {
           {/* 04 Code */}
           <section>
             <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-3">04 · Code</p>
-            <div className="bg-gray-950 text-gray-100 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+            <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-gray-950 p-4 font-mono text-sm text-gray-100">
               <div>def <span style={{color: "#89b4fa"}}>allTraversals</span>(root):</div>
               <div>    pre, ino, post = [], [], []</div>
               <div>    stack = [(root, <span style={{color: "#fab387"}}>1</span>)]  <span style={{color: "#6c7086"}}>// (node, state)</span></div>
@@ -291,7 +325,7 @@ export default function PageGuidePage() {
           {/* 06 Interview Uses */}
           <section>
             <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-3">06 · Interview uses</p>
-            <div className="space-y-3 bg-white border border-gray-200 p-4 rounded-lg">
+            <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               {INTERVIEW_ITEMS.map((item, idx) => (
                 <div key={idx} className="flex gap-2">
                   <div className="flex-shrink-0 w-2 h-2 rounded-full mt-2" style={{background: "#7F77DD"}}></div>
@@ -429,7 +463,7 @@ export default function PageGuidePage() {
           <section>
             <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">05 · Common beginner mistakes</p>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">What trips people up</h2>
-            <div className="space-y-3 bg-white border border-gray-200 p-4 rounded-lg">
+            <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               {BEGINNER_MISTAKES.map((mistake, idx) => (
                 <div key={idx} className="flex gap-3">
                   <div className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-sm font-semibold" style={{background: "#FCEBEB", color: "#A32D2D"}}>
@@ -469,7 +503,7 @@ export default function PageGuidePage() {
           <section>
             <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">07 · Interview context</p>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Where you'll actually use this</h2>
-            <div className="space-y-3 bg-white border border-gray-200 p-4 rounded-lg">
+            <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               {INTERVIEW_ITEMS.map((item, idx) => (
                 <div key={idx} className="flex gap-2">
                   <div className="flex-shrink-0 w-2 h-2 rounded-full mt-2" style={{background: "#7F77DD"}}></div>
@@ -485,18 +519,20 @@ export default function PageGuidePage() {
       )}
 
       {/* CTA */}
-      <hr className="border-t border-gray-200 mb-8 mt-12" />
-      <div className="flex items-center justify-between gap-4 p-4 bg-gray-100 rounded-lg flex-wrap">
+      <div className="mb-8 mt-12 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50/30 p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div>
-          <p className="font-semibold text-sm text-gray-900">Ready to see it in action?</p>
-          <p className="text-xs text-gray-600">Step through the visualizer to watch all three arrays build simultaneously at each stack operation.</p>
+          <p className="text-[15px] font-medium text-slate-800">Ready to see it in action?</p>
+          <p className="mt-0.5 text-[13px] text-slate-500">Step through the visualizer to watch all three arrays build simultaneously at each stack operation.</p>
         </div>
         <Link href="/problems/binary-tree/preorder-inorder-postorder-in-a-single-traversal">
-          <button className="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-            Open visualizer →
-          </button>
+          <span className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-md shadow-blue-600/20 transition hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/25">
+            Open visualizer
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+          </span>
         </Link>
       </div>
-    </div>
+      </div>
+    </section>
   );
 }

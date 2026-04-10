@@ -1,3 +1,5 @@
+import type { NodeVisualState } from "../shared/types";
+
 export type PreInPostOperationType =
   | "pre_visit"
   | "schedule_in"
@@ -7,12 +9,7 @@ export type PreInPostOperationType =
   | "traverse_right"
   | "post_visit";
 
-export type NodeVisualState =
-  | "unvisited"
-  | "exploring_left"
-  | "current"
-  | "exploring_right"
-  | "completed";
+export type { NodeVisualState };
 
 export interface TreeNode {
   val: number;

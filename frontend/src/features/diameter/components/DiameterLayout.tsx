@@ -6,9 +6,9 @@ import { TraversalShell } from "@/features/shared/components/TraversalShell";
 
 import { getCodeLineForStep } from "../selectors";
 import { useDiameterTraversal } from "../useDiameterTraversal";
-import { CallStackPanel } from "./CallStackPanel";
+import { UnifiedControlsBar } from "@/features/shared/components/UnifiedControlsBar";
+import { UnifiedCallStackPanel } from "@/features/shared/components/UnifiedCallStackPanel";
 import { CodePanel } from "./CodePanel";
-import { ControlsBar } from "./ControlsBar";
 import { ExplanationPanel } from "./ExplanationPanel";
 import { ResultPanel } from "./ResultPanel";
 import { TreePanel } from "./TreePanel";
@@ -101,7 +101,7 @@ export function DiameterLayout() {
         />
       }
       middleFooter={
-        <ControlsBar
+        <UnifiedControlsBar
           isAtStart={isAtStart}
           isAtEnd={isAtEnd}
           controlMode={controlMode}
@@ -116,7 +116,13 @@ export function DiameterLayout() {
           resetTraversal={resetTraversal}
         />
       }
-      rightTop={<CallStackPanel activeCallStack={activeCallStack} />}
+      rightTop={
+        <UnifiedCallStackPanel 
+          activeCallStack={activeCallStack}
+          title="Recursion Stack"
+          frameFormatter={(frame) => `heights(${frame.nodeVal})`}
+        />
+      }
       rightBottom={
         <ExplanationPanel
           currentStep={currentStep}
