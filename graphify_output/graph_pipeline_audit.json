@@ -1,0 +1,68 @@
+{
+  "id_version": "v2_path_based",
+  "remap_audit": {
+    "node_id_collisions": 0,
+    "edge_dropped_missing_endpoint": 159,
+    "edge_dropped_ambiguous_endpoint": 0,
+    "edge_resolved_by_scoring": 275,
+    "edge_dropped_structural_self_loop": 15,
+    "edge_kept": 1445
+  },
+  "qa": {
+    "gate_unique_ids": true,
+    "gate_no_structural_self_loops": true,
+    "duplicate_id_count": 0,
+    "structural_self_loop_count": 0
+  },
+  "projected_file_graph": {
+    "nodes": 218,
+    "edges": 524,
+    "communities": 8
+  },
+  "top_file_hotspots": [
+    {
+      "file": "features/verticalorder/types.ts",
+      "hotspot_score": 101.6
+    },
+    {
+      "file": "features/verticalorder/constants.ts",
+      "hotspot_score": 60.0
+    },
+    {
+      "file": "features/verticalorder/selectors.ts",
+      "hotspot_score": 28.0
+    },
+    {
+      "file": "features/shared/components/traversalshell.tsx",
+      "hotspot_score": 15.6
+    },
+    {
+      "file": "features/verticalorder/components/codepanel.tsx",
+      "hotspot_score": 14.12
+    },
+    {
+      "file": "features/verticalorder/components/explanationpanel.tsx",
+      "hotspot_score": 14.0
+    },
+    {
+      "file": "features/verticalorder/components/treepanel.tsx",
+      "hotspot_score": 14.0
+    },
+    {
+      "file": "features/verticalorder/engine.ts",
+      "hotspot_score": 14.0
+    },
+    {
+      "file": "features/shared/usegenerictraversal.ts",
+      "hotspot_score": 13.12
+    },
+    {
+      "file": "features/verticalorder/components/resultpanel.tsx",
+      "hotspot_score": 13.12
+    }
+  ],
+  "change_artifacts": {
+    "targets_json": "change_targets.json",
+    "guide_markdown": "change_guide.md"
+  }
+}

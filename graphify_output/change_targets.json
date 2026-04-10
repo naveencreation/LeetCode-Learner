@@ -1,0 +1,826 @@
+{
+  "summary": {
+    "target_files": 28,
+    "target_symbols": 80
+  },
+  "top_file_hotspots": [
+    {
+      "file": "features/verticalorder/types.ts",
+      "hotspot_score": 101.6
+    },
+    {
+      "file": "features/verticalorder/constants.ts",
+      "hotspot_score": 60.0
+    },
+    {
+      "file": "features/verticalorder/selectors.ts",
+      "hotspot_score": 28.0
+    },
+    {
+      "file": "features/shared/components/traversalshell.tsx",
+      "hotspot_score": 15.6
+    },
+    {
+      "file": "features/verticalorder/components/codepanel.tsx",
+      "hotspot_score": 14.12
+    },
+    {
+      "file": "features/verticalorder/components/explanationpanel.tsx",
+      "hotspot_score": 14.0
+    },
+    {
+      "file": "features/verticalorder/components/treepanel.tsx",
+      "hotspot_score": 14.0
+    },
+    {
+      "file": "features/verticalorder/engine.ts",
+      "hotspot_score": 14.0
+    },
+    {
+      "file": "features/shared/usegenerictraversal.ts",
+      "hotspot_score": 13.12
+    },
+    {
+      "file": "features/verticalorder/components/resultpanel.tsx",
+      "hotspot_score": 13.12
+    }
+  ],
+  "targets_by_file": {
+    "features/bottomview/components/treepanel.tsx": [
+      {
+        "id": "symbol::features/bottomview/components/treepanel.tsx::buildautopositions::l97",
+        "label": "buildAutoPositions()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\bottomview\\components\\TreePanel.tsx",
+        "source_location": "L97",
+        "normalized_path": "features/bottomview/components/treepanel.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/bottomview/components/treesetupmodal.tsx": [
+      {
+        "id": "symbol::features/bottomview/components/treesetupmodal.tsx::buildautopositions::l175",
+        "label": "buildAutoPositions()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\bottomview\\components\\TreeSetupModal.tsx",
+        "source_location": "L175",
+        "normalized_path": "features/bottomview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/bottomview/components/treesetupmodal.tsx::handleremovesubtree::l621",
+        "label": "handleRemoveSubtree()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\bottomview\\components\\TreeSetupModal.tsx",
+        "source_location": "L621",
+        "normalized_path": "features/bottomview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/bottomview/components/treesetupmodal.tsx::handleapplyaction::l691",
+        "label": "handleApplyAction()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\bottomview\\components\\TreeSetupModal.tsx",
+        "source_location": "L691",
+        "normalized_path": "features/bottomview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/bottomview/components/treesetupmodal.tsx::collectvalues::l26",
+        "label": "collectValues()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\bottomview\\components\\TreeSetupModal.tsx",
+        "source_location": "L26",
+        "normalized_path": "features/bottomview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/bottomview/components/treesetupmodal.tsx::findnodebyvalue::l36",
+        "label": "findNodeByValue()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\bottomview\\components\\TreeSetupModal.tsx",
+        "source_location": "L36",
+        "normalized_path": "features/bottomview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/bottomview/components/treesetupmodal.tsx::handleaddnode::l479",
+        "label": "handleAddNode()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\bottomview\\components\\TreeSetupModal.tsx",
+        "source_location": "L479",
+        "normalized_path": "features/bottomview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/bottomview/components/treesetupmodal.tsx::handlerenamenode::l566",
+        "label": "handleRenameNode()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\bottomview\\components\\TreeSetupModal.tsx",
+        "source_location": "L566",
+        "normalized_path": "features/bottomview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/bottomview/engine.ts": [
+      {
+        "id": "symbol::features/bottomview/engine.ts::generatebottomviewexecutionsteps::l87",
+        "label": "generateBottomViewExecutionSteps()",
+        "degree": 6,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\bottomview\\engine.ts",
+        "source_location": "L87",
+        "normalized_path": "features/bottomview/engine.ts",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/bottomview/engine.ts::clonenodestates::l14",
+        "label": "cloneNodeStates()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\bottomview\\engine.ts",
+        "source_location": "L14",
+        "normalized_path": "features/bottomview/engine.ts",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/bottomview/engine.ts::pushstep::l51",
+        "label": "pushStep()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\bottomview\\engine.ts",
+        "source_location": "L51",
+        "normalized_path": "features/bottomview/engine.ts",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/diameter/components/treepanel.tsx": [
+      {
+        "id": "symbol::features/diameter/components/treepanel.tsx::buildautopositions::l95",
+        "label": "buildAutoPositions()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\diameter\\components\\TreePanel.tsx",
+        "source_location": "L95",
+        "normalized_path": "features/diameter/components/treepanel.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/diameter/engine.ts": [
+      {
+        "id": "symbol::features/diameter/engine.ts::clonenodestates::l14",
+        "label": "cloneNodeStates()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\diameter\\engine.ts",
+        "source_location": "L14",
+        "normalized_path": "features/diameter/engine.ts",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/diameter/engine.ts::generatediameterexecutionsteps::l70",
+        "label": "generateDiameterExecutionSteps()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\diameter\\engine.ts",
+        "source_location": "L70",
+        "normalized_path": "features/diameter/engine.ts",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/height/components/treepanel.tsx": [
+      {
+        "id": "symbol::features/height/components/treepanel.tsx::buildautopositions::l95",
+        "label": "buildAutoPositions()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\height\\components\\TreePanel.tsx",
+        "source_location": "L95",
+        "normalized_path": "features/height/components/treepanel.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/height/components/treesetupmodal.tsx": [
+      {
+        "id": "symbol::features/height/components/treesetupmodal.tsx::buildautopositions::l175",
+        "label": "buildAutoPositions()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\height\\components\\TreeSetupModal.tsx",
+        "source_location": "L175",
+        "normalized_path": "features/height/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/height/components/treesetupmodal.tsx::handleremovesubtree::l621",
+        "label": "handleRemoveSubtree()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\height\\components\\TreeSetupModal.tsx",
+        "source_location": "L621",
+        "normalized_path": "features/height/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/height/components/treesetupmodal.tsx::handleapplyaction::l691",
+        "label": "handleApplyAction()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\height\\components\\TreeSetupModal.tsx",
+        "source_location": "L691",
+        "normalized_path": "features/height/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/height/components/treesetupmodal.tsx::collectvalues::l26",
+        "label": "collectValues()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\height\\components\\TreeSetupModal.tsx",
+        "source_location": "L26",
+        "normalized_path": "features/height/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/height/components/treesetupmodal.tsx::findnodebyvalue::l36",
+        "label": "findNodeByValue()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\height\\components\\TreeSetupModal.tsx",
+        "source_location": "L36",
+        "normalized_path": "features/height/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/height/components/treesetupmodal.tsx::handleaddnode::l479",
+        "label": "handleAddNode()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\height\\components\\TreeSetupModal.tsx",
+        "source_location": "L479",
+        "normalized_path": "features/height/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/height/components/treesetupmodal.tsx::handlerenamenode::l566",
+        "label": "handleRenameNode()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\height\\components\\TreeSetupModal.tsx",
+        "source_location": "L566",
+        "normalized_path": "features/height/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/height/engine.ts": [
+      {
+        "id": "symbol::features/height/engine.ts::clonenodestates::l14",
+        "label": "cloneNodeStates()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\height\\engine.ts",
+        "source_location": "L14",
+        "normalized_path": "features/height/engine.ts",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/height/engine.ts::generateheightexecutionsteps::l81",
+        "label": "generateHeightExecutionSteps()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\height\\engine.ts",
+        "source_location": "L81",
+        "normalized_path": "features/height/engine.ts",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/inorder/components/treepanel.tsx": [
+      {
+        "id": "symbol::features/inorder/components/treepanel.tsx::buildautopositions::l95",
+        "label": "buildAutoPositions()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\inorder\\components\\TreePanel.tsx",
+        "source_location": "L95",
+        "normalized_path": "features/inorder/components/treepanel.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/inorder/components/treesetupmodal.tsx": [
+      {
+        "id": "symbol::features/inorder/components/treesetupmodal.tsx::buildautopositions::l175",
+        "label": "buildAutoPositions()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\inorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L175",
+        "normalized_path": "features/inorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/inorder/components/treesetupmodal.tsx::handleremovesubtree::l601",
+        "label": "handleRemoveSubtree()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\inorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L601",
+        "normalized_path": "features/inorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/inorder/components/treesetupmodal.tsx::handleapplyaction::l666",
+        "label": "handleApplyAction()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\inorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L666",
+        "normalized_path": "features/inorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/inorder/components/treesetupmodal.tsx::collectvalues::l26",
+        "label": "collectValues()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\inorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L26",
+        "normalized_path": "features/inorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/inorder/components/treesetupmodal.tsx::findnodebyvalue::l36",
+        "label": "findNodeByValue()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\inorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L36",
+        "normalized_path": "features/inorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/inorder/components/treesetupmodal.tsx::handleaddnode::l482",
+        "label": "handleAddNode()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\inorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L482",
+        "normalized_path": "features/inorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/inorder/components/treesetupmodal.tsx::handlerenamenode::l551",
+        "label": "handleRenameNode()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\inorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L551",
+        "normalized_path": "features/inorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/inorder/engine.ts": [
+      {
+        "id": "symbol::features/inorder/engine.ts::clonenodestates::l14",
+        "label": "cloneNodeStates()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\inorder\\engine.ts",
+        "source_location": "L14",
+        "normalized_path": "features/inorder/engine.ts",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/inorder/engine.ts::generateinorderexecutionsteps::l69",
+        "label": "generateInorderExecutionSteps()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\inorder\\engine.ts",
+        "source_location": "L69",
+        "normalized_path": "features/inorder/engine.ts",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/leftview/components/treepanel.tsx": [
+      {
+        "id": "symbol::features/leftview/components/treepanel.tsx::buildautopositions::l97",
+        "label": "buildAutoPositions()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\leftview\\components\\TreePanel.tsx",
+        "source_location": "L97",
+        "normalized_path": "features/leftview/components/treepanel.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/leftview/components/treesetupmodal.tsx": [
+      {
+        "id": "symbol::features/leftview/components/treesetupmodal.tsx::buildautopositions::l175",
+        "label": "buildAutoPositions()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\leftview\\components\\TreeSetupModal.tsx",
+        "source_location": "L175",
+        "normalized_path": "features/leftview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/leftview/components/treesetupmodal.tsx::handleremovesubtree::l621",
+        "label": "handleRemoveSubtree()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\leftview\\components\\TreeSetupModal.tsx",
+        "source_location": "L621",
+        "normalized_path": "features/leftview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/leftview/components/treesetupmodal.tsx::handleapplyaction::l691",
+        "label": "handleApplyAction()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\leftview\\components\\TreeSetupModal.tsx",
+        "source_location": "L691",
+        "normalized_path": "features/leftview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/leftview/components/treesetupmodal.tsx::collectvalues::l26",
+        "label": "collectValues()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\leftview\\components\\TreeSetupModal.tsx",
+        "source_location": "L26",
+        "normalized_path": "features/leftview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/leftview/components/treesetupmodal.tsx::findnodebyvalue::l36",
+        "label": "findNodeByValue()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\leftview\\components\\TreeSetupModal.tsx",
+        "source_location": "L36",
+        "normalized_path": "features/leftview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/leftview/components/treesetupmodal.tsx::handleaddnode::l479",
+        "label": "handleAddNode()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\leftview\\components\\TreeSetupModal.tsx",
+        "source_location": "L479",
+        "normalized_path": "features/leftview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/leftview/components/treesetupmodal.tsx::handlerenamenode::l566",
+        "label": "handleRenameNode()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\leftview\\components\\TreeSetupModal.tsx",
+        "source_location": "L566",
+        "normalized_path": "features/leftview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/leftview/engine.ts": [
+      {
+        "id": "symbol::features/leftview/engine.ts::generateleftviewexecutionsteps::l85",
+        "label": "generateLeftViewExecutionSteps()",
+        "degree": 6,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\leftview\\engine.ts",
+        "source_location": "L85",
+        "normalized_path": "features/leftview/engine.ts",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/leftview/engine.ts::clonenodestates::l14",
+        "label": "cloneNodeStates()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\leftview\\engine.ts",
+        "source_location": "L14",
+        "normalized_path": "features/leftview/engine.ts",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/leftview/engine.ts::pushstep::l51",
+        "label": "pushStep()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\leftview\\engine.ts",
+        "source_location": "L51",
+        "normalized_path": "features/leftview/engine.ts",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/levelorder/components/treepanel.tsx": [
+      {
+        "id": "symbol::features/levelorder/components/treepanel.tsx::buildautopositions::l95",
+        "label": "buildAutoPositions()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\levelorder\\components\\TreePanel.tsx",
+        "source_location": "L95",
+        "normalized_path": "features/levelorder/components/treepanel.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/levelorder/components/treesetupmodal.tsx": [
+      {
+        "id": "symbol::features/levelorder/components/treesetupmodal.tsx::buildautopositions::l175",
+        "label": "buildAutoPositions()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\levelorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L175",
+        "normalized_path": "features/levelorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/levelorder/components/treesetupmodal.tsx::handleremovesubtree::l621",
+        "label": "handleRemoveSubtree()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\levelorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L621",
+        "normalized_path": "features/levelorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/levelorder/components/treesetupmodal.tsx::handleapplyaction::l691",
+        "label": "handleApplyAction()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\levelorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L691",
+        "normalized_path": "features/levelorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/levelorder/components/treesetupmodal.tsx::collectvalues::l26",
+        "label": "collectValues()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\levelorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L26",
+        "normalized_path": "features/levelorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/levelorder/components/treesetupmodal.tsx::findnodebyvalue::l36",
+        "label": "findNodeByValue()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\levelorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L36",
+        "normalized_path": "features/levelorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/levelorder/components/treesetupmodal.tsx::handleaddnode::l479",
+        "label": "handleAddNode()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\levelorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L479",
+        "normalized_path": "features/levelorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/levelorder/components/treesetupmodal.tsx::handlerenamenode::l566",
+        "label": "handleRenameNode()",
+        "degree": 3,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\levelorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L566",
+        "normalized_path": "features/levelorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/levelorder/engine.ts": [
+      {
+        "id": "symbol::features/levelorder/engine.ts::generatelevelorderexecutionsteps::l83",
+        "label": "generateLevelOrderExecutionSteps()",
+        "degree": 5,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\levelorder\\engine.ts",
+        "source_location": "L83",
+        "normalized_path": "features/levelorder/engine.ts",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/maxwidth/components/treesetupmodal.tsx": [
+      {
+        "id": "symbol::features/maxwidth/components/treesetupmodal.tsx::buildautopositions::l175",
+        "label": "buildAutoPositions()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\maxwidth\\components\\TreeSetupModal.tsx",
+        "source_location": "L175",
+        "normalized_path": "features/maxwidth/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/maxwidth/components/treesetupmodal.tsx::handleremovesubtree::l621",
+        "label": "handleRemoveSubtree()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\maxwidth\\components\\TreeSetupModal.tsx",
+        "source_location": "L621",
+        "normalized_path": "features/maxwidth/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/maxwidth/components/treesetupmodal.tsx::handleapplyaction::l691",
+        "label": "handleApplyAction()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\maxwidth\\components\\TreeSetupModal.tsx",
+        "source_location": "L691",
+        "normalized_path": "features/maxwidth/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/maxwidth/engine.ts": [
+      {
+        "id": "symbol::features/maxwidth/engine.ts::generatemaxwidthexecutionsteps::l83",
+        "label": "generateMaxWidthExecutionSteps()",
+        "degree": 5,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\maxwidth\\engine.ts",
+        "source_location": "L83",
+        "normalized_path": "features/maxwidth/engine.ts",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/postorder/components/treesetupmodal.tsx": [
+      {
+        "id": "symbol::features/postorder/components/treesetupmodal.tsx::buildautopositions::l175",
+        "label": "buildAutoPositions()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\postorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L175",
+        "normalized_path": "features/postorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/postorder/components/treesetupmodal.tsx::handleremovesubtree::l601",
+        "label": "handleRemoveSubtree()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\postorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L601",
+        "normalized_path": "features/postorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/postorder/components/treesetupmodal.tsx::handleapplyaction::l666",
+        "label": "handleApplyAction()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\postorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L666",
+        "normalized_path": "features/postorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/preinpostsingle/components/treesetupmodal.tsx": [
+      {
+        "id": "symbol::features/preinpostsingle/components/treesetupmodal.tsx::buildautopositions::l175",
+        "label": "buildAutoPositions()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\preinpostsingle\\components\\TreeSetupModal.tsx",
+        "source_location": "L175",
+        "normalized_path": "features/preinpostsingle/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/preinpostsingle/components/treesetupmodal.tsx::handleremovesubtree::l601",
+        "label": "handleRemoveSubtree()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\preinpostsingle\\components\\TreeSetupModal.tsx",
+        "source_location": "L601",
+        "normalized_path": "features/preinpostsingle/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/preinpostsingle/components/treesetupmodal.tsx::handleapplyaction::l666",
+        "label": "handleApplyAction()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\preinpostsingle\\components\\TreeSetupModal.tsx",
+        "source_location": "L666",
+        "normalized_path": "features/preinpostsingle/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/preinpostsingle/engine.ts": [
+      {
+        "id": "symbol::features/preinpostsingle/engine.ts::generatepreinpostexecutionsteps::l110",
+        "label": "generatePreInPostExecutionSteps()",
+        "degree": 7,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\preinpostsingle\\engine.ts",
+        "source_location": "L110",
+        "normalized_path": "features/preinpostsingle/engine.ts",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/preinpostsingle/engine.ts::pushstep::l86",
+        "label": "pushStep()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\preinpostsingle\\engine.ts",
+        "source_location": "L86",
+        "normalized_path": "features/preinpostsingle/engine.ts",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/preorder/components/treesetupmodal.tsx": [
+      {
+        "id": "symbol::features/preorder/components/treesetupmodal.tsx::buildautopositions::l175",
+        "label": "buildAutoPositions()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\preorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L175",
+        "normalized_path": "features/preorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/preorder/components/treesetupmodal.tsx::handleremovesubtree::l601",
+        "label": "handleRemoveSubtree()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\preorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L601",
+        "normalized_path": "features/preorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/preorder/components/treesetupmodal.tsx::handleapplyaction::l666",
+        "label": "handleApplyAction()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\preorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L666",
+        "normalized_path": "features/preorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/roottonode/components/treesetupmodal.tsx": [
+      {
+        "id": "symbol::features/roottonode/components/treesetupmodal.tsx::buildautopositions::l175",
+        "label": "buildAutoPositions()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\roottonode\\components\\TreeSetupModal.tsx",
+        "source_location": "L175",
+        "normalized_path": "features/roottonode/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/roottonode/components/treesetupmodal.tsx::handleremovesubtree::l601",
+        "label": "handleRemoveSubtree()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\roottonode\\components\\TreeSetupModal.tsx",
+        "source_location": "L601",
+        "normalized_path": "features/roottonode/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/roottonode/components/treesetupmodal.tsx::handleapplyaction::l666",
+        "label": "handleApplyAction()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\roottonode\\components\\TreeSetupModal.tsx",
+        "source_location": "L666",
+        "normalized_path": "features/roottonode/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/topview/components/treesetupmodal.tsx": [
+      {
+        "id": "symbol::features/topview/components/treesetupmodal.tsx::buildautopositions::l175",
+        "label": "buildAutoPositions()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\topview\\components\\TreeSetupModal.tsx",
+        "source_location": "L175",
+        "normalized_path": "features/topview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/topview/components/treesetupmodal.tsx::handleremovesubtree::l621",
+        "label": "handleRemoveSubtree()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\topview\\components\\TreeSetupModal.tsx",
+        "source_location": "L621",
+        "normalized_path": "features/topview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/topview/components/treesetupmodal.tsx::handleapplyaction::l691",
+        "label": "handleApplyAction()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\topview\\components\\TreeSetupModal.tsx",
+        "source_location": "L691",
+        "normalized_path": "features/topview/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/topview/engine.ts": [
+      {
+        "id": "symbol::features/topview/engine.ts::generatetopviewexecutionsteps::l71",
+        "label": "generateTopViewExecutionSteps()",
+        "degree": 5,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\topview\\engine.ts",
+        "source_location": "L71",
+        "normalized_path": "features/topview/engine.ts",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/verticalorder/components/treesetupmodal.tsx": [
+      {
+        "id": "symbol::features/verticalorder/components/treesetupmodal.tsx::buildautopositions::l175",
+        "label": "buildAutoPositions()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\verticalorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L175",
+        "normalized_path": "features/verticalorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/verticalorder/components/treesetupmodal.tsx::handleremovesubtree::l621",
+        "label": "handleRemoveSubtree()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\verticalorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L621",
+        "normalized_path": "features/verticalorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      },
+      {
+        "id": "symbol::features/verticalorder/components/treesetupmodal.tsx::handleapplyaction::l691",
+        "label": "handleApplyAction()",
+        "degree": 4,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\verticalorder\\components\\TreeSetupModal.tsx",
+        "source_location": "L691",
+        "normalized_path": "features/verticalorder/components/treesetupmodal.tsx",
+        "id_kind": "symbol"
+      }
+    ],
+    "features/verticalorder/engine.ts": [
+      {
+        "id": "symbol::features/verticalorder/engine.ts::generatetopviewexecutionsteps::l73",
+        "label": "generateTopViewExecutionSteps()",
+        "degree": 5,
+        "source_file": "C:\\Coding\\Naveen\\Personal\\Github\\Tree\\frontend\\src\\features\\verticalorder\\engine.ts",
+        "source_location": "L73",
+        "normalized_path": "features/verticalorder/engine.ts",
+        "id_kind": "symbol"
+      }
+    ]
+  }
+}

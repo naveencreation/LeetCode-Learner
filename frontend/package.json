@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "tree:micro:test": "node scripts/tree-micro-compliance.cjs",
-    "tree:micro:fix": "node scripts/tree-micro-compliance.cjs --fix"
+    "tree:micro:fix": "node scripts/tree-micro-compliance.cjs --fix",
+    "tree:problem:validate": "node scripts/tree-problem-validate.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
