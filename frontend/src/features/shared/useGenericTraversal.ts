@@ -141,10 +141,6 @@ export function useGenericTraversal<TStep, TPresetKey extends string>(
       runImmediately = false,
     ) => {
       const clonedRoot = config.cloneTree(nextRoot);
-      if (!clonedRoot) {
-        return;
-      }
-
       setRoot(clonedRoot);
       setCustomNodePositions({ ...nextPositions });
       setSelectedPreset(preset);

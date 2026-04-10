@@ -35,6 +35,32 @@ class Solution:
 
         return ans`,
   },
+  "balanced-binary-tree": {
+    slug: "balanced-binary-tree",
+    title: "Balanced Binary Tree",
+    intuition:
+      "Use bottom-up DFS to compute height and check balance simultaneously. Return -1 as sentinel when unbalanced.",
+    pythonCode: `class Solution:
+    def isBalanced(self, root):
+        def check(node):
+            if not node:
+                return 0
+
+            left = check(node.left)
+            if left == -1:
+                return -1
+
+            right = check(node.right)
+            if right == -1:
+                return -1
+
+            if abs(left - right) > 1:
+                return -1
+
+            return 1 + max(left, right)
+
+        return check(root) != -1`,
+  },
   "bottom-view-of-binary-tree": {
     slug: "bottom-view-of-binary-tree",
     title: "Bottom View of Binary Tree",

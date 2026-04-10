@@ -10,6 +10,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
 
   const pathname = usePathname();
+  const isGuidePage = pathname.endsWith("-guide");
   const isTraversalPage =
     pathname.startsWith("/problems/binary-tree/inorder-traversal") ||
     pathname.startsWith("/problems/binary-tree/preorder-traversal") ||
@@ -23,7 +24,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     pathname.startsWith("/problems/binary-tree/max-width-of-a-binary-tree") ||
     pathname.startsWith("/problems/binary-tree/level-order-traversal") ||
     pathname.startsWith("/problems/binary-tree/height-of-a-binary-tree") ||
-    pathname.startsWith("/problems/binary-tree/diameter-of-binary-tree");
+     pathname.startsWith("/problems/binary-tree/diameter-of-binary-tree") ||
+     (pathname.startsWith("/problems/binary-tree/balanced-binary-tree") && !isGuidePage);
   const isBinaryTreeProblemRoute = pathname.startsWith("/problems/binary-tree/");
   const isProblemFocusPage = isTraversalPage || isBinaryTreeProblemRoute;
 

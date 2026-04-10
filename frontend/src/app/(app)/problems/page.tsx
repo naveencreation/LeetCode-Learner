@@ -474,7 +474,7 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
   }
 
   if (sectionName === "Binary Tree Part-II" && problemName === "Balanced Binary Tree") {
-    return "/problems/binary-tree/balanced-check";
+    return "/problems/binary-tree/balanced-binary-tree";
   }
 
   if (sectionName === "Binary Tree") {

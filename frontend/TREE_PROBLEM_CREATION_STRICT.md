@@ -99,6 +99,8 @@ The feature hook must wrap `useGenericTraversal` and expose these minimum fields
 30. resetTraversal
 31. applyTreeConfiguration
 
+`applyTreeConfiguration` must accept `TreeNode | null` as root input so empty-tree presets work correctly.
+
 ### 4.3 Layout Contract
 
 Layout must use shell composition already used in existing problems:
@@ -108,6 +110,62 @@ Layout must use shell composition already used in existing problems:
 3. UnifiedCallStackPanel for recursion stack
 4. CodePanel + TreePanel + ResultPanel + ExplanationPanel
 5. guideHref must point to the Read Here route
+
+### 4.4 Engine + State Contract (Mandatory)
+
+`generate<Problem>ExecutionSteps` must return the exact object shape used by `useGenericTraversal`:
+
+```ts
+{
+  executionSteps: TStep[];
+  initialNodeStates: Record<number, NodeVisualState>;
+}
+```
+
+Do not return only `ExecutionStep[]`.
+
+Node visual states must use only shared values from `src/features/shared/types.ts`:
+
+1. unvisited
+2. exploring_left
+3. current
+4. processing
+5. exploring_right
+6. completed
+
+Custom states like `visiting` or `visited` are not allowed.
+
+### 4.5 Naming Consistency Contract (Case-Sensitive)
+
+For `<ProblemLayout>` and `use<Problem>Traversal`, enforce exact same casing in all places:
+
+1. Component export name
+2. Component filename
+3. Route import path
+4. Route imported symbol
+5. Hook filename
+6. Hook export name
+
+Any casing mismatch is a blocker.
+
+Canonical naming rule:
+
+1. Prefer canonical PascalCase symbols for exports (example: `BalancedBinaryTreeLayout`).
+2. If validator/backward-compatibility requires a legacy symbol, export an alias in the same file.
+3. Route pages must import the canonical symbol when both canonical and alias are available.
+
+### 4.6 Type Hygiene Contract
+
+Do not declare local class/type names that collide with imported type aliases.
+
+Example blocker:
+
+```ts
+import type { TreeNode } from "./types";
+class TreeNode implements TreeNode {}
+```
+
+Use object factories or differently named runtime classes instead.
 
 ## 5) Read Here Guide Contract
 
@@ -151,6 +209,11 @@ A new tree problem is complete only if all checks pass:
 7. TypeScript check passes
 8. No runtime crash on first load
 9. Mobile layout usable (panels readable, no clipped critical actions)
+10. Engine returns `{ executionSteps, initialNodeStates }` (not array-only)
+11. Node states use shared `NodeVisualState` values only
+12. No type-name collisions between imports and local declarations
+13. Route/layout/hook names are case-consistent across file/export/import
+14. Empty-tree preset can be applied without runtime guard blocking `null` root
 
 ## 8) Copy Templates
 
@@ -199,7 +262,7 @@ export function <ProblemLayout>() {
       middleFooter={<UnifiedControlsBar isAtStart={state.isAtStart} isAtEnd={state.isAtEnd} controlMode={state.controlMode} setControlMode={state.setControlMode} isPlaying={state.isPlaying} autoPlaySpeedMs={state.autoPlaySpeedMs} setAutoPlaySpeedMs={state.setAutoPlaySpeedMs} playTraversal={state.playTraversal} pauseTraversal={state.pauseTraversal} nextStep={state.nextStep} previousStep={state.previousStep} resetTraversal={state.resetTraversal} />}
       rightTop={<UnifiedCallStackPanel activeCallStack={state.activeCallStack} title="Recursion Stack" />}
       rightBottom={<ExplanationPanel currentStep={state.currentStep} totalSteps={state.totalSteps} result={state.result} activeStep={state.executedStep} currentCodeLine={state.currentCodeLine} />}
-      modal={isTreeSetupOpen ? <TreeSetupModal root={state.root} selectedPreset={state.selectedPreset} presets={state.presets} customNodePositions={state.customNodePositions} onClose={() => setIsTreeSetupOpen(false)} onApply={(nextRoot, nextPos, preset) => nextRoot ? state.applyTreeConfiguration(nextRoot, nextPos, preset, false) : undefined} onApplyAndRun={(nextRoot, nextPos, preset) => nextRoot ? state.applyTreeConfiguration(nextRoot, nextPos, preset, true) : undefined} /> : null}
+      modal={isTreeSetupOpen ? <TreeSetupModal root={state.root} selectedPreset={state.selectedPreset} presets={state.presets} customNodePositions={state.customNodePositions} onClose={() => setIsTreeSetupOpen(false)} onApply={(nextRoot, nextPos, preset) => state.applyTreeConfiguration(nextRoot, nextPos, preset, false)} onApplyAndRun={(nextRoot, nextPos, preset) => state.applyTreeConfiguration(nextRoot, nextPos, preset, true)} /> : null}
     />
   );
 }
@@ -259,5 +322,11 @@ Validation covers:
 5. Layout includes required shared shell/controls markers
 6. `problemData.ts` contains the problem slug
 7. Guide page includes required teaching markers
+8. Empty tree preset wiring does not short-circuit `applyTreeConfiguration` on null root
+
+Recommended additional checks before merge:
+
+1. `npm run lint`
+2. TypeScript compile check via app build (`npm run build`)
 
 If validation fails, treat it as a blocker for new problem merge.
