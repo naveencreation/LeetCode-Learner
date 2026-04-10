@@ -270,7 +270,7 @@ export default function PageGuidePage() {
             <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               {QUICK_STEPS.map((step) => (
                 <div key={step.num} className="flex gap-3">
-                  <div className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center font-semibold text-sm" style={{background: "#EEEDFE", color: "#3C3489"}}>
+                  <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-violet-100 text-sm font-semibold text-violet-900">
                     {step.num}
                   </div>
                   <div className="flex-1">
@@ -286,22 +286,22 @@ export default function PageGuidePage() {
           <section>
             <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-3">04 · Code</p>
             <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-gray-950 p-4 font-mono text-sm text-gray-100">
-              <div>def <span style={{color: "#89b4fa"}}>allTraversals</span>(root):</div>
+              <div>def <span className="text-[#89b4fa]">allTraversals</span>(root):</div>
               <div>    pre, ino, post = [], [], []</div>
-              <div>    stack = [(root, <span style={{color: "#fab387"}}>1</span>)]  <span style={{color: "#6c7086"}}>// (node, state)</span></div>
-              <div>    <span style={{color: "#cba6f7"}}>while</span> stack:</div>
+              <div>    stack = [(root, <span className="text-[#fab387]">1</span>)]  <span className="text-[#6c7086]">// (node, state)</span></div>
+              <div>    <span className="text-[#cba6f7]">while</span> stack:</div>
               <div>        node, state = stack.pop()</div>
-              <div>        <span style={{color: "#cba6f7"}}>if</span> state == <span style={{color: "#fab387"}}>1</span>:              <span style={{color: "#6c7086"}}>// first visit → preorder</span></div>
+              <div>        <span className="text-[#cba6f7]">if</span> state == <span className="text-[#fab387]">1</span>:              <span className="text-[#6c7086]">// first visit → preorder</span></div>
               <div>            pre.append(node.val)</div>
-              <div>            stack.append((node, <span style={{color: "#fab387"}}>2</span>))   <span style={{color: "#6c7086"}}>// come back at state 2</span></div>
-              <div>            <span style={{color: "#cba6f7"}}>if</span> node.left: stack.append((node.left, <span style={{color: "#fab387"}}>1</span>))</div>
-              <div>        <span style={{color: "#cba6f7"}}>elif</span> state == <span style={{color: "#fab387"}}>2</span>:             <span style={{color: "#6c7086"}}>// second visit → inorder</span></div>
+              <div>            stack.append((node, <span className="text-[#fab387]">2</span>))   <span className="text-[#6c7086]">// come back at state 2</span></div>
+              <div>            <span className="text-[#cba6f7]">if</span> node.left: stack.append((node.left, <span className="text-[#fab387]">1</span>))</div>
+              <div>        <span className="text-[#cba6f7]">elif</span> state == <span className="text-[#fab387]">2</span>:             <span className="text-[#6c7086]">// second visit → inorder</span></div>
               <div>            ino.append(node.val)</div>
-              <div>            stack.append((node, <span style={{color: "#fab387"}}>3</span>))   <span style={{color: "#6c7086"}}>// come back at state 3</span></div>
-              <div>            <span style={{color: "#cba6f7"}}>if</span> node.right: stack.append((node.right, <span style={{color: "#fab387"}}>1</span>))</div>
-              <div>        <span style={{color: "#cba6f7"}}>else</span>:                       <span style={{color: "#6c7086"}}>// third visit → postorder</span></div>
+              <div>            stack.append((node, <span className="text-[#fab387]">3</span>))   <span className="text-[#6c7086]">// come back at state 3</span></div>
+              <div>            <span className="text-[#cba6f7]">if</span> node.right: stack.append((node.right, <span className="text-[#fab387]">1</span>))</div>
+              <div>        <span className="text-[#cba6f7]">else</span>:                       <span className="text-[#6c7086]">// third visit → postorder</span></div>
               <div>            post.append(node.val)</div>
-              <div>    <span style={{color: "#cba6f7"}}>return</span> pre, ino, post</div>
+              <div>    <span className="text-[#cba6f7]">return</span> pre, ino, post</div>
             </div>
           </section>
 
@@ -309,15 +309,15 @@ export default function PageGuidePage() {
           <section>
             <p className="text-xs font-medium uppercase tracking-wider text-gray-500 mb-3">05 · Complexity</p>
             <div className="grid grid-cols-2 gap-3">
-              <div className="p-4 rounded" style={{background: "#EEEDFE"}}>
-                <p className="text-xs font-medium mb-1" style={{color: "#534AB7"}}>Time</p>
-                <p className="text-2xl font-semibold" style={{color: "#3C3489"}}>O(n)</p>
-                <p className="text-xs mt-2" style={{color: "#534AB7"}}>Each node is pushed/popped exactly 3 times. Total operations = 3n.</p>
+              <div className="rounded bg-violet-100 p-4">
+                <p className="mb-1 text-xs font-medium text-violet-700">Time</p>
+                <p className="text-2xl font-semibold text-violet-900">O(n)</p>
+                <p className="mt-2 text-xs text-violet-700">Each node is pushed/popped exactly 3 times. Total operations = 3n.</p>
               </div>
-              <div className="p-4 rounded" style={{background: "#FAECE7"}}>
-                <p className="text-xs font-medium mb-1" style={{color: "#993C1D"}}>Space</p>
-                <p className="text-2xl font-semibold" style={{color: "#712B13"}}>O(n)</p>
-                <p className="text-xs mt-2" style={{color: "#993C1D"}}>Stack holds at most O(h) frames at once. Output arrays together hold 3n values.</p>
+              <div className="rounded bg-rose-100 p-4">
+                <p className="mb-1 text-xs font-medium text-rose-700">Space</p>
+                <p className="text-2xl font-semibold text-rose-900">O(n)</p>
+                <p className="mt-2 text-xs text-rose-700">Stack holds at most O(h) frames at once. Output arrays together hold 3n values.</p>
               </div>
             </div>
           </section>
@@ -328,7 +328,7 @@ export default function PageGuidePage() {
             <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               {INTERVIEW_ITEMS.map((item, idx) => (
                 <div key={idx} className="flex gap-2">
-                  <div className="flex-shrink-0 w-2 h-2 rounded-full mt-2" style={{background: "#7F77DD"}}></div>
+                  <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-violet-500"></div>
                   <div>
                     <p className="text-sm font-medium text-gray-900">{item.title}</p>
                     <p className="text-[14px] leading-relaxed text-slate-700">— {item.desc}</p>
@@ -350,8 +350,8 @@ export default function PageGuidePage() {
             <p className="text-sm text-gray-700 mb-4 leading-relaxed">
               You already know how to do inorder, preorder, and postorder traversal individually — each is a clean recursive function. But what if you need all three results from the same tree? The naive approach is to call three separate functions, each walking every node once. That works, but it means three full passes over the tree.
             </p>
-            <div className="p-4 rounded-lg" style={{background: "#EEEDFE", borderLeft: "3px solid #7F77DD"}}>
-              <p className="text-sm text-gray-900" style={{color: "#26215C"}}>
+            <div className="rounded-lg border-l-[3px] border-violet-500 bg-violet-100 p-4">
+              <p className="text-sm text-violet-950">
                 This algorithm does all three traversals in a single pass — O(n) time, touching each node exactly 3 times instead of n×3 = 3n separate function calls spread across three traversals.
               </p>
             </div>
@@ -389,8 +389,8 @@ export default function PageGuidePage() {
                 <div className="p-3 text-sm">Postorder</div>
               </div>
             </div>
-            <div className="p-4 rounded-lg mt-4" style={{background: "#E6F1FB", borderLeft: "3px solid #378ADD"}}>
-              <p className="text-sm text-gray-900" style={{color: "#0C447C"}}>
+            <div className="mt-4 rounded-lg border-l-[3px] border-blue-500 bg-blue-100 p-4">
+              <p className="text-sm text-blue-900">
                 This is the fundamental insight. All three traversals are just different checkpoints at the same node during a single DFS walk. The algorithm makes this explicit with a state counter.
               </p>
             </div>
@@ -407,17 +407,17 @@ export default function PageGuidePage() {
               Each stack entry is a pair: <code className="bg-gray-100 px-2 py-0.5 rounded text-xs">(node, state)</code> where state starts at 1 and increments each time we revisit the node.
             </p>
             <div className="grid grid-cols-3 gap-3 mb-4">
-              <div className="p-4 rounded" style={{background: "#E6F1FB"}}>
+              <div className="rounded bg-blue-100 p-4">
                 <p className="text-xs font-medium text-blue-700 mb-2">State 1</p>
                 <p className="font-mono text-xs font-semibold text-blue-900">(node, 1)</p>
                 <p className="text-xs text-blue-700 mt-2">→ Append node to pre[]</p>
               </div>
-              <div className="p-4 rounded" style={{background: "#E1F5EE"}}>
+              <div className="rounded bg-emerald-100 p-4">
                 <p className="text-xs font-medium text-teal-700 mb-2">State 2</p>
                 <p className="font-mono text-xs font-semibold text-teal-900">(node, 2)</p>
                 <p className="text-xs text-teal-700 mt-2">→ Append node to in[]</p>
               </div>
-              <div className="p-4 rounded" style={{background: "#FAECE7"}}>
+              <div className="rounded bg-orange-100 p-4">
                 <p className="text-xs font-medium text-orange-700 mb-2">State 3</p>
                 <p className="font-mono text-xs font-semibold text-orange-900">(node, 3)</p>
                 <p className="text-xs text-orange-700 mt-2">→ Append node to post[]</p>
@@ -466,7 +466,7 @@ export default function PageGuidePage() {
             <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               {BEGINNER_MISTAKES.map((mistake, idx) => (
                 <div key={idx} className="flex gap-3">
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-sm font-semibold" style={{background: "#FCEBEB", color: "#A32D2D"}}>
+                  <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-rose-100 text-sm font-semibold text-rose-800">
                     ✕
                   </div>
                   <div>
@@ -483,17 +483,17 @@ export default function PageGuidePage() {
             <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">06 · Complexity — the full explanation</p>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Why O(n) time and O(n) space?</h2>
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="p-4 rounded" style={{background: "#EEEDFE"}}>
-                <p className="text-xs font-medium mb-1" style={{color: "#534AB7"}}>Time: O(n)</p>
-                <p className="text-xs" style={{color: "#534AB7"}}>Every node is pushed and popped exactly 3 times. Each operation is O(1). Total = 3n operations.</p>
+              <div className="rounded bg-violet-100 p-4">
+                <p className="mb-1 text-xs font-medium text-violet-700">Time: O(n)</p>
+                <p className="text-xs text-violet-700">Every node is pushed and popped exactly 3 times. Each operation is O(1). Total = 3n operations.</p>
               </div>
-              <div className="p-4 rounded" style={{background: "#FAECE7"}}>
-                <p className="text-xs font-medium mb-1" style={{color: "#993C1D"}}>Space: O(n)</p>
-                <p className="text-xs" style={{color: "#993C1D"}}>Stack depth is at most O(h) (tree height). Output arrays store 3n values total.</p>
+              <div className="rounded bg-rose-100 p-4">
+                <p className="mb-1 text-xs font-medium text-rose-700">Space: O(n)</p>
+                <p className="text-xs text-rose-700">Stack depth is at most O(h) (tree height). Output arrays store 3n values total.</p>
               </div>
             </div>
-            <div className="p-4 rounded-lg" style={{background: "#FAEEDA", borderLeft: "3px solid #EF9F27"}}>
-              <p className="text-sm text-gray-900" style={{color: "#633806"}}>
+            <div className="rounded-lg border-l-[3px] border-amber-500 bg-amber-100 p-4">
+              <p className="text-sm text-amber-900">
                 <strong>Interview tip:</strong> Compared to three separate recursive traversals (each O(n) time, O(h) space), this algorithm uses the same asymptotic complexity but better constant factors — one tree walk, one stack, no repeated traversal overhead. Mention this trade-off explicitly.
               </p>
             </div>
@@ -506,7 +506,7 @@ export default function PageGuidePage() {
             <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
               {INTERVIEW_ITEMS.map((item, idx) => (
                 <div key={idx} className="flex gap-2">
-                  <div className="flex-shrink-0 w-2 h-2 rounded-full mt-2" style={{background: "#7F77DD"}}></div>
+                  <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-violet-500"></div>
                   <div>
                     <p className="text-sm font-medium text-gray-900">{item.title}</p>
                     <p className="text-[14px] leading-relaxed text-slate-700">— {item.desc}</p>
