@@ -61,6 +61,24 @@ class Solution:
 
         return check(root) != -1`,
   },
+    "lca-in-binary-tree": {
+        slug: "lca-in-binary-tree",
+        title: "Lowest Common Ancestor in Binary Tree",
+        intuition:
+            "Use one DFS traversal. If both left and right return non-null, current node is LCA; otherwise propagate non-null result.",
+        pythonCode: `class Solution:
+        def lowestCommonAncestor(self, root, p, q):
+                if not root or root is p or root is q:
+                        return root
+
+                left = self.lowestCommonAncestor(root.left, p, q)
+                right = self.lowestCommonAncestor(root.right, p, q)
+
+                if left and right:
+                        return root
+
+                return left if left else right`,
+    },
   "bottom-view-of-binary-tree": {
     slug: "bottom-view-of-binary-tree",
     title: "Bottom View of Binary Tree",

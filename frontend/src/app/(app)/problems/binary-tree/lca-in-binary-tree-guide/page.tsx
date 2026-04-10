@@ -4,141 +4,152 @@ import { useState } from "react";
 import Link from "next/link";
 
 const DRY_RUN_ROWS = [
-  { call: "check(9)", left: "0", right: "0", diff: "0", returns: "1" },
-  { call: "check(15)", left: "0", right: "0", diff: "0", returns: "1" },
-  { call: "check(7)", left: "0", right: "0", diff: "0", returns: "1" },
-  { call: "check(20)", left: "1", right: "1", diff: "0", returns: "2" },
-  { call: "check(3)", left: "1", right: "2", diff: "1", returns: "3 (balanced)" },
+  { call: "lca(5)", left: "-", right: "-", returns: "5" },
+  { call: "lca(1)", left: "-", right: "-", returns: "1" },
+  { call: "lca(3)", left: "5", right: "1", returns: "3 (LCA)" },
+  { call: "lca(4)", left: "-", right: "-", returns: "4" },
+  { call: "lca(5,4 case)", left: "6", right: "4", returns: "5 (LCA)" },
 ];
 
 const DEEP_TRACE = [
   {
     phase: "Start",
     phaseClass: "bg-blue-100 text-blue-700",
-    title: "Enter check(3)",
-    desc: "Start at root node 3. We cannot judge node 3 yet, so we go to its children first.",
+    title: "Enter lca(3, 5, 1)",
+    desc: "Start at root. We recurse left and right first, then decide at current node.",
   },
   {
     phase: "Left",
     phaseClass: "bg-cyan-100 text-cyan-700",
-    title: "check(9) returns 1",
-    desc: "Node 9 is a leaf. Both sides are empty (0, 0), so return height 1.",
+    title: "Left recursion returns node 5",
+    desc: "Node 5 matches target p, so it is returned immediately.",
   },
   {
     phase: "Right",
     phaseClass: "bg-indigo-100 text-indigo-700",
-    title: "check(20) explores both children",
-    desc: "Node 20 gets 1 from node 15 and 1 from node 7, so it returns 2.",
+    title: "Right recursion returns node 1",
+    desc: "Node 1 matches target q, so it also returns immediately.",
   },
   {
     phase: "Check",
     phaseClass: "bg-amber-100 text-amber-700",
-    title: "Balance check at root",
-    desc: "Now node 3 has left=1 and right=2. Difference is 1, so node 3 is balanced.",
+    title: "Both sides are non-null at node 3",
+    desc: "Left has one target and right has the other. Node 3 is the split point.",
   },
   {
     phase: "Done",
     phaseClass: "bg-emerald-100 text-emerald-700",
-    title: "Final result = true",
-    desc: "No call returned -1, so the whole tree is balanced and answer is true.",
+    title: "Final result is node 3",
+    desc: "The first split point from bottom is the lowest common ancestor.",
   },
 ];
 
 const COMMON_MISTAKES = [
   {
-    title: "Recomputing height again and again",
-    desc: "If you calculate full height at every node, work repeats and can become O(n^2).",
+    title: "Using BST logic in a normal binary tree",
+    desc: "Binary tree has no ordering, so p < root < q shortcuts do not apply.",
   },
   {
-    title: "Not returning -1 immediately",
-    desc: "Once a subtree is unbalanced, stop there and return -1 right away.",
+    title: "Ignoring ancestor case",
+    desc: "If p is ancestor of q, answer is p itself. Base case handles this naturally.",
   },
   {
-    title: "Checking only the root",
-    desc: "The rule must be true for every node, not just the top node.",
+    title: "Returning root when only one side is non-null",
+    desc: "Root is LCA only when both left and right return non-null.",
   },
   {
-    title: "Mixing helper output and final answer",
-    desc: "Helper returns a height or -1. The main function converts that to true/false.",
+    title: "Thinking in values instead of nodes",
+    desc: "Most interview APIs pass node references, not just integer values.",
   },
 ];
 
 const INTERVIEW_CONTEXT = [
   {
-    title: "Diameter of Binary Tree",
-    desc: "Same bottom-up DFS pattern: gather child info first, then compute at parent.",
+    title: "LCA in BST",
+    desc: "Same objective but optimized by BST ordering rules.",
   },
   {
-    title: "AVL Tree insert/delete",
-    desc: "AVL balancing also uses left and right subtree height difference.",
+    title: "Distance between two tree nodes",
+    desc: "Find LCA first, then compute two distances from that node.",
   },
   {
-    title: "Height of Binary Tree",
-    desc: "This problem is height calculation plus one extra balance check.",
+    title: "Path between two nodes",
+    desc: "LCA acts as the merge point for two root-to-node paths.",
   },
   {
-    title: "Tree DP style questions",
-    desc: "Common pattern: children return small state, parent combines it quickly.",
+    title: "Kth ancestor questions",
+    desc: "Ancestor-oriented reasoning appears again with parent lifting techniques.",
   },
 ];
 
-function BalancedVsUnbalancedDiagrams() {
+function LcaTwoCasesDiagram() {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-emerald-700">
-          Balanced - true
+          Split Case - LCA = 3
         </p>
         <div className="flex justify-center rounded-xl border border-slate-100 bg-slate-50/40 p-4">
-          <svg viewBox="0 0 320 230" xmlns="http://www.w3.org/2000/svg" className="h-auto w-full max-w-[320px]">
-            <line x1="160" y1="52" x2="92" y2="112" stroke="#9FE1CB" strokeWidth="1.5" />
-            <line x1="160" y1="52" x2="228" y2="112" stroke="#9FE1CB" strokeWidth="1.5" />
-            <line x1="228" y1="112" x2="194" y2="174" stroke="#9FE1CB" strokeWidth="1.5" />
-            <line x1="228" y1="112" x2="262" y2="174" stroke="#9FE1CB" strokeWidth="1.5" />
+          <svg viewBox="0 0 330 235" xmlns="http://www.w3.org/2000/svg" className="h-auto w-full max-w-[330px]">
+            <line x1="165" y1="48" x2="95" y2="108" stroke="#9FE1CB" strokeWidth="1.5" />
+            <line x1="165" y1="48" x2="235" y2="108" stroke="#9FE1CB" strokeWidth="1.5" />
+            <line x1="95" y1="108" x2="65" y2="166" stroke="#d8deea" strokeWidth="1.5" />
+            <line x1="95" y1="108" x2="125" y2="166" stroke="#d8deea" strokeWidth="1.5" />
+            <line x1="235" y1="108" x2="205" y2="166" stroke="#d8deea" strokeWidth="1.5" />
+            <line x1="235" y1="108" x2="265" y2="166" stroke="#d8deea" strokeWidth="1.5" />
 
-            <circle cx="160" cy="48" r="22" fill="#E1F5EE" stroke="#1D9E75" strokeWidth="1.5" />
-            <text x="160" y="53" textAnchor="middle" fontSize="14" fontWeight="500" fill="#085041" fontFamily="monospace">3</text>
-            <circle cx="92" cy="116" r="22" fill="#E1F5EE" stroke="#1D9E75" strokeWidth="1.5" />
-            <text x="92" y="121" textAnchor="middle" fontSize="14" fontWeight="500" fill="#085041" fontFamily="monospace">9</text>
-            <circle cx="228" cy="116" r="22" fill="#E1F5EE" stroke="#1D9E75" strokeWidth="1.5" />
-            <text x="228" y="121" textAnchor="middle" fontSize="14" fontWeight="500" fill="#085041" fontFamily="monospace">20</text>
-            <circle cx="194" cy="178" r="22" fill="#E1F5EE" stroke="#1D9E75" strokeWidth="1.5" />
-            <text x="194" y="183" textAnchor="middle" fontSize="14" fontWeight="500" fill="#085041" fontFamily="monospace">15</text>
-            <circle cx="262" cy="178" r="22" fill="#E1F5EE" stroke="#1D9E75" strokeWidth="1.5" />
-            <text x="262" y="183" textAnchor="middle" fontSize="14" fontWeight="500" fill="#085041" fontFamily="monospace">7</text>
-            <text x="160" y="220" textAnchor="middle" fontSize="10" fill="#6c7086" fontFamily="monospace">|1-2|=1 &lt;= 1</text>
+            <circle cx="165" cy="45" r="22" fill="#E1F5EE" stroke="#1D9E75" strokeWidth="1.8" />
+            <text x="165" y="50" textAnchor="middle" fontSize="14" fontWeight="600" fill="#085041" fontFamily="monospace">3</text>
+
+            <circle cx="95" cy="112" r="21" fill="#E6F1FB" stroke="#378ADD" strokeWidth="1.8" />
+            <text x="95" y="117" textAnchor="middle" fontSize="13" fontWeight="600" fill="#0C447C" fontFamily="monospace">5</text>
+
+            <circle cx="235" cy="112" r="21" fill="#EEEDFE" stroke="#6e61da" strokeWidth="1.8" />
+            <text x="235" y="117" textAnchor="middle" fontSize="13" fontWeight="600" fill="#3C3489" fontFamily="monospace">1</text>
+
+            <circle cx="65" cy="170" r="17" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.4" />
+            <text x="65" y="175" textAnchor="middle" fontSize="11" fill="#64748b" fontFamily="monospace">6</text>
+            <circle cx="125" cy="170" r="17" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.4" />
+            <text x="125" y="175" textAnchor="middle" fontSize="11" fill="#64748b" fontFamily="monospace">2</text>
+            <circle cx="205" cy="170" r="17" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.4" />
+            <text x="205" y="175" textAnchor="middle" fontSize="11" fill="#64748b" fontFamily="monospace">0</text>
+            <circle cx="265" cy="170" r="17" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.4" />
+            <text x="265" y="175" textAnchor="middle" fontSize="11" fill="#64748b" fontFamily="monospace">8</text>
+
+            <text x="165" y="223" textAnchor="middle" fontSize="10" fill="#6c7086" fontFamily="monospace">left=5 and right=1 -&gt; return 3</text>
           </svg>
         </div>
       </div>
 
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-        <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-rose-700">
-          Not balanced - false
+        <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-violet-700">
+          Ancestor Case - LCA = 5
         </p>
         <div className="flex justify-center rounded-xl border border-slate-100 bg-slate-50/40 p-4">
-          <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg" className="h-auto w-full max-w-[320px]">
-            <line x1="160" y1="52" x2="106" y2="112" stroke="#F7C1C1" strokeWidth="1.5" />
-            <line x1="160" y1="52" x2="242" y2="112" stroke="#F7C1C1" strokeWidth="1.5" />
-            <line x1="106" y1="112" x2="66" y2="172" stroke="#F7C1C1" strokeWidth="1.5" />
-            <line x1="106" y1="112" x2="146" y2="172" stroke="#F7C1C1" strokeWidth="1.5" />
-            <line x1="66" y1="172" x2="44" y2="224" stroke="#F7C1C1" strokeWidth="1.5" />
-            <line x1="66" y1="172" x2="88" y2="224" stroke="#F7C1C1" strokeWidth="1.5" />
+          <svg viewBox="0 0 330 235" xmlns="http://www.w3.org/2000/svg" className="h-auto w-full max-w-[330px]">
+            <line x1="165" y1="48" x2="95" y2="108" stroke="#F7C1C1" strokeWidth="1.5" />
+            <line x1="95" y1="108" x2="65" y2="166" stroke="#F7C1C1" strokeWidth="1.5" />
+            <line x1="95" y1="108" x2="125" y2="166" stroke="#F7C1C1" strokeWidth="1.5" />
+            <line x1="125" y1="166" x2="109" y2="214" stroke="#F7C1C1" strokeWidth="1.5" />
+            <line x1="125" y1="166" x2="141" y2="214" stroke="#F7C1C1" strokeWidth="1.5" />
 
-            <circle cx="160" cy="48" r="22" fill="#FCEBEB" stroke="#E24B4A" strokeWidth="1.5" />
-            <text x="160" y="53" textAnchor="middle" fontSize="14" fontWeight="500" fill="#791F1F" fontFamily="monospace">1</text>
-            <circle cx="106" cy="116" r="22" fill="#FCEBEB" stroke="#E24B4A" strokeWidth="1.5" />
-            <text x="106" y="121" textAnchor="middle" fontSize="14" fontWeight="500" fill="#791F1F" fontFamily="monospace">2</text>
-            <circle cx="242" cy="116" r="22" fill="#FCEBEB" stroke="#E24B4A" strokeWidth="1.5" />
-            <text x="242" y="121" textAnchor="middle" fontSize="14" fontWeight="500" fill="#791F1F" fontFamily="monospace">2</text>
-            <circle cx="66" cy="176" r="22" fill="#FCEBEB" stroke="#E24B4A" strokeWidth="1.5" />
-            <text x="66" y="181" textAnchor="middle" fontSize="14" fontWeight="500" fill="#791F1F" fontFamily="monospace">3</text>
-            <circle cx="146" cy="176" r="22" fill="#FCEBEB" stroke="#E24B4A" strokeWidth="1.5" />
-            <text x="146" y="181" textAnchor="middle" fontSize="14" fontWeight="500" fill="#791F1F" fontFamily="monospace">3</text>
-            <circle cx="44" cy="228" r="18" fill="#FCEBEB" stroke="#E24B4A" strokeWidth="1.5" />
-            <text x="44" y="233" textAnchor="middle" fontSize="14" fontWeight="500" fill="#791F1F" fontFamily="monospace">4</text>
-            <circle cx="88" cy="228" r="18" fill="#FCEBEB" stroke="#E24B4A" strokeWidth="1.5" />
-            <text x="88" y="233" textAnchor="middle" fontSize="14" fontWeight="500" fill="#791F1F" fontFamily="monospace">4</text>
-            <text x="160" y="252" textAnchor="middle" fontSize="10" fill="#E24B4A" fontFamily="monospace">|3-1|=2 &gt; 1</text>
+            <circle cx="165" cy="45" r="19" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.4" />
+            <text x="165" y="50" textAnchor="middle" fontSize="12" fill="#64748b" fontFamily="monospace">3</text>
+
+            <circle cx="95" cy="112" r="22" fill="#E1F5EE" stroke="#1D9E75" strokeWidth="1.8" />
+            <text x="95" y="117" textAnchor="middle" fontSize="13" fontWeight="600" fill="#085041" fontFamily="monospace">5</text>
+
+            <circle cx="65" cy="170" r="17" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.4" />
+            <text x="65" y="175" textAnchor="middle" fontSize="11" fill="#64748b" fontFamily="monospace">6</text>
+            <circle cx="125" cy="170" r="17" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.4" />
+            <text x="125" y="175" textAnchor="middle" fontSize="11" fill="#64748b" fontFamily="monospace">2</text>
+
+            <circle cx="109" cy="214" r="14" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.4" />
+            <text x="109" y="218" textAnchor="middle" fontSize="10" fill="#64748b" fontFamily="monospace">7</text>
+            <circle cx="141" cy="214" r="16" fill="#EEEDFE" stroke="#6e61da" strokeWidth="1.8" />
+            <text x="141" y="219" textAnchor="middle" fontSize="11" fontWeight="700" fill="#3C3489" fontFamily="monospace">4</text>
+
+            <text x="165" y="228" textAnchor="middle" fontSize="10" fill="#6c7086" fontFamily="monospace">p is ancestor of q -&gt; return p (5)</text>
           </svg>
         </div>
       </div>
@@ -153,23 +164,22 @@ function QuickMode() {
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <div className="flex items-start gap-3 mb-4">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9 12h6" /><path d="M12 9v6" /></svg>
             </div>
             <div>
               <h3 className="text-lg font-semibold text-slate-900 mb-1">Problem Statement</h3>
-              <p className="text-sm text-slate-500">Balanced Binary Tree</p>
+              <p className="text-sm text-slate-500">Lowest Common Ancestor of a Binary Tree</p>
             </div>
           </div>
 
           <p className="text-[15px] leading-relaxed text-slate-700 mb-4">
-            Given the <span className="font-medium text-slate-900">root</span> of a binary tree,
-            return <span className="font-medium text-slate-900">true</span> if it is height-balanced,
-            otherwise return <span className="font-medium text-slate-900">false</span>.
+            Return the lowest node in the tree that has both p and q as descendants.
+            A node can be a descendant of itself, so ancestor cases are valid answers.
           </p>
 
           <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
             <p className="text-sm font-semibold text-emerald-900">
-              Balance Rule: for every node, |height(left) - height(right)| &lt;= 1
+              Core Rule: both sides non-null -&gt; current node is LCA.
             </p>
           </div>
         </div>
@@ -183,16 +193,16 @@ function QuickMode() {
 
         <div className="grid gap-4 md:grid-cols-3">
           <div className="rounded-2xl border border-sky-200 bg-sky-50/70 p-5">
-            <p className="text-sm font-semibold text-sky-800 mb-2">Bottom-up DFS</p>
-            <p className="text-[14px] text-sky-900/80 leading-relaxed">Use post-order recursion so each node receives left and right heights from children.</p>
+            <p className="text-sm font-semibold text-sky-800 mb-2">Base hit</p>
+            <p className="text-[14px] text-sky-900/80 leading-relaxed">If node is null, p, or q, return immediately as recursion signal.</p>
           </div>
           <div className="rounded-2xl border border-violet-200 bg-violet-50/70 p-5">
-            <p className="text-sm font-semibold text-violet-800 mb-2">Sentinel -1</p>
-            <p className="text-[14px] text-violet-900/80 leading-relaxed">Return -1 when unbalanced. Parents immediately propagate -1 without extra work.</p>
+            <p className="text-sm font-semibold text-violet-800 mb-2">Signal merge</p>
+            <p className="text-[14px] text-violet-900/80 leading-relaxed">Collect left and right return values, then combine at parent.</p>
           </div>
           <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5">
-            <p className="text-sm font-semibold text-emerald-800 mb-2">One Pass</p>
-            <p className="text-[14px] text-emerald-900/80 leading-relaxed">Compute heights and validate balance together in O(n).</p>
+            <p className="text-sm font-semibold text-emerald-800 mb-2">Split point</p>
+            <p className="text-[14px] text-emerald-900/80 leading-relaxed">The first node getting both signals is the lowest common ancestor.</p>
           </div>
         </div>
       </div>
@@ -203,7 +213,7 @@ function QuickMode() {
           <h2 className="text-xl font-semibold text-slate-900">Diagram</h2>
         </div>
 
-        <BalancedVsUnbalancedDiagrams />
+        <LcaTwoCasesDiagram />
       </div>
 
       <div className="mb-12">
@@ -219,7 +229,6 @@ function QuickMode() {
                 <th className="px-3 py-2 text-left font-semibold text-slate-700">Call</th>
                 <th className="px-3 py-2 text-left font-semibold text-slate-700">Left</th>
                 <th className="px-3 py-2 text-left font-semibold text-slate-700">Right</th>
-                <th className="px-3 py-2 text-left font-semibold text-slate-700">|diff|</th>
                 <th className="px-3 py-2 text-left font-semibold text-slate-700">Return</th>
               </tr>
             </thead>
@@ -229,7 +238,6 @@ function QuickMode() {
                   <td className="px-3 py-2 font-mono text-slate-700">{row.call}</td>
                   <td className="px-3 py-2 text-slate-700">{row.left}</td>
                   <td className="px-3 py-2 text-slate-700">{row.right}</td>
-                  <td className="px-3 py-2 text-slate-700">{row.diff}</td>
                   <td className="px-3 py-2 font-medium text-emerald-700">{row.returns}</td>
                 </tr>
               ))}
@@ -246,21 +254,20 @@ function QuickMode() {
 
         <div className="grid gap-4 md:grid-cols-2 mb-4">
           <div className="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-5">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-emerald-700 mb-1">Time Complexity</p>
-            <p className="text-3xl font-mono font-semibold text-emerald-800 mb-1">O(n)</p>
-            <p className="text-sm text-emerald-700 leading-relaxed">Every node is visited once in the recursive pass.</p>
+            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-700">Time Complexity</p>
+            <p className="mb-1 font-mono text-3xl font-semibold text-emerald-800">O(n)</p>
+            <p className="text-sm leading-relaxed text-emerald-700">Each node is visited once.</p>
           </div>
           <div className="rounded-2xl border border-violet-200 bg-violet-50/80 p-5">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-violet-700 mb-1">Space Complexity</p>
-            <p className="text-3xl font-mono font-semibold text-violet-800 mb-1">O(h)</p>
-            <p className="text-sm text-violet-700 leading-relaxed">Recursion stack height. O(log n) balanced, O(n) skewed.</p>
+            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-violet-700">Space Complexity</p>
+            <p className="mb-1 font-mono text-3xl font-semibold text-violet-800">O(h)</p>
+            <p className="text-sm leading-relaxed text-violet-700">Recursion stack depth, where h is tree height.</p>
           </div>
         </div>
 
         <div className="rounded-xl bg-amber-50 border-l-[3px] border-amber-400 p-4">
           <p className="text-sm text-amber-800">
-            <strong className="font-medium">Interview tip:</strong> Mention naive O(n^2) top-down first,
-            then immediately improve to one-pass bottom-up DFS with sentinel -1.
+            <strong className="font-medium">Interview tip:</strong> Explain split case and ancestor case before coding.
           </p>
         </div>
       </div>
@@ -276,47 +283,38 @@ function DeepMode() {
         <h2 className="text-lg font-medium text-slate-900 mb-4">Simple idea in one minute</h2>
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <p className="text-[14px] leading-relaxed text-slate-700 mb-3">
-            At each node, do three steps: get left height, get right height, then compare.
-            This is why post-order recursion works best for this problem.
+            This is a post-order style merge pattern. Children return information, parent decides.
+            You only declare LCA when both branches report non-null.
           </p>
           <pre className="overflow-x-auto rounded-lg border border-slate-200 bg-slate-900 p-4 text-xs text-slate-200">
-      {`class Solution:
-        def isBalanced(self, root) -> bool:
-          def check(node):
-            if not node:
-              return 0
+{`class Solution:
+    def lowestCommonAncestor(self, root, p, q):
+        if not root or root is p or root is q:
+            return root
 
-            left = check(node.left)
-            if left == -1:
-              return -1
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
 
-            right = check(node.right)
-            if right == -1:
-              return -1
+        if left and right:
+            return root
 
-            if abs(left - right) > 1:
-              return -1
-
-            return 1 + max(left, right)
-
-          return check(root) != -1`}
+        return left if left else right`}
           </pre>
         </div>
       </div>
 
       <div className="mb-10">
         <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">05 · Explanation</p>
-        <h2 className="text-lg font-medium text-slate-900 mb-4">Easy way to remember it</h2>
+        <h2 className="text-lg font-medium text-slate-900 mb-4">How to remember it</h2>
         <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-5">
           <p className="text-[14px] leading-relaxed text-amber-900/90">
-            Think bottom-up: children report first, parent decides later.
-            Each call returns either a normal height or -1 (meaning already unbalanced).
-            If you see -1, pass it upward immediately.
+            Think of each recursion call as returning one message: nothing found, found p/q, or found final LCA.
+            Parent merges two messages and either confirms split or forwards one message upward.
           </p>
         </div>
         <div className="mt-4 rounded-xl border-l-[3px] border-blue-400 bg-blue-50 p-4">
           <p className="text-sm text-blue-900">
-            Why -1 is safe: real heights are 0 or more, so -1 can only mean &quot;unbalanced&quot;.
+            Why ancestor case works: when root is p, base case returns p immediately, so p can become LCA.
           </p>
         </div>
       </div>
@@ -374,7 +372,7 @@ function DeepMode() {
   );
 }
 
-export default function BalancedBinaryTreeGuidePage() {
+export default function LcaInBinaryTreeGuidePage() {
   const [mode, setMode] = useState<"quick" | "deep">("quick");
 
   return (
@@ -390,25 +388,25 @@ export default function BalancedBinaryTreeGuidePage() {
             </div>
             <div className="flex items-center gap-2">
               <Link
-                href="/problems/binary-tree/balanced-binary-tree"
+                href="/problems/binary-tree/lca-in-binary-tree"
                 className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 transition hover:bg-emerald-100"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                 Visual Editor
               </Link>
               <Link
                 href="/problems/topics/trees"
                 className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
                 Tree Problems
               </Link>
             </div>
           </div>
 
-          <h1 className="text-3xl font-semibold text-slate-900 mb-2">Balanced Binary Tree</h1>
+          <h1 className="text-3xl font-semibold text-slate-900 mb-2">Lowest Common Ancestor in Binary Tree</h1>
           <p className="text-base text-slate-500 mb-5 max-w-xl">
-            Check whether every node has left and right subtree heights differing by at most one.
+            Find the lowest node that is ancestor of both p and q using recursive signal propagation.
           </p>
 
           <div className="flex flex-wrap gap-2 mb-6">
@@ -464,14 +462,14 @@ export default function BalancedBinaryTreeGuidePage() {
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-[15px] font-medium text-slate-800">Ready to see it in action?</p>
-              <p className="text-[13px] text-slate-500 mt-0.5">Step through the visualizer to watch the recursion stack live.</p>
+              <p className="text-[13px] text-slate-500 mt-0.5">Step through the visualizer to watch recursive returns and split detection live.</p>
             </div>
             <Link
-              href="/problems/binary-tree/balanced-binary-tree"
+              href="/problems/binary-tree/lca-in-binary-tree"
               className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/25"
             >
               Open Visualizer
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7" /><path d="M7 7h10v10" /></svg>
             </Link>
           </div>
         </div>

@@ -477,6 +477,10 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return "/problems/binary-tree/balanced-binary-tree";
   }
 
+  if (sectionName === "Binary Tree Part-II" && problemName === "LCA in Binary Tree") {
+    return "/problems/binary-tree/lca-in-binary-tree";
+  }
+
   if (sectionName === "Binary Tree") {
     return `/problems/binary-tree/${toSlug(problemName)}`;
   }

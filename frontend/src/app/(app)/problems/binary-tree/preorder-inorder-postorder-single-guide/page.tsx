@@ -140,8 +140,8 @@ export default function PageGuidePage() {
   const [highlightPost, setHighlightPost] = useState(false);
 
   return (
-    <section className="relative min-h-0 overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/30 font-sans">
-      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,#dbeafe_0%,transparent_50%),radial-gradient(ellipse_at_bottom_left,#fef3c7_0%,transparent_50%)]" />
+    <section className="relative min-h-0 overflow-hidden bg-gradient-to-br from-slate-50 via-slate-50 to-emerald-50/20 font-sans">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,#e0f2fe_0%,transparent_48%),radial-gradient(ellipse_at_bottom_left,#e2f6ef_0%,transparent_52%)]" />
 
       <div className="relative z-[1] mx-auto max-w-[860px] px-6 py-6">
       {/* Header */}
