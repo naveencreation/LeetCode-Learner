@@ -1,4 +1,5 @@
 import type { ExecutionStep } from "../types";
+import { ZIGZAG_LINE_GUIDE, ZIGZAG_LINE_LABELS } from "../constants";
 
 interface ExplanationPanelProps {
   currentStep: number;
@@ -15,16 +16,18 @@ function getExplanation(
   result: number[],
   currentCodeLine: number,
 ) {
+  const lineGuide = ZIGZAG_LINE_GUIDE[currentCodeLine];
+  const lineLabel = ZIGZAG_LINE_LABELS[currentCodeLine] ?? "Traversal Context";
+
   if (!step && currentStep === 0) {
     return {
       title: "Ready to Start Zigzag Traversal",
       description:
-        'Click "Next Step" to begin the zigzag level order traversal. We will process levels left-to-right and right-to-left alternately.',
+        'Click "Next Step" to begin. We process tree levels with BFS, alternating output direction each level.',
       details: [
-        "Initialize queue with root node",
-        "Process each level, reversing odd-indexed levels",
-        "Watch the direction toggle as levels change",
-        `Code line in focus: ${currentCodeLine + 1}`,
+        "Start with queue initialized to root.",
+        "Track level boundaries using queue length.",
+        "Watch highlighted line, queue snapshot, and nested result together.",
       ],
     };
   }
@@ -35,8 +38,19 @@ function getExplanation(
       description: `All levels processed. Final zigzag result: [${result.join(", ")}].`,
       details: [
         `Total execution steps: ${totalSteps}`,
-        "View each step or reset to start over.",
-        `Final code line reached: ${currentCodeLine + 1}`,
+        "Use Previous to replay queue transitions carefully.",
+      ],
+    };
+  }
+
+  if (lineGuide) {
+    return {
+      title: `Line ${currentCodeLine + 1}: ${lineLabel}`,
+      description: lineGuide.meaning,
+      details: [
+        `Why this line matters: ${lineGuide.why}`,
+        `What happens next: ${lineGuide.next}`,
+        `Current flattened snapshot: [${result.join(", ")}]`,
       ],
     };
   }
@@ -107,14 +121,14 @@ export function ExplanationPanel({
         <h2 className="traversal-panel-title">Step Explanation</h2>
       </div>
 
-      <div className="min-h-0 space-y-2 overflow-auto rounded-[10px] border border-purple-200 bg-gradient-to-b from-purple-50 to-indigo-50 p-2">
-        <h3 className="text-[13px] font-extrabold text-purple-900">{explanation.title}</h3>
-        <p className="text-[11px] leading-[1.45] text-purple-800">{explanation.description}</p>
+      <div className="min-h-0 space-y-2 overflow-auto rounded-[10px] border border-sky-200 bg-gradient-to-b from-cyan-50 to-sky-50 p-2">
+        <h3 className="text-[13px] font-extrabold text-cyan-900">{explanation.title}</h3>
+        <p className="text-[11px] leading-[1.45] text-cyan-800">{explanation.description}</p>
         <ul className="grid gap-1 text-[11px]">
           {explanation.details.map((detail) => (
             <li
               key={detail}
-              className="rounded-lg border border-purple-200 bg-white/80 px-2 py-1 text-purple-900"
+              className="rounded-lg border border-sky-200 bg-white/80 px-2 py-1 text-cyan-900"
             >
               &gt; {detail}
             </li>
@@ -130,7 +144,7 @@ export function ExplanationPanel({
         </div>
         <div className="rounded-lg px-1 py-0.5">
           <span className="inline-flex items-center gap-1.5 font-bold">
-            <span className="h-3 w-3 rounded-full bg-blue-400" /> Enqueued Left
+            <span className="h-3 w-3 rounded-full bg-sky-400" /> Enqueued Left
           </span>
         </div>
         <div className="rounded-lg px-1 py-0.5">
@@ -141,6 +155,11 @@ export function ExplanationPanel({
         <div className="rounded-lg px-1 py-0.5">
           <span className="inline-flex items-center gap-1.5 font-bold">
             <span className="h-3 w-3 rounded-full bg-violet-400" /> Enqueued Right / Processing
+          </span>
+        </div>
+        <div className="col-span-2 rounded-lg px-1 py-0.5">
+          <span className="inline-flex items-center gap-1.5 font-bold">
+            <span className="h-3 w-3 rounded-full bg-emerald-500" /> Done
           </span>
         </div>
       </div>

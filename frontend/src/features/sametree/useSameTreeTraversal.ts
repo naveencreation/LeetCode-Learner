@@ -1,165 +1,171 @@
 "use client";
 
-import { useMemo } from "react";
-import { SAMETREE_TREE_PRESETS, cloneTree, createSampleTrees } from "./constants";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+import {
+  SAMETREE_TREE_PRESETS,
+  cloneTree,
+  createSampleTrees,
+} from "./constants";
+import {
+  getCodeLineForStep,
+  getOperationBadge,
+  getPhaseLabel,
+} from "./selectors";
 import { generateSameTreeExecutionSteps } from "./engine";
-import { getCodeLineForStep, getOperationBadge, getPhaseLabel } from "./selectors";
-import { useGenericTraversal } from "../shared/useGenericTraversal";
 import type {
+  CallStackFrame,
   ExecutionStep,
+  NodePosition,
   NodeVisualState,
   TreeNode,
   TreePresetKey,
 } from "./types";
-import type { StepProjection } from "../shared/useGenericTraversal";
-import type { CallStackFrame } from "../shared/types";
+import { useTraversalKeyboardShortcuts } from "../shared/useTraversalKeyboardShortcuts";
 
-// Problem-specific state projection logic
-function projectStateForStep(
-  currentStep: number,
-  executionSteps: ExecutionStep[],
-  initialNodeStatesP: Record<string, NodeVisualState>,
-  initialNodeStatesQ: Record<string, NodeVisualState>,
-): StepProjection & { 
-  result: boolean | null;
-  nodeStatesP: Record<string, NodeVisualState>;
-  nodeStatesQ: Record<string, NodeVisualState>;
-  currentNodeP: number | null;
-  currentNodeQ: number | null;
-} {
-  if (currentStep <= 0) {
-    return {
-      result: null,
-      visitedNodes: new Set<number>(),
-      currentNode: null,
-      currentNodeP: null,
-      currentNodeQ: null,
-      nodeStates: { ...initialNodeStatesP },
-      nodeStatesP: { ...initialNodeStatesP },
-      nodeStatesQ: { ...initialNodeStatesQ },
-    };
-  }
+export function useSameTreeTraversal() {
+  const [roots, setRoots] = useState<{ p: TreeNode | null; q: TreeNode | null }>(() =>
+    createSampleTrees(),
+  );
+  const [selectedPreset, setSelectedPreset] = useState<TreePresetKey>("same_trees");
+  const [customNodePositionsP, setCustomNodePositionsP] = useState<Record<number, NodePosition>>({});
+  const [customNodePositionsQ, setCustomNodePositionsQ] = useState<Record<number, NodePosition>>({});
 
-  const visitedNodes = new Set<number>();
+  const [controlMode, setControlModeState] = useState<"manual" | "auto">("manual");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [autoPlaySpeedMs, setAutoPlaySpeedMs] = useState(900);
+  const [currentStep, setCurrentStep] = useState(0);
 
-  for (let index = 0; index < currentStep; index += 1) {
-    const step = executionSteps[index];
-    if (step.valueP !== undefined && step.valueP !== null) {
-      visitedNodes.add(step.valueP);
+  const { executionSteps, initialNodeStatesP, initialNodeStatesQ } = useMemo(
+    () => generateSameTreeExecutionSteps(roots.p, roots.q),
+    [roots],
+  );
+
+  const nextStep = useCallback(() => {
+    setCurrentStep((previous) =>
+      previous < executionSteps.length ? previous + 1 : previous,
+    );
+  }, [executionSteps.length]);
+
+  const previousStep = useCallback(() => {
+    setCurrentStep((previous) => (previous > 0 ? previous - 1 : previous));
+  }, []);
+
+  const resetTraversal = useCallback(() => {
+    setCurrentStep(0);
+    setIsPlaying(false);
+  }, []);
+
+  const setControlMode = useCallback((mode: "manual" | "auto") => {
+    setControlModeState(mode);
+    if (mode === "manual") {
+      setIsPlaying(false);
     }
-    if (step.valueQ !== undefined && step.valueQ !== null) {
-      visitedNodes.add(step.valueQ);
-    }
-  }
+  }, []);
 
-  const previousStep = executionSteps[currentStep - 1];
-  const currentNodeP = previousStep?.valueP ?? null;
-  const currentNodeQ = previousStep?.valueQ ?? null;
-  const nodeStatesP = previousStep?.nodeStatesP ?? { ...initialNodeStatesP };
-  const nodeStatesQ = previousStep?.nodeStatesQ ?? { ...initialNodeStatesQ };
-
-  // Determine result from final step
-  let result: boolean | null = null;
-  if (executionSteps.length > 0) {
-    const lastStep = executionSteps[executionSteps.length - 1];
+  const playTraversal = useCallback(() => {
     if (currentStep >= executionSteps.length) {
-      result = lastStep.isMatch;
+      return;
     }
-  }
+    setIsPlaying(true);
+  }, [currentStep, executionSteps.length]);
 
-  return {
-    result,
-    visitedNodes,
-    currentNode: currentNodeP,
-    currentNodeP,
-    currentNodeQ,
-    nodeStates: nodeStatesP,
-    nodeStatesP,
-    nodeStatesQ,
-  };
-}
+  const pauseTraversal = useCallback(() => {
+    setIsPlaying(false);
+  }, []);
 
-// Thin wrapper around generic hook
-interface SameTreeTraversalReturn {
-  root: TreeNode | null;
-  rootQ: TreeNode | null;
-  selectedPreset: TreePresetKey;
-  presets: Record<TreePresetKey, { label: string; create: () => { p: TreeNode | null; q: TreeNode | null } }>;
-  customNodePositions: Record<number, { x: number; y: number }>;
-  executionSteps: ExecutionStep[];
-  totalSteps: number;
-  currentStep: number;
-  result: boolean | null;
-  visitedNodes: Set<number>;
-  currentNode: number | null;
-  currentNodeP: number | null;
-  currentNodeQ: number | null;
-  nodeStates: Record<string, NodeVisualState>;
-  nodeStatesP: Record<string, NodeVisualState>;
-  nodeStatesQ: Record<string, NodeVisualState>;
-  currentOperation: string;
-  currentPhase: string;
-  currentCodeLine: number;
-  operationBadge: string;
-  activeStep: ExecutionStep | undefined;
-  executedStep: ExecutionStep | undefined;
-  activeCallStack: CallStackFrame[];
-  isAtStart: boolean;
-  isAtEnd: boolean;
-  controlMode: "manual" | "auto";
-  setControlMode: (mode: "manual" | "auto") => void;
-  isPlaying: boolean;
-  autoPlaySpeedMs: number;
-  setAutoPlaySpeedMs: (speedMs: number) => void;
-  playTraversal: () => void;
-  pauseTraversal: () => void;
-  nextStep: () => void;
-  previousStep: () => void;
-  resetTraversal: () => void;
-  goToFirst: () => void;
-  goToLast: () => void;
-  applyTreeConfiguration: (nextRoot: TreeNode, nextPositions: Record<number, any>, preset: TreePresetKey, runImmediately?: boolean) => void;
-}
+  useEffect(() => {
+    if (controlMode !== "auto" || !isPlaying || currentStep >= executionSteps.length) {
+      return;
+    }
 
-export function useSameTreeTraversal(): SameTreeTraversalReturn {
-  // Create a wrapper for generateSteps that adapts to the generic hook interface
-  const config = useMemo(
-    () => ({
-      generateSteps: () => {
-        const { p, q } = createSampleTrees();
-        return generateSameTreeExecutionSteps(p, q);
-      },
-      presets: SAMETREE_TREE_PRESETS,
-      cloneTree,
-      createSampleTree: () => createSampleTrees().p,
-      getCodeLineForStep,
-      getOperationBadge,
-      getPhaseLabel,
-      projectStateForStep: (step: number, steps: ExecutionStep[], initial: any) => {
-        return projectStateForStep(step, steps, initial.initialNodeStatesP, initial.initialNodeStatesQ);
-      },
-    }),
+    const intervalId = window.setInterval(() => {
+      setCurrentStep((previous) =>
+        previous < executionSteps.length ? previous + 1 : previous,
+      );
+    }, autoPlaySpeedMs);
+
+    return () => window.clearInterval(intervalId);
+  }, [controlMode, isPlaying, currentStep, executionSteps.length, autoPlaySpeedMs]);
+
+  useTraversalKeyboardShortcuts({ nextStep, previousStep, resetTraversal });
+
+  const activeStep = executionSteps[currentStep];
+  const executedStep = currentStep > 0 ? executionSteps[currentStep - 1] : undefined;
+  const displayStep = executedStep ?? activeStep;
+  const isAutoPlaying =
+    controlMode === "auto" && isPlaying && currentStep < executionSteps.length;
+
+  const currentNodeP = displayStep?.valueP ?? null;
+  const currentNodeQ = displayStep?.valueQ ?? null;
+  const currentOperation = displayStep ? displayStep.operation : "Waiting...";
+  const currentPhase = getPhaseLabel(displayStep);
+  const currentCodeLine = getCodeLineForStep(displayStep);
+  const operationBadge = getOperationBadge(displayStep);
+
+  const nodeStatesP: Record<string, NodeVisualState> =
+    displayStep?.nodeStatesP ?? initialNodeStatesP;
+  const nodeStatesQ: Record<string, NodeVisualState> =
+    displayStep?.nodeStatesQ ?? initialNodeStatesQ;
+
+  const result =
+    currentStep === 0
+      ? null
+      : (executionSteps[currentStep - 1]?.isMatch ?? null);
+
+  const applyTreeConfiguration = useCallback(
+    (
+      nextP: TreeNode | null,
+      nextQ: TreeNode | null,
+      nextPositionsP: Record<number, NodePosition>,
+      nextPositionsQ: Record<number, NodePosition>,
+      preset: TreePresetKey,
+      runImmediately = false,
+    ) => {
+      setRoots({ p: cloneTree(nextP), q: cloneTree(nextQ) });
+      setCustomNodePositionsP({ ...nextPositionsP });
+      setCustomNodePositionsQ({ ...nextPositionsQ });
+      setSelectedPreset(preset);
+      setCurrentStep(runImmediately ? 1 : 0);
+      setIsPlaying(false);
+    },
     [],
   );
 
-  const genericResult = useGenericTraversal(config) as any;
-
-  // Create extended result with SameTree-specific fields
-  return useMemo(() => {
-    // Get the current pair from presets on reset/change
-    const getCurrentPair = () => {
-      const preset = SAMETREE_TREE_PRESETS[genericResult.selectedPreset || "same_trees"];
-      return preset ? preset.create() : createSampleTrees();
-    };
-
-    return {
-      ...genericResult,
-      rootQ: getCurrentPair().q,
-      currentNodeP: genericResult.currentNode,
-      currentNodeQ: genericResult.currentNode, // Will be updated in real implementation
-      nodeStatesP: genericResult.nodeStates,
-      nodeStatesQ: genericResult.nodeStates,
-      result: null, // Will be computed from steps
-    };
-  }, [genericResult]);
+  return {
+    rootP: roots.p,
+    rootQ: roots.q,
+    selectedPreset,
+    presets: SAMETREE_TREE_PRESETS,
+    customNodePositionsP,
+    customNodePositionsQ,
+    executionSteps,
+    totalSteps: executionSteps.length,
+    currentStep,
+    result,
+    currentNodeP,
+    currentNodeQ,
+    nodeStatesP,
+    nodeStatesQ,
+    currentOperation,
+    currentPhase,
+    currentCodeLine,
+    operationBadge,
+    activeStep,
+    executedStep,
+    activeCallStack: (executedStep?.callStack ?? []) as CallStackFrame[],
+    isAtStart: currentStep === 0,
+    isAtEnd: currentStep === executionSteps.length,
+    controlMode,
+    setControlMode,
+    isPlaying: isAutoPlaying,
+    autoPlaySpeedMs,
+    setAutoPlaySpeedMs,
+    playTraversal,
+    pauseTraversal,
+    nextStep,
+    previousStep,
+    resetTraversal,
+    applyTreeConfiguration,
+  };
 }

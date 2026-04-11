@@ -42,14 +42,14 @@ export function ResultPanel({
       <div className="ui-scrollbar min-h-0 overflow-y-auto pr-1">
         <div className="grid content-start gap-1.5">
           <div className="grid grid-cols-2 gap-1.5">
-            <div className="rounded-lg border bg-gradient-to-br from-purple-700 to-purple-500 p-1.5 text-center text-white">
-              <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-purple-100">
+            <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1.5 text-center text-white">
+              <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-teal-100">
                 Current Node
               </p>
               <p className="mt-0.5 text-xl font-extrabold">{currentNode ?? "-"}</p>
             </div>
-            <div className="rounded-lg border bg-gradient-to-br from-purple-700 to-purple-500 p-1.5 text-center text-white">
-              <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-purple-100">
+            <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1.5 text-center text-white">
+              <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-teal-100">
                 Phase
               </p>
               <p className="mt-0.5 truncate text-xl font-extrabold">{currentPhase}</p>
@@ -74,21 +74,21 @@ export function ResultPanel({
                     }`}
                   >
                     <div className="flex items-center gap-1.5">
-                      <span className="inline-flex min-w-8 items-center justify-center rounded-md bg-white/70 px-1.5 py-0.5 text-[10px] font-extrabold">
+                      <span className="inline-flex min-w-8 items-center justify-center rounded-md bg-white/70 px-1.5 py-0.5 text-[10px] font-bold">
                         L{levelIndex}
                       </span>
-                      <span className="text-xs font-extrabold">
+                      <span className="text-xs font-bold">
                         [{level.join(", ")}]
                       </span>
                     </div>
-                    <span className="rounded-full bg-white/80 px-1.5 py-0.5 text-[10px] font-extrabold">
+                    <span className="rounded-full bg-white/80 px-1.5 py-0.5 text-[10px] font-bold">
                       {levelIndex % 2 === 0 ? "L->R" : "R->L"}
                     </span>
                   </div>
                 ))
               )}
             </div>
-            <div className="rounded-lg border border-purple-100 bg-purple-50 px-2 py-1.5 text-[11px] font-bold text-purple-800">
+            <div className="rounded-lg border border-teal-100 bg-teal-50 px-2 py-1.5 text-[11px] font-bold text-teal-800">
               {nestedResultText}
             </div>
           </div>
@@ -104,7 +104,7 @@ export function ResultPanel({
                 result.map((value, index) => (
                   <span
                     key={`${value}-${index}`}
-                    className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-purple-700 to-purple-400 px-2 py-0.5 text-[11px] font-extrabold text-white"
+                    className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-teal-700 to-teal-400 px-2.5 py-1 text-xs font-extrabold text-white"
                   >
                     {value}
                   </span>

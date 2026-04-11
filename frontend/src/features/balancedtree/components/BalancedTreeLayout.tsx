@@ -134,14 +134,10 @@ export function BalancedTreeLayout() {
             customNodePositions={customNodePositions}
             onClose={() => setIsTreeSetupOpen(false)}
             onApply={(nextRoot, nextPositions, preset) =>
-              nextRoot
-                ? applyTreeConfiguration(nextRoot, nextPositions, preset as import("../types").BalancedTreePresetKey, false)
-                : undefined
+              applyTreeConfiguration(nextRoot, nextPositions, preset, false)
             }
             onApplyAndRun={(nextRoot, nextPositions, preset) =>
-              nextRoot
-                ? applyTreeConfiguration(nextRoot, nextPositions, preset as import("../types").BalancedTreePresetKey, true)
-                : undefined
+              applyTreeConfiguration(nextRoot, nextPositions, preset, true)
             }
           />
         ) : null

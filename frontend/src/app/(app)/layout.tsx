@@ -6,27 +6,36 @@ import { usePathname } from "next/navigation";
 
 import { AppSidebar } from "@/components/app-sidebar";
 
+const traversalRoutes = [
+  "/problems/binary-tree/inorder-traversal",
+  "/problems/binary-tree/preorder-traversal",
+  "/problems/binary-tree/postorder-traversal",
+  "/problems/binary-tree/preorder-inorder-postorder-in-a-single-traversal",
+  "/problems/binary-tree/leftview-of-binary-tree",
+  "/problems/binary-tree/bottom-view-of-binary-tree",
+  "/problems/binary-tree/top-view-of-binary-tree",
+  "/problems/binary-tree/vertical-order-traversal",
+  "/problems/binary-tree/root-to-node-path-in-a-binary-tree",
+  "/problems/binary-tree/max-width-of-a-binary-tree",
+  "/problems/binary-tree/level-order-traversal",
+  "/problems/binary-tree/height-of-a-binary-tree",
+  "/problems/binary-tree/diameter-of-binary-tree",
+  "/problems/binary-tree/lca-in-binary-tree",
+  "/problems/binary-tree/balanced-binary-tree",
+  "/problems/binary-tree/same-tree",
+  "/problems/binary-tree/symmetric-tree",
+  "/problems/binary-tree/boundary-of-binary-tree",
+  "/problems/binary-tree/zigzag-level-order",
+  "/problems/binary-tree/zigzag-level-order-traversal",
+] as const;
+
 export default function AppLayout({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
 
   const pathname = usePathname();
   const isGuidePage = pathname.endsWith("-guide");
   const isTraversalPage =
-    pathname.startsWith("/problems/binary-tree/inorder-traversal") ||
-    pathname.startsWith("/problems/binary-tree/preorder-traversal") ||
-    pathname.startsWith("/problems/binary-tree/postorder-traversal") ||
-    pathname.startsWith("/problems/binary-tree/preorder-inorder-postorder-in-a-single-traversal") ||
-    pathname.startsWith("/problems/binary-tree/leftview-of-binary-tree") ||
-    pathname.startsWith("/problems/binary-tree/bottom-view-of-binary-tree") ||
-    pathname.startsWith("/problems/binary-tree/top-view-of-binary-tree") ||
-    pathname.startsWith("/problems/binary-tree/vertical-order-traversal") ||
-    pathname.startsWith("/problems/binary-tree/root-to-node-path-in-a-binary-tree") ||
-    pathname.startsWith("/problems/binary-tree/max-width-of-a-binary-tree") ||
-    pathname.startsWith("/problems/binary-tree/level-order-traversal") ||
-    pathname.startsWith("/problems/binary-tree/height-of-a-binary-tree") ||
-     pathname.startsWith("/problems/binary-tree/diameter-of-binary-tree") ||
-      pathname.startsWith("/problems/binary-tree/lca-in-binary-tree") ||
-     (pathname.startsWith("/problems/binary-tree/balanced-binary-tree") && !isGuidePage);
+    !isGuidePage && traversalRoutes.some((route) => pathname.startsWith(route));
   const isBinaryTreeProblemRoute = pathname.startsWith("/problems/binary-tree/");
   const isProblemFocusPage = isTraversalPage || isBinaryTreeProblemRoute;
 

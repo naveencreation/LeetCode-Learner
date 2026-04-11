@@ -1,5 +1,5 @@
-import { ZigzagTreeLayout } from "@/features/zigzagtree/components/ZigzagTreeLayout";
+import { redirect } from "next/navigation";
 
 export default function ZigzagLevelOrderPage() {
-  return <ZigzagTreeLayout />;
+  redirect("/problems/binary-tree/zigzag-level-order-traversal");
 }

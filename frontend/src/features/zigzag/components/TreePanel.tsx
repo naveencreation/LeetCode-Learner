@@ -26,13 +26,13 @@ const stateStyles: Record<string, { fill: string; stroke: string; text: string; 
     },
     exploring_left: {
       fill: "#bfdbfe",
-      stroke: "#3b82f6",
+      stroke: "#60a5fa",
       text: "#0f172a",
       glow: "rgba(59, 130, 246, 0.22)",
     },
     current: {
-      fill: "#fcd34d",
-      stroke: "#f59e0b",
+      fill: "#f59e0b",
+      stroke: "#d97706",
       text: "#111827",
       glow: "rgba(245, 158, 11, 0.22)",
     },
@@ -334,10 +334,10 @@ export function TreePanel({
         </svg>
       </div>
 
-      <div className="rounded-lg border border-purple-100 bg-purple-50 px-2.5 py-2 text-xs">
+      <div className="rounded-lg border border-teal-100 bg-teal-50 px-2.5 py-2 text-xs">
         <div className="flex items-center justify-between gap-2">
           <span className="font-bold text-slate-500">Operation:</span>
-          <span className="max-w-[72%] truncate text-right font-extrabold text-purple-700">
+          <span className="max-w-[72%] truncate text-right font-extrabold text-teal-700">
             {currentOperation}
           </span>
         </div>

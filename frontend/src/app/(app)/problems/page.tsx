@@ -482,7 +482,7 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
   }
 
   if (sectionName === "Binary Tree Part-II" && problemName === "Zig Zag Traversal of Binary Tree") {
-    return "/problems/binary-tree/zigzag-level-order";
+    return "/problems/binary-tree/zigzag-level-order-traversal";
   }
 
   if (sectionName === "Binary Tree Part-II" && problemName === "Check if two trees are identical or not") {

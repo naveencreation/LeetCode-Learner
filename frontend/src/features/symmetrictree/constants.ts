@@ -17,20 +17,16 @@ export const SYMMETRIC_CODE_LINES = [
   "        # Both null - symmetric at this position",
   "        if not left and not right:",
   "            return True",
-  "",
   "        # One null, other not - asymmetric",
   "        if not left or not right:",
   "            return False",
-  "",
   "        # Values must match",
   "        if left.val != right.val:",
   "            return False",
-  "",
   "        # Check outer pair and inner pair",
   "        outer = self.isMirror(left.left, right.right)",
   "        if not outer:",
   "            return False",
-  "",
   "        inner = self.isMirror(left.right, right.left)",
   "        return outer and inner",
   "",
@@ -50,10 +46,10 @@ export const SYMMETRIC_CODE_LINES = [
 ] as const;
 
 export const OPERATION_TO_LINE_MAP = {
-  enter_function: 6,
-  check_mirror: 10,
-  check_null: 13,
-  match_found: 14,
+  enter_function: 7,
+  check_mirror: 12,
+  check_null: 14,
+  match_found: 15,
   mismatch_found: 17,
   compare_values: 20,
   recurse_outer: 23,
@@ -62,10 +58,12 @@ export const OPERATION_TO_LINE_MAP = {
 } as const;
 
 export const SYMMETRIC_LINE_LABELS: Record<number, string> = {
-  6: "Function Entry",
+  7: "Function Entry",
+  8: "Root Empty Check",
   10: "Start Mirror Check",
-  13: "Null Check",
-  14: "Both Null - Match",
+  12: "Mirror Helper Entry",
+  14: "Null Pair Check",
+  15: "Both Null - Match",
   17: "One Null - Mismatch",
   20: "Value Comparison",
   23: "Check Outer Pair",
@@ -77,22 +75,32 @@ export const SYMMETRIC_LINE_GUIDE: Record<
   number,
   { meaning: string; why: string; next: string }
 > = {
-  6: {
+  7: {
     meaning: "We entered isSymmetric to check if tree mirrors itself.",
     why: "An empty tree is symmetric by definition.",
     next: "If root exists, call isMirror on left and right subtrees.",
   },
-  10: {
-    meaning: "Starting mirror comparison between two subtrees.",
-    why: "Two subtrees are mirrors if they satisfy specific conditions.",
-    next: "Check if both nodes are null first.",
+  8: {
+    meaning: "Check if the root is empty.",
+    why: "A null tree is symmetric by definition.",
+    next: "Return True for empty tree, otherwise compare left/right subtrees.",
   },
-  13: {
+  10: {
+    meaning: "Kick off mirror comparison from root.left and root.right.",
+    why: "Symmetry is defined by mirrored subtree equality.",
+    next: "Inside helper, compare node pairs recursively.",
+  },
+  12: {
+    meaning: "Entered isMirror(left, right) helper for a node pair.",
+    why: "Each recursive frame validates one mirrored pair.",
+    next: "Handle null cases before value checks.",
+  },
+  14: {
     meaning: "Checking if both nodes are null.",
     why: "Two null nodes are symmetric at that position.",
     next: "If both null, return True; else check if one is null.",
   },
-  14: {
+  15: {
     meaning: "Both nodes are null - they match here.",
     why: "Null nodes at symmetric positions are valid.",
     next: "Return True and unwind.",

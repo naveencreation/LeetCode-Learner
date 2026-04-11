@@ -11,22 +11,16 @@ export const BOUNDARY_CODE_LINES = [
   "    def boundaryOfBinaryTree(self, root):",
   "        if not root:",
   "            return []",
-  "",
   "        result = []",
-  "",
   "        # Add root if not leaf",
   "        if not self.isLeaf(root):",
   "            result.append(root.val)",
-  "",
   "        # Collect left boundary (top-down, no leaves)",
   "        self.addLeftBoundary(root.left, result)",
-  "",
   "        # Collect all leaves (left-to-right)",
   "        self.addLeaves(root, result)",
-  "",
   "        # Collect right boundary (bottom-up, no leaves)",
   "        self.addRightBoundary(root.right, result)",
-  "",
   "        return result",
   "",
   "    def isLeaf(self, node):",
@@ -59,82 +53,82 @@ export const BOUNDARY_CODE_LINES = [
 ] as const;
 
 export const OPERATION_TO_LINE_MAP = {
-  enter_function: 6,
-  add_root: 13,
-  collect_left_boundary: 16,
-  collect_leaves: 19,
-  collect_right_boundary: 22,
-  visit_left_node: 33,
-  visit_leaf: 37,
-  visit_right_node: 47,
-  reverse_right: 51,
+  enter_function: 7,
+  add_root: 11,
+  collect_left_boundary: 14,
+  collect_leaves: 16,
+  collect_right_boundary: 18,
+  visit_left_node: 27,
+  visit_leaf: 35,
+  visit_right_node: 43,
+  reverse_right: 47,
   exit_function: 7,
-  complete: 24,
+  complete: 20,
 } as const;
 
 export const BOUNDARY_LINE_LABELS: Record<number, string> = {
-  6: "Function Entry",
-  13: "Add Root",
-  16: "Collect Left Boundary",
-  19: "Collect Leaves",
-  22: "Collect Right Boundary",
-  33: "Visit Left Node",
-  37: "Visit Leaf",
-  47: "Visit Right Node",
-  51: "Reverse Right Boundary",
-  24: "Return Result",
+  7: "Function Entry",
+  11: "Add Root",
+  14: "Collect Left Boundary",
+  16: "Collect Leaves",
+  18: "Collect Right Boundary",
+  27: "Visit Left Node",
+  35: "Visit Leaf",
+  43: "Visit Right Node",
+  47: "Reverse Right Boundary",
+  20: "Return Result",
 };
 
 export const BOUNDARY_LINE_GUIDE: Record<
   number,
   { meaning: string; why: string; next: string }
 > = {
-  6: {
+  7: {
     meaning: "Starting boundary traversal.",
     why: "Boundary consists of root, left edge, leaves, and right edge (reversed).",
     next: "Check if root is leaf; if not, add it to result.",
   },
-  13: {
+  11: {
     meaning: "Adding root to boundary if it's not a leaf.",
     why: "Root is only part of boundary if it has children.",
     next: "Start collecting left boundary (excluding leaves).",
   },
-  16: {
+  14: {
     meaning: "Traversing left boundary from root's left child.",
     why: "Left boundary goes top-down, includes non-leaf nodes on left edge.",
     next: "Keep going left; if no left, go right temporarily.",
   },
-  19: {
+  16: {
     meaning: "Collecting all leaf nodes.",
     why: "Leaves form the bottom part of the boundary.",
     next: "DFS to find all leaves, left-to-right order.",
   },
-  22: {
+  18: {
     meaning: "Traversing right boundary from root's right child.",
     why: "Right boundary collected bottom-up (will reverse at end).",
     next: "Go right; if no right, go left temporarily.",
   },
-  33: {
+  27: {
     meaning: "Adding non-leaf node on left boundary.",
     why: "Left boundary excludes leaf nodes.",
     next: "Continue to next left node.",
   },
-  37: {
+  35: {
     meaning: "Found a leaf node - adding to boundary.",
     why: "Leaves are always part of the boundary.",
     next: "Return to collect more leaves.",
   },
-  47: {
+  43: {
     meaning: "Adding non-leaf node on right boundary to stack.",
     why: "Right boundary collected in stack for later reversal.",
     next: "Continue to next right node.",
   },
-  51: {
+  47: {
     meaning: "Popping from stack to reverse right boundary order.",
     why: "Right boundary should be bottom-up (anti-clockwise).",
     next: "Pop all elements from stack.",
   },
-  24: {
+  20: {
     meaning: "Returning complete boundary traversal.",
     why: "Result now contains: root → left boundary → leaves → right boundary (reversed).",
     next: "Boundary traversal complete.",

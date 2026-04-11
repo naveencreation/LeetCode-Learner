@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 
-import { ZIGZAG_CODE_LINES } from "../constants";
+import { ZIGZAG_CODE_LINES, ZIGZAG_LINE_LABELS } from "../constants";
 
 interface CodePanelProps {
   currentCodeLine: number;
@@ -61,7 +61,7 @@ function renderTokenizedCode(line: string): Array<{ text: string; className: str
       } else if (/^[A-Z]/.test(value)) {
         tokens.push({ text: value, className: "text-[#4ec9b0]" });
       } else {
-        tokens.push({ text: value, className: "text-[#9cdcfe]" });
+        tokens.push({ text: value, className: "text-[#d4d4d4]" });
       }
       continue;
     }
@@ -77,71 +77,166 @@ function renderTokenizedCode(line: string): Array<{ text: string; className: str
 }
 
 export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelProps) {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [viewMode, setViewMode] = useState<"snippet" | "full">("snippet");
+  const preRef = useRef<HTMLPreElement | null>(null);
 
-  const executableLines = useMemo(
-    () => new Set(executionLineNumbers),
-    [executionLineNumbers],
-  );
-
-  const currentLineRef = useRef<HTMLDivElement | null>(null);
   const statusLine = currentCodeLine + 1;
+  const statusLabel = ZIGZAG_LINE_LABELS[currentCodeLine] ?? "Traversal Context";
 
-  // Auto-scroll to current line when it changes
-  useEffect(() => {
-    if (currentLineRef.current && scrollContainerRef.current) {
-      currentLineRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
+  const snippetLineIndices = useMemo(() => {
+    const contextRadius = 1;
+    const lineSet = new Set<number>([currentCodeLine]);
+
+    executionLineNumbers.forEach((lineNumber) => {
+      for (let offset = -contextRadius; offset <= contextRadius; offset += 1) {
+        const index = lineNumber + offset;
+        if (index >= 0 && index < ZIGZAG_CODE_LINES.length) {
+          lineSet.add(index);
+        }
+      }
+    });
+
+    return Array.from(lineSet).sort((a, b) => a - b);
+  }, [currentCodeLine, executionLineNumbers]);
+
+  const visibleLines = useMemo(() => {
+    if (viewMode === "full") {
+      return ZIGZAG_CODE_LINES.map((line, index) => ({ line, index }));
     }
-  }, [currentCodeLine]);
+
+    const rows: Array<{ line: string; index: number }> = [];
+
+    if (snippetLineIndices.length === 0) {
+      return ZIGZAG_CODE_LINES.map((line, index) => ({ line, index }));
+    }
+
+    let previousIndex = -1;
+    snippetLineIndices.forEach((index) => {
+      if (previousIndex >= 0 && index - previousIndex > 1) {
+        rows.push({ line: "...", index: -1000 - index });
+      }
+
+      rows.push({ line: ZIGZAG_CODE_LINES[index], index });
+      previousIndex = index;
+    });
+
+    return rows;
+  }, [viewMode, snippetLineIndices]);
+
+  const handleViewModeChange = (mode: "snippet" | "full") => {
+    const panel = preRef.current;
+    const previousScroll = panel?.scrollTop ?? 0;
+
+    setViewMode(mode);
+
+    requestAnimationFrame(() => {
+      if (!preRef.current) {
+        return;
+      }
+
+      if (mode === "full") {
+        preRef.current.scrollTop = previousScroll;
+      } else {
+        preRef.current.scrollTop = 0;
+      }
+    });
+  };
 
   return (
-    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_minmax(0,1fr)] gap-1.5 p-2">
+    <section className="traversal-panel grid h-full min-h-0 grid-rows-[auto_1fr_auto] gap-2 p-2.5">
       <div className="traversal-panel-header">
-        <h2 className="traversal-panel-title">Algorithm Code</h2>
-      </div>
-
-      <div
-        ref={scrollContainerRef}
-        className="ui-scrollbar min-h-0 overflow-auto rounded-[6px] bg-[#1e1e1e] font-mono text-[11px] text-[#d4d4d4]"
-      >
-        <div className="p-2">
-          {ZIGZAG_CODE_LINES.map((line, idx) => {
-            const isCurrentLine = idx === currentCodeLine;
-            const isExecutableLine = executableLines.has(idx);
-
-            return (
-              <div
-                key={idx}
-                ref={isCurrentLine ? currentLineRef : null}
-                className={`group relative pl-2 transition-all ${
-                  isCurrentLine
-                    ? "bg-[#264f78] font-bold text-white"
-                    : isExecutableLine
-                      ? "bg-[#3e3e3e] hover:bg-[#454545]"
-                      : "hover:bg-[#2d2d2d]"
-                }`}
-              >
-                <span className="inline-block w-8 text-right pr-2 text-[#858585] text-[10px]">
-                  {idx + 1}
-                </span>
-                <span className="whitespace-pre">
-                  {renderTokenizedCode(line).map((token, tokenIdx) => (
-                    <span key={tokenIdx} className={token.className}>
-                      {token.text}
-                    </span>
-                  ))}
-                </span>
-              </div>
-            );
-          })}
+        <h2 className="traversal-panel-title">
+          Python Code
+        </h2>
+        <div className="inline-flex items-center rounded-full border border-slate-300 bg-slate-100 p-0.5">
+          <button
+            type="button"
+            onClick={() => handleViewModeChange("snippet")}
+            className={`rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
+              viewMode === "snippet"
+                ? "bg-slate-800 text-white"
+                : "text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            Snippet
+          </button>
+          <button
+            type="button"
+            onClick={() => handleViewModeChange("full")}
+            className={`rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
+              viewMode === "full"
+                ? "bg-slate-800 text-white"
+                : "text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            Full Code
+          </button>
         </div>
       </div>
 
+      <div
+        className="min-h-0 overflow-hidden rounded-[10px] border border-[#3c3c3c] bg-[#1e1e1e] p-2"
+      >
+        <pre
+          ref={preRef}
+          className="ui-scrollbar h-full min-h-0 overflow-auto p-0 text-[12px] leading-[1.68] text-[#d4d4d4]"
+        >
+          <code>
+            {visibleLines.map(({ line, index }, rowIndex) => {
+              if (index < 0) {
+                return (
+                  <div
+                    key={`ellipsis-${rowIndex}`}
+                    className="grid grid-cols-[1.6rem_1fr] items-start gap-2 rounded-md px-1.5 py-1 text-[#6e7681]"
+                  >
+                    <span className="select-none text-right font-bold">...</span>
+                    <span className="whitespace-pre font-[var(--font-geist-mono)] font-medium tracking-[0.01em]">
+                      ...
+                    </span>
+                  </div>
+                );
+              }
+
+              const isActive = currentCodeLine === index;
+
+              return (
+                <div
+                  key={`${index}-${line}`}
+                  className={`group grid grid-cols-[1.6rem_1fr] items-start gap-2 rounded-md px-1.5 py-1 transition-all ${
+                    isActive
+                      ? "relative border border-[#264f78] bg-[#2a2d2e] text-[#ffffff]"
+                      : "border border-transparent text-[#d4d4d4]"
+                  }`}
+                >
+                  {isActive ? (
+                    <span
+                      aria-hidden="true"
+                      className="absolute left-0 top-0 h-full w-[2px] rounded-l-md bg-[#264f78]"
+                    />
+                  ) : null}
+                  <span
+                    className={`select-none text-right font-bold ${
+                      isActive ? "text-[#c6c6c6]" : "text-[#858585] group-hover:text-[#a5a5a5]"
+                    }`}
+                  >
+                    {isActive ? "●" : index + 1}
+                  </span>
+                  <span className="whitespace-pre font-[var(--font-geist-mono)] font-medium tracking-[0.01em]">
+                    {renderTokenizedCode(line).map((token, tokenIndex) => (
+                      <span key={`${index}-${token.text}-${tokenIndex}`} className={token.className}>
+                        {token.text}
+                      </span>
+                    ))}
+                  </span>
+                </div>
+              );
+            })}
+          </code>
+        </pre>
+      </div>
+
       <div className="rounded-lg border border-slate-200 bg-slate-100 px-2 py-1.5 text-[11px] font-bold text-slate-700">
-        Current Line: {statusLine}
+        Current Line ({statusLine}): {statusLabel}
       </div>
     </section>
   );

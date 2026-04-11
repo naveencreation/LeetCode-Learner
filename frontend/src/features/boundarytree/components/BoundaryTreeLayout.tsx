@@ -122,14 +122,14 @@ export function BoundaryTreeLayout() {
         <UnifiedCallStackPanel 
           activeCallStack={activeCallStack}
           title="Call Stack"
-          frameFormatter={(frame) => `${frame.phase}(${frame.nodeVal ?? 'null'})`}
+          frameFormatter={(frame) => `boundary(${frame.nodeVal ?? "null"})`}
         />
       }
       rightBottom={
         <ExplanationPanel
           currentStep={currentStep}
           totalSteps={totalSteps}
-          result={result}
+          result={result as number[]}
           activeStep={executedStep}
           currentCodeLine={currentCodeLine}
         />
@@ -143,14 +143,10 @@ export function BoundaryTreeLayout() {
             customNodePositions={customNodePositions}
             onClose={() => setIsTreeSetupOpen(false)}
             onApply={(nextRoot, nextPositions, preset) =>
-              nextRoot
-                ? applyTreeConfiguration(nextRoot, nextPositions, preset, false)
-                : undefined
+              applyTreeConfiguration(nextRoot, nextPositions, preset, false)
             }
             onApplyAndRun={(nextRoot, nextPositions, preset) =>
-              nextRoot
-                ? applyTreeConfiguration(nextRoot, nextPositions, preset, true)
-                : undefined
+              applyTreeConfiguration(nextRoot, nextPositions, preset, true)
             }
           />
         ) : null

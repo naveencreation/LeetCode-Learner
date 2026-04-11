@@ -60,9 +60,9 @@ export function SymmetricTreeLayout() {
     return Array.from(lineNumbers).sort((a, b) => a - b);
   }, [currentCodeLine, executionSteps]);
 
-  const symmetricResult = useMemo(() => {
+  const symmetricResult = useMemo<boolean | null>(() => {
     if (currentStep === 0) return null;
-    if (currentStep >= totalSteps) return result;
+    if (currentStep >= totalSteps) return result as boolean | null;
     return null;
   }, [currentStep, totalSteps, result]);
 
@@ -100,7 +100,7 @@ export function SymmetricTreeLayout() {
         <ResultPanel
           currentNode={currentNode}
           currentPhase={currentPhase}
-          result={result}
+          result={result as boolean | null}
           currentStep={currentStep}
           totalSteps={totalSteps}
           currentOperation={currentOperation}
@@ -134,7 +134,7 @@ export function SymmetricTreeLayout() {
         <ExplanationPanel
           currentStep={currentStep}
           totalSteps={totalSteps}
-          result={result}
+          result={result as boolean | null}
           activeStep={executedStep}
           currentCodeLine={currentCodeLine}
         />

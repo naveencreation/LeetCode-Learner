@@ -48,21 +48,21 @@ export function TreeSetupModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="w-full max-w-md rounded-lg border border-slate-200 bg-white shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/55 p-4 backdrop-blur-[2px]">
+      <div className="w-full max-w-lg rounded-2xl border border-slate-200/90 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.28)]">
         {/* Header */}
-        <div className="border-b border-slate-200 px-6 py-4">
-          <h2 className="text-lg font-bold text-slate-900">Select Tree Configuration</h2>
-          <p className="mt-1 text-sm text-slate-600">Choose a preset tree or start fresh</p>
+        <div className="border-b border-slate-200 px-6 py-5">
+          <h2 className="text-lg font-extrabold text-slate-900">Select Tree Configuration</h2>
+          <p className="mt-1 text-xs font-semibold text-slate-600">Choose a preset tree or start fresh</p>
         </div>
 
         {/* Preset List */}
-        <div className="max-h-64 overflow-y-auto px-6 py-4">
-          <div className="space-y-2">
+        <div className="max-h-72 overflow-y-auto px-6 py-5">
+          <div className="space-y-2.5">
             {Object.entries(presets).map(([key, preset]) => (
               <label
                 key={key}
-                className="flex items-center rounded-lg border border-slate-200 p-3 hover:bg-slate-50 cursor-pointer transition"
+                className="cursor-pointer flex items-center rounded-xl border border-slate-200 bg-white p-3 transition hover:bg-slate-50"
               >
                 <input
                   type="radio"
@@ -70,31 +70,31 @@ export function TreeSetupModal({
                   value={key}
                   checked={draftPreset === key}
                   onChange={(e) => setDraftPreset(e.target.value as TreePresetKey)}
-                  className="h-4 w-4 border-slate-300 text-purple-600"
+                  className="h-4 w-4 border-slate-300 text-teal-600"
                 />
-                <span className="ml-3 font-medium text-slate-900">{preset.label}</span>
+                <span className="ml-3 text-sm font-semibold text-slate-900">{preset.label}</span>
               </label>
             ))}
           </div>
         </div>
 
         {/* Actions */}
-        <div className="border-t border-slate-200 px-6 py-4 flex gap-3 justify-end">
+        <div className="flex flex-wrap justify-end gap-2 border-t border-slate-200 px-6 py-4">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 transition"
+            className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
           >
             Cancel
           </button>
           <button
             onClick={handleApply}
-            className="px-4 py-2 rounded-lg border border-slate-300 bg-slate-100 text-slate-900 font-medium hover:bg-slate-200 transition"
+            className="rounded-md border border-teal-300 bg-white px-3 py-1.5 text-sm font-extrabold text-teal-700 transition hover:bg-teal-50"
           >
             Apply
           </button>
           <button
             onClick={handleApplyAndRun}
-            className="px-4 py-2 rounded-lg bg-purple-600 text-white font-medium hover:bg-purple-700 transition"
+            className="rounded-md bg-teal-600 px-3 py-1.5 text-sm font-extrabold text-white transition hover:bg-teal-700"
           >
             Apply & Run
           </button>

@@ -1,35 +1,39 @@
 'use client';
 
 /* eslint-disable react/no-unescaped-entities */
-
-function switchMode(mode: string) {
-  const quick = document.getElementById('quick-mode');
-  const deep = document.getElementById('deep-mode');
-  const btnQ = document.getElementById('btn-quick');
-  const btnD = document.getElementById('btn-deep');
-  const desc = document.getElementById('mode-desc');
-
-  if (mode === 'quick') {
-    if (quick) quick.style.display = 'block';
-    if (deep) deep.style.display = 'none';
-    if (btnQ) btnQ.classList.add('active');
-    if (btnD) btnD.classList.remove('active');
-    if (desc) desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
-  } else {
-    if (quick) quick.style.display = 'none';
-    if (deep) deep.style.display = 'block';
-    if (btnQ) btnQ.classList.remove('active');
-    if (btnD) btnD.classList.add('active');
-    if (desc) desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
-  }
-}
+import Link from "next/link";
+import { useState } from "react";
 
 export default function ZigzagLevelOrderTraversalGuide() {
+  const [mode, setMode] = useState<"quick" | "deep">("quick");
+
   return (
     <section className="bg-gradient-to-br from-slate-50 via-slate-50 to-emerald-50/20 bg-[radial-gradient(ellipse_at_top_right,#e0f2fe_0%,transparent_48%),radial-gradient(ellipse_at_bottom_left,#e2f6ef_0%,transparent_52%)] min-h-screen">
       <div className="max-w-3xl mx-auto px-6 py-8">
         {/* ═══════════════ HERO ═══════════════ */}
         <div className="mb-10">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="h-px w-8 bg-emerald-500" />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-600">Binary Tree · BFS</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/problems/binary-tree/zigzag-level-order-traversal"
+                className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 transition hover:bg-emerald-100"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                Visual Editor
+              </Link>
+              <Link
+                href="/problems/topics/trees"
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                Tree Problems
+              </Link>
+            </div>
+          </div>
           <p className="text-xs font-medium tracking-widest uppercase text-slate-500 mb-2">
             Binary Tree · BFS · LC 103
           </p>
@@ -42,44 +46,56 @@ export default function ZigzagLevelOrderTraversalGuide() {
 
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-6">
-            <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-emerald-100 text-emerald-700">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1.5 text-xs font-medium text-emerald-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               BFS + Deque
             </span>
-            <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-violet-100 text-violet-700">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 border border-purple-200 px-3 py-1.5 text-xs font-medium text-purple-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-purple-500" />
               Level-by-Level
             </span>
-            <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-amber-100 text-amber-700">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-3 py-1.5 text-xs font-medium text-amber-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
               Direction Flag
             </span>
-            <span className="inline-block text-xs font-medium px-3 py-1 rounded-full bg-rose-100 text-rose-700">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 border border-rose-200 px-3 py-1.5 text-xs font-medium text-rose-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
               Medium
             </span>
           </div>
 
           {/* Mode Toggle */}
-          <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1 w-fit border border-slate-200 mb-4">
+          <div className="inline-flex items-center rounded-xl bg-slate-100 p-1 gap-1 border border-slate-200">
             <button
-              id="btn-quick"
-              onClick={() => switchMode('quick')}
-              className="mode-btn active px-5 py-2 rounded-md text-sm font-medium text-slate-700 bg-white border border-slate-200 transition-all"
+              onClick={() => setMode("quick")}
+              className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all ${
+                mode === "quick"
+                  ? "bg-white text-slate-900 shadow-sm border border-slate-200"
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
             >
               Quick Recap
             </button>
             <button
-              id="btn-deep"
-              onClick={() => switchMode('deep')}
-              className="mode-btn px-5 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-slate-900 transition-all"
+              onClick={() => setMode("deep")}
+              className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all ${
+                mode === "deep"
+                  ? "bg-white text-slate-900 shadow-sm border border-slate-200"
+                  : "text-slate-500 hover:text-slate-700"
+              }`}
             >
               Deep Explain
             </button>
           </div>
-          <p id="mode-desc" className="text-xs text-slate-500">
-            Key concepts at a glance — for those who already know the basics.
+          <p className="text-xs text-slate-400 mt-3">
+            {mode === "quick"
+              ? "Key concepts at a glance — for those who already know the basics."
+              : "A full beginner-friendly walkthrough — understand it from scratch."}
           </p>
         </div>
 
         {/* QUICK MODE */}
-        <div id="quick-mode">
+        {mode === "quick" && <div>
           <hr className="border-slate-200 my-6" />
 
           {/* 01 · The rule */}
@@ -364,10 +380,10 @@ def zigzagLevelOrder(root):
               </div>
             </div>
           </div>
-        </div>
+        </div>}
 
         {/* DEEP MODE */}
-        <div id="deep-mode" style={{ display: 'none' }}>
+        {mode === "deep" && <div>
           <hr className="border-slate-200 my-6" />
 
           {/* 01 · What is zigzag? */}
@@ -872,7 +888,7 @@ while queue:
               </div>
             </div>
           </div>
-        </div>
+        </div>}
 
         {/* Footer CTA */}
         <div className="mt-10 border border-slate-200 rounded-xl p-5 flex items-center justify-between flex-wrap gap-4">
