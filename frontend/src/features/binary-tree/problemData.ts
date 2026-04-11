@@ -409,4 +409,38 @@ class Solution:
         
         return result`,
   },
+  "convert-bst-to-sorted-doubly-linked-list": {
+    slug: "convert-bst-to-sorted-doubly-linked-list",
+    title: "Convert BST to Sorted Circular Doubly Linked List",
+    intuition:
+      "Use inorder traversal to visit BST nodes in sorted order. Track prev to link adjacent nodes in-place; first node becomes head, and finally connect head with tail.",
+    pythonCode: `class Solution:
+    def treeToDoublyList(self, root):
+        if not root:
+            return None
+
+        head = None
+        prev = None
+
+        def inorder(node):
+            nonlocal head, prev
+            if not node:
+                return
+
+            inorder(node.left)
+
+            if prev:
+                prev.right = node
+                node.left = prev
+            else:
+                head = node
+
+            prev = node
+            inorder(node.right)
+
+        inorder(root)
+        head.left = prev
+        prev.right = head
+        return head`,
+  },
 };

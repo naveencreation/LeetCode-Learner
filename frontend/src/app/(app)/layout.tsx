@@ -30,6 +30,7 @@ const traversalRoutes = [
   "/problems/binary-tree/construct-binary-tree-from-inorder-and-preorder",
   "/problems/binary-tree/construct-binary-tree-from-inorder-and-postorder",
   "/problems/binary-tree/flatten-binary-tree-to-linkedlist",
+  "/problems/binary-tree/convert-bst-to-sorted-doubly-linked-list",
 ] as const;
 
 export default function AppLayout({ children }: { children: ReactNode }) {

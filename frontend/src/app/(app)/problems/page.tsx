@@ -170,8 +170,18 @@ export const sections = [
       "Kth Largest Element",
       "Maximum Sum Combination",
       "Find Median from Data Stream",
+      "Find median in a stream of running integers",
+      "K-th largest element in a stream",
+      "K-th largest element in an unsorted array",
       "Merge K sorted arrays",
       "K most frequent elements",
+    ],
+  },
+  {
+    name: "Sliding Window",
+    solved: 0,
+    problems: [
+      "Distinct numbers in Window",
     ],
   },
   {
@@ -264,10 +274,8 @@ export const sections = [
     solved: 0,
     problems: [
       "Construct Binary Tree from Inorder and Postorder",
-      "Symmetric Binary Tree",
       "Flatten Binary Tree to LinkedList",
-      "Check if Binary Tree is the mirror of itself",
-      "Check for Children Sum Property",
+      "Binary Tree to Double Linked List",
     ],
   },
   {
@@ -298,18 +306,6 @@ export const sections = [
     ],
   },
   {
-    name: "Binary Trees [Miscellaneous]",
-    solved: 0,
-    problems: [
-      "Binary Tree to Double Linked List",
-      "Find median in a stream of running integers",
-      "K-th largest element in a stream",
-      "Distinct numbers in Window",
-      "K-th largest element in an unsorted array",
-      "Flood-fill Algorithm",
-    ],
-  },
-  {
     name: "Graph",
     solved: 0,
     problems: [
@@ -325,6 +321,7 @@ export const sections = [
       "Number of islands (Do in Grid and Graph Both)",
       "Bipartite Check using BFS",
       "Bipartite Check using DFS",
+      "Flood-fill Algorithm",
     ],
   },
   {
@@ -507,6 +504,10 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
 
   if (sectionName === "Binary Tree Part-III" && problemName === "Flatten Binary Tree to LinkedList") {
     return "/problems/binary-tree/flatten-binary-tree-to-linkedlist";
+  }
+
+  if (sectionName === "Binary Tree Part-III" && problemName === "Binary Tree to Double Linked List") {
+    return "/problems/binary-tree/convert-bst-to-sorted-doubly-linked-list";
   }
 
   if (sectionName === "Binary Tree") {

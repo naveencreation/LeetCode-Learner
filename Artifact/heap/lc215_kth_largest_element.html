@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kth Largest Element in an Array · LC 215</title>
+<style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "SF Mono", "Fira Code", "Consolas", monospace;
+    --color-text-primary:         #1a1a2e;
+    --color-text-secondary:       #4a4a6a;
+    --color-text-tertiary:        #8888a8;
+    --color-background-primary:   #ffffff;
+    --color-background-secondary: #f5f5fa;
+    --color-border-tertiary:      #e0e0ee;
+    --border-radius-lg: 12px;
+    --border-radius-md:  8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--color-background-secondary); font-family: var(--font-sans); }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* ── badges ── */
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal   { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber  { background: #FAEEDA; color: #854F0B; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .badge-rose   { background: #FDECEA; color: #9B1B1B; }
+  .badge-blue   { background: #E6F1FB; color: #185FA5; }
+
+  /* ── layout helpers ── */
+  .section       { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card  { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+
+  /* ── rule box ── */
+  .rule-box  { background: #E6F1FB; padding: 1rem 1.25rem; border-left: 3px solid #378ADD; }
+  .rule-text { font-size: 19px; font-weight: 500; color: #0C447C; line-height: 1.5; }
+
+  /* ── step rows ── */
+  .step-row  { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num  { width: 26px; height: 26px; border-radius: 50%; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub  { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+
+  /* ── code block ── */
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13px; line-height: 2; overflow-x: auto; }
+  .c-kw    { color: #cba6f7; }
+  .c-fn    { color: #89b4fa; }
+  .c-cm    { color: #6c7086; font-style: italic; }
+  .c-plain { color: #cdd6f4; }
+  .c-str   { color: #a6e3a1; }
+  .c-num   { color: #fab387; }
+
+  /* ── dry-run table ── */
+  .dry-run-row       { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .dry-run-row:last-child { border-bottom: none; }
+  .dry-cell          { padding: 9px 13px; font-size: 13px; color: var(--color-text-primary); line-height: 1.5; font-family: var(--font-mono); flex: 1; }
+  .dry-cell-plain    { padding: 9px 13px; font-size: 13px; color: var(--color-text-primary); line-height: 1.5; flex: 1; }
+  .dry-head          { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); padding: 7px 13px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); flex: 1; }
+  .highlight-row     { background: var(--color-background-secondary); }
+
+  /* ── complexity grid ── */
+  .complexity-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card  { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why   { font-size: 13px; margin-top: 6px; }
+
+  /* ── interview list ── */
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot  { width: 8px; height: 8px; border-radius: 50%; background: #378ADD; flex-shrink: 0; margin-top: 7px; }
+
+  /* ── hero ── */
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub   { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags  { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ── analogy ── */
+  .analogy-box  { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+
+  /* ── mode toggle ── */
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn    { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+
+  /* ── deep mode ── */
+  .deep-section { margin-bottom: 3rem; }
+  .callout      { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info    { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p  { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn    { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p  { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-danger  { background: #FDECEA; border-left: 3px solid #D95C5C; border-radius: 0; }
+  .callout-danger p { color: #7A1C1C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+
+  /* ── Q&A ── */
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+
+  /* ── trace ── */
+  .trace-step    { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge   { min-width: 80px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; white-space: nowrap; flex-shrink: 0; }
+  .trace-going   { background: #E6F1FB; color: #185FA5; }
+  .trace-record  { background: #E1F5EE; color: #0F6E56; }
+  .trace-push    { background: #EEEDFE; color: #534AB7; }
+  .trace-pop     { background: #FAEEDA; color: #854F0B; }
+  .trace-done    { background: #E1F5EE; color: #0F6E56; }
+  .trace-pivot   { background: #FDECEA; color: #9B1B1B; }
+  .trace-content { flex: 1; }
+  .trace-title   { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc    { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+
+  /* ── mistakes ── */
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x     { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+  /* ── array cell visualizer ── */
+  .arr-wrap  { overflow-x: auto; }
+  .arr-idx   { display: flex; }
+  .arr-row   { display: flex; }
+  .arr-ic    { width: 40px; min-width: 40px; text-align: center; font-size: 10px; color: var(--color-text-tertiary); font-family: var(--font-mono); padding-bottom: 2px; }
+  .arr-cell  { width: 40px; min-width: 40px; height: 36px; border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--color-text-primary); background: var(--color-background-primary); }
+  .arr-cell:first-child { border-radius: 6px 0 0 6px; }
+  .arr-cell:last-child  { border-radius: 0 6px 6px 0; }
+  .ac-green  { background: #E1F5EE; color: #085041; border-color: #1D9E75; }
+  .ac-blue   { background: #E6F1FB; color: #0C447C; border-color: #378ADD; }
+  .ac-amber  { background: #FAEEDA; color: #633806; border-color: #EF9F27; }
+  .ac-red    { background: #FDECEA; color: #7A1C1C; border-color: #D95C5C; }
+  .ac-grey   { background: var(--color-background-secondary); color: var(--color-text-tertiary); }
+  .arr-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 3px; }
+
+  /* ── svg wrap ── */
+  .svg-wrap { display: flex; justify-content: center; overflow-x: auto; margin-bottom: 1rem; }
+
+  code { font-size: 12.5px; background: var(--color-background-secondary); padding: 2px 5px; border-radius: 4px; font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <div class="section">
+    <p class="section-label">Arrays · Heap · Quickselect · LC 215</p>
+    <h1 class="hero-title">Kth Largest Element in an Array</h1>
+    <p class="hero-sub">Given an unsorted integer array and an integer k, return the k-th largest element in sorted order (duplicates count).</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-teal">Min-Heap</span>
+      <span class="badge badge-purple">Quickselect</span>
+      <span class="badge badge-amber">Divide &amp; Conquer</span>
+      <span class="badge badge-rose">Medium</span>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn"        id="btn-deep"  onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ══════════════════════════════════
+       QUICK MODE
+  ══════════════════════════════════════ -->
+  <div id="quick-mode">
+    <hr class="divider" style="margin-top:0;">
+
+    <!-- 01 · The rule -->
+    <div class="section">
+      <p class="section-label">01 · The rule</p>
+      <div class="rule-box" style="margin-bottom:0.75rem;">
+        <p class="rule-text">Keep a min-heap of exactly k elements.<br>After scanning all n elements, the heap root is the answer.</p>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">The heap always holds the k largest elements seen so far. Its minimum (the root) is the k-th largest overall.</p>
+    </div>
+
+    <!-- 02 · How to think -->
+    <div class="section">
+      <p class="section-label">02 · How to think</p>
+      <div class="card">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-text">Push each element onto a min-heap</div>
+            <div class="step-sub">A min-heap always exposes its smallest element at the root in O(1).</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-text">If the heap size exceeds k, pop the smallest element</div>
+            <div class="step-sub">This evicts the current weakest contender, keeping only the k strongest candidates.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-text">After all elements are processed, return <code>heap[0]</code></div>
+            <div class="step-sub">The heap root is now the smallest of the k largest — which is exactly the k-th largest.</div>
+          </div>
+        </div>
+        <div class="step-row" style="margin-bottom:0;">
+          <div class="step-num">4</div>
+          <div>
+            <div class="step-text">Alternative: Quickselect gives O(n) average time</div>
+            <div class="step-sub">Partition around a pivot and recurse only into the side that contains the target rank.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 · Code -->
+    <div class="section">
+      <p class="section-label">03 · Code — Min-Heap approach (Python)</p>
+      <div class="code-block">
+        <div><span class="c-kw">import</span><span class="c-plain"> heapq</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-kw">class </span><span class="c-fn">Solution</span><span class="c-plain">:</span></div>
+        <div><span class="c-plain">  </span><span class="c-kw">def </span><span class="c-fn">findKthLargest</span><span class="c-plain">(self, nums, k) -> </span><span class="c-fn">int</span><span class="c-plain">:</span></div>
+        <div><span class="c-plain">    heap = []</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">for </span><span class="c-plain">num </span><span class="c-kw">in </span><span class="c-plain">nums:</span></div>
+        <div><span class="c-plain">      heapq.</span><span class="c-fn">heappush</span><span class="c-plain">(heap, num)  </span><span class="c-cm"># push every element</span></div>
+        <div><span class="c-plain">      </span><span class="c-kw">if </span><span class="c-fn">len</span><span class="c-plain">(heap) &gt; k:</span></div>
+        <div><span class="c-plain">        heapq.</span><span class="c-fn">heappop</span><span class="c-plain">(heap)     </span><span class="c-cm"># discard smallest</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">return </span><span class="c-plain">heap[</span><span class="c-num">0</span><span class="c-plain">]               </span><span class="c-cm"># root = kth largest</span></div>
+      </div>
+    </div>
+
+    <!-- 04 · Official examples with diagrams -->
+    <div class="section">
+      <p class="section-label">04 · Official examples</p>
+
+      <!-- Example 1 -->
+      <div class="card" style="margin-bottom:12px;">
+        <p style="font-size:12px;font-weight:500;color:#185FA5;text-transform:uppercase;letter-spacing:0.07em;margin:0 0 10px;">Example 1 — nums=[3,2,1,5,6,4], k=2 → Output: 5</p>
+        <div class="arr-wrap">
+          <div class="arr-label">Sorted descending</div>
+          <div class="arr-idx" style="margin-bottom:2px;">
+            <div class="arr-ic">1st</div><div class="arr-ic">2nd</div><div class="arr-ic">3rd</div>
+            <div class="arr-ic">4th</div><div class="arr-ic">5th</div><div class="arr-ic">6th</div>
+          </div>
+          <div class="arr-row">
+            <div class="arr-cell ac-green">6</div>
+            <div class="arr-cell ac-blue">5</div>
+            <div class="arr-cell">4</div>
+            <div class="arr-cell">3</div>
+            <div class="arr-cell">2</div>
+            <div class="arr-cell">1</div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--color-text-secondary);margin:8px 0 0;">Blue = 2nd largest = <strong style="color:#0C447C;">5</strong>. The heap after scanning: [5, 6] → root = 5.</p>
+      </div>
+
+      <!-- Example 2 -->
+      <div class="card">
+        <p style="font-size:12px;font-weight:500;color:#185FA5;text-transform:uppercase;letter-spacing:0.07em;margin:0 0 10px;">Example 2 — nums=[3,2,3,1,2,4,5,5,6], k=4 → Output: 4</p>
+        <div class="arr-wrap">
+          <div class="arr-label">Sorted descending</div>
+          <div class="arr-idx" style="margin-bottom:2px;">
+            <div class="arr-ic">1st</div><div class="arr-ic">2nd</div><div class="arr-ic">3rd</div>
+            <div class="arr-ic">4th</div><div class="arr-ic">5th</div><div class="arr-ic">6th</div>
+            <div class="arr-ic">7th</div><div class="arr-ic">8th</div><div class="arr-ic">9th</div>
+          </div>
+          <div class="arr-row">
+            <div class="arr-cell ac-green">6</div>
+            <div class="arr-cell ac-green">5</div>
+            <div class="arr-cell ac-green">5</div>
+            <div class="arr-cell ac-blue">4</div>
+            <div class="arr-cell">3</div>
+            <div class="arr-cell">3</div>
+            <div class="arr-cell">2</div>
+            <div class="arr-cell">2</div>
+            <div class="arr-cell">1</div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--color-text-secondary);margin:8px 0 0;">Duplicates count separately. 4th largest = <strong style="color:#0C447C;">4</strong>. Heap after scanning (size 4): [4,5,5,6] → root = 4.</p>
+      </div>
+    </div>
+
+    <!-- 05 · Complexity -->
+    <div class="section">
+      <p class="section-label">05 · Complexity</p>
+      <div class="complexity-grid" style="margin-bottom:10px;">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Time (Heap)</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n log k)</div>
+          <div class="complexity-why" style="color:#185FA5;">n pushes + at most n pops, each O(log k) on a heap of max size k.</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">Space (Heap)</div>
+          <div class="complexity-value" style="color:#3C3489;">O(k)</div>
+          <div class="complexity-why" style="color:#534AB7;">The heap never holds more than k elements at any point.</div>
+        </div>
+      </div>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E1F5EE;">
+          <div class="complexity-label" style="color:#0F6E56;">Time (Quickselect)</div>
+          <div class="complexity-value" style="color:#085041;">O(n) avg</div>
+          <div class="complexity-why" style="color:#0F6E56;">Average O(n), worst-case O(n²) without randomised pivot.</div>
+        </div>
+        <div class="complexity-card" style="background:#FAEEDA;">
+          <div class="complexity-label" style="color:#854F0B;">Space (Quickselect)</div>
+          <div class="complexity-value" style="color:#633806;">O(1)</div>
+          <div class="complexity-why" style="color:#854F0B;">In-place partition — no extra data structures needed.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 · Related problems -->
+    <div class="section" style="margin-bottom:0;">
+      <p class="section-label">06 · Related problems</p>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">LC 703 — Kth Largest Element in a Stream</strong> — same min-heap of size k, but elements arrive one at a time.</p></div>
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">LC 347 — Top K Frequent Elements</strong> — keep k most frequent items using a size-k min-heap keyed on frequency.</p></div>
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">LC 973 — K Closest Points to Origin</strong> — maintain a max-heap of size k to keep closest points.</p></div>
+        <div class="interview-item" style="border:none;"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">LC 912 — Sort an Array</strong> — implementing quicksort reinforces the partition step used in Quickselect.</p></div>
+      </div>
+    </div>
+  </div><!-- end quick-mode -->
+
+
+  <!-- ══════════════════════════════════
+       DEEP MODE
+  ══════════════════════════════════════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr class="divider" style="margin-top:0;">
+
+    <!-- 01 · What does "kth largest" mean? -->
+    <div class="deep-section">
+      <p class="section-label">01 · Start here — what does "k-th largest" actually mean?</p>
+      <h2 class="section-title">Pinning down the definition before writing any code</h2>
+      <p class="deep-para">The k-th largest element is the element that sits at position k when the array is sorted in <em>descending</em> order — where position 1 is the maximum. Crucially, duplicates count as separate positions. If the same value appears twice, it occupies two positions.</p>
+
+      <div class="svg-wrap" style="margin:1.2rem 0;">
+        <svg viewBox="0 0 560 140" width="540" height="130" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+          <!-- Unsorted label -->
+          <text x="10" y="22" font-size="11" font-weight="500" fill="#8888a8">Unsorted</text>
+          <!-- Unsorted cells -->
+          <rect x="10"  y="30" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="33"  y="53" text-anchor="middle" font-size="14" font-weight="600" fill="#1a1a2e">3</text>
+          <rect x="58"  y="30" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="81"  y="53" text-anchor="middle" font-size="14" font-weight="600" fill="#1a1a2e">2</text>
+          <rect x="106" y="30" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="129" y="53" text-anchor="middle" font-size="14" font-weight="600" fill="#1a1a2e">3</text>
+          <rect x="154" y="30" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="177" y="53" text-anchor="middle" font-size="14" font-weight="600" fill="#1a1a2e">1</text>
+          <rect x="202" y="30" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="225" y="53" text-anchor="middle" font-size="14" font-weight="600" fill="#1a1a2e">2</text>
+          <rect x="250" y="30" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="273" y="53" text-anchor="middle" font-size="14" font-weight="600" fill="#1a1a2e">4</text>
+          <rect x="298" y="30" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="321" y="53" text-anchor="middle" font-size="14" font-weight="600" fill="#1a1a2e">5</text>
+          <rect x="346" y="30" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="369" y="53" text-anchor="middle" font-size="14" font-weight="600" fill="#1a1a2e">5</text>
+          <rect x="394" y="30" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="417" y="53" text-anchor="middle" font-size="14" font-weight="600" fill="#1a1a2e">6</text>
+          <!-- arrow -->
+          <text x="455" y="55" font-size="22" fill="#8888a8">→</text>
+          <!-- Sorted label -->
+          <text x="10" y="100" font-size="11" font-weight="500" fill="#8888a8">Sorted (desc)</text>
+          <!-- Sorted cells with rank labels -->
+          <rect x="10"  y="108" width="46" height="36" rx="4" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+          <text x="33"  y="131" text-anchor="middle" font-size="14" font-weight="600" fill="#085041">6</text>
+          <rect x="58"  y="108" width="46" height="36" rx="4" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+          <text x="81"  y="131" text-anchor="middle" font-size="14" font-weight="600" fill="#085041">5</text>
+          <rect x="106" y="108" width="46" height="36" rx="4" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+          <text x="129" y="131" text-anchor="middle" font-size="14" font-weight="600" fill="#085041">5</text>
+          <!-- k=4 highlighted -->
+          <rect x="154" y="108" width="46" height="36" rx="4" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="177" y="131" text-anchor="middle" font-size="14" font-weight="700" fill="#0C447C">4</text>
+          <rect x="202" y="108" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="225" y="131" text-anchor="middle" font-size="14" fill="#4a4a6a">3</text>
+          <rect x="250" y="108" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="273" y="131" text-anchor="middle" font-size="14" fill="#4a4a6a">3</text>
+          <rect x="298" y="108" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="321" y="131" text-anchor="middle" font-size="14" fill="#4a4a6a">2</text>
+          <rect x="346" y="108" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="369" y="131" text-anchor="middle" font-size="14" fill="#4a4a6a">2</text>
+          <rect x="394" y="108" width="46" height="36" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="417" y="131" text-anchor="middle" font-size="14" fill="#4a4a6a">1</text>
+          <!-- rank labels -->
+          <text x="33"  y="105" text-anchor="middle" font-size="9" fill="#0F6E56">1st</text>
+          <text x="81"  y="105" text-anchor="middle" font-size="9" fill="#0F6E56">2nd</text>
+          <text x="129" y="105" text-anchor="middle" font-size="9" fill="#0F6E56">3rd</text>
+          <text x="177" y="105" text-anchor="middle" font-size="9" fill="#185FA5" font-weight="600">4th ← k=4</text>
+        </svg>
+      </div>
+
+      <div class="callout callout-warn">
+        <p><strong>Common trap:</strong> "k-th largest" is NOT "k-th distinct largest." In the example above the values 5 and 5 are two separate positions. The 4th largest is 4, not 3. Always count duplicates as individual positions.</p>
+      </div>
+    </div>
+
+    <!-- 02 · Three approaches compared -->
+    <div class="deep-section">
+      <p class="section-label">02 · Three approaches — why not just sort?</p>
+      <h2 class="section-title">From O(n log n) brute force to O(n) optimal</h2>
+      <p class="deep-para">The problem explicitly asks: <em>can you solve it without sorting?</em> There are three progressively better approaches, each with a real trade-off.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1rem;">
+        <div style="background:#FDECEA;border-radius:var(--border-radius-md);padding:14px 14px;border-top:3px solid #D95C5C;">
+          <p style="font-size:12px;font-weight:500;color:#7A1C1C;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.07em;">Sort</p>
+          <p style="font-size:22px;font-weight:500;font-family:var(--font-mono);color:#9B1B1B;margin:0 0 4px;">O(n log n)</p>
+          <p style="font-size:12px;color:#7A1C1C;margin:0;line-height:1.6;">Sort descending, return index k−1. Simple but wastes work ordering every element.</p>
+        </div>
+        <div style="background:#E6F1FB;border-radius:var(--border-radius-md);padding:14px 14px;border-top:3px solid #378ADD;">
+          <p style="font-size:12px;font-weight:500;color:#185FA5;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.07em;">Min-Heap ✓</p>
+          <p style="font-size:22px;font-weight:500;font-family:var(--font-mono);color:#0C447C;margin:0 0 4px;">O(n log k)</p>
+          <p style="font-size:12px;color:#185FA5;margin:0;line-height:1.6;">Maintain only k elements. Deterministic, works on streams, O(k) extra space.</p>
+        </div>
+        <div style="background:#E1F5EE;border-radius:var(--border-radius-md);padding:14px 14px;border-top:3px solid #1D9E75;">
+          <p style="font-size:12px;font-weight:500;color:#0F6E56;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.07em;">Quickselect</p>
+          <p style="font-size:22px;font-weight:500;font-family:var(--font-mono);color:#085041;margin:0 0 4px;">O(n) avg</p>
+          <p style="font-size:12px;color:#085041;margin:0;line-height:1.6;">In-place partition. O(1) space, O(n²) worst-case — randomise pivot to mitigate.</p>
+        </div>
+      </div>
+      <div class="callout callout-info">
+        <p><strong>Interview guidance:</strong> In most interviews the min-heap solution is the expected answer (predictable O(n log k), easy to reason about). Know Quickselect too — interviewers often ask "can you do better?" as a follow-up. The heap is preferred for streaming data; Quickselect wins for offline arrays with small k.</p>
+      </div>
+    </div>
+
+    <!-- 03 · How a min-heap works -->
+    <div class="deep-section">
+      <p class="section-label">03 · Understanding the min-heap approach</p>
+      <h2 class="section-title">Why the smallest element in the heap gives us the k-th largest overall</h2>
+      <p class="deep-para">The key insight is this: if you always maintain the k largest elements seen so far, the smallest among them is exactly the k-th largest. The min-heap is perfect for this — its root is always the minimum, which is the "weakest" of the k champions we're tracking.</p>
+
+      <!-- Heap state diagram -->
+      <div class="svg-wrap" style="margin:1.2rem 0;">
+        <svg viewBox="0 0 560 230" width="540" height="220" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+
+          <!-- Title -->
+          <text x="280" y="18" text-anchor="middle" font-size="11" font-weight="500" fill="#8888a8">Processing nums=[3,2,1,5,6,4], k=2 — heap state after each element</text>
+
+          <!-- Step boxes -->
+          <!-- Step 1: push 3 -->
+          <rect x="10" y="30" width="82" height="76" rx="8" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="1"/>
+          <text x="51" y="46" text-anchor="middle" font-size="10" fill="#8888a8">push 3</text>
+          <circle cx="51" cy="70" r="18" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="51" y="75" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">3</text>
+          <text x="51" y="98" text-anchor="middle" font-size="9" fill="#185FA5">size=1 ≤ k</text>
+
+          <!-- Step 2: push 2 -->
+          <rect x="100" y="30" width="82" height="76" rx="8" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="1"/>
+          <text x="141" y="46" text-anchor="middle" font-size="10" fill="#8888a8">push 2</text>
+          <circle cx="125" cy="68" r="16" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="125" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0C447C">2</text>
+          <circle cx="157" cy="68" r="16" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="157" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0C447C">3</text>
+          <text x="141" y="98" text-anchor="middle" font-size="9" fill="#185FA5">size=2 = k</text>
+
+          <!-- Step 3: push 1, size>k, pop 1 -->
+          <rect x="190" y="30" width="82" height="76" rx="8" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="1"/>
+          <text x="231" y="46" text-anchor="middle" font-size="10" fill="#8888a8">push 1 → pop 1</text>
+          <circle cx="215" cy="68" r="16" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="215" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0C447C">2</text>
+          <circle cx="247" cy="68" r="16" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="247" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0C447C">3</text>
+          <text x="231" y="98" text-anchor="middle" font-size="9" fill="#0F6E56">1 &lt; root(2) → evicted</text>
+
+          <!-- Step 4: push 5, size>k, pop 2 -->
+          <rect x="280" y="30" width="82" height="76" rx="8" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="1"/>
+          <text x="321" y="46" text-anchor="middle" font-size="10" fill="#8888a8">push 5 → pop 2</text>
+          <circle cx="305" cy="68" r="16" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="305" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0C447C">3</text>
+          <circle cx="337" cy="68" r="16" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="337" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0C447C">5</text>
+          <text x="321" y="98" text-anchor="middle" font-size="9" fill="#0F6E56">2 displaced by 5</text>
+
+          <!-- Step 5: push 6, size>k, pop 3 -->
+          <rect x="370" y="30" width="82" height="76" rx="8" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="1"/>
+          <text x="411" y="46" text-anchor="middle" font-size="10" fill="#8888a8">push 6 → pop 3</text>
+          <circle cx="395" cy="68" r="16" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="395" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0C447C">5</text>
+          <circle cx="427" cy="68" r="16" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="427" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0C447C">6</text>
+          <text x="411" y="98" text-anchor="middle" font-size="9" fill="#0F6E56">3 displaced by 6</text>
+
+          <!-- Step 6: push 4, size>k, pop 4 (4 < 5) -->
+          <rect x="460" y="30" width="88" height="76" rx="8" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="1"/>
+          <text x="504" y="46" text-anchor="middle" font-size="10" fill="#8888a8">push 4 → pop 4</text>
+          <circle cx="488" cy="68" r="16" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="488" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0C447C">5</text>
+          <circle cx="520" cy="68" r="16" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="520" y="73" text-anchor="middle" font-size="12" font-weight="600" fill="#0C447C">6</text>
+          <text x="504" y="98" text-anchor="middle" font-size="9" fill="#0F6E56">4 &lt; root(5) → evicted</text>
+
+          <!-- Final answer row -->
+          <rect x="10" y="125" width="538" height="50" rx="8" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="284" y="146" text-anchor="middle" font-size="12" font-weight="500" fill="#0C447C">Final heap: [5, 6] — root = heap[0] = 5</text>
+          <text x="284" y="164" text-anchor="middle" font-size="11" fill="#185FA5">The heap holds the 2 largest elements {5, 6}. The smallest of them (root) is the 2nd largest → Answer = 5 ✓</text>
+
+          <!-- Min-heap structure label -->
+          <text x="10" y="200" font-size="11" fill="#8888a8">Min-heap property: parent ≤ both children. Root is always the minimum. Push/pop each take O(log k).</text>
+        </svg>
+      </div>
+
+      <div class="callout callout-success">
+        <p><strong>The invariant:</strong> After every element is processed, the heap contains exactly the k largest elements seen so far, with the k-th largest (the weakest champion) sitting at the root. This invariant holds for every single step.</p>
+      </div>
+    </div>
+
+    <!-- 04 · Min-heap full code walkthrough -->
+    <div class="deep-section">
+      <p class="section-label">04 · Min-Heap code — every line explained</p>
+      <h2 class="section-title">Reading the solution line by line</h2>
+      <div class="code-block" style="margin-bottom:1.25rem;">
+        <div><span class="c-kw">import</span><span class="c-plain"> heapq  </span><span class="c-cm"># Python's built-in min-heap (smallest at index 0)</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-kw">def </span><span class="c-fn">findKthLargest</span><span class="c-plain">(nums, k):</span></div>
+        <div><span class="c-plain">  heap = []             </span><span class="c-cm"># ① empty min-heap</span></div>
+        <div><span class="c-plain">  </span><span class="c-kw">for </span><span class="c-plain">num </span><span class="c-kw">in </span><span class="c-plain">nums:        </span><span class="c-cm"># ② process every element once</span></div>
+        <div><span class="c-plain">    heapq.</span><span class="c-fn">heappush</span><span class="c-plain">(heap, num)  </span><span class="c-cm"># ③ push unconditionally</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">if </span><span class="c-fn">len</span><span class="c-plain">(heap) &gt; k:             </span><span class="c-cm"># ④ heap grew too large</span></div>
+        <div><span class="c-plain">      heapq.</span><span class="c-fn">heappop</span><span class="c-plain">(heap)       </span><span class="c-cm"># ⑤ evict the smallest</span></div>
+        <div><span class="c-plain">  </span><span class="c-kw">return </span><span class="c-plain">heap[</span><span class="c-num">0</span><span class="c-plain">]              </span><span class="c-cm"># ⑥ root = kth largest</span></div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">③ Why push first unconditionally, then check size?</div>
+        <div class="qa-a">We need to compare the new element with the current weakest champion (root) to decide whether it earns a spot. Pushing first and then popping the minimum achieves this in one sequence. If the new element is smaller than all k current champions it pops itself right back out — correct behaviour with zero special-casing.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">⑤ When we pop, are we always removing the new element?</div>
+        <div class="qa-a">No — we pop whatever is currently the minimum of the k+1 elements. If the new element is smaller than all k current champions, it becomes the new minimum and pops itself. If it is larger than some champions, a previous element gets popped instead. Either way the k strongest elements remain.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">⑥ Why is <code>heap[0]</code> the answer and not the last element?</div>
+        <div class="qa-a">Python's <code>heapq</code> is a min-heap: the smallest element is always at index 0. After processing all n elements, the heap holds exactly the k largest. The smallest of those — at index 0 — is by definition the k-th largest overall. The other elements in the heap are ranked 1st through (k-1)th.</div>
+      </div>
+    </div>
+
+    <!-- 05 · Full trace — heap -->
+    <div class="deep-section">
+      <p class="section-label">05 · Full trace — Min-Heap on [3,2,1,5,6,4], k=2</p>
+      <h2 class="section-title">Walking through every push and pop</h2>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-push">Push 3</div>
+        <div class="trace-content">
+          <p class="trace-title">heap = [3], size = 1 ≤ 2 — no pop</p>
+          <p class="trace-desc">First element enters the heap. Size is within limit.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-push">Push 2</div>
+        <div class="trace-content">
+          <p class="trace-title">heap = [2, 3], size = 2 = k — no pop</p>
+          <p class="trace-desc">Heap now at capacity. Min-heap property: 2 sits at root (index 0) because 2 &lt; 3.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-pop">Pop 1</div>
+        <div class="trace-content">
+          <p class="trace-title">Push 1 → heap = [1, 3, 2] → pop 1 → heap = [2, 3]</p>
+          <p class="trace-desc">Size exceeded k=2. The new element 1 is smaller than both champions — it becomes the minimum and gets evicted immediately. Champions unchanged: {2, 3}.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-pop">Pop 2</div>
+        <div class="trace-content">
+          <p class="trace-title">Push 5 → heap = [2, 3, 5] → pop 2 → heap = [3, 5]</p>
+          <p class="trace-desc">5 &gt; root(2). The weakest champion (2) is dethroned. New champions: {3, 5}.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-pop">Pop 3</div>
+        <div class="trace-content">
+          <p class="trace-title">Push 6 → heap = [3, 5, 6] → pop 3 → heap = [5, 6]</p>
+          <p class="trace-desc">6 &gt; root(3). The weakest champion (3) is dethroned. New champions: {5, 6}.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-pop">Pop 4</div>
+        <div class="trace-content">
+          <p class="trace-title">Push 4 → heap = [4, 6, 5] → pop 4 → heap = [5, 6]</p>
+          <p class="trace-desc">4 &lt; root(5). The challenger (4) cannot beat the current weakest champion. It self-evicts. Champions unchanged: {5, 6}.</p>
+        </div>
+      </div>
+      <div class="trace-step" style="margin-bottom:0;">
+        <div class="trace-badge trace-done">Answer</div>
+        <div class="trace-content">
+          <p class="trace-title">return heap[0] = 5 ✓</p>
+          <p class="trace-desc">heap = [5, 6]. The root (minimum of the top-2) is 5. The 2nd largest in the array is <strong>5</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 · Quickselect approach -->
+    <div class="deep-section">
+      <p class="section-label">06 · The Quickselect approach — O(n) average time</p>
+      <h2 class="section-title">Finding the answer without examining the full sorted order</h2>
+      <p class="deep-para">Quickselect is a variant of Quicksort. Instead of fully sorting the array, it partitions around a pivot and recurses into only the one half that must contain the target element. On average, each level halves the problem — giving O(n) total work.</p>
+
+      <!-- Partition diagram -->
+      <div class="svg-wrap" style="margin:1.2rem 0;">
+        <svg viewBox="0 0 540 200" width="520" height="190" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+          <text x="270" y="16" text-anchor="middle" font-size="11" font-weight="500" fill="#8888a8">Partition step: pivot = 4, finding 2nd largest (target index = n−k = 4)</text>
+
+          <!-- Before partition -->
+          <text x="10" y="38" font-size="11" fill="#8888a8">Before:</text>
+          <rect x="60"  y="26" width="44" height="34" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="82"  y="48" text-anchor="middle" font-size="13" font-weight="600" fill="#4a4a6a">3</text>
+          <rect x="106" y="26" width="44" height="34" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="128" y="48" text-anchor="middle" font-size="13" font-weight="600" fill="#4a4a6a">2</text>
+          <rect x="152" y="26" width="44" height="34" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="174" y="48" text-anchor="middle" font-size="13" font-weight="600" fill="#4a4a6a">1</text>
+          <rect x="198" y="26" width="44" height="34" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="220" y="48" text-anchor="middle" font-size="13" font-weight="600" fill="#4a4a6a">5</text>
+          <rect x="244" y="26" width="44" height="34" rx="4" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="0.5"/>
+          <text x="266" y="48" text-anchor="middle" font-size="13" font-weight="600" fill="#4a4a6a">6</text>
+          <!-- pivot highlighted -->
+          <rect x="290" y="26" width="44" height="34" rx="4" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2"/>
+          <text x="312" y="48" text-anchor="middle" font-size="13" font-weight="700" fill="#633806">4</text>
+          <text x="312" y="20" text-anchor="middle" font-size="9" fill="#854F0B">pivot</text>
+
+          <!-- Arrow down -->
+          <text x="270" y="82" text-anchor="middle" font-size="20" fill="#B5D4F4">↓</text>
+          <text x="270" y="96" text-anchor="middle" font-size="10" fill="#8888a8">partition: move elements ≤ pivot left, &gt; pivot right</text>
+
+          <!-- After partition -->
+          <text x="10" y="130" font-size="11" fill="#8888a8">After:</text>
+          <rect x="60"  y="118" width="44" height="34" rx="4" fill="#FDECEA" stroke="#D95C5C" stroke-width="1"/>
+          <text x="82"  y="140" text-anchor="middle" font-size="13" font-weight="600" fill="#7A1C1C">3</text>
+          <rect x="106" y="118" width="44" height="34" rx="4" fill="#FDECEA" stroke="#D95C5C" stroke-width="1"/>
+          <text x="128" y="140" text-anchor="middle" font-size="13" font-weight="600" fill="#7A1C1C">2</text>
+          <rect x="152" y="118" width="44" height="34" rx="4" fill="#FDECEA" stroke="#D95C5C" stroke-width="1"/>
+          <text x="174" y="140" text-anchor="middle" font-size="13" font-weight="600" fill="#7A1C1C">1</text>
+          <!-- pivot in final position -->
+          <rect x="198" y="118" width="44" height="34" rx="4" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2"/>
+          <text x="220" y="140" text-anchor="middle" font-size="13" font-weight="700" fill="#633806">4</text>
+          <text x="220" y="166" text-anchor="middle" font-size="9" fill="#854F0B">idx=3</text>
+          <rect x="244" y="118" width="44" height="34" rx="4" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+          <text x="266" y="140" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">5</text>
+          <rect x="290" y="118" width="44" height="34" rx="4" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+          <text x="312" y="140" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">6</text>
+
+          <!-- Labels -->
+          <text x="130" y="166" text-anchor="middle" font-size="10" fill="#9B1B1B">≤ pivot (left side)</text>
+          <text x="278" y="166" text-anchor="middle" font-size="10" fill="#0F6E56">&gt; pivot (right side)</text>
+
+          <!-- Target annotation -->
+          <text x="10" y="190" font-size="11" fill="#185FA5">Target idx (n−k) = 6−2 = 4. Pivot landed at idx 3. Target is right → recurse on [5,6] only.</text>
+        </svg>
+      </div>
+
+      <div class="code-block" style="margin-bottom:1rem;">
+        <div><span class="c-kw">import</span><span class="c-plain"> random</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-kw">def </span><span class="c-fn">findKthLargest</span><span class="c-plain">(nums, k):</span></div>
+        <div><span class="c-plain">  target = </span><span class="c-fn">len</span><span class="c-plain">(nums) - k  </span><span class="c-cm"># kth largest = (n-k)th smallest (0-indexed)</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">  </span><span class="c-kw">def </span><span class="c-fn">quickselect</span><span class="c-plain">(lo, hi):</span></div>
+        <div><span class="c-plain">    pivot = nums[hi]  </span><span class="c-cm"># choose last element as pivot</span></div>
+        <div><span class="c-plain">    p = lo            </span><span class="c-cm"># p = next slot for elements ≤ pivot</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">for </span><span class="c-plain">i </span><span class="c-kw">in </span><span class="c-fn">range</span><span class="c-plain">(lo, hi):</span></div>
+        <div><span class="c-plain">      </span><span class="c-kw">if </span><span class="c-plain">nums[i] &lt;= pivot:</span></div>
+        <div><span class="c-plain">        nums[i], nums[p] = nums[p], nums[i]</span></div>
+        <div><span class="c-plain">        p += </span><span class="c-num">1</span></div>
+        <div><span class="c-plain">    nums[p], nums[hi] = nums[hi], nums[p]  </span><span class="c-cm"># place pivot</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    </span><span class="c-kw">if   </span><span class="c-plain">p == target: </span><span class="c-kw">return </span><span class="c-plain">nums[p]</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">elif </span><span class="c-plain">p &lt;  target: </span><span class="c-kw">return </span><span class="c-fn">quickselect</span><span class="c-plain">(p+</span><span class="c-num">1</span><span class="c-plain">, hi)</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">else</span><span class="c-plain">:            </span><span class="c-kw">return </span><span class="c-fn">quickselect</span><span class="c-plain">(lo, p-</span><span class="c-num">1</span><span class="c-plain">)</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">  random.</span><span class="c-fn">shuffle</span><span class="c-plain">(nums)  </span><span class="c-cm"># randomise to avoid O(n²) worst case</span></div>
+        <div><span class="c-plain">  </span><span class="c-kw">return </span><span class="c-fn">quickselect</span><span class="c-plain">(</span><span class="c-num">0</span><span class="c-plain">, </span><span class="c-fn">len</span><span class="c-plain">(nums)-</span><span class="c-num">1</span><span class="c-plain">)</span></div>
+      </div>
+      <div class="callout callout-warn">
+        <p><strong>Why <code>target = len(nums) - k</code>?</strong> Quickselect finds the (0-indexed) position in <em>ascending</em> sorted order. The k-th largest is the element at position <code>n−k</code> in ascending order. For example k=2 in n=6 → target index 4, which is 5 in [1,2,3,4,<strong>5</strong>,6].</p>
+      </div>
+    </div>
+
+    <!-- 07 · Quickselect trace -->
+    <div class="deep-section">
+      <p class="section-label">07 · Quickselect trace — [3,2,1,5,6,4], k=2</p>
+      <h2 class="section-title">Watching the partition recurse toward the answer</h2>
+      <p class="deep-para" style="margin-bottom:1.5rem;">target = n−k = 6−2 = 4. We're looking for the element that would sit at index 4 in the sorted ascending array.</p>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-pivot">Pivot = 4</div>
+        <div class="trace-content">
+          <p class="trace-title">partition([3,2,1,5,6,4], lo=0, hi=5)</p>
+          <p class="trace-desc">Pivot = nums[5] = 4. Scan: 3≤4 → left, 2≤4 → left, 1≤4 → left, 5&gt;4 → right, 6&gt;4 → right. Place pivot. Array: [3,2,1,<strong>4</strong>,5,6]. Pivot lands at index 3.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-going">Compare</div>
+        <div class="trace-content">
+          <p class="trace-title">pivot_idx = 3, target = 4 → target is right of pivot</p>
+          <p class="trace-desc">3 &lt; 4 → recurse on the right half: quickselect(lo=4, hi=5). The left half [3,2,1,4] is discarded — the answer is not there.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-pivot">Pivot = 6</div>
+        <div class="trace-content">
+          <p class="trace-title">partition([5,6], lo=4, hi=5)</p>
+          <p class="trace-desc">Pivot = nums[5] = 6. Scan: 5≤6 → left. Place pivot. Sub-array: [5,<strong>6</strong>]. Pivot lands at index 5.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-going">Compare</div>
+        <div class="trace-content">
+          <p class="trace-title">pivot_idx = 5, target = 4 → target is left of pivot</p>
+          <p class="trace-desc">5 &gt; 4 → recurse on left half: quickselect(lo=4, hi=4).</p>
+        </div>
+      </div>
+      <div class="trace-step" style="margin-bottom:0;">
+        <div class="trace-badge trace-done">Found ✓</div>
+        <div class="trace-content">
+          <p class="trace-title">lo == hi == target == 4 → return nums[4] = 5</p>
+          <p class="trace-desc">Single-element range — this element is the answer. Total work: scanned 6 + 2 = 8 elements instead of sorting all 6. Answer = <strong>5</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 · Analogy -->
+    <div class="deep-section">
+      <p class="section-label">08 · Real-world analogy</p>
+      <h2 class="section-title">Think of a tournament leaderboard</h2>
+      <div class="analogy-box" style="margin-bottom:1rem;">
+        <p class="analogy-text">Imagine you're running a leaderboard for a competition and you only care about the top-k scores. You have a physical board with k slots. When a new score comes in, you slot it in. If the board overflows to k+1 entries, you cut the weakest score. At the end, the weakest score still on the board is your k-th best. That's exactly what the min-heap does — the root is always the weakest champion currently holding a leaderboard slot.</p>
+      </div>
+    </div>
+
+    <!-- 09 · Common mistakes -->
+    <div class="deep-section">
+      <p class="section-label">09 · Common mistakes</p>
+      <h2 class="section-title">Errors to avoid in interviews</h2>
+      <div class="card" style="padding:1rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Using a max-heap instead of a min-heap</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">A max-heap would require storing all n elements then popping k times — O(n + k log n) with O(n) space. The min-heap of size k keeps only O(k) space and gives the answer at the root immediately. The type is counterintuitive: to find the k-th <em>largest</em>, use a <em>min</em>-heap.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Confusing k-th largest with k-th distinct largest</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">In [5,5,5] with k=2 the answer is 5, not "there is no 2nd distinct value." Duplicates fill separate rank positions. The min-heap handles this automatically — push all values including duplicates.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Off-by-one in Quickselect: <code>target = k-1</code> instead of <code>n-k</code></p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The k-th largest in descending order is the (n−k)-th element in ascending order (0-indexed). Writing <code>target = k−1</code> finds the k-th <em>smallest</em>, not largest. Verifying with a small example before submitting catches this error instantly.</p>
+          </div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Not randomising the pivot in Quickselect</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Always choosing the last (or first) element as pivot degrades to O(n²) on sorted or reverse-sorted inputs. Adding <code>random.shuffle(nums)</code> before calling quickselect — or randomly selecting the pivot inside the partition — guarantees O(n) expected time on any input.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10 · Complexity full -->
+    <div class="deep-section">
+      <p class="section-label">10 · Complexity — the full explanation</p>
+      <h2 class="section-title">Comparing all three approaches</h2>
+      <div class="card" style="padding:0;margin-bottom:1rem;">
+        <div style="display:flex;">
+          <div class="dry-head" style="flex:1.4;">Approach</div>
+          <div class="dry-head" style="flex:1;">Time</div>
+          <div class="dry-head" style="flex:0.9;">Space</div>
+          <div class="dry-head" style="flex:2;">Notes</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell-plain" style="flex:1.4;">Sort &amp; index</div>
+          <div class="dry-cell" style="flex:1;">O(n log n)</div>
+          <div class="dry-cell" style="flex:0.9;">O(1)–O(n)</div>
+          <div class="dry-cell-plain" style="flex:2;">Simplest; overkill for large n or small k</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell-plain" style="flex:1.4;font-weight:500;">Min-Heap ★</div>
+          <div class="dry-cell" style="flex:1;">O(n log k)</div>
+          <div class="dry-cell" style="flex:0.9;">O(k)</div>
+          <div class="dry-cell-plain" style="flex:2;">Preferred in interviews; works on streams</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell-plain" style="flex:1.4;">Quickselect</div>
+          <div class="dry-cell" style="flex:1;">O(n) avg</div>
+          <div class="dry-cell" style="flex:0.9;">O(1)</div>
+          <div class="dry-cell-plain" style="flex:2;">O(n²) worst; modifies input; needs shuffle</div>
+        </div>
+      </div>
+      <div class="callout callout-warn">
+        <p><strong>Interview tip:</strong> Start with the heap solution. Say "this runs in O(n log k) which beats sorting's O(n log n) when k ≪ n." If asked for O(n), describe Quickselect and mention the worst-case caveat and randomisation fix. Knowing both demonstrates depth.</p>
+      </div>
+    </div>
+
+    <!-- 11 · Q&A -->
+    <div class="deep-section">
+      <p class="section-label">11 · Interview Q&amp;A</p>
+      <h2 class="section-title">Questions you'll actually get asked</h2>
+      <div class="qa-block">
+        <div class="qa-q">When would you prefer Quickselect over the heap?</div>
+        <div class="qa-a">Quickselect is better when you can modify the input array and want O(1) extra space. It's also theoretically faster (O(n) vs O(n log k)) when k is large relative to n — say k = n/2 where the heap's log k term is log(n/2) ≈ log n. The heap is preferred for streaming data (elements arrive one-by-one, no random access) and when the input must not be mutated.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What is the worst case for Quickselect and how do you prevent it?</div>
+        <div class="qa-a">The worst case is O(n²) and occurs when the pivot is always the minimum or maximum of the remaining range — for instance, always picking the last element on an already-sorted input. The fix is to either shuffle the array randomly before starting (<code>random.shuffle(nums)</code>) or use "median of three" pivot selection. Both reduce the probability of worst-case behaviour to negligible.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">How do you solve this if the input arrives as a stream (elements one at a time)?</div>
+        <div class="qa-a">Use the min-heap approach — it processes elements one by one and always maintains an up-to-date answer at the root. Quickselect requires the full array in memory. This is exactly what LC 703 (Kth Largest Element in a Stream) tests: you initialise the heap with the first batch and then call an <code>add(val)</code> method that does one push and optionally one pop.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What if k = 1 or k = n?</div>
+        <div class="qa-a">Both edge cases are handled correctly by all three approaches with no special-casing. k=1 means "find the maximum" — the heap keeps only 1 element and the root is the running max. k=n means "find the minimum" — the heap eventually holds all n elements and the root is the global minimum. The constraint guarantees 1 ≤ k ≤ n, so these are valid.</div>
+      </div>
+    </div>
+
+    <!-- 12 · Related problems -->
+    <div class="deep-section">
+      <p class="section-label">12 · Interview context</p>
+      <h2 class="section-title">Where you'll see this pattern again</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">LC 703 — Kth Largest Element in a Stream</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Direct extension of this problem to a data stream. Initialise the heap once, then for each new element call push + conditional pop. The answer is always the heap root.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">LC 347 — Top K Frequent Elements</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Same size-k min-heap pattern but keyed on frequency rather than value. Count frequencies first, then run the heap over (freq, element) pairs.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">LC 973 — K Closest Points to Origin</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Keep k closest using a max-heap (opposite direction from here): if new distance is smaller than the farthest in the heap, replace it. The heap root at the end holds the boundary distance.</p>
+          </div>
+        </div>
+        <div class="interview-item" style="border:none;">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">LC 295 — Find Median from Data Stream</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Uses two heaps together (max-heap for lower half, min-heap for upper half) to maintain a running median. The intuition is identical — each heap tracks its half and the boundary between them is the answer.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end deep-mode -->
+
+  <!-- Footer CTA -->
+  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Try it yourself</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">LeetCode 215 · Medium · Tags: Array, Divide and Conquer, Sorting, Heap (Priority Queue), Quickselect</p>
+    </div>
+    <a href="https://leetcode.com/problems/kth-largest-element-in-an-array/" target="_blank" style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);background:#E6F1FB;color:#185FA5;font-weight:500;text-decoration:none;border:0.5px solid #B5D4F4;">Open on LeetCode ↗</a>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep  = document.getElementById('deep-mode');
+  const btnQ  = document.getElementById('btn-quick');
+  const btnD  = document.getElementById('btn-deep');
+  const desc  = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display  = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display  = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>
+</body>
+</html>
