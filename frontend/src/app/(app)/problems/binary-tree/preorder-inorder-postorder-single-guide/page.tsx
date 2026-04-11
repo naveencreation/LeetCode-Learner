@@ -157,7 +157,7 @@ export default function PageGuidePage() {
               className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 transition hover:bg-blue-100"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              Visualizer
+              Visual Editor
             </Link>
             <Link
               href="/problems/topics/trees"
@@ -227,6 +227,42 @@ export default function PageGuidePage() {
       {/* Quick Mode */}
       {mode === "quick" && (
         <div className="space-y-12">
+          <div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+              <div className="mb-4 flex items-start gap-3">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg>
+                </div>
+                <div>
+                  <h3 className="mb-1 text-lg font-semibold text-slate-900">Problem Statement</h3>
+                  <p className="text-sm text-slate-500">Preorder, Inorder and Postorder in Single Traversal</p>
+                </div>
+              </div>
+
+              <div className="mb-5 text-[15px] leading-relaxed text-slate-700">
+                Given the <span className="font-medium text-slate-900">root</span> of a binary tree, return <span className="font-medium text-slate-900">preorder, inorder, and postorder</span> traversals in one iterative traversal using a stack and node state.
+              </div>
+
+              <div className="space-y-3">
+                <div className="overflow-hidden rounded-lg border border-slate-200">
+                  <div className="bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Example</div>
+                  <div className="px-4 py-3">
+                    <p className="mb-2 font-mono text-[13px] text-slate-600">Input: root = [1, 2, 3, 4, 5, 6, 7]</p>
+                    <p className="font-mono text-[13px] text-blue-700">Output: pre=[1,2,4,5,3,6,7], in=[4,2,5,1,6,3,7], post=[4,5,2,6,7,3,1]</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+                <p className="mb-2 text-xs font-semibold text-slate-600">Constraints</p>
+                <ul className="space-y-1 text-[13px] text-slate-600">
+                  <li className="flex items-start gap-2"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />The number of nodes is in range <span className="font-mono text-slate-800">[0, 10^5]</span>.</li>
+                  <li className="flex items-start gap-2"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />Node values may be negative and repeated; traversal order must remain deterministic.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
           {/* 01 Core Idea */}
           <div className="mb-12">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2">01 · The core idea</p>
@@ -523,11 +559,11 @@ export default function PageGuidePage() {
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 to-blue-50/30 p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
         <div>
           <p className="text-[15px] font-medium text-slate-800">Ready to see it in action?</p>
-          <p className="mt-0.5 text-[13px] text-slate-500">Step through the visualizer to watch all three arrays build simultaneously at each stack operation.</p>
+          <p className="mt-0.5 text-[13px] text-slate-500">Step through the visualizer to watch the algorithm state update live.</p>
         </div>
         <Link href="/problems/binary-tree/preorder-inorder-postorder-in-a-single-traversal">
           <span className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-md shadow-blue-600/20 transition hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/25">
-            Open visualizer
+            Open Visualizer
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
           </span>
         </Link>

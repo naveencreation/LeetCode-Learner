@@ -7,6 +7,15 @@ const QUICK_MODE_HTML = String.raw`
 <hr class="divider" style="margin-top:0;">
 
 <div class="section">
+  <p class="section-label">Problem Statement</p>
+  <div class="card">
+    <p style="font-size:15px;color:var(--color-text-primary);line-height:1.75;margin:0 0 0.65rem;">Given the root of a binary tree, determine whether it is symmetric around its center.</p>
+    <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 0.75rem;">Symmetric means left and right subtrees are mirror images with matching structure and matching values at mirrored positions.</p>
+    <p style="font-family:var(--font-mono);font-size:12.5px;color:#185FA5;margin:0;">Example: [1,2,2,3,4,4,3] =&gt; true, [1,2,2,null,3,null,3] =&gt; false</p>
+  </div>
+</div>
+
+<div class="section">
   <p class="section-label">01 · The rule</p>
   <div class="rule-box" style="margin-bottom:0.75rem;">
     <p class="rule-text">A tree is symmetric if its left and right subtrees are mirrors of each other</p>
@@ -556,13 +565,13 @@ export default function SymmetricTreeGuidePage() {
               href="/problems/binary-tree/symmetric-tree"
               style={{ fontSize: "13px", padding: "8px 14px", borderRadius: "var(--border-radius-md)", background: "#E6F1FB", color: "#185FA5", fontWeight: 500, textDecoration: "none", border: "0.5px solid #B5D4F4" }}
             >
-              Open Visualizer
+              Visual Editor
             </Link>
             <Link
               href="/problems/topics/trees"
               style={{ fontSize: "13px", padding: "8px 14px", borderRadius: "var(--border-radius-md)", background: "#ffffff", color: "#4a4a6a", fontWeight: 500, textDecoration: "none", border: "0.5px solid var(--color-border-tertiary)" }}
             >
-              Back to Problems
+              Tree Problems
             </Link>
           </div>
           <p className="section-label">Binary Tree · DFS / BFS · LC 101</p>
@@ -591,8 +600,8 @@ export default function SymmetricTreeGuidePage() {
           </div>
           <p className="mode-desc">
             {mode === "quick"
-              ? "Key concepts at a glance - for those who already know the basics."
-              : "A full beginner-friendly walkthrough - understand it from scratch."}
+              ? "Key concepts at a glance — for those who already know the basics."
+              : "A full beginner-friendly walkthrough — understand it from scratch."}
           </p>
         </div>
 

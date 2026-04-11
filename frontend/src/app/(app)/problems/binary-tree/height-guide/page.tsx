@@ -472,7 +472,7 @@ export default function HeightGuidePage() {
           </div>
           <p className="text-xs text-slate-400 mt-3">
             {mode === "quick"
-              ? "Key concepts at a glance for revision."
+              ? "Key concepts at a glance — for those who already know the basics."
               : "Detailed walkthrough with cross-platform nuances."}
           </p>
         </div>

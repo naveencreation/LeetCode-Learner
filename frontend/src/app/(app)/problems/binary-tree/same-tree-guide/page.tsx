@@ -7,6 +7,15 @@ const QUICK_MODE_HTML = String.raw`
 <hr class="divider" style="margin-top:0;">
 
 <div class="section">
+  <p class="section-label">Problem Statement</p>
+  <div class="card">
+    <p style="font-size:15px;color:var(--color-text-primary);line-height:1.75;margin:0 0 0.65rem;">Given roots <code>p</code> and <code>q</code>, return <code>true</code> if the two binary trees are exactly the same.</p>
+    <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 0.75rem;">Exactly the same means both structure and values match at every corresponding node position.</p>
+    <p style="font-family:var(--font-mono);font-size:12.5px;color:#0F6E56;margin:0;">Example: p=[1,2,3], q=[1,2,3] =&gt; true; p=[1,2], q=[1,null,2] =&gt; false</p>
+  </div>
+</div>
+
+<div class="section">
   <p class="section-label">01 · The definition</p>
   <div class="rule-box" style="margin-bottom:0.75rem;">
     <p class="rule-text">Same structure AND same values at every corresponding node</p>

@@ -451,8 +451,8 @@ export default function BalancedBinaryTreeGuidePage() {
 
           <p className="text-xs text-slate-400 mt-3">
             {mode === "quick"
-              ? "Key concepts at a glance - for those who already know the basics."
-              : "A full beginner-friendly walkthrough - understand it from scratch."}
+              ? "Key concepts at a glance — for those who already know the basics."
+              : "A full beginner-friendly walkthrough — understand it from scratch."}
           </p>
         </div>
 
@@ -464,7 +464,7 @@ export default function BalancedBinaryTreeGuidePage() {
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-[15px] font-medium text-slate-800">Ready to see it in action?</p>
-              <p className="text-[13px] text-slate-500 mt-0.5">Step through the visualizer to watch the recursion stack live.</p>
+              <p className="text-[13px] text-slate-500 mt-0.5">Step through the visualizer to watch the algorithm state update live.</p>
             </div>
             <Link
               href="/problems/binary-tree/balanced-binary-tree"

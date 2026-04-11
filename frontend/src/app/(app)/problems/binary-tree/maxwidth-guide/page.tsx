@@ -266,6 +266,42 @@ export default function MaxWidthGuidePage() {
 
         {mode === "quick" && (
           <div className="space-y-12">
+            <div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+                <div className="mb-4 flex items-start gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-sky-100 text-sky-600">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg>
+                  </div>
+                  <div>
+                    <h3 className="mb-1 text-lg font-semibold text-slate-900">Problem Statement</h3>
+                    <p className="text-sm text-slate-500">Maximum Width of Binary Tree</p>
+                  </div>
+                </div>
+
+                <div className="mb-5 text-[15px] leading-relaxed text-slate-700">
+                  Given the <span className="font-medium text-slate-900">root</span> of a binary tree, return the maximum width among all levels, where width includes the span between leftmost and rightmost non-null nodes including null gaps in between.
+                </div>
+
+                <div className="space-y-3">
+                  <div className="overflow-hidden rounded-lg border border-slate-200">
+                    <div className="bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Example</div>
+                    <div className="px-4 py-3">
+                      <p className="mb-2 font-mono text-[13px] text-slate-600">Input: root = [1, 3, 2, 5, 3, null, 9]</p>
+                      <p className="font-mono text-[13px] text-sky-700">Output: 4</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+                  <p className="mb-2 text-xs font-semibold text-slate-600">Constraints</p>
+                  <ul className="space-y-1 text-[13px] text-slate-600">
+                    <li className="flex items-start gap-2"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />The number of nodes is in range <span className="font-mono text-slate-800">[1, 3000]</span>.</li>
+                    <li className="flex items-start gap-2"><span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />Node values are in range <span className="font-mono text-slate-800">[-100, 100]</span>.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
             <section>
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">01 · The rule</p>
               <div className="rounded-2xl border-l-4 border-sky-500 bg-sky-50 p-5">
@@ -563,7 +599,7 @@ def widthOfBinaryTree(root):
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-[15px] font-medium text-slate-800">Ready to see it in action?</p>
-              <p className="text-[13px] text-slate-500 mt-0.5">Step through the visualizer to watch index normalization and width updates live.</p>
+              <p className="text-[13px] text-slate-500 mt-0.5">Step through the visualizer to watch the algorithm state update live.</p>
             </div>
             <Link
               href="/problems/binary-tree/max-width-of-a-binary-tree"

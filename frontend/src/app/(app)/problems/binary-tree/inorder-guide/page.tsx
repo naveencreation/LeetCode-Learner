@@ -682,7 +682,7 @@ export default function InorderGuidePage() {
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-[15px] font-medium text-slate-800">Ready to see it in action?</p>
-              <p className="text-[13px] text-slate-500 mt-0.5">Step through the visualizer to watch the recursion stack live.</p>
+              <p className="text-[13px] text-slate-500 mt-0.5">Step through the visualizer to watch the algorithm state update live.</p>
             </div>
             <Link
               href="/problems/binary-tree/inorder-traversal"

@@ -7,6 +7,15 @@ const QUICK_MODE_HTML = String.raw`
 <hr class="divider" style="margin-top:0;">
 
 <div class="section">
+  <p class="section-label">Problem Statement</p>
+  <div class="card">
+    <p style="font-size:15px;color:var(--color-text-primary);line-height:1.75;margin:0 0 0.65rem;">Return the values of the boundary nodes of a binary tree in anti-clockwise order starting from the root.</p>
+    <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 0.75rem;">Boundary includes the left boundary (excluding leaves), all leaves from left to right, and the right boundary in reverse (excluding leaves).</p>
+    <p style="font-family:var(--font-mono);font-size:12.5px;color:#185FA5;margin:0;">Example output: [1, 2, 4, 8, 9, 10, 6, 7, 3]</p>
+  </div>
+</div>
+
+<div class="section">
   <p class="section-label">01 · The definition</p>
   <div class="rule-box" style="margin-bottom:0.75rem;">
     <p class="rule-text">Boundary = Left Boundary (top→down, no leaves) + All Leaves (left→right) + Right Boundary (bottom→up, no leaves)</p>

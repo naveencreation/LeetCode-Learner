@@ -289,6 +289,16 @@ export default function RootToNodeGuidePage() {
         {mode === "quick" && (
           <div className="space-y-12">
             <section>
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+                <h3 className="text-lg font-semibold text-slate-900 mb-1">Problem Statement</h3>
+                <p className="text-[15px] leading-relaxed text-slate-700 mb-4">
+                  Given a binary tree root and a target value, return the path from root to target node.
+                </p>
+                <p className="font-mono text-[13px] text-slate-600">Example: target = 7, path = [1,2,5,7]</p>
+              </div>
+            </section>
+
+            <section>
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">01 · The core idea</p>
               <div className="rounded-2xl border-l-4 border-cyan-500 bg-cyan-50 p-5">
                 <p className="text-[16px] leading-relaxed text-cyan-900">
@@ -580,7 +590,7 @@ export default function RootToNodeGuidePage() {
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-[15px] font-medium text-slate-800">Ready to see it in action?</p>
-              <p className="text-[13px] text-slate-500 mt-0.5">Step through the visualizer to see push/pop backtracking live.</p>
+              <p className="text-[13px] text-slate-500 mt-0.5">Step through the visualizer to watch the algorithm state update live.</p>
             </div>
             <Link
               href="/problems/binary-tree/root-to-node-path-in-a-binary-tree"

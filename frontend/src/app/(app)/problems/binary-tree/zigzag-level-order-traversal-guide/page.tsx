@@ -8,8 +8,10 @@ export default function ZigzagLevelOrderTraversalGuide() {
   const [mode, setMode] = useState<"quick" | "deep">("quick");
 
   return (
-    <section className="bg-gradient-to-br from-slate-50 via-slate-50 to-emerald-50/20 bg-[radial-gradient(ellipse_at_top_right,#e0f2fe_0%,transparent_48%),radial-gradient(ellipse_at_bottom_left,#e2f6ef_0%,transparent_52%)] min-h-screen">
-      <div className="max-w-3xl mx-auto px-6 py-8">
+    <section className="relative min-h-0 overflow-hidden bg-gradient-to-br from-slate-50 via-slate-50 to-emerald-50/20">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,#e0f2fe_0%,transparent_48%),radial-gradient(ellipse_at_bottom_left,#e2f6ef_0%,transparent_52%)]" />
+
+      <div className="relative z-[1] mx-auto max-w-[860px] px-6 py-6">
         {/* ═══════════════ HERO ═══════════════ */}
         <div className="mb-10">
           <div className="flex items-center justify-between mb-3">
@@ -34,13 +36,10 @@ export default function ZigzagLevelOrderTraversalGuide() {
               </Link>
             </div>
           </div>
-          <p className="text-xs font-medium tracking-widest uppercase text-slate-500 mb-2">
-            Binary Tree · BFS · LC 103
-          </p>
-          <h1 className="text-4xl font-medium text-slate-900 mb-3">
+          <h1 className="text-3xl font-semibold text-slate-900 mb-2">
             Binary Tree Zigzag Level Order Traversal
           </h1>
-          <p className="text-base text-slate-600 mb-6">
+          <p className="text-base text-slate-500 mb-5 max-w-xl">
             Level-order traversal where each level alternates direction &mdash; left&rarr;right, then right&rarr;left, then left&rarr;right&hellip;
           </p>
 
@@ -94,9 +93,44 @@ export default function ZigzagLevelOrderTraversalGuide() {
           </p>
         </div>
 
+        <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent mb-8" />
+
         {/* QUICK MODE */}
         {mode === "quick" && <div>
-          <hr className="border-slate-200 my-6" />
+          <div className="mb-12">
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /><path d="M12 17h.01" /></svg>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-1">Problem Statement</h3>
+                  <p className="text-sm text-slate-500">Binary Tree Zigzag Level Order Traversal</p>
+                </div>
+              </div>
+              <div className="text-[15px] leading-relaxed text-slate-700 mb-5">
+                Given the <span className="font-medium text-slate-900">root</span> of a binary tree, return the zigzag level order traversal where level order is preserved but the output direction alternates at every depth.
+              </div>
+
+              <div className="space-y-3">
+                <div className="rounded-lg border border-slate-200 overflow-hidden">
+                  <div className="bg-slate-50 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Example</div>
+                  <div className="px-4 py-3">
+                    <p className="text-[13px] font-mono text-slate-600 mb-2">Input: root = [3, 9, 20, null, null, 15, 7]</p>
+                    <p className="text-[13px] font-mono text-emerald-700">Output: [[3], [20, 9], [15, 7]]</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 rounded-lg bg-slate-50 p-4 border border-slate-200">
+                <p className="text-xs font-semibold text-slate-600 mb-2">Constraints</p>
+                <ul className="text-[13px] text-slate-600 space-y-1">
+                  <li className="flex items-start gap-2"><span className="h-1.5 w-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0" />The number of nodes in the tree is in range <span className="font-mono text-slate-800">[0, 2000]</span>.</li>
+                  <li className="flex items-start gap-2"><span className="h-1.5 w-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0" />Node values are in range <span className="font-mono text-slate-800">[-100, 100]</span>.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
 
           {/* 01 · The rule */}
           <div className="mb-10">
@@ -384,8 +418,6 @@ def zigzagLevelOrder(root):
 
         {/* DEEP MODE */}
         {mode === "deep" && <div>
-          <hr className="border-slate-200 my-6" />
-
           {/* 01 · What is zigzag? */}
           <div className="mb-12">
             <p className="text-xs font-medium tracking-widest uppercase text-slate-500 mb-2">
@@ -891,21 +923,20 @@ while queue:
         </div>}
 
         {/* Footer CTA */}
-        <div className="mt-10 border border-slate-200 rounded-xl p-5 flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <p className="text-sm font-medium text-slate-900 mb-1">Try it yourself</p>
-            <p className="text-xs text-slate-600">
-              LeetCode 103 · Medium · Tags: Tree, BFS, Binary Tree
-            </p>
+        <div className="rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 to-emerald-50/30 p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <p className="text-[15px] font-medium text-slate-800">Ready to see it in action?</p>
+              <p className="text-[13px] text-slate-500 mt-0.5">Step through the visualizer to watch the algorithm state update live.</p>
+            </div>
+            <Link
+              href="/problems/binary-tree/zigzag-level-order-traversal"
+              className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/25"
+            >
+              Open Visualizer
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            </Link>
           </div>
-          <a
-            href="https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs font-medium px-4 py-2 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition"
-          >
-            Open on LeetCode ↗
-          </a>
         </div>
       </div>
     </section>
