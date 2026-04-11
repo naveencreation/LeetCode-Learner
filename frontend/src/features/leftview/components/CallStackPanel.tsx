@@ -115,14 +115,14 @@ export function CallStackPanel({
   enqueuedNodes,
 }: CallStackPanelProps) {
   return (
-    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr] gap-1.5 p-2">
+    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr] gap-2 p-2.5">
       <div className="traversal-panel-header">
         <h2 className="traversal-panel-title">
           Queue State
         </h2>
-</div>
+      </div>
 
-      <div className="min-h-0 grid grid-rows-[auto_minmax(0,1fr)_auto] gap-1.5 rounded-[10px] border border-slate-200 bg-gradient-to-b from-slate-50 to-slate-100 p-1.5">
+      <div className="min-h-0 grid grid-rows-[auto_minmax(0,1fr)_auto] gap-1.5 rounded-[10px] border border-slate-200 bg-gradient-to-b from-slate-50 to-slate-100 p-2">
         <div className="grid grid-cols-2 gap-1.5 rounded-lg border border-slate-200 bg-white p-1.5 text-[10px] font-extrabold uppercase tracking-[0.04em] text-slate-600">
           <span>Level {currentLevel}</span>
           <span className="text-right">Index {indexInLevel}</span>

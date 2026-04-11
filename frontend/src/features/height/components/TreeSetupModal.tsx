@@ -4,6 +4,9 @@ import { cloneTree } from "../constants";
 import type { NodePosition, TreeNode, TreePresetKey } from "../types";
 
 type LayoutStyle = "balanced" | "compact";
+type SetupMode = "beginner" | "advanced";
+
+let lastTreeSetupMode: SetupMode = "beginner";
 
 interface TreeSetupModalProps {
   root: TreeNode | null;
@@ -290,6 +293,7 @@ export function TreeSetupModal({
   onApplyAndRun,
 }: TreeSetupModalProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const presetSelectRef = useRef<HTMLSelectElement | null>(null);
 
   const [draftRoot, setDraftRoot] = useState<TreeNode | null>(cloneTree(root));
   const [draftPreset, setDraftPreset] = useState<TreePresetKey>(selectedPreset);
@@ -313,7 +317,7 @@ export function TreeSetupModal({
   const [removeParentValue, setRemoveParentValue] = useState("");
   const [removeSide, setRemoveSide] = useState<"left" | "right">("left");
   const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>("balanced");
-  const [setupMode, setSetupMode] = useState<"beginner" | "advanced">("beginner");
+  const [setupMode, setSetupMode] = useState<SetupMode>(lastTreeSetupMode);
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
   const isBeginnerMode = setupMode === "beginner";
   const maxNodesAllowed = isBeginnerMode ? 10 : 20;
@@ -428,6 +432,20 @@ export function TreeSetupModal({
     const transformed = point.matrixTransform(ctm.inverse());
     return { x: transformed.x, y: transformed.y };
   };
+
+  useEffect(() => {
+    const rafId = window.requestAnimationFrame(() => {
+      presetSelectRef.current?.focus();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  useEffect(() => {
+    lastTreeSetupMode = setupMode;
+  }, [setupMode]);
 
   useEffect(() => {
     if (draggingNodeValue === null) {
@@ -840,6 +858,7 @@ export function TreeSetupModal({
                   Preset Template
                 </p>
                 <select
+                  ref={presetSelectRef}
                   value={draftPreset}
                   onChange={(event) => handlePresetChange(event.target.value as TreePresetKey)}
                   className="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500"

@@ -175,29 +175,29 @@ export function ExplanationPanel({
   );
 
   return (
-    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr] gap-1.5 p-1.5">
+    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr] gap-2 p-2.5">
       <div className="traversal-panel-header">
         <h2 className="traversal-panel-title">
           Step Explanation
         </h2>
-</div>
+      </div>
 
-      <div className="min-h-0 space-y-1 rounded-[10px] border border-sky-200 bg-gradient-to-b from-cyan-50 to-sky-50 p-1.5">
-        <h3 className="text-[12px] font-extrabold text-cyan-900">{explanation.title}</h3>
-        <p className="text-[10px] leading-[1.35] text-cyan-800">{explanation.reason}</p>
+      <div className="min-h-0 space-y-2 rounded-[10px] border border-sky-200 bg-gradient-to-b from-cyan-50 to-sky-50 p-2">
+        <h3 className="text-[13px] font-extrabold text-cyan-900">{explanation.title}</h3>
+        <p className="text-[11px] leading-[1.45] text-cyan-800">{explanation.reason}</p>
 
-        <div className="grid grid-cols-2 gap-1 text-[9px] font-semibold text-cyan-900">
-          <span className="truncate rounded-md border border-sky-200 bg-white/80 px-1.5 py-0.5">Line {currentCodeLine + 1}</span>
-          <span className="truncate rounded-md border border-sky-200 bg-white/80 px-1.5 py-0.5">Level {currentLevel}</span>
+        <div className="grid grid-cols-2 gap-1.5 text-[10px] font-semibold text-cyan-900">
+          <span className="truncate rounded-md border border-sky-200 bg-white/80 px-2 py-1">Line {currentCodeLine + 1}</span>
+          <span className="truncate rounded-md border border-sky-200 bg-white/80 px-2 py-1">Level {currentLevel}</span>
         </div>
 
-        <details className="group rounded-md border border-sky-200 bg-white/75 px-1.5 py-0.5 text-[9px]">
+        <details className="group rounded-lg border border-sky-200 bg-white/75 px-2 py-1 text-[10px]">
           <summary className="cursor-pointer list-none font-bold uppercase tracking-[0.03em] text-cyan-800">
             Show More Detail
           </summary>
-          <ul className="mt-1 grid max-h-[180px] gap-1 overflow-auto pr-0.5 text-[9px] text-cyan-900">
+          <ul className="mt-1 grid max-h-[180px] gap-1 overflow-auto pr-0.5 text-[10px] text-cyan-900">
             {explanation.details.map((detail) => (
-              <li key={detail} className="rounded border border-sky-200 bg-white/90 px-1.5 py-0.5">
+              <li key={detail} className="rounded-lg border border-sky-200 bg-white/90 px-2 py-1">
                 &gt; {detail}
               </li>
             ))}

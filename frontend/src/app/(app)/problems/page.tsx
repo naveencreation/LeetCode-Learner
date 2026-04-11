@@ -497,6 +497,18 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return "/problems/binary-tree/boundary-of-binary-tree";
   }
 
+  if (sectionName === "Binary Tree Part-II" && problemName === "Construct Binary Tree from inorder and preorder") {
+    return "/problems/binary-tree/construct-binary-tree-from-inorder-and-preorder";
+  }
+
+  if (sectionName === "Binary Tree Part-III" && problemName === "Construct Binary Tree from Inorder and Postorder") {
+    return "/problems/binary-tree/construct-binary-tree-from-inorder-and-postorder";
+  }
+
+  if (sectionName === "Binary Tree Part-III" && problemName === "Flatten Binary Tree to LinkedList") {
+    return "/problems/binary-tree/flatten-binary-tree-to-linkedlist";
+  }
+
   if (sectionName === "Binary Tree") {
     return `/problems/binary-tree/${toSlug(problemName)}`;
   }

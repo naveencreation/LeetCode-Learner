@@ -430,7 +430,7 @@ export function TreePanel({
           >
             Select Tree
           </button>
-</div>
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-gradient-to-b from-[#fcfffe] to-[#f6f8fb] p-2">
@@ -461,44 +461,36 @@ export function TreePanel({
               </marker>
             </defs>
 
-            {edges.map(([from, to]) => (
-              <g key={`${from}-${to}`}>
-                {(() => {
-                  const connector = getConnectorPoints(
-                    positions[from],
-                    positions[to],
-                  );
-
-                  return (
-                    <>
-                      <line
-                        x1={connector.x1}
-                        y1={connector.y1}
-                        x2={connector.x2}
-                        y2={connector.y2}
-                        stroke="#cbd5e1"
-                        strokeOpacity="0.95"
-                        strokeWidth="2.2"
-                        markerEnd="url(#tree-arrow)"
-                      />
-                      {activeEdgeKey === `${from}-${to}` ? (
-                        <line
-                          x1={connector.x1}
-                          y1={connector.y1}
-                          x2={connector.x2}
-                          y2={connector.y2}
-                          stroke="#14b8a6"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          strokeDasharray="8 6"
-                          markerEnd="url(#tree-arrow-active)"
-                        />
-                      ) : null}
-                    </>
-                  );
-                })()}
-              </g>
-            ))}
+            {edges.map(([from, to], edgeIndex) => {
+              const connector = getConnectorPoints(positions[from], positions[to]);
+              return (
+                <g key={`edge-${edgeIndex}-${from}-${to}`}>
+                  <line
+                    x1={connector.x1}
+                    y1={connector.y1}
+                    x2={connector.x2}
+                    y2={connector.y2}
+                    stroke="#cbd5e1"
+                    strokeOpacity="0.95"
+                    strokeWidth="2.2"
+                    markerEnd="url(#tree-arrow)"
+                  />
+                  {activeEdgeKey === `${from}-${to}` || (sourceNode === from && targetNode === to) ? (
+                    <line
+                      x1={connector.x1}
+                      y1={connector.y1}
+                      x2={connector.x2}
+                      y2={connector.y2}
+                      stroke="#14b8a6"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeDasharray="8 6"
+                      markerEnd="url(#tree-arrow-active)"
+                    />
+                  ) : null}
+                </g>
+              );
+            })}
 
             {sortedPositionEntries.map(([value, point]) => {
               const nodeValue = Number(value);

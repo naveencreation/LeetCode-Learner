@@ -50,8 +50,9 @@ const childByOperation: Record<string, "left" | "right" | null> = {
   traverse_left: "left",
   traverse_right: "right",
   enter_function: null,
-  visit: null,
+  compute_height: null,
   exit_function: null,
+  finish: null,
 };
 
 function collectNodesAndEdges(
@@ -218,14 +219,6 @@ export function TreePanel({
   const nodeRadius = 20;
 
   const { edges, positions, sortedPositionEntries } = useMemo(() => {
-    if (!root) {
-      return {
-        edges: [] as Array<[number, number]>,
-        positions: {} as Record<number, NodePosition>,
-        sortedPositionEntries: [] as Array<[string, NodePosition]>,
-      };
-    }
-
     const nodes: Array<{ value: number; depth: number }> = [];
     const edges: Array<[number, number]> = [];
     collectNodesAndEdges(root, 0, nodes, edges);
@@ -280,15 +273,10 @@ export function TreePanel({
           >
             Select Tree
           </button>
-</div>
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-gradient-to-b from-[#fcfffe] to-[#f6f8fb] p-2">
-        {root === null ? (
-          <div className="flex h-full min-h-[180px] items-center justify-center text-sm font-semibold text-slate-500">
-            Tree is empty. Open Select Tree to add nodes.
-          </div>
-        ) : (
         <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} className="h-full w-full">
           <defs>
             <marker
@@ -315,44 +303,36 @@ export function TreePanel({
             </marker>
           </defs>
 
-          {edges.map(([from, to]) => (
-            <g key={`${from}-${to}`}>
-              {(() => {
-                const connector = getConnectorPoints(
-                  positions[from],
-                  positions[to],
-                );
-
-                return (
-                  <>
-                    <line
-                      x1={connector.x1}
-                      y1={connector.y1}
-                      x2={connector.x2}
-                      y2={connector.y2}
-                      stroke="#cbd5e1"
-                      strokeOpacity="0.95"
-                      strokeWidth="2.2"
-                      markerEnd="url(#tree-arrow)"
-                    />
-                    {activeEdgeKey === `${from}-${to}` ? (
-                      <line
-                        x1={connector.x1}
-                        y1={connector.y1}
-                        x2={connector.x2}
-                        y2={connector.y2}
-                        stroke="#14b8a6"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeDasharray="8 6"
-                        markerEnd="url(#tree-arrow-active)"
-                      />
-                    ) : null}
-                  </>
-                );
-              })()}
-            </g>
-          ))}
+          {edges.map(([from, to], edgeIndex) => {
+            const connector = getConnectorPoints(positions[from], positions[to]);
+            return (
+              <g key={`edge-${edgeIndex}-${from}-${to}`}>
+                <line
+                  x1={connector.x1}
+                  y1={connector.y1}
+                  x2={connector.x2}
+                  y2={connector.y2}
+                  stroke="#cbd5e1"
+                  strokeOpacity="0.95"
+                  strokeWidth="2.2"
+                  markerEnd="url(#tree-arrow)"
+                />
+                {activeEdgeKey === `${from}-${to}` || (sourceNode === from && targetNode === to) ? (
+                  <line
+                    x1={connector.x1}
+                    y1={connector.y1}
+                    x2={connector.x2}
+                    y2={connector.y2}
+                    stroke="#14b8a6"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeDasharray="8 6"
+                    markerEnd="url(#tree-arrow-active)"
+                  />
+                ) : null}
+              </g>
+            );
+          })}
 
           {sortedPositionEntries.map(([value, point]) => {
             const nodeValue = Number(value);
@@ -399,7 +379,6 @@ export function TreePanel({
             );
           })}
         </svg>
-        )}
       </div>
 
       <div className="rounded-lg border border-teal-100 bg-teal-50 px-2.5 py-2 text-xs">

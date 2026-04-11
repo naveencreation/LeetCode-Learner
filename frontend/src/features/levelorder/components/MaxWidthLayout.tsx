@@ -3,18 +3,18 @@
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import { TraversalShell } from "@/features/shared/components/TraversalShell";
+import { UnifiedCallStackPanel } from "@/features/shared/components/UnifiedCallStackPanel";
+import { UnifiedControlsBar } from "@/features/shared/components/UnifiedControlsBar";
 
 import { getCodeLineForStep } from "../selectors";
 import { useLevelOrderTraversal } from "../useLevelOrderTraversal";
-import { CallStackPanel } from "./CallStackPanel";
 import { CodePanel } from "./CodePanel";
-import { ControlsBar } from "./ControlsBar";
 import { ExplanationPanel } from "./ExplanationPanel";
 import { ResultPanel } from "./ResultPanel";
 import { TreePanel } from "./TreePanel";
 
 const TreeSetupModal = dynamic(() =>
-  import("./TreeSetupModal").then((module) => module.TreeSetupModal),
+  import("@/features/inorder/components/TreeSetupModal").then((module) => module.TreeSetupModal),
 );
 
 export function LevelOrderLayout() {
@@ -123,7 +123,7 @@ export function LevelOrderLayout() {
         />
       }
       middleFooter={
-        <ControlsBar
+        <UnifiedControlsBar
           isAtStart={isAtStart}
           isAtEnd={isAtEnd}
           controlMode={controlMode}
@@ -138,7 +138,13 @@ export function LevelOrderLayout() {
           resetTraversal={resetTraversal}
         />
       }
-      rightTop={<CallStackPanel activeCallStack={activeCallStack} />}
+      rightTop={
+        <UnifiedCallStackPanel
+          activeCallStack={activeCallStack}
+          title="Processing Stack"
+          frameFormatter={(frame) => `levelOrder(level=${frame.depth}, node=${frame.nodeVal})`}
+        />
+      }
       rightBottom={
         <ExplanationPanel
           currentStep={currentStep}

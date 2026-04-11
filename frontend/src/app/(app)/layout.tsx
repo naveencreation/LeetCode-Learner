@@ -27,6 +27,9 @@ const traversalRoutes = [
   "/problems/binary-tree/boundary-of-binary-tree",
   "/problems/binary-tree/zigzag-level-order",
   "/problems/binary-tree/zigzag-level-order-traversal",
+  "/problems/binary-tree/construct-binary-tree-from-inorder-and-preorder",
+  "/problems/binary-tree/construct-binary-tree-from-inorder-and-postorder",
+  "/problems/binary-tree/flatten-binary-tree-to-linkedlist",
 ] as const;
 
 export default function AppLayout({ children }: { children: ReactNode }) {

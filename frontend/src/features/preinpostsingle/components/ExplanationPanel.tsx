@@ -130,23 +130,23 @@ export function ExplanationPanel({
   );
 
   return (
-    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr_auto] gap-2 p-2.5">
+    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_minmax(0,1fr)_auto] gap-1.5 p-2.5">
       <div className="traversal-panel-header">
-        <h2 className="traversal-panel-title">
-          Step Explanation
-        </h2>
-</div>
+        <h2 className="traversal-panel-title">Step Explanation</h2>
+      </div>
 
-      <div className="min-h-0 space-y-2 overflow-auto rounded-[10px] border border-sky-200 bg-gradient-to-b from-cyan-50 to-sky-50 p-2">
-        <h3 className="text-[13px] font-extrabold text-cyan-900">{explanation.title}</h3>
-        <p className="text-[11px] leading-[1.45] text-cyan-800">{explanation.description}</p>
-        <ul className="grid gap-1 text-[11px]">
-          {explanation.details.map((detail) => (
-            <li key={detail} className="rounded-lg border border-sky-200 bg-white/80 px-2 py-1 text-cyan-900">
-              &gt; {detail}
-            </li>
-          ))}
-        </ul>
+      <div className="ui-scrollbar min-h-0 overflow-y-auto pr-1">
+        <div className="space-y-2 rounded-[10px] border border-sky-200 bg-gradient-to-b from-cyan-50 to-sky-50 p-2">
+          <h3 className="text-[13px] font-extrabold text-cyan-900">{explanation.title}</h3>
+          <p className="text-[11px] leading-[1.45] text-cyan-800">{explanation.description}</p>
+          <ul className="grid gap-1 text-[11px]">
+            {explanation.details.map((detail) => (
+              <li key={detail} className="rounded-lg border border-sky-200 bg-white/80 px-2 py-1 text-cyan-900">
+                &gt; {detail}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-1.5 rounded-[10px] border border-slate-200 bg-slate-50 p-2 text-[10px] text-slate-700">

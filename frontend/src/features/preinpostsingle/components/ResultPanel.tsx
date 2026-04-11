@@ -30,7 +30,7 @@ export function ResultPanel({
       : `Step ${currentStep + 1}: ${currentOperation}`;
 
   return (
-    <section className="traversal-panel ui-scrollbar grid h-full min-h-0 overflow-y-auto grid-rows-[auto_auto_auto_auto] content-start gap-1.5 p-2">
+    <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_minmax(0,1fr)] gap-1.5 p-2.5">
       <div className="traversal-panel-header">
         <h2 className="traversal-panel-title">
           Traversal Progress (3 Outputs)
@@ -54,36 +54,40 @@ export function ResultPanel({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-1.5">
-        <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1.5 text-center text-white">
-          <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-teal-100">
-            Current Node
-          </p>
-          <p className="mt-0.5 text-xl font-extrabold">{currentNode ?? "-"}</p>
-        </div>
-        <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1.5 text-center text-white">
-          <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-teal-100">
-            Phase
-          </p>
-          <p className="mt-0.5 truncate text-xl font-extrabold">{currentPhase}</p>
-        </div>
-      </div>
+      <div className="ui-scrollbar min-h-0 overflow-y-auto pr-1">
+        <div className="grid content-start gap-1.5">
+          <div className="grid grid-cols-2 gap-1.5">
+            <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1.5 text-center text-white">
+              <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-teal-100">
+                Current Node
+              </p>
+              <p className="mt-0.5 text-xl font-extrabold">{currentNode ?? "-"}</p>
+            </div>
+            <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1.5 text-center text-white">
+              <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-teal-100">
+                Phase
+              </p>
+              <p className="mt-0.5 truncate text-xl font-extrabold">{currentPhase}</p>
+            </div>
+          </div>
 
-      <div className="grid gap-1">
-        <TraversalArrayRow label="Pre" values={preResult} tone="from-teal-700 to-teal-400" emphasis={isPrePhase} />
-        <TraversalArrayRow label="In" values={inResult} tone="from-cyan-700 to-cyan-400" emphasis={isInPhase} />
-        <TraversalArrayRow label="Post" values={postResult} tone="from-violet-700 to-violet-400" emphasis={isPostPhase} />
-      </div>
+          <div className="grid gap-1">
+            <TraversalArrayRow label="Pre" values={preResult} tone="from-teal-700 to-teal-400" emphasis={isPrePhase} />
+            <TraversalArrayRow label="In" values={inResult} tone="from-cyan-700 to-cyan-400" emphasis={isInPhase} />
+            <TraversalArrayRow label="Post" values={postResult} tone="from-violet-700 to-violet-400" emphasis={isPostPhase} />
+          </div>
 
-      <div
-        className={`rounded-lg border px-2 py-1.5 text-[11px] leading-snug ${
-          allDone
-            ? "border-emerald-200 bg-emerald-50 font-bold text-emerald-900"
-            : "border-amber-200 bg-amber-50 text-amber-900"
-        }`}
-      >
-        {allDone ? "✅ " : "👉 "}
-        <span className="font-bold">{completionMessage}</span>
+          <div
+            className={`rounded-lg border px-2 py-1.5 text-[11px] leading-snug ${
+              allDone
+                ? "border-emerald-200 bg-emerald-50 font-bold text-emerald-900"
+                : "border-amber-200 bg-amber-50 text-amber-900"
+            }`}
+          >
+            {allDone ? "✅ " : "👉 "}
+            <span className="font-bold">{completionMessage}</span>
+          </div>
+        </div>
       </div>
     </section>
   );

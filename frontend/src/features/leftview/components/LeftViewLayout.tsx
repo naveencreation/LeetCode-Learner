@@ -3,18 +3,18 @@
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import { TraversalShell } from "@/features/shared/components/TraversalShell";
+import { UnifiedControlsBar } from "@/features/shared/components/UnifiedControlsBar";
 
 import { getCodeLineForStep } from "../selectors";
 import { useLeftViewTraversal } from "../useLeftViewTraversal";
 import { CallStackPanel } from "./CallStackPanel";
 import { CodePanel } from "./CodePanel";
-import { ControlsBar } from "./ControlsBar";
 import { ExplanationPanel } from "./ExplanationPanel";
 import { ResultPanel } from "./ResultPanel";
 import { TreePanel } from "./TreePanel";
 
 const TreeSetupModal = dynamic(() =>
-  import("./TreeSetupModal").then((module) => module.TreeSetupModal),
+  import("@/features/inorder/components/TreeSetupModal").then((module) => module.TreeSetupModal),
 );
 
 export function LeftViewLayout() {
@@ -126,7 +126,7 @@ export function LeftViewLayout() {
         />
       }
       middleFooter={
-        <ControlsBar
+        <UnifiedControlsBar
           isAtStart={isAtStart}
           isAtEnd={isAtEnd}
           controlMode={controlMode}

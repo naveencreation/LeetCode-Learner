@@ -151,36 +151,30 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
 
   return (
     <section className="traversal-panel grid h-full min-h-0 grid-rows-[auto_1fr_auto] gap-2 p-2.5">
-      <div className="traversal-panel-header mb-px">
+      <div className="traversal-panel-header">
         <h2 className="traversal-panel-title">
           Python Code
         </h2>
-        <div className="flex items-center gap-1.5">
-          <div className="inline-flex items-center rounded-full border border-slate-300 bg-slate-100 p-0.5">
-            <button
-              type="button"
-              onClick={() => handleViewModeChange("snippet")}
-              className={`rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
-                viewMode === "snippet"
-                  ? "bg-slate-800 text-white"
-                  : "text-slate-600 hover:bg-slate-200"
-              }`}
-            >
-              Snippet
-            </button>
-            <button
-              type="button"
-              onClick={() => handleViewModeChange("full")}
-              className={`rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
-                viewMode === "full"
-                  ? "bg-slate-800 text-white"
-                  : "text-slate-600 hover:bg-slate-200"
-              }`}
-            >
-              Full Code
-            </button>
-          </div>
-</div>
+        <div className="inline-flex items-center rounded-full border border-slate-300 bg-slate-100 p-0.5">
+          <button
+            type="button"
+            onClick={() => handleViewModeChange("snippet")}
+            className={`rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
+              viewMode === "snippet" ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            Snippet
+          </button>
+          <button
+            type="button"
+            onClick={() => handleViewModeChange("full")}
+            className={`rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
+              viewMode === "full" ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            Full Code
+          </button>
+        </div>
       </div>
 
       <div className="min-h-0 overflow-hidden rounded-[10px] border border-[#3c3c3c] bg-[#1e1e1e] p-2">
