@@ -7,69 +7,89 @@ export default function BstdllGuidePage() {
   const [mode, setMode] = useState<"quick" | "deep">("quick");
 
   return (
-    <section className="relative min-h-0 overflow-hidden bg-gradient-to-br from-slate-50 via-cyan-50/40 to-emerald-50/30">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,#e0f2fe_0%,transparent_45%),radial-gradient(ellipse_at_bottom_left,#d1fae5_0%,transparent_50%)]" />
+    <section className="relative min-h-0 overflow-hidden bg-gradient-to-br from-slate-50 via-slate-50 to-emerald-50/20">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,#e0f2fe_0%,transparent_48%),radial-gradient(ellipse_at_bottom_left,#e2f6ef_0%,transparent_52%)]" />
 
       <div className="relative z-[1] mx-auto max-w-[860px] px-6 py-6">
         <header className="mb-8">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <span className="h-px w-8 bg-emerald-500" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-700">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-emerald-600">
                 BST · In-order DFS · LeetCode 426
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Link
                 href="/problems/binary-tree/convert-bst-to-sorted-doubly-linked-list"
-                className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"
+                className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 transition hover:bg-emerald-100"
               >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 Visual Editor
               </Link>
               <Link
-                href="/problems"
-                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+                href="/problems/topics/trees"
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50"
               >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
                 Tree Problems
               </Link>
             </div>
           </div>
 
-          <h1 className="text-[clamp(1.7rem,2.5vw,2.28rem)] font-extrabold leading-tight text-slate-900">
+          <h1 className="mb-2 text-3xl font-semibold text-slate-900">
             Convert BST to Sorted Circular Doubly Linked List
           </h1>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+          <p className="mb-5 max-w-xl text-base text-slate-500">
             Convert a BST in-place by reusing left as prev and right as next. In-order traversal gives sorted order for free; one final stitch closes the circle.
           </p>
 
-          <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px] font-semibold">
-            <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-emerald-700">In-order DFS</span>
-            <span className="rounded-full bg-sky-100 px-2.5 py-1 text-sky-700">Pointer Rewiring</span>
-            <span className="rounded-full bg-violet-100 px-2.5 py-1 text-violet-700">In-place</span>
-            <span className="rounded-full bg-rose-100 px-2.5 py-1 text-rose-700">Circular DLL</span>
+          <div className="mb-6 flex flex-wrap gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              In-order DFS
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-200 bg-purple-50 px-3 py-1.5 text-xs font-medium text-purple-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-purple-500" />
+              Pointer Rewiring
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700">
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+              Circular DLL
+            </span>
           </div>
         </header>
 
-        <div className="mb-5 inline-flex rounded-full border border-slate-200 bg-white p-1">
+        <div className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-100 p-1">
           <button
             onClick={() => setMode("quick")}
-            className={`rounded-full px-3 py-1 text-xs font-bold ${mode === "quick" ? "bg-slate-900 text-white" : "text-slate-600"}`}
+            className={`rounded-lg px-4 py-1.5 text-sm font-medium transition-all ${
+              mode === "quick"
+                ? "border border-slate-200 bg-white text-slate-900 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            }`}
           >
             Quick Recap
           </button>
           <button
             onClick={() => setMode("deep")}
-            className={`rounded-full px-3 py-1 text-xs font-bold ${mode === "deep" ? "bg-slate-900 text-white" : "text-slate-600"}`}
+            className={`rounded-lg px-4 py-1.5 text-sm font-medium transition-all ${
+              mode === "deep"
+                ? "border border-slate-200 bg-white text-slate-900 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            }`}
           >
             Deep Explain
           </button>
         </div>
 
-        <p className="mb-8 text-xs text-slate-500">
+        <p className="mt-3 text-xs text-slate-400">
           {mode === "quick"
             ? "Key concepts at a glance — for those who already know the basics."
             : "A full beginner-friendly walkthrough with diagrams, trace logic, and interview framing."}
         </p>
+
+        <div className="mb-8 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
 
         {mode === "quick" ? (
           <div className="space-y-6">
@@ -178,6 +198,45 @@ export default function BstdllGuidePage() {
             </article>
 
             <article className="rounded-2xl border border-slate-200 bg-white p-5">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">Traversal Diagram</p>
+              <h2 className="mb-3 text-lg font-extrabold text-slate-900">In-order visit sequence (smallest to largest)</h2>
+              <div className="overflow-x-auto">
+                <svg viewBox="0 0 500 195" className="mx-auto h-auto w-full min-w-[480px] max-w-[500px]" xmlns="http://www.w3.org/2000/svg">
+                  <text x="250" y="14" textAnchor="middle" fontSize="11" fontWeight="600" fill="#8888a8" letterSpacing="0.05em">IN-ORDER TRAVERSAL VISITS NODES SMALLEST TO LARGEST</text>
+
+                  <line x1="140" y1="52"  x2="75"  y2="110" stroke="#B5D4F4" strokeWidth="1.8"/>
+                  <line x1="140" y1="52"  x2="205" y2="110" stroke="#B5D4F4" strokeWidth="1.8"/>
+                  <line x1="75"  y1="110" x2="42"  y2="155" stroke="#B5D4F4" strokeWidth="1.8"/>
+                  <line x1="75"  y1="110" x2="108" y2="155" stroke="#B5D4F4" strokeWidth="1.8"/>
+                  <line x1="205" y1="110" x2="238" y2="155" stroke="#B5D4F4" strokeWidth="1.8"/>
+
+                  <circle cx="140" cy="40" r="20" fill="#E6F1FB" stroke="#378ADD" strokeWidth="2"/>
+                  <text x="140" y="46" textAnchor="middle" fontSize="14" fontWeight="700" fill="#0C447C">4</text>
+                  <circle cx="75" cy="98" r="20" fill="#FAEEDA" stroke="#EF9F27" strokeWidth="2"/>
+                  <text x="75" y="104" textAnchor="middle" fontSize="14" fontWeight="700" fill="#633806">2</text>
+                  <circle cx="205" cy="98" r="20" fill="#FAEEDA" stroke="#EF9F27" strokeWidth="2"/>
+                  <text x="205" y="104" textAnchor="middle" fontSize="14" fontWeight="700" fill="#633806">5</text>
+                  <circle cx="42" cy="143" r="20" fill="#E1F5EE" stroke="#1D9E75" strokeWidth="2"/>
+                  <text x="42" y="149" textAnchor="middle" fontSize="14" fontWeight="700" fill="#085041">1</text>
+                  <circle cx="108" cy="143" r="20" fill="#E1F5EE" stroke="#1D9E75" strokeWidth="2"/>
+                  <text x="108" y="149" textAnchor="middle" fontSize="14" fontWeight="700" fill="#085041">3</text>
+
+                  <text x="310" y="22" fontSize="11" fill="#8888a8" fontWeight="600" letterSpacing="0.05em">VISIT SEQUENCE</text>
+                  <rect x="305" y="30" width="175" height="28" rx="6" fill="#E1F5EE" stroke="#1D9E75" strokeWidth="1"/>
+                  <text x="318" y="49" fontSize="12" fill="#085041" fontWeight="500">1 node(1) leftmost leaf</text>
+                  <rect x="305" y="63" width="175" height="28" rx="6" fill="#E6F1FB" stroke="#378ADD" strokeWidth="1"/>
+                  <text x="318" y="82" fontSize="12" fill="#0C447C" fontWeight="500">2 node(2) left subtree root</text>
+                  <rect x="305" y="96" width="175" height="28" rx="6" fill="#E1F5EE" stroke="#1D9E75" strokeWidth="1"/>
+                  <text x="318" y="115" fontSize="12" fill="#085041" fontWeight="500">3 node(3) right child of 2</text>
+                  <rect x="305" y="129" width="175" height="28" rx="6" fill="#FAEEDA" stroke="#EF9F27" strokeWidth="1"/>
+                  <text x="318" y="148" fontSize="12" fill="#633806" fontWeight="500">4 node(4) root visited later</text>
+                  <rect x="305" y="162" width="175" height="28" rx="6" fill="#EEEDFE" stroke="#8B87E3" strokeWidth="1"/>
+                  <text x="318" y="181" fontSize="12" fill="#3C3489" fontWeight="500">5 node(5) rightmost node</text>
+                </svg>
+              </div>
+            </article>
+
+            <article className="rounded-2xl border border-slate-200 bg-white p-5">
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">Intuition</p>
               <h2 className="mb-2 text-lg font-extrabold text-slate-900">Link each node to the one visited just before it</h2>
               <p className="text-sm leading-7 text-slate-700">
@@ -248,6 +307,53 @@ export default function BstdllGuidePage() {
             </article>
 
             <article className="rounded-2xl border border-slate-200 bg-white p-5">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">Circular Close Diagram</p>
+              <h2 className="mb-3 text-lg font-extrabold text-slate-900">Final two links that make it circular</h2>
+              <div className="overflow-x-auto">
+                <svg viewBox="0 0 500 130" className="mx-auto h-auto w-full min-w-[480px] max-w-[500px]" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <marker id="arr-fwd" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#1D9E75"/></marker>
+                    <marker id="arr-back" markerWidth="7" markerHeight="7" refX="2" refY="3.5" orient="auto-start-reverse"><polygon points="0 0,7 3.5,0 7" fill="#378ADD"/></marker>
+                    <marker id="arr-circ" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#8B87E3"/></marker>
+                  </defs>
+
+                  <rect x="20" y="42" width="52" height="36" rx="8" fill="#E1F5EE" stroke="#1D9E75" strokeWidth="2"/>
+                  <text x="46" y="65" textAnchor="middle" fontSize="15" fontWeight="700" fill="#085041">1</text>
+                  <text x="46" y="30" textAnchor="middle" fontSize="10" fill="#1D9E75" fontWeight="600">head</text>
+
+                  <rect x="108" y="42" width="52" height="36" rx="8" fill="#E6F1FB" stroke="#378ADD" strokeWidth="1.5"/>
+                  <text x="134" y="65" textAnchor="middle" fontSize="15" fontWeight="700" fill="#0C447C">2</text>
+
+                  <rect x="196" y="42" width="52" height="36" rx="8" fill="#E6F1FB" stroke="#378ADD" strokeWidth="1.5"/>
+                  <text x="222" y="65" textAnchor="middle" fontSize="15" fontWeight="700" fill="#0C447C">3</text>
+
+                  <rect x="284" y="42" width="52" height="36" rx="8" fill="#E6F1FB" stroke="#378ADD" strokeWidth="1.5"/>
+                  <text x="310" y="65" textAnchor="middle" fontSize="15" fontWeight="700" fill="#0C447C">4</text>
+
+                  <rect x="372" y="42" width="52" height="36" rx="8" fill="#FAEEDA" stroke="#EF9F27" strokeWidth="2"/>
+                  <text x="398" y="65" textAnchor="middle" fontSize="15" fontWeight="700" fill="#633806">5</text>
+                  <text x="398" y="30" textAnchor="middle" fontSize="10" fill="#633806" fontWeight="600">tail</text>
+
+                  <line x1="72" y1="60" x2="108" y2="60" stroke="#1D9E75" strokeWidth="2" markerEnd="url(#arr-fwd)"/>
+                  <line x1="160" y1="60" x2="196" y2="60" stroke="#1D9E75" strokeWidth="2" markerEnd="url(#arr-fwd)"/>
+                  <line x1="248" y1="60" x2="284" y2="60" stroke="#1D9E75" strokeWidth="2" markerEnd="url(#arr-fwd)"/>
+                  <line x1="336" y1="60" x2="372" y2="60" stroke="#1D9E75" strokeWidth="2" markerEnd="url(#arr-fwd)"/>
+
+                  <line x1="108" y1="68" x2="72" y2="68" stroke="#378ADD" strokeWidth="1.5" markerEnd="url(#arr-back)"/>
+                  <line x1="196" y1="68" x2="160" y2="68" stroke="#378ADD" strokeWidth="1.5" markerEnd="url(#arr-back)"/>
+                  <line x1="284" y1="68" x2="248" y2="68" stroke="#378ADD" strokeWidth="1.5" markerEnd="url(#arr-back)"/>
+                  <line x1="372" y1="68" x2="336" y2="68" stroke="#378ADD" strokeWidth="1.5" markerEnd="url(#arr-back)"/>
+
+                  <path d="M 424,42 Q 248,5 46,42" fill="none" stroke="#8B87E3" strokeWidth="2" strokeDasharray="5,3" markerEnd="url(#arr-circ)"/>
+                  <text x="235" y="12" textAnchor="middle" fontSize="10" fill="#534AB7" fontWeight="500">tail.right to head</text>
+
+                  <path d="M 46,78 Q 248,116 424,78" fill="none" stroke="#EF9F27" strokeWidth="2" strokeDasharray="5,3" markerEnd="url(#arr-circ)"/>
+                  <text x="235" y="120" textAnchor="middle" fontSize="10" fill="#854F0B" fontWeight="500">head.left to tail</text>
+                </svg>
+              </div>
+            </article>
+
+            <article className="rounded-2xl border border-slate-200 bg-white p-5">
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">Complexity</p>
               <p className="text-sm leading-7 text-slate-700">Time is O(n) because each node is visited once. Space is O(h) for recursion stack where h is tree height. Linking and circular close are O(1) per node and O(1) final step.</p>
             </article>
@@ -270,15 +376,19 @@ export default function BstdllGuidePage() {
           </div>
         )}
 
-        <footer className="mt-8 rounded-2xl border border-slate-200 bg-white p-5">
+        <footer className="mt-8 rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-50 to-emerald-50/30 p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm text-slate-700">Step through the visualizer to observe each pointer rewiring action.</p>
+            <div>
+              <p className="text-[15px] font-medium text-slate-800">Ready to see it in action?</p>
+              <p className="mt-0.5 text-[13px] text-slate-500">Step through the visualizer to observe each pointer rewiring action.</p>
+            </div>
             <div className="flex items-center gap-2">
               <Link
                 href="/problems/binary-tree/convert-bst-to-sorted-doubly-linked-list"
-                className="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-100"
+                className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white shadow-md shadow-emerald-600/20 transition hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/25"
               >
                 Open Visualizer
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
               </Link>
               <Link
                 href="/problems"
@@ -288,7 +398,7 @@ export default function BstdllGuidePage() {
               </Link>
             </div>
           </div>
-          <p className="mt-2 text-xs text-slate-500">If you can explain why in-order yields sorted order and why overwrite is safe, you are interview-ready for LC 426.</p>
+          <p className="mt-3 text-xs text-slate-500">If you can explain why in-order yields sorted order and why overwrite is safe, you are interview-ready for LC 426.</p>
         </footer>
       </div>
     </section>
