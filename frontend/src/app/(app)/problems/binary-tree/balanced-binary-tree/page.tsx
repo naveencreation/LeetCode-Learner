@@ -1,5 +1,5 @@
-import { BalancedbinarytreeLayout } from "@/features/balancedbinarytree/components/BalancedBinaryTreeLayout";
+import { BalancedTreeLayout } from "@/features/balancedtree/components/BalancedTreeLayout";
 
 export default function BalancedBinaryTreePage() {
-  return <BalancedbinarytreeLayout />;
+  return <BalancedTreeLayout />;
 }

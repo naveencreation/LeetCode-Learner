@@ -298,4 +298,115 @@ class Solution:
 
         return 1 + max(left_height, right_height)`,
   },
+  "same-tree": {
+    slug: "same-tree",
+    title: "Same Tree",
+    intuition:
+      "Recursive DFS comparing both trees simultaneously. Check null cases first, then values, then recurse on left and right.",
+    pythonCode: `class Solution:
+    def isSameTree(self, p, q):
+        if not p and not q:
+            return True
+        if not p or not q:
+            return False
+        if p.val != q.val:
+            return False
+        return self.isSameTree(p.left, q.left) and self.isSameTree(p.right, q.right)`,
+  },
+  "symmetric-tree": {
+    slug: "symmetric-tree",
+    title: "Symmetric Tree",
+    intuition:
+      "Check if left and right subtrees are mirrors. Use helper to compare left of one with right of other.",
+    pythonCode: `class Solution:
+    def isSymmetric(self, root):
+        if not root:
+            return True
+        return self.isMirror(root.left, root.right)
+    
+    def isMirror(self, left, right):
+        if not left and not right:
+            return True
+        if not left or not right:
+            return False
+        return (left.val == right.val and
+                self.isMirror(left.left, right.right) and
+                self.isMirror(left.right, right.left))`,
+  },
+  "boundary-of-binary-tree": {
+    slug: "boundary-of-binary-tree",
+    title: "Boundary of Binary Tree",
+    intuition:
+      "Collect left boundary (top-down, no leaves), all leaves (left-to-right), right boundary (bottom-up, no leaves).",
+    pythonCode: `class Solution:
+    def boundaryOfBinaryTree(self, root):
+        if not root:
+            return []
+        
+        def isLeaf(node):
+            return not node.left and not node.right
+        
+        def addLeftBoundary(node, res):
+            while node:
+                if not isLeaf(node):
+                    res.append(node.val)
+                node = node.left if node.left else node.right
+        
+        def addLeaves(node, res):
+            if not node:
+                return
+            if isLeaf(node):
+                res.append(node.val)
+            addLeaves(node.left, res)
+            addLeaves(node.right, res)
+        
+        def addRightBoundary(node, res):
+            stack = []
+            while node:
+                if not isLeaf(node):
+                    stack.append(node.val)
+                node = node.right if node.right else node.left
+            while stack:
+                res.append(stack.pop())
+        
+        res = [root.val] if not isLeaf(root) else []
+        addLeftBoundary(root.left, res)
+        addLeaves(root, res)
+        addRightBoundary(root.right, res)
+        return res`,
+  },
+  "zigzag-level-order": {
+    slug: "zigzag-level-order",
+    title: "Zigzag Level Order Traversal",
+    intuition: `Use BFS with a queue to process nodes level by level. Maintain a boolean flag to track the current direction. For each level, collect node values, then reverse the list if traversing right-to-left before adding to the result. Toggle the direction after each level.`,
+    pythonCode: `def zigzagLevelOrder(root):
+        if not root:
+            return []
+        
+        result = []
+        queue = collections.deque([root])
+        left_to_right = True
+        
+        while queue:
+            level_size = len(queue)
+            level = []
+            
+            for _ in range(level_size):
+                node = queue.popleft()
+                level.append(node.val)
+                
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+            
+            # Reverse if going right to left
+            if not left_to_right:
+                level.reverse()
+            
+            result.append(level)
+            left_to_right = not left_to_right
+        
+        return result`,
+  },
 };

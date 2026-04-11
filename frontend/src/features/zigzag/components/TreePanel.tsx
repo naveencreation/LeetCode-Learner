@@ -1,6 +1,11 @@
 import { useMemo } from "react";
 
-import type { ExecutionStep, NodePosition, NodeVisualState, TreeNode } from "../types";
+import type { ExecutionStep, NodeVisualState, TreeNode } from "../types";
+
+interface NodePosition {
+  x: number;
+  y: number;
+}
 
 interface TreePanelProps {
   root: TreeNode | null;
@@ -11,48 +16,45 @@ interface TreePanelProps {
   onOpenTreeSetup: () => void;
 }
 
-const stateStyles: Record<string,
-  { fill: string; stroke: string; text: string; glow: string }
-> = {
-  unvisited: {
-    fill: "#e5e7eb",
-    stroke: "#cbd5e1",
-    text: "#475569",
-    glow: "rgba(148, 163, 184, 0.2)",
-  },
-  exploring_left: {
-    fill: "#bfdbfe",
-    stroke: "#60a5fa",
-    text: "#0f172a",
-    glow: "rgba(59, 130, 246, 0.22)",
-  },
-  current: {
-    fill: "#f59e0b",
-    stroke: "#d97706",
-    text: "#111827",
-    glow: "rgba(245, 158, 11, 0.22)",
-  },
-  exploring_right: {
-    fill: "#c084fc",
-    stroke: "#a855f7",
-    text: "#1f2937",
-    glow: "rgba(168, 85, 247, 0.2)",
-  },
-  completed: {
-    fill: "#86efac",
-    stroke: "#22c55e",
-    text: "#14532d",
-    glow: "rgba(34, 197, 94, 0.22)",
-  },
-};
-
-const childByOperation: Record<string, "left" | "right" | null> = {
-  traverse_left: "left",
-  traverse_right: "right",
-  enter_function: null,
-  visit: null,
-  exit_function: null,
-};
+const stateStyles: Record<string, { fill: string; stroke: string; text: string; glow: string }> =
+  {
+    unvisited: {
+      fill: "#e5e7eb",
+      stroke: "#cbd5e1",
+      text: "#475569",
+      glow: "rgba(148, 163, 184, 0.2)",
+    },
+    exploring_left: {
+      fill: "#bfdbfe",
+      stroke: "#3b82f6",
+      text: "#0f172a",
+      glow: "rgba(59, 130, 246, 0.22)",
+    },
+    current: {
+      fill: "#fcd34d",
+      stroke: "#f59e0b",
+      text: "#111827",
+      glow: "rgba(245, 158, 11, 0.22)",
+    },
+    exploring_right: {
+      fill: "#c084fc",
+      stroke: "#a855f7",
+      text: "#1f2937",
+      glow: "rgba(168, 85, 247, 0.2)",
+    },
+    processing: {
+      fill: "#ddd6fe",
+      stroke: "#8b5cf6",
+      text: "#312e81",
+      glow: "rgba(139, 92, 246, 0.18)",
+    },
+    completed: {
+      fill: "#86efac",
+      stroke: "#22c55e",
+      text: "#14532d",
+      glow: "rgba(34, 197, 94, 0.22)",
+    },
+  };
 
 function collectNodesAndEdges(
   node: TreeNode | null,
@@ -77,21 +79,6 @@ function collectNodesAndEdges(
   }
 }
 
-function assignInorderIndex(
-  node: TreeNode | null,
-  map: Record<number, number>,
-  counter: { value: number },
-): void {
-  if (!node) {
-    return;
-  }
-
-  assignInorderIndex(node.left, map, counter);
-  map[node.val] = counter.value;
-  counter.value += 1;
-  assignInorderIndex(node.right, map, counter);
-}
-
 function buildAutoPositions(root: TreeNode | null): Record<number, NodePosition> {
   if (!root) {
     return {};
@@ -101,8 +88,17 @@ function buildAutoPositions(root: TreeNode | null): Record<number, NodePosition>
   const edges: Array<[number, number]> = [];
   collectNodesAndEdges(root, 0, nodes, edges);
 
-  const inorderIndex: Record<number, number> = {};
-  assignInorderIndex(root, inorderIndex, { value: 0 });
+  const inorderIndices: Record<number, number> = {};
+  let counter = 0;
+
+  function assignIndices(node: TreeNode | null) {
+    if (!node) return;
+    assignIndices(node.left);
+    inorderIndices[node.val] = counter++;
+    assignIndices(node.right);
+  }
+
+  assignIndices(root);
 
   const nodeCount = nodes.length;
   const maxDepth = nodes.reduce((max, node) => Math.max(max, node.depth), 0);
@@ -120,7 +116,7 @@ function buildAutoPositions(root: TreeNode | null): Record<number, NodePosition>
   const positions: Record<number, NodePosition> = {};
   nodes.forEach((node) => {
     positions[node.value] = {
-      x: minX + inorderIndex[node.value] * xStep,
+      x: minX + inorderIndices[node.value] * xStep,
       y: minY + node.depth * yStep,
     };
   });
@@ -244,26 +240,10 @@ export function TreePanel({
     return { edges, positions, sortedPositionEntries };
   }, [root, customNodePositions, viewWidth, viewHeight, nodeRadius]);
 
-  const sourceNode = activeStep?.node?.val;
-  const direction = activeStep ? childByOperation[activeStep.type] : null;
-  const targetNode =
-    sourceNode && direction
-      ? direction === "left"
-        ? activeStep?.node?.left?.val
-        : activeStep?.node?.right?.val
-      : undefined;
-
-  const activeEdgeKey =
-    typeof sourceNode === "number" && typeof targetNode === "number"
-      ? `${sourceNode}-${targetNode}`
-      : null;
-
   return (
     <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_1fr_auto] gap-2 p-2.5">
       <div className="traversal-panel-header">
-        <h2 className="traversal-panel-title">
-          Tree Structure
-        </h2>
+        <h2 className="traversal-panel-title">Tree Structure</h2>
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -289,53 +269,24 @@ export function TreePanel({
             >
               <path d="M0,0 L8,4 L0,8 z" fill="#94a3b8" />
             </marker>
-            <marker
-              id="tree-arrow-active"
-              markerWidth="9"
-              markerHeight="9"
-              refX="8"
-              refY="4.5"
-              orient="auto"
-              markerUnits="strokeWidth"
-            >
-              <path d="M0,0 L9,4.5 L0,9 z" fill="#14b8a6" />
-            </marker>
           </defs>
 
-          {edges.map(([from, to], edgeIndex) => (
-            <g key={`edge-${edgeIndex}-${from}-${to}`}>
+          {edges.map(([from, to]) => (
+            <g key={`${from}-${to}`}>
               {(() => {
-                const connector = getConnectorPoints(
-                  positions[from],
-                  positions[to],
-                );
+                const connector = getConnectorPoints(positions[from], positions[to]);
 
                 return (
-                  <>
-                    <line
-                      x1={connector.x1}
-                      y1={connector.y1}
-                      x2={connector.x2}
-                      y2={connector.y2}
-                      stroke="#cbd5e1"
-                      strokeOpacity="0.95"
-                      strokeWidth="2.2"
-                      markerEnd="url(#tree-arrow)"
-                    />
-                    {activeEdgeKey === `${from}-${to}` || (sourceNode === from && targetNode === to) ? (
-                      <line
-                        x1={connector.x1}
-                        y1={connector.y1}
-                        x2={connector.x2}
-                        y2={connector.y2}
-                        stroke="#14b8a6"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeDasharray="8 6"
-                        markerEnd="url(#tree-arrow-active)"
-                      />
-                    ) : null}
-                  </>
+                  <line
+                    x1={connector.x1}
+                    y1={connector.y1}
+                    x2={connector.x2}
+                    y2={connector.y2}
+                    stroke="#cbd5e1"
+                    strokeOpacity="0.95"
+                    strokeWidth="2.2"
+                    markerEnd="url(#tree-arrow)"
+                  />
                 );
               })()}
             </g>
@@ -344,17 +295,12 @@ export function TreePanel({
           {sortedPositionEntries.map(([value, point]) => {
             const nodeValue = Number(value);
             const nodeState = nodeStates[nodeValue] ?? "unvisited";
-            const styles = stateStyles[nodeState];
+            const styles = stateStyles[nodeState] ?? stateStyles.unvisited;
             const isCompleted = nodeState === "completed";
 
             return (
               <g key={value}>
-                <circle
-                  cx={point.x}
-                  cy={point.y}
-                  r="27"
-                  fill={styles.glow}
-                />
+                <circle cx={point.x} cy={point.y} r="27" fill={styles.glow} />
                 <circle
                   cx={point.x}
                   cy={point.y}
@@ -388,10 +334,12 @@ export function TreePanel({
         </svg>
       </div>
 
-      <div className="rounded-lg border border-teal-100 bg-teal-50 px-2.5 py-2 text-xs">
+      <div className="rounded-lg border border-purple-100 bg-purple-50 px-2.5 py-2 text-xs">
         <div className="flex items-center justify-between gap-2">
           <span className="font-bold text-slate-500">Operation:</span>
-          <span className="max-w-[72%] truncate text-right font-extrabold text-teal-700">{currentOperation}</span>
+          <span className="max-w-[72%] truncate text-right font-extrabold text-purple-700">
+            {currentOperation}
+          </span>
         </div>
       </div>
     </section>

@@ -481,6 +481,22 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return "/problems/binary-tree/lca-in-binary-tree";
   }
 
+  if (sectionName === "Binary Tree Part-II" && problemName === "Zig Zag Traversal of Binary Tree") {
+    return "/problems/binary-tree/zigzag-level-order";
+  }
+
+  if (sectionName === "Binary Tree Part-II" && problemName === "Check if two trees are identical or not") {
+    return "/problems/binary-tree/same-tree";
+  }
+
+  if (sectionName === "Binary Tree Part-II" && problemName === "Symmetric Binary Tree") {
+    return "/problems/binary-tree/symmetric-tree";
+  }
+
+  if (sectionName === "Binary Tree Part-II" && problemName === "Boundary Traversal of Binary Tree") {
+    return "/problems/binary-tree/boundary-of-binary-tree";
+  }
+
   if (sectionName === "Binary Tree") {
     return `/problems/binary-tree/${toSlug(problemName)}`;
   }

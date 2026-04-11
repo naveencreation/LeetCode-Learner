@@ -1,7 +1,7 @@
 interface ResultPanelProps {
   currentNode: number | null;
   currentPhase: string;
-  result: number[];
+  result: number[] | null;
   currentStep: number;
   totalSteps: number;
   currentOperation: string;
@@ -17,7 +17,7 @@ export function ResultPanel({
 }: ResultPanelProps) {
   const completionMessage =
     currentStep >= totalSteps
-      ? `Perfect! Traversal complete. Result: [${result.join(", ")}]`
+      ? `Perfect! Traversal complete. Result: [${result?.join(", ") ?? ""}]`
       : `Step ${currentStep + 1}: ${currentOperation}`;
 
   return (
@@ -50,7 +50,7 @@ export function ResultPanel({
               Result Array
             </p>
             <div className="flex min-h-[36px] flex-wrap items-center gap-1.5 rounded-lg border border-slate-200 bg-white p-1.5">
-              {result.length === 0 ? (
+              {!result || result.length === 0 ? (
                 <span className="text-[11px] text-slate-400">
                   Traversal result appears here...
                 </span>

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Flatten Binary Tree to Linked List · LC 114</title>
+<style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "SF Mono", "Fira Code", "Consolas", monospace;
+    --color-text-primary: #1a1a2e;
+    --color-text-secondary: #4a4a6a;
+    --color-text-tertiary: #8888a8;
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f5fa;
+    --color-border-tertiary: #e0e0ee;
+    --border-radius-lg: 12px;
+    --border-radius-md: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--color-background-secondary); font-family: var(--font-sans); }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal   { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber  { background: #FAEEDA; color: #854F0B; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .badge-rose   { background: #FDECEA; color: #9B1B1B; }
+
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+
+  .rule-box  { background: #E6F1FB; padding: 1rem 1.25rem; border-left: 3px solid #378ADD; }
+  .rule-text { font-size: 19px; font-weight: 500; color: #0C447C; line-height: 1.5; }
+
+  .step-row  { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num  { width: 26px; height: 26px; border-radius: 50%; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub  { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13px; line-height: 2; overflow-x: auto; }
+  .c-kw { color: #cba6f7; } .c-fn { color: #89b4fa; } .c-cm { color: #6c7086; font-style: italic; } .c-plain { color: #cdd6f4; } .c-str { color: #a6e3a1; } .c-num { color: #fab387; }
+
+  .complexity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card  { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why   { font-size: 13px; margin-top: 6px; }
+
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot { width: 8px; height: 8px; border-radius: 50%; background: #378ADD; flex-shrink: 0; margin-top: 7px; }
+
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub   { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags  { display: flex; gap: 8px; flex-wrap: wrap; }
+  .divider    { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+
+  .analogy-box  { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn    { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+
+  .deep-section { margin-bottom: 3rem; }
+  .callout      { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+
+  .trace-step    { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge   { min-width: 80px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; white-space: nowrap; flex-shrink: 0; }
+  .trace-going   { background: #E6F1FB; color: #185FA5; }
+  .trace-record  { background: #E1F5EE; color: #0F6E56; }
+  .trace-split   { background: #EEEDFE; color: #534AB7; }
+  .trace-back    { background: #FAEEDA; color: #854F0B; }
+  .trace-base    { background: #FDECEA; color: #9B1B1B; }
+  .trace-content { flex: 1; }
+  .trace-title   { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc    { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x     { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+  /* node chain visualizer */
+  .node-chain { display: flex; align-items: center; gap: 0; flex-wrap: nowrap; overflow-x: auto; padding: 4px 0; }
+  .node-box { width: 48px; height: 36px; border: 1.5px solid #378ADD; background: #E6F1FB; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: #0C447C; flex-shrink: 0; }
+  .node-arrow { font-size: 16px; color: #8888a8; padding: 0 4px; flex-shrink: 0; }
+  .node-null { width: 48px; height: 36px; border: 1.5px dashed #B5D4F4; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; color: #8888a8; flex-shrink: 0; }
+
+  code { font-size: 12.5px; background: var(--color-background-secondary); padding: 2px 5px; border-radius: 4px; font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <div class="section">
+    <p class="section-label">Binary Tree · DFS · In-place · LC 114</p>
+    <h1 class="hero-title">Flatten Binary Tree to Linked List</h1>
+    <p class="hero-sub">Given the root of a binary tree, flatten it into a "linked list" in-place using the same TreeNode structure, following preorder traversal order.</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-teal">Preorder DFS</span>
+      <span class="badge badge-purple">Morris Traversal</span>
+      <span class="badge badge-amber">In-place</span>
+      <span class="badge badge-rose">Medium</span>
+    </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn"        id="btn-deep"  onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       QUICK MODE
+  ══════════════════════════════════════ -->
+  <div id="quick-mode">
+    <hr class="divider" style="margin-top:0;">
+
+    <!-- 01 · The key insight -->
+    <div class="section">
+      <p class="section-label">01 · The core insight</p>
+      <div class="rule-box" style="margin-bottom:0.75rem;">
+        <p class="rule-text">For every node: find the rightmost node of its left subtree, stitch it to the node's right child, then swing the entire left subtree to the right and clear the left pointer.</p>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">Repeat this locally at each node (iteratively, top-down) — no extra memory, no recursion needed.</p>
+    </div>
+
+    <!-- 02 · How to think -->
+    <div class="section">
+      <p class="section-label">02 · How to think (3 steps, repeated for each node)</p>
+      <div class="card">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-text">If the current node has a left child, find its rightmost descendant</div>
+            <div class="step-sub">Walk right as far as possible within the left subtree. That node is the "tail" of the left subtree in preorder.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-text">Connect: tail.right = node.right</div>
+            <div class="step-sub">The right subtree gets appended after the entire left subtree. Nothing is lost.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-text">Move left subtree to right: node.right = node.left, node.left = None</div>
+            <div class="step-sub">The left subtree now occupies the right pointer. Left is cleared. Advance to node.right and repeat.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 · Code -->
+    <div class="section">
+      <p class="section-label">03 · Code (Python — O(1) space, iterative)</p>
+      <div class="code-block">
+        <div><span class="c-kw">class </span><span class="c-fn">Solution</span><span class="c-plain">:</span></div>
+        <div><span class="c-plain">  </span><span class="c-kw">def </span><span class="c-fn">flatten</span><span class="c-plain">(self, root) -> </span><span class="c-kw">None</span><span class="c-plain">:</span></div>
+        <div><span class="c-plain">    curr = root</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">while </span><span class="c-plain">curr:</span></div>
+        <div><span class="c-plain">      </span><span class="c-kw">if </span><span class="c-plain">curr.left:</span></div>
+        <div><span class="c-plain">        </span><span class="c-cm"># 1. Find rightmost node of left subtree</span></div>
+        <div><span class="c-plain">        tail = curr.left</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">while </span><span class="c-plain">tail.right:</span></div>
+        <div><span class="c-plain">          tail = tail.right</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">        </span><span class="c-cm"># 2. Stitch: tail → curr's right subtree</span></div>
+        <div><span class="c-plain">        tail.right = curr.right</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">        </span><span class="c-cm"># 3. Move left subtree to right, clear left</span></div>
+        <div><span class="c-plain">        curr.right = curr.left</span></div>
+        <div><span class="c-plain">        curr.left  = </span><span class="c-kw">None</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">      curr = curr.right        </span><span class="c-cm"># advance</span></div>
+      </div>
+    </div>
+
+    <!-- 04 · Example -->
+    <div class="section">
+      <p class="section-label">04 · Official example — before &amp; after</p>
+      <div class="card">
+        <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 14px;">Input tree</p>
+        <div style="display:flex;justify-content:center;margin-bottom:18px;">
+          <svg width="280" height="175" viewBox="0 0 280 175" xmlns="http://www.w3.org/2000/svg">
+            <!-- edges -->
+            <line x1="140" y1="52" x2="80"  y2="102" stroke="#B5D4F4" stroke-width="1.8"/>
+            <line x1="140" y1="52" x2="200" y2="102" stroke="#B5D4F4" stroke-width="1.8"/>
+            <line x1="80"  y1="122" x2="50"  y2="155" stroke="#B5D4F4" stroke-width="1.8"/>
+            <line x1="80"  y1="122" x2="110" y2="155" stroke="#B5D4F4" stroke-width="1.8"/>
+            <line x1="200" y1="122" x2="230" y2="155" stroke="#B5D4F4" stroke-width="1.8"/>
+            <!-- nodes -->
+            <circle cx="140" cy="34"  r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+            <text x="140" y="39"  text-anchor="middle" font-size="14" font-weight="600" fill="#0C447C" font-family="-apple-system,sans-serif">1</text>
+            <circle cx="80"  cy="112" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+            <text x="80"  y="117" text-anchor="middle" font-size="14" font-weight="600" fill="#085041" font-family="-apple-system,sans-serif">2</text>
+            <circle cx="200" cy="112" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+            <text x="200" y="117" text-anchor="middle" font-size="14" font-weight="600" fill="#633806" font-family="-apple-system,sans-serif">5</text>
+            <circle cx="50"  cy="162" r="18" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.2"/>
+            <text x="50"  y="167" text-anchor="middle" font-size="13" font-weight="600" fill="#085041" font-family="-apple-system,sans-serif">3</text>
+            <circle cx="110" cy="162" r="18" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.2"/>
+            <text x="110" y="167" text-anchor="middle" font-size="13" font-weight="600" fill="#085041" font-family="-apple-system,sans-serif">4</text>
+            <circle cx="230" cy="162" r="18" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.2"/>
+            <text x="230" y="167" text-anchor="middle" font-size="13" font-weight="600" fill="#633806" font-family="-apple-system,sans-serif">6</text>
+            <!-- labels -->
+            <text x="140" y="14"  text-anchor="middle" font-size="10" fill="#8888a8" font-family="-apple-system,sans-serif">root</text>
+            <text x="55"  y="113" text-anchor="end"    font-size="10" fill="#8888a8" font-family="-apple-system,sans-serif">left</text>
+            <text x="225" y="113" text-anchor="start"  font-size="10" fill="#8888a8" font-family="-apple-system,sans-serif">right</text>
+          </svg>
+        </div>
+
+        <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 10px;">Output — flattened (right-only linked list, preorder: 1→2→3→4→5→6)</p>
+        <div class="node-chain" style="margin-bottom:6px;">
+          <div class="node-box">1</div>
+          <div class="node-arrow">→</div>
+          <div class="node-box">2</div>
+          <div class="node-arrow">→</div>
+          <div class="node-box">3</div>
+          <div class="node-arrow">→</div>
+          <div class="node-box">4</div>
+          <div class="node-arrow">→</div>
+          <div class="node-box">5</div>
+          <div class="node-arrow">→</div>
+          <div class="node-box">6</div>
+          <div class="node-arrow">→</div>
+          <div class="node-null">null</div>
+        </div>
+        <p style="font-size:12px;color:var(--color-text-tertiary);margin:4px 0 0;">All left pointers are null. The chain only uses right pointers.</p>
+      </div>
+    </div>
+
+    <!-- 05 · Complexity -->
+    <div class="section">
+      <p class="section-label">05 · Complexity</p>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Time</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n)</div>
+          <div class="complexity-why" style="color:#185FA5;">Each node is visited a constant number of times. The inner "find tail" loop, across all iterations, totals at most O(n) steps overall.</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">Space</div>
+          <div class="complexity-value" style="color:#3C3489;">O(1)</div>
+          <div class="complexity-why" style="color:#534AB7;">The iterative approach uses only a handful of pointers. No stack, no recursion, no extra data structures.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end quick-mode -->
+
+  <!-- ══════════════════════════════════════
+       DEEP MODE
+  ══════════════════════════════════════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr class="divider" style="margin-top:0;">
+
+    <!-- 01 · Problem stated plainly -->
+    <div class="deep-section">
+      <p class="section-label">01 · Problem in plain English</p>
+      <h2 class="section-title">What exactly are we being asked to do?</h2>
+      <p class="deep-para">We start with a regular binary tree. We need to rearrange its nodes <em>in-place</em> — using the same <code>TreeNode</code> objects, not creating new ones — so that the result looks like a singly linked list threaded through the <strong>right</strong> pointer of every node. Every <strong>left</strong> pointer must be set to <code>null</code>.</p>
+      <p class="deep-para">The order of nodes in the final list must match a <strong>preorder traversal</strong> of the original tree: Root → Left → Right.</p>
+
+      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem;">
+        <p style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin:0 0 14px;text-transform:uppercase;letter-spacing:0.07em;">Preorder of the example tree</p>
+        <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start;">
+          <div>
+            <svg width="260" height="180" viewBox="0 0 260 180" xmlns="http://www.w3.org/2000/svg">
+              <line x1="130" y1="52" x2="70"  y2="102" stroke="#B5D4F4" stroke-width="1.8"/>
+              <line x1="130" y1="52" x2="190" y2="102" stroke="#B5D4F4" stroke-width="1.8"/>
+              <line x1="70"  y1="122" x2="40"  y2="158" stroke="#B5D4F4" stroke-width="1.8"/>
+              <line x1="70"  y1="122" x2="100" y2="158" stroke="#B5D4F4" stroke-width="1.8"/>
+              <line x1="190" y1="122" x2="220" y2="158" stroke="#B5D4F4" stroke-width="1.8"/>
+              <!-- visit-order badges -->
+              <circle cx="130" cy="34"  r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+              <text x="130" y="39"  text-anchor="middle" font-size="14" font-weight="600" fill="#0C447C" font-family="-apple-system,sans-serif">1</text>
+              <text x="108" y="22"  text-anchor="middle" font-size="9"  fill="#378ADD" font-family="-apple-system,sans-serif">①</text>
+              <circle cx="70"  cy="112" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+              <text x="70"  y="117" text-anchor="middle" font-size="14" font-weight="600" fill="#085041" font-family="-apple-system,sans-serif">2</text>
+              <text x="48"  y="100" text-anchor="middle" font-size="9"  fill="#1D9E75" font-family="-apple-system,sans-serif">②</text>
+              <circle cx="190" cy="112" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+              <text x="190" y="117" text-anchor="middle" font-size="14" font-weight="600" fill="#633806" font-family="-apple-system,sans-serif">5</text>
+              <text x="168"  y="100" text-anchor="middle" font-size="9"  fill="#EF9F27" font-family="-apple-system,sans-serif">⑤</text>
+              <circle cx="40"  cy="166" r="18" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.2"/>
+              <text x="40"  y="171" text-anchor="middle" font-size="13" font-weight="600" fill="#085041" font-family="-apple-system,sans-serif">3</text>
+              <text x="22"  y="157" text-anchor="middle" font-size="9"  fill="#1D9E75" font-family="-apple-system,sans-serif">③</text>
+              <circle cx="100" cy="166" r="18" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.2"/>
+              <text x="100" y="171" text-anchor="middle" font-size="13" font-weight="600" fill="#085041" font-family="-apple-system,sans-serif">4</text>
+              <text x="82"  y="157" text-anchor="middle" font-size="9"  fill="#1D9E75" font-family="-apple-system,sans-serif">④</text>
+              <circle cx="220" cy="166" r="18" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.2"/>
+              <text x="220" y="171" text-anchor="middle" font-size="13" font-weight="600" fill="#633806" font-family="-apple-system,sans-serif">6</text>
+              <text x="202"  y="157" text-anchor="middle" font-size="9"  fill="#EF9F27" font-family="-apple-system,sans-serif">⑥</text>
+            </svg>
+          </div>
+          <div style="flex:1;min-width:160px;">
+            <p style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin:0 0 8px;">Preorder visits: Root → Left → Right</p>
+            <div class="node-chain" style="margin-bottom:10px;">
+              <div class="node-box">1</div>
+              <div class="node-arrow">→</div>
+              <div class="node-box">2</div>
+              <div class="node-arrow">→</div>
+              <div class="node-box">3</div>
+              <div class="node-arrow">→</div>
+              <div class="node-box">4</div>
+              <div class="node-arrow">→</div>
+              <div class="node-box">5</div>
+              <div class="node-arrow">→</div>
+              <div class="node-box">6</div>
+            </div>
+            <p style="font-size:12px;color:var(--color-text-secondary);line-height:1.6;">This sequence becomes the required order of the final linked list. Every node's <strong>right</strong> pointer points to the next element in this sequence. Every <strong>left</strong> pointer is <code>null</code>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info">
+        <p><strong>In-place constraint:</strong> The problem says "do not return anything" and "modify the tree in-place." This rules out building a new list from a preorder traversal array. We must rewire the actual pointers of the existing nodes.</p>
+      </div>
+    </div>
+
+    <!-- 02 · The key mechanism -->
+    <div class="deep-section">
+      <p class="section-label">02 · The key mechanism — Morris-style rewiring</p>
+      <h2 class="section-title">Why one node's left subtree can be "stitched" in O(1)</h2>
+      <p class="deep-para">The core observation: in preorder, after visiting a node <code>curr</code>, you visit its entire left subtree before visiting its right subtree. So the last node you visit in the left subtree (its rightmost descendant) is the one that should directly precede the right subtree in the final list.</p>
+      <p class="deep-para">This gives us a purely local operation at <code>curr</code> — no recursion needed:</p>
+
+      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem;">
+        <p style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin:0 0 12px;text-transform:uppercase;letter-spacing:0.07em;">The stitch operation at node 1</p>
+
+        <!-- Before stitch diagram -->
+        <p style="font-size:11px;color:var(--color-text-tertiary);font-weight:500;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.06em;">Before</p>
+        <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:16px;">
+          <svg width="270" height="185" viewBox="0 0 270 185" xmlns="http://www.w3.org/2000/svg">
+            <!-- edges -->
+            <line x1="135" y1="52" x2="70"  y2="100" stroke="#B5D4F4" stroke-width="1.8"/>
+            <line x1="135" y1="52" x2="200" y2="100" stroke="#B5D4F4" stroke-width="1.8"/>
+            <line x1="70"  y1="120" x2="40"  y2="162" stroke="#B5D4F4" stroke-width="1.8"/>
+            <line x1="70"  y1="120" x2="100" y2="162" stroke="#B5D4F4" stroke-width="1.8"/>
+            <line x1="200" y1="120" x2="230" y2="162" stroke="#B5D4F4" stroke-width="1.8"/>
+            <!-- tail edge highlighted -->
+            <line x1="100" y1="162" x2="200" y2="120" stroke="#EF9F27" stroke-width="2" stroke-dasharray="5,3"/>
+            <!-- nodes -->
+            <circle cx="135" cy="34"  r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2.5"/>
+            <text x="135" y="39"  text-anchor="middle" font-size="14" font-weight="700" fill="#0C447C" font-family="-apple-system,sans-serif">1</text>
+            <circle cx="70"  cy="110" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+            <text x="70"  y="115" text-anchor="middle" font-size="14" font-weight="600" fill="#085041" font-family="-apple-system,sans-serif">2</text>
+            <circle cx="200" cy="110" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+            <text x="200" y="115" text-anchor="middle" font-size="14" font-weight="600" fill="#633806" font-family="-apple-system,sans-serif">5</text>
+            <circle cx="40"  cy="170" r="18" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.2"/>
+            <text x="40"  y="175" text-anchor="middle" font-size="13" font-weight="600" fill="#085041" font-family="-apple-system,sans-serif">3</text>
+            <circle cx="100" cy="170" r="18" fill="#E1F5EE" stroke="#EF9F27" stroke-width="2.5"/>
+            <text x="100" y="175" text-anchor="middle" font-size="13" font-weight="600" fill="#633806" font-family="-apple-system,sans-serif">4</text>
+            <circle cx="230" cy="170" r="18" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.2"/>
+            <text x="230" y="175" text-anchor="middle" font-size="13" font-weight="600" fill="#633806" font-family="-apple-system,sans-serif">6</text>
+            <!-- labels -->
+            <text x="135" y="12" text-anchor="middle" font-size="9" fill="#378ADD" font-family="-apple-system,sans-serif">curr</text>
+            <text x="100" y="152" text-anchor="middle" font-size="9" fill="#EF9F27" font-family="-apple-system,sans-serif">tail</text>
+          </svg>
+          <div style="flex:1;min-width:140px;padding-top:8px;">
+            <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.7;margin:0;"><strong>curr = 1</strong><br>Left subtree rooted at 2, with children 3 and 4.<br><br><strong>tail = 4</strong> — rightmost node of the left subtree (node 4 has no right child).<br><br>The dashed line shows what we are about to create: <code>tail.right = curr.right</code>.</p>
+          </div>
+        </div>
+
+        <div style="border-top:0.5px solid var(--color-border-tertiary);margin:10px 0 14px;"></div>
+
+        <!-- After stitch diagram -->
+        <p style="font-size:11px;color:var(--color-text-tertiary);font-weight:500;margin:0 0 6px;text-transform:uppercase;letter-spacing:0.06em;">After (at node 1)</p>
+        <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+          <svg width="220" height="210" viewBox="0 0 220 210" xmlns="http://www.w3.org/2000/svg">
+            <!-- right-only chain from 1 -->
+            <line x1="110" y1="52" x2="110" y2="88" stroke="#378ADD" stroke-width="2"/>
+            <line x1="110" y1="110" x2="110" y2="146" stroke="#1D9E75" stroke-width="1.8"/>
+            <line x1="110" y1="168" x2="110" y2="190" stroke="#1D9E75" stroke-width="1.8"/>
+            <!-- nodes -->
+            <circle cx="110" cy="34"  r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2.5"/>
+            <text x="110" y="39" text-anchor="middle" font-size="14" font-weight="700" fill="#0C447C" font-family="-apple-system,sans-serif">1</text>
+            <text x="110" y="14" text-anchor="middle" font-size="9" fill="#378ADD" font-family="-apple-system,sans-serif">curr (left=null)</text>
+            <circle cx="110" cy="99" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+            <text x="110" y="104" text-anchor="middle" font-size="14" font-weight="600" fill="#085041" font-family="-apple-system,sans-serif">2</text>
+            <circle cx="110" cy="157" r="18" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.2"/>
+            <text x="110" y="162" text-anchor="middle" font-size="13" font-weight="600" fill="#085041" font-family="-apple-system,sans-serif">3</text>
+            <!-- 4 and 5 shown as continuation -->
+            <text x="110" y="200" text-anchor="middle" font-size="11" fill="#8888a8" font-family="-apple-system,sans-serif">… 4 → 5 → 6</text>
+            <!-- null left indicators -->
+            <text x="82"  y="39"  text-anchor="end" font-size="9" fill="#FDECEA" font-family="-apple-system,sans-serif">L:∅</text>
+            <text x="82"  y="104" text-anchor="end" font-size="9" fill="#8888a8" font-family="-apple-system,sans-serif">L:∅</text>
+          </svg>
+          <div style="flex:1;min-width:140px;padding-top:8px;">
+            <p style="font-size:13px;color:var(--color-text-secondary);line-height:1.7;margin:0;"><code>tail.right = curr.right</code> → node 4's right now points to node 5.<br><br><code>curr.right = curr.left</code> → node 1's right now points to node 2.<br><br><code>curr.left = None</code> → node 1 has no left child.<br><br>Now advance: <code>curr = curr.right</code> → move to node 2 and repeat.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-warn">
+        <p><strong>Order matters:</strong> You must stitch <code>tail.right = curr.right</code> <em>before</em> doing <code>curr.right = curr.left</code>. If you do it in reverse, you overwrite <code>curr.right</code> and lose the original right subtree forever.</p>
+      </div>
+    </div>
+
+    <!-- 03 · Full trace -->
+    <div class="deep-section">
+      <p class="section-label">03 · Full step-by-step trace</p>
+      <h2 class="section-title">Walking through every iteration on the example</h2>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-going">curr = 1</div>
+        <div class="trace-content">
+          <p class="trace-title">Has left child (2). Find tail: walk right from 2 → reach 4 (no right child).</p>
+          <p class="trace-desc">tail.right = 5 (node 1's original right). Then: 1.right = 2, 1.left = null. Advance → curr = 2.</p>
+        </div>
+      </div>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-going">curr = 2</div>
+        <div class="trace-content">
+          <p class="trace-title">Has left child (3). Find tail: walk right from 3 → reach 3 (no right child).</p>
+          <p class="trace-desc">tail.right = 4 (node 2's original right). Then: 2.right = 3, 2.left = null. Advance → curr = 3.</p>
+        </div>
+      </div>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-record">curr = 3</div>
+        <div class="trace-content">
+          <p class="trace-title">No left child. Nothing to stitch.</p>
+          <p class="trace-desc">Simply advance → curr = 3.right = 4.</p>
+        </div>
+      </div>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-record">curr = 4</div>
+        <div class="trace-content">
+          <p class="trace-title">No left child. Nothing to stitch.</p>
+          <p class="trace-desc">Advance → curr = 4.right = 5 (stitched in iteration 1).</p>
+        </div>
+      </div>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-going">curr = 5</div>
+        <div class="trace-content">
+          <p class="trace-title">Has left child? In the original tree, node 5 has no left child.</p>
+          <p class="trace-desc">Simply advance → curr = 5.right = 6.</p>
+        </div>
+      </div>
+
+      <div class="trace-step" style="margin-bottom:0;">
+        <div class="trace-badge trace-base">curr = 6</div>
+        <div class="trace-content">
+          <p class="trace-title">No left child, no right child.</p>
+          <p class="trace-desc">Advance → curr = null. Loop ends. Tree is fully flattened.</p>
+        </div>
+      </div>
+
+      <div class="callout callout-success" style="margin-top:1.25rem;">
+        <p><strong>Final linked list:</strong> 1 → 2 → 3 → 4 → 5 → 6 → null. Every left pointer is null. Every right pointer links to the next node in preorder. ✓</p>
+      </div>
+    </div>
+
+    <!-- 04 · Why the inner loop is still O(n) total -->
+    <div class="deep-section">
+      <p class="section-label">04 · Amortised analysis — why time is still O(n)</p>
+      <h2 class="section-title">The "find tail" inner loop looks expensive. Is it?</h2>
+      <p class="deep-para">At first glance it seems like the inner <code>while tail.right</code> loop could make this O(n²). But consider: each edge in the original tree is traversed by the inner loop at most once. Once a node is stitched and curr advances past it, the inner loop never visits that segment again. The total number of inner-loop steps across all outer-loop iterations is therefore bounded by the total number of edges, which is n−1. So the algorithm is <strong>O(n) time, O(1) space</strong>.</p>
+
+      <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;">
+        <p style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin:0 0 10px;text-transform:uppercase;letter-spacing:0.07em;">Contrast with the naive approach</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="background:#FDECEA;border-radius:var(--border-radius-md);padding:12px 14px;">
+            <p style="font-size:12px;font-weight:500;color:#9B1B1B;margin:0 0 5px;">❌ Collect then rewire</p>
+            <p style="font-size:12px;color:#633806;margin:0;line-height:1.6;">Preorder traversal → list → rewire pointers. O(n) time, but <strong>O(n) space</strong> for the intermediate list.</p>
+          </div>
+          <div style="background:#E1F5EE;border-radius:var(--border-radius-md);padding:12px 14px;">
+            <p style="font-size:12px;font-weight:500;color:#0F6E56;margin:0 0 5px;">✓ Morris-style in-place</p>
+            <p style="font-size:12px;color:#085041;margin:0;line-height:1.6;">No auxiliary data structure. Rewires pointers on the fly. <strong>O(1) extra space</strong> while remaining O(n) time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 · Three approaches -->
+    <div class="deep-section">
+      <p class="section-label">05 · Three ways to solve it</p>
+      <h2 class="section-title">Iterative (best), Recursive, and List-first</h2>
+
+      <!-- Approach 1 -->
+      <div style="margin-bottom:1.25rem;">
+        <p style="font-size:13px;font-weight:600;color:#0C447C;margin:0 0 6px;">① Iterative Morris-style — O(n) time, O(1) space ← preferred</p>
+        <div class="code-block" style="margin:0;">
+          <div><span class="c-kw">def </span><span class="c-fn">flatten</span><span class="c-plain">(self, root) -> </span><span class="c-kw">None</span><span class="c-plain">:</span></div>
+          <div><span class="c-plain">  curr = root</span></div>
+          <div><span class="c-plain">  </span><span class="c-kw">while </span><span class="c-plain">curr:</span></div>
+          <div><span class="c-plain">    </span><span class="c-kw">if </span><span class="c-plain">curr.left:</span></div>
+          <div><span class="c-plain">      tail = curr.left</span></div>
+          <div><span class="c-plain">      </span><span class="c-kw">while </span><span class="c-plain">tail.right: tail = tail.right</span></div>
+          <div><span class="c-plain">      tail.right = curr.right</span></div>
+          <div><span class="c-plain">      curr.right = curr.left</span></div>
+          <div><span class="c-plain">      curr.left  = </span><span class="c-kw">None</span></div>
+          <div><span class="c-plain">    curr = curr.right</span></div>
+        </div>
+      </div>
+
+      <!-- Approach 2 -->
+      <div style="margin-bottom:1.25rem;">
+        <p style="font-size:13px;font-weight:600;color:#534AB7;margin:0 0 6px;">② Recursive post-order — O(n) time, O(h) space (stack frames)</p>
+        <div class="code-block" style="margin:0;">
+          <div><span class="c-kw">def </span><span class="c-fn">flatten</span><span class="c-plain">(self, root) -> </span><span class="c-kw">None</span><span class="c-plain">:</span></div>
+          <div><span class="c-plain">  </span><span class="c-kw">def </span><span class="c-fn">dfs</span><span class="c-plain">(node):</span></div>
+          <div><span class="c-plain">    </span><span class="c-kw">if not </span><span class="c-plain">node: </span><span class="c-kw">return None</span></div>
+          <div><span class="c-plain">    left_tail  = </span><span class="c-fn">dfs</span><span class="c-plain">(node.left)</span></div>
+          <div><span class="c-plain">    right_tail = </span><span class="c-fn">dfs</span><span class="c-plain">(node.right)</span></div>
+          <div><span class="c-kw">    if </span><span class="c-plain">left_tail:</span></div>
+          <div><span class="c-plain">      left_tail.right = node.right</span></div>
+          <div><span class="c-plain">      node.right = node.left</span></div>
+          <div><span class="c-plain">      node.left  = </span><span class="c-kw">None</span></div>
+          <div><span class="c-kw">    return </span><span class="c-plain">right_tail </span><span class="c-kw">or </span><span class="c-plain">left_tail </span><span class="c-kw">or </span><span class="c-plain">node</span></div>
+          <div><span class="c-fn">  dfs</span><span class="c-plain">(root)</span></div>
+        </div>
+      </div>
+
+      <!-- Approach 3 -->
+      <div>
+        <p style="font-size:13px;font-weight:600;color:#854F0B;margin:0 0 6px;">③ Preorder list then rewire — O(n) time, O(n) space (simplest to understand)</p>
+        <div class="code-block" style="margin:0;">
+          <div><span class="c-kw">def </span><span class="c-fn">flatten</span><span class="c-plain">(self, root) -> </span><span class="c-kw">None</span><span class="c-plain">:</span></div>
+          <div><span class="c-plain">  nodes = []</span></div>
+          <div><span class="c-kw">  def </span><span class="c-fn">preorder</span><span class="c-plain">(node):</span></div>
+          <div><span class="c-kw">    if </span><span class="c-plain">node: nodes.append(node); </span><span class="c-fn">preorder</span><span class="c-plain">(node.left); </span><span class="c-fn">preorder</span><span class="c-plain">(node.right)</span></div>
+          <div><span class="c-fn">  preorder</span><span class="c-plain">(root)</span></div>
+          <div><span class="c-kw">  for </span><span class="c-plain">i </span><span class="c-kw">in </span><span class="c-fn">range</span><span class="c-plain">(</span><span class="c-fn">len</span><span class="c-plain">(nodes) - </span><span class="c-num">1</span><span class="c-plain">):</span></div>
+          <div><span class="c-plain">    nodes[i].right = nodes[i+</span><span class="c-num">1</span><span class="c-plain">]</span></div>
+          <div><span class="c-plain">    nodes[i].left  = </span><span class="c-kw">None</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 · Common mistakes -->
+    <div class="deep-section">
+      <p class="section-label">06 · Common mistakes</p>
+      <h2 class="section-title">Where people go wrong</h2>
+      <div class="card" style="padding:0.5rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Setting curr.right = curr.left before saving the original right</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">This loses the right subtree. Always do <code>tail.right = curr.right</code> first, then reassign <code>curr.right</code>.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting to clear curr.left = None</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The problem requires all left pointers to be null. If you skip this step the structure is not a valid linked list, and the judge will reject it.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Using an explicit stack and calling it "O(1) space"</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">A stack-based iterative DFS is still O(h) space. Only the Morris/pointer-rewiring approach achieves true O(1) extra space.</p>
+          </div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Thinking the inner "find tail" loop makes this O(n²)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Amortised analysis shows the total inner-loop work is O(n). Each edge is traversed by the inner loop at most once across the entire run.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 · Complexity -->
+    <div class="deep-section">
+      <p class="section-label">07 · Complexity</p>
+      <h2 class="section-title">Time and space — detailed</h2>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Time</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n)</div>
+          <div class="complexity-why" style="color:#185FA5;">Each of the n nodes is visited by curr once. The inner "find tail" loop's total steps across all iterations are bounded by n−1 (total edges). Combined: O(n).</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">Space</div>
+          <div class="complexity-value" style="color:#3C3489;">O(1)</div>
+          <div class="complexity-why" style="color:#534AB7;">Only pointer variables (curr, tail). No stack, no recursion, no auxiliary array. This is the primary advantage of the Morris-style approach over the recursive solution.</div>
+        </div>
+      </div>
+      <div class="callout callout-warn" style="margin-top:1rem;">
+        <p><strong>Interview tip:</strong> Lead with the O(n) / O(1) iterative solution. Then mention the recursive alternative (O(h) space) and the preorder-list approach (O(n) space, easiest to reason about). Explaining the trade-offs clearly is exactly what interviewers reward.</p>
+      </div>
+    </div>
+
+    <!-- 08 · Q&A -->
+    <div class="deep-section">
+      <p class="section-label">08 · Interview Q&amp;A</p>
+      <h2 class="section-title">Questions you'll actually get asked</h2>
+
+      <div class="qa-block">
+        <div class="qa-q">Why preorder and not inorder or postorder?</div>
+        <div class="qa-a">The problem explicitly says "flatten the tree as if it were traversed using preorder." Preorder (Root → Left → Right) is the natural reading order of a tree from top-left to bottom-right. The problem could have asked for inorder or postorder — the in-place rewiring technique works for those too, but with a different traversal order driving the stitching logic.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Can you solve this recursively? What's the space cost?</div>
+        <div class="qa-a">Yes — the recursive approach processes subtrees and returns the tail (rightmost node) of each. It's elegant and easy to reason about, but uses O(h) stack frames, where h is the tree height. In the worst case (completely skewed tree), that's O(n) space — worse than the iterative approach.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What if the tree is already a right-skewed chain?</div>
+        <div class="qa-a">Then every node has no left child, and the <code>if curr.left</code> check fails every iteration. The algorithm simply walks the chain in O(n) with zero stitching operations. It handles this edge case naturally without special-casing.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What if root is null?</div>
+        <div class="qa-a"><code>curr = root</code> sets curr to null immediately, so the while loop never executes. The function returns without doing anything, which is the correct behaviour for an empty tree.</div>
+      </div>
+    </div>
+
+    <!-- 09 · Related problems -->
+    <div class="deep-section">
+      <p class="section-label">09 · Related problems</p>
+      <h2 class="section-title">Where this pattern shows up again</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">LC 430 — Flatten a Multilevel Doubly Linked List</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Conceptually identical — find the tail of a nested branch, stitch the continuation, and move forward. Practice this after LC 114.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">LC 94 — Binary Tree Inorder Traversal (Morris)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The full Morris traversal algorithm uses the same "find predecessor / stitch right / restore" idea but for traversal rather than reshaping. Understanding LC 114 is a great foundation for Morris traversal.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">LC 116 / 117 — Populating Next Right Pointers</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Also rewires tree pointers in-place, level by level. A good companion problem that builds the same intuition: "use the tree's own structure as temporary scaffolding."</p>
+          </div>
+        </div>
+        <div class="interview-item" style="border:none;">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">LC 144 — Binary Tree Preorder Traversal</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">If the order in LC 114 feels unclear, solve this first to make sure you have a firm grip on what preorder visits and in what sequence.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end deep-mode -->
+
+  <!-- Footer CTA -->
+  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Try it yourself</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">LeetCode 114 · Medium · Tags: Linked List, Stack, Tree, DFS, Binary Tree</p>
+    </div>
+    <a href="https://leetcode.com/problems/flatten-binary-tree-to-linked-list/" target="_blank" style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);background:#E6F1FB;color:#185FA5;font-weight:500;text-decoration:none;border:0.5px solid #B5D4F4;">Open on LeetCode ↗</a>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep  = document.getElementById('deep-mode');
+  const btnQ  = document.getElementById('btn-quick');
+  const btnD  = document.getElementById('btn-deep');
+  const desc  = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display  = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display  = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>
+</body>
+</html>
