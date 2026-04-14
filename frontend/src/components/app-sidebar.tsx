@@ -74,8 +74,8 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
         >
           <div className="flex min-w-0 items-center gap-2 overflow-hidden">
             <Image
-              src="/codearena-mark.svg"
-              alt="CodeArena logo"
+              src="/thinkdsa-mark.svg"
+              alt="ThinkDSA logo"
               width={28}
               height={28}
               className="h-7 w-7 shrink-0"
@@ -86,7 +86,7 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
                 collapsed ? "w-0 opacity-0" : "w-auto opacity-100",
               )}
             >
-              CodeArena
+              ThinkDSA
             </p>
           </div>
         </div>

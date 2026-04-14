@@ -14,9 +14,9 @@ export default function ProgressPage() {
           priority
         />
         <div className="mt-3 space-y-1">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">CodeArena Progress</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">ThinkDSA Progress</h1>
           <p className="text-base font-medium text-slate-600">
-            We are currently developing this page to deliver a polished CodeArena progress experience.
+            We are currently developing this page to deliver a polished ThinkDSA progress experience.
           </p>
           <div className="pt-3">
             <Link

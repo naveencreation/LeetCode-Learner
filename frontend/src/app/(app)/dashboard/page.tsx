@@ -8,7 +8,7 @@ export default function DashboardPage() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_15%,rgba(56,189,248,0.24),transparent_36%),radial-gradient(circle_at_88%_0%,rgba(16,185,129,0.2),transparent_30%)]" />
         <div className="relative flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.06em] text-sky-700">CodeArena</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.06em] text-sky-700">ThinkDSA</p>
             <h1 className="mt-1 text-[clamp(24px,2.2vw,34px)] font-extrabold leading-[1.08] tracking-[-0.02em] text-slate-900">
               Dashboard Preview
             </h1>
@@ -45,9 +45,9 @@ export default function DashboardPage() {
             priority
           />
           <div className="shrink-0 space-y-1">
-            <h2 className="text-[clamp(26px,2.1vw,34px)] font-extrabold tracking-tight text-slate-900">CodeArena Dashboard</h2>
+            <h2 className="text-[clamp(26px,2.1vw,34px)] font-extrabold tracking-tight text-slate-900">ThinkDSA Dashboard</h2>
             <p className="text-sm font-medium text-slate-600 sm:text-base">
-              We are currently developing this page to deliver a polished CodeArena dashboard experience.
+              We are currently developing this page to deliver a polished ThinkDSA dashboard experience.
             </p>
           </div>
         </div>

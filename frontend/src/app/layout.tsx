@@ -13,12 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CodeArena",
-  description: "CodeArena - interactive tree traversal learning app",
+  title: "ThinkDSA",
+  description: "ThinkDSA - interactive tree traversal learning app",
   icons: {
-    icon: "/codearena-mark.svg",
-    shortcut: "/codearena-mark.svg",
-    apple: "/codearena-mark.svg",
+    icon: "/thinkdsa-mark.svg",
+    shortcut: "/thinkdsa-mark.svg",
+    apple: "/thinkdsa-mark.svg",
   },
 };
 

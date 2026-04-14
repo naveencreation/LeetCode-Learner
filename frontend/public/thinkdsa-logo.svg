@@ -1,6 +1,6 @@
 <svg width="820" height="240" viewBox="0 0 820 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="logoTitle logoDesc">
-  <title id="logoTitle">CodeArena Logo</title>
-  <desc id="logoDesc">CodeArena logo with a stylized CA monogram and modern wordmark.</desc>
+  <title id="logoTitle">ThinkDSA Logo</title>
+  <desc id="logoDesc">ThinkDSA logo with a stylized monogram and modern wordmark.</desc>
 
   <defs>
     <linearGradient id="caGradient" x1="34" y1="28" x2="206" y2="204" gradientUnits="userSpaceOnUse">
@@ -34,8 +34,8 @@
 
   <!-- Wordmark -->
   <g transform="translate(258 76)">
-    <text x="0" y="58" fill="#0F172A" font-family="Poppins, Segoe UI, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="-1.5">Code</text>
-    <text x="178" y="58" fill="url(#caGradient)" font-family="Poppins, Segoe UI, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="-1.5">Arena</text>
+    <text x="0" y="58" fill="#0F172A" font-family="Poppins, Segoe UI, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="-1.5">Think</text>
+    <text x="178" y="58" fill="url(#caGradient)" font-family="Poppins, Segoe UI, Arial, sans-serif" font-size="72" font-weight="800" letter-spacing="-1.5">DSA</text>
     <text x="4" y="98" fill="#475569" font-family="Poppins, Segoe UI, Arial, sans-serif" font-size="24" font-weight="600" letter-spacing="0.3">Practice. Visualize. Master.</text>
   </g>
 </svg>

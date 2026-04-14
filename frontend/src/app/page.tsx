@@ -37,7 +37,7 @@ export default function Home() {
               <polyline points="8 6 2 12 8 18" />
             </svg>
           </div>
-          CodeArena_
+          ThinkDSA_
         </Link>
 
         {/* Center: Navigation Pill */}
@@ -143,7 +143,7 @@ export default function Home() {
               <span className={landingStyles.eyebrow}>The Old Way is Broken</span>
               <h2 className={landingStyles.titleMain}>You do not memorize patterns.<br/>You understand algorithms.</h2>
               <p className={landingStyles.subtitleMain}>
-                CodeArena replaces disjointed notebook scribbles with unified visual execution. 
+                ThinkDSA replaces disjointed notebook scribbles with unified visual execution. 
                 Watch call stacks, memory pointers, and output sync across your actual code.
               </p>
             </div>
@@ -218,7 +218,7 @@ export default function Home() {
                   <polyline points="8 6 2 12 8 18" />
                 </svg>
               </div>
-              CodeArena_
+              ThinkDSA_
             </Link>
             <p className={styles.footerTagline}>The visual learning platform for computer science.</p>
           </div>
@@ -244,7 +244,7 @@ export default function Home() {
           </div>
         </div>
         <div className={styles.footerBottom}>
-          <p>© 2026 CodeArena. All rights reserved.</p>
+          <p>© 2026 ThinkDSA. All rights reserved.</p>
         </div>
       </footer>
     </div>

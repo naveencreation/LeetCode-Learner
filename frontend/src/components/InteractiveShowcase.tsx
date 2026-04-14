@@ -150,7 +150,7 @@ function Slide1Visual({ active }: { active: boolean }) {
         <span className={styles.dot} style={{ background: "#ef4444" }} />
         <span className={styles.dot} style={{ background: "#eab308" }} />
         <span className={styles.dot} style={{ background: "#22c55e" }} />
-        <span className={styles.mockWindowTitle}>inorder.ts — CodeArena</span>
+        <span className={styles.mockWindowTitle}>inorder.ts — ThinkDSA</span>
       </div>
       <div className={styles.slide1Body}>
         {/* Code editor half */}
@@ -222,7 +222,7 @@ function Slide2Visual({ active }: { active: boolean }) {
         <span className={styles.dot} style={{ background: "#ef4444" }} />
         <span className={styles.dot} style={{ background: "#eab308" }} />
         <span className={styles.dot} style={{ background: "#22c55e" }} />
-        <span className={styles.mockWindowTitle}>Tree Builder — CodeArena</span>
+        <span className={styles.mockWindowTitle}>Tree Builder — ThinkDSA</span>
       </div>
       <div className={styles.slide2Body}>
         <div className={styles.builderTopBar}>
@@ -270,7 +270,7 @@ function Slide3Visual({ active }: { active: boolean }) {
         <span className={styles.dot} style={{ background: "#ef4444" }} />
         <span className={styles.dot} style={{ background: "#eab308" }} />
         <span className={styles.dot} style={{ background: "#22c55e" }} />
-        <span className={styles.mockWindowTitle}>Call Stack — CodeArena</span>
+        <span className={styles.mockWindowTitle}>Call Stack — ThinkDSA</span>
       </div>
       <div className={styles.slide3Body}>
         <div className={styles.stackLabel}>Execution Stack</div>
