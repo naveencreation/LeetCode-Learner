@@ -104,7 +104,7 @@ export function UnifiedControlsBar({
             onClick={nextStep}
             disabled={isAtEnd}
           >
-            <span>Next Step</span>
+            <span>{isAtStart ? "Start" : "Next Step"}</span>
             <ChevronRight
               size={14}
               strokeWidth={2}
