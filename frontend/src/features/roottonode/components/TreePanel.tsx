@@ -268,7 +268,7 @@ export function TreePanel({
           <button
             type="button"
             onClick={onOpenTreeSetup}
-            className="traversal-pill hover:bg-slate-50"
+            className="traversal-pill"
           >
             Select Tree
           </button>

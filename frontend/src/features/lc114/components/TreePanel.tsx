@@ -153,7 +153,7 @@ export function TreePanel({ root, currentOperation, nodeStates, activeStep, cust
       <div className="traversal-panel-header">
         <h2 className="traversal-panel-title">Tree Structure</h2>
         <div className="flex items-center gap-2">
-          <button type="button" onClick={onOpenTreeSetup} className="traversal-pill hover:bg-slate-50">Select Tree</button>
+          <button type="button" onClick={onOpenTreeSetup} className="traversal-pill">Select Tree</button>
         </div>
       </div>
 
