@@ -43,18 +43,36 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
   return (
     <aside
       className={cn(
-        "ui-scrollbar fixed left-0 top-0 z-40 h-screen shrink-0 overflow-y-auto border-r bg-sidebar text-sidebar-foreground transition-all duration-300 ease-in-out",
+        "group/sidebar fixed left-0 top-0 z-40 h-screen shrink-0 overflow-visible border-r bg-sidebar text-sidebar-foreground transition-all duration-300 ease-in-out",
         collapsed ? "w-16" : "w-64",
       )}
     >
-      <div
-        className={cn(
-          "flex h-16 items-center border-b transition-all duration-300",
-          collapsed ? "justify-center px-2" : "justify-between px-4",
-        )}
+      {/* ── Floating edge toggle ── */}
+      <button
+        type="button"
+        onClick={onToggle}
+        className="absolute -right-3.5 top-16 z-50 inline-flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-sidebar-border bg-background text-sidebar-foreground shadow-sm transition-all hover:scale-110 hover:shadow-md"
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        aria-expanded={!collapsed}
+        title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
-        {!collapsed ? (
-          <div className="flex min-w-0 items-center gap-2">
+        {collapsed ? (
+          <ChevronRight className="size-3.5" />
+        ) : (
+          <ChevronLeft className="size-3.5" />
+        )}
+      </button>
+
+      {/* ── Inner scrollable container ── */}
+      <div className="ui-scrollbar flex h-full flex-col overflow-y-auto overflow-x-hidden">
+        {/* ── Header ── */}
+        <div
+          className={cn(
+            "flex h-16 shrink-0 items-center border-b transition-all duration-300",
+            collapsed ? "justify-center px-2" : "px-4",
+          )}
+        >
+          <div className="flex min-w-0 items-center gap-2 overflow-hidden">
             <Image
               src="/codearena-mark.svg"
               alt="CodeArena logo"
@@ -62,53 +80,50 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
               height={28}
               className="h-7 w-7 shrink-0"
             />
-            <p className="truncate text-sm font-semibold tracking-wide">CodeArena</p>
-          </div>
-        ) : (
-          <Image
-            src="/codearena-mark.svg"
-            alt="CodeArena logo"
-            width={28}
-            height={28}
-            className="h-7 w-7 shrink-0"
-          />
-        )}
-
-        <button
-          type="button"
-          onClick={onToggle}
-          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-sidebar-border bg-background text-sidebar-foreground transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          aria-expanded={!collapsed}
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {collapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
-        </button>
-      </div>
-
-      <nav className={cn("space-y-2 p-3", collapsed && "px-2")}> 
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href;
-
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
+            <p
               className={cn(
-                buttonVariants({ variant: isActive ? "default" : "ghost" }),
-                collapsed ? "h-10 w-12 justify-center px-0" : "w-full justify-start gap-2",
-                !isActive && "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                "whitespace-nowrap text-sm font-semibold tracking-wide transition-all duration-300",
+                collapsed ? "w-0 opacity-0" : "w-auto opacity-100",
               )}
-              title={item.label}
-              aria-label={item.label}
             >
-              <Icon className="size-4" />
-              {!collapsed ? <span>{item.label}</span> : null}
-            </Link>
-          );
-        })}
-      </nav>
+              CodeArena
+            </p>
+          </div>
+        </div>
+
+        {/* ── Navigation ── */}
+        <nav className={cn("space-y-2 p-3", collapsed && "px-2")}> 
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  buttonVariants({ variant: isActive ? "default" : "ghost" }),
+                  "overflow-hidden",
+                  collapsed ? "h-10 w-12 justify-center px-0" : "w-full justify-start gap-2",
+                  !isActive && "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                )}
+                title={item.label}
+                aria-label={item.label}
+              >
+                <Icon className="size-4 shrink-0" />
+                <span
+                  className={cn(
+                    "whitespace-nowrap transition-all duration-300",
+                    collapsed ? "w-0 opacity-0" : "w-auto opacity-100",
+                  )}
+                >
+                  {item.label}
+                </span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
     </aside>
   );
 }

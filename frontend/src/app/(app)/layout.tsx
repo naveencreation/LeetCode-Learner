@@ -57,7 +57,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             ? "flex h-screen flex-1 flex-col overflow-hidden p-0"
             : isProblemFocusPage
             ? "flex min-h-screen flex-1 flex-col overflow-y-auto p-0"
-            : `flex-1 p-6 md:p-8 ${collapsed ? "ml-16" : "ml-64"}`
+            : `flex-1 p-6 md:p-8 transition-[margin] duration-300 ease-in-out ${collapsed ? "ml-16" : "ml-64"}`
         }
       >
         {children}
