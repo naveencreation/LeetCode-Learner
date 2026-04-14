@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
 
 type ProblemFocusStat = {
@@ -67,7 +68,8 @@ export function ProblemFocusHeader({
           href={backHref}
           className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[12px] font-semibold text-slate-700 transition hover:bg-slate-50"
         >
-          ← {backLabel}
+          <ArrowLeft size={14} strokeWidth={2.5} aria-hidden="true" />
+          {backLabel}
         </Link>
       </div>
     </header>
