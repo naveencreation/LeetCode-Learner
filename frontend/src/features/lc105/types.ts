@@ -44,3 +44,5 @@ export interface Lc105ProjectionState {
 }
 
 export type Lc105PresetKey = TreePresetKey;
+
+export type { NodePosition, TreePresetKey } from "@/features/shared/types";

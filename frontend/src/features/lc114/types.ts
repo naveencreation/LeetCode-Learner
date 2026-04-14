@@ -35,3 +35,5 @@ export interface Lc114ProjectionState {
 }
 
 export type Lc114PresetKey = TreePresetKey;
+
+export type { NodePosition, TreePresetKey } from "@/features/shared/types";

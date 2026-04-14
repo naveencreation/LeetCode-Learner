@@ -29,13 +29,13 @@ export function ResultPanel({
       </div>
 
       <div className="grid grid-cols-2 gap-1.5">
-        <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1.5 text-center text-white">
+        <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1.5 text-center text-white transition-all duration-200">
           <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-teal-100">
             Current Node
           </p>
           <p className="mt-0.5 text-xl font-extrabold">{currentNode ?? "-"}</p>
         </div>
-        <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1.5 text-center text-white">
+        <div className="rounded-lg border bg-gradient-to-br from-teal-700 to-teal-500 p-1.5 text-center text-white transition-all duration-200">
           <p className="text-[10px] font-bold uppercase tracking-[0.03em] text-teal-100">
             Phase
           </p>
@@ -56,7 +56,7 @@ export function ResultPanel({
             result.map((value, index) => (
               <span
                 key={`${value}-${index}`}
-                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-teal-700 to-teal-400 px-2.5 py-1 text-xs font-extrabold text-white"
+                className="animate-badge-pop inline-flex items-center justify-center rounded-full bg-gradient-to-r from-teal-700 to-teal-400 px-2.5 py-1 text-xs font-extrabold text-white"
               >
                 {value}
               </span>
@@ -66,7 +66,7 @@ export function ResultPanel({
       </div>
 
       <div
-        className={`rounded-lg border px-2 py-1.5 text-[11px] leading-snug ${
+        className={`transition-all duration-300 rounded-lg border px-2 py-1.5 text-[11px] leading-snug ${
           currentStep >= totalSteps
             ? "border-emerald-200 bg-emerald-50 font-bold text-emerald-900"
             : "border-amber-200 bg-amber-50 text-amber-900"

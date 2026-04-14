@@ -190,7 +190,7 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
               return (
                 <div
                   key={`${index}-${line}`}
-                  className={`group grid grid-cols-[1.6rem_1fr] items-start gap-2 rounded-md px-1.5 py-1 transition-all ${
+                  className={`group grid grid-cols-[1.6rem_1fr] items-start gap-2 rounded-md px-1.5 py-1 transition-all duration-200 ${
                     isActive
                       ? "relative border border-[#264f78] bg-[#2a2d2e] text-[#ffffff]"
                       : "border border-transparent text-[#d4d4d4]"

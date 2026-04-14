@@ -56,3 +56,7 @@ export type ZigzagTreePresetKey =
   | "single_node"
   | "two_nodes"
   | "custom_empty";
+
+export type { NodePosition } from "@/features/shared/types";
+
+export type TreePresetKey = ZigzagTreePresetKey;

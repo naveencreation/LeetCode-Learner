@@ -115,7 +115,7 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
               }
               const isActive = currentCodeLine === index;
               return (
-                <div key={`${index}-${line}`} className={`group grid grid-cols-[1.6rem_1fr] items-start gap-2 rounded-md px-1.5 py-1 transition-all ${isActive ? "relative border border-[#264f78] bg-[#2a2d2e] text-[#ffffff]" : "border border-transparent text-[#d4d4d4]"}`}>
+                <div key={`${index}-${line}`} className={`group grid grid-cols-[1.6rem_1fr] items-start gap-2 rounded-md px-1.5 py-1 transition-all duration-200 ${isActive ? "relative border border-[#264f78] bg-[#2a2d2e] text-[#ffffff]" : "border border-transparent text-[#d4d4d4]"}`}>
                   {isActive ? <span aria-hidden="true" className="absolute left-0 top-0 h-full w-[2px] rounded-l-md bg-[#264f78]" /> : null}
                   <span className={`select-none text-right font-bold ${isActive ? "text-[#c6c6c6]" : "text-[#858585] group-hover:text-[#a5a5a5]"}`}>{isActive ? "●" : index + 1}</span>
                   <span className="whitespace-pre font-[var(--font-geist-mono)] font-medium tracking-[0.01em]">

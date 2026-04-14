@@ -355,6 +355,7 @@ export function TreePanel({
             const nodeState = nodeStates[nodeValue] ?? "unvisited";
             const styles = stateStyles[nodeState];
             const isCompleted = nodeState === "completed";
+            const isCurrent = nodeState === "current";
 
             return (
               <g key={`node-${nodeValue}`}>
@@ -365,6 +366,7 @@ export function TreePanel({
                   fill={styles.fill}
                   stroke={styles.stroke}
                   strokeWidth="2.2"
+                  style={{ transition: "fill 300ms ease, stroke 300ms ease", ...(isCurrent ? { animation: "nodePulse 1.2s ease-in-out infinite" } : {}) }}
                 />
                 <text
                   x={point.x}
@@ -372,6 +374,7 @@ export function TreePanel({
                   textAnchor="middle"
                   fill={styles.text}
                   className="text-sm font-extrabold"
+                  style={{ transition: "fill 300ms ease" }}
                 >
                   {nodeValue}
                 </text>

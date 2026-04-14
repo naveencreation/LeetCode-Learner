@@ -27,7 +27,7 @@ function InfoTip({ text, size = 14 }: { text: string; size?: number }) {
         ? createPortal(
             <div
               style={{ top: pos.top, left: pos.left }}
-              className="pointer-events-none fixed z-[9999] w-52 -translate-x-1/2 -translate-y-full rounded-lg border border-slate-200 bg-white p-2.5 text-xs font-semibold text-slate-600 shadow-lg"
+              className="animate-fade-in pointer-events-none fixed z-[9999] w-52 -translate-x-1/2 -translate-y-full rounded-lg border border-slate-200 bg-white p-2.5 text-xs font-semibold text-slate-600 shadow-lg"
             >
               {text}
             </div>,
@@ -728,10 +728,10 @@ export function TreeSetupModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/55 p-4 backdrop-blur-[2px]">
+    <div className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/55 p-4 backdrop-blur-[2px]">
       {showDiscardConfirm ? (
-        <div className="absolute inset-0 z-[1] flex items-center justify-center bg-slate-950/35 p-4">
-          <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.35)]">
+        <div className="animate-fade-in absolute inset-0 z-[1] flex items-center justify-center bg-slate-950/35 p-4">
+          <div className="animate-scale-in w-full max-w-md rounded-xl border border-slate-200 bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.35)]">
             <h4 className="text-sm font-extrabold uppercase tracking-[0.03em] text-slate-800">
               Discard Unsaved Changes?
             </h4>
@@ -761,7 +761,7 @@ export function TreeSetupModal({
         </div>
       ) : null}
 
-      <div className="relative flex max-h-[92vh] w-full max-w-[1120px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.35)]">
+      <div className="animate-slide-up relative flex max-h-[92vh] w-full max-w-[1120px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.35)]">
         <div className="flex items-center justify-between border-b px-5 py-3.5">
           <div>
             <h3 className="text-lg font-extrabold text-slate-900">Tree Setup</h3>
@@ -1129,8 +1129,8 @@ export function TreeSetupModal({
       </div>
 
       {pendingRemove ? (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="w-80 rounded-xl border border-slate-200 bg-white p-5 shadow-xl">
+        <div className="animate-fade-in absolute inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="animate-scale-in w-80 rounded-xl border border-slate-200 bg-white p-5 shadow-xl">
             <h4 className="text-sm font-extrabold text-slate-800">Remove Subtree</h4>
             <p className="mt-2 text-sm font-semibold text-slate-600">
               Are you sure you want to remove the{" "}

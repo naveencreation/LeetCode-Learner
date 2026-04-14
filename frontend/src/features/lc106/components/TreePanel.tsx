@@ -181,6 +181,7 @@ export function TreePanel({ root, currentOperation, nodeStates, activeStep, cust
             const nodeState = nodeStates[nodeValue] ?? "unvisited";
             const styles = stateStyles[nodeState];
             const isCompleted = nodeState === "completed";
+            const isCurrent = nodeState === "current";
 
             return (
               <g key={value}>

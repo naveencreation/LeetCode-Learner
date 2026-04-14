@@ -112,6 +112,25 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
     return rows;
   }, [viewMode, snippetLineIndices]);
 
+  const handleViewModeChange = (mode: "snippet" | "full") => {
+    const panel = preRef.current;
+    const previousScroll = panel?.scrollTop ?? 0;
+
+    setViewMode(mode);
+
+    requestAnimationFrame(() => {
+      if (!preRef.current) {
+        return;
+      }
+
+      if (mode === "full") {
+        preRef.current.scrollTop = previousScroll;
+      } else {
+        preRef.current.scrollTop = 0;
+      }
+    });
+  };
+
   const statusLine = currentCodeLine + 1;
   const statusLabel = SAMETREE_LINE_LABELS[currentCodeLine] ?? "Traversal Context";
 
@@ -157,7 +176,7 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
               return (
                 <div
                   key={`${index}-${line}`}
-                  className={`group grid grid-cols-[1.6rem_1fr] items-start gap-2 rounded-md px-1.5 py-1 transition-all ${
+                  className={`group grid grid-cols-[1.6rem_1fr] items-start gap-2 rounded-md px-1.5 py-1 transition-all duration-200 ${
                     isActive
                       ? "relative border border-[#264f78] bg-[#2a2d2e] text-[#ffffff]"
                       : "border border-transparent text-[#d4d4d4]"

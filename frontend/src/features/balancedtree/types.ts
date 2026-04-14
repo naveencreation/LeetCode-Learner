@@ -27,7 +27,7 @@ export interface BalancedTreeCallStackFrame {
 }
 
 // Re-export from shared types
-export type { NodeVisualState } from "@/features/shared/types";
+export type { NodeVisualState, NodePosition } from "@/features/shared/types";
 
 import type { NodeVisualState as SharedNodeVisualState } from "@/features/shared/types";
 
@@ -60,3 +60,5 @@ export type BalancedTreePresetKey =
   | "single_node"
   | "two_nodes"
   | "custom_empty";
+
+export type TreePresetKey = BalancedTreePresetKey;

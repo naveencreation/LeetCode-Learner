@@ -56,7 +56,7 @@ export function ResultPanel({
             result.map((value, index) => (
               <span
                 key={`${value}-${index}`}
-                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-teal-700 to-teal-400 px-2.5 py-1 text-xs font-extrabold text-white"
+                className="animate-badge-pop inline-flex items-center justify-center rounded-full bg-gradient-to-r from-teal-700 to-teal-400 px-2.5 py-1 text-xs font-extrabold text-white"
               >
                 {value}
               </span>

@@ -39,8 +39,8 @@ export function UnifiedCallStackPanel({
           activeCallStack.map((frame) => (
             <div
               key={frame.id}
-              className={`rounded-lg border px-2 py-1.5 text-[11px] ${frameStyles[frame.state]}`}
-              style={{ marginLeft: `${frame.depth * 10}px` }}
+              className={`animate-frame-slide rounded-lg border px-2 py-1.5 text-[11px] transition-colors duration-200 ${frameStyles[frame.state]}`}
+              style={{ marginLeft: `${frame.depth * 10}px`, animationDelay: `${frame.depth * 30}ms` }}
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="font-semibold text-slate-800">{frameFormatter(frame)}</span>
