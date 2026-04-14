@@ -4,9 +4,6 @@ import { cloneTree } from "../constants";
 import type { NodePosition, TreeNode, TreePresetKey } from "../types";
 
 type LayoutStyle = "balanced" | "compact";
-type SetupMode = "beginner" | "advanced";
-
-let lastTreeSetupMode: SetupMode = "beginner";
 
 interface TreeSetupModalProps {
   root: TreeNode | null;
@@ -306,9 +303,6 @@ export function TreeSetupModal({
   const [side, setSide] = useState<"left" | "right">("left");
   const [newValue, setNewValue] = useState("");
 
-  const [positionNodeValue, setPositionNodeValue] = useState("");
-  const [positionX, setPositionX] = useState("190");
-  const [positionY, setPositionY] = useState("52");
   const [draggingNodeValue, setDraggingNodeValue] = useState<number | null>(null);
 
   const [editFromValue, setEditFromValue] = useState("");
@@ -317,10 +311,8 @@ export function TreeSetupModal({
   const [removeParentValue, setRemoveParentValue] = useState("");
   const [removeSide, setRemoveSide] = useState<"left" | "right">("left");
   const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>("balanced");
-  const [setupMode, setSetupMode] = useState<SetupMode>(lastTreeSetupMode);
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
-  const isBeginnerMode = setupMode === "beginner";
-  const maxNodesAllowed = isBeginnerMode ? 10 : 20;
+  const maxNodesAllowed = 15;
 
   const currentNodeCount = (() => {
     const values = new Set<number>();
@@ -444,10 +436,6 @@ export function TreeSetupModal({
   }, []);
 
   useEffect(() => {
-    lastTreeSetupMode = setupMode;
-  }, [setupMode]);
-
-  useEffect(() => {
     if (draggingNodeValue === null) {
       return;
     }
@@ -469,9 +457,6 @@ export function TreeSetupModal({
         },
       }));
 
-      setPositionNodeValue(String(draggingNodeValue));
-      setPositionX(String(Number(boundedX.toFixed(1))));
-      setPositionY(String(Number(boundedY.toFixed(1))));
     };
 
     const onMouseUp = () => {
@@ -500,7 +485,7 @@ export function TreeSetupModal({
   const handleAddNode = () => {
     if (isNodeLimitReached) {
       setError(
-        `Node limit reached for ${isBeginnerMode ? "Beginner" : "Advanced"} mode (${maxNodesAllowed} nodes).`,
+        `Node limit reached (${maxNodesAllowed} nodes).`,
       );
       return;
     }
@@ -549,22 +534,6 @@ export function TreeSetupModal({
     setError(null);
   };
 
-  const handleSetPosition = () => {
-    const nodeValue = Number(positionNodeValue);
-    const x = Number(positionX);
-    const y = Number(positionY);
-
-    if (!Number.isFinite(nodeValue) || !Number.isFinite(x) || !Number.isFinite(y)) {
-      setError("Node, x and y must be valid numbers.");
-      return;
-    }
-
-    setDraftPositions((previous) => ({
-      ...previous,
-      [nodeValue]: { x, y },
-    }));
-    setError(null);
-  };
 
   const handleRenameNode = () => {
     const fromValue = Number(editFromValue);
@@ -764,30 +733,6 @@ export function TreeSetupModal({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 p-0.5">
-              <button
-                type="button"
-                onClick={() => setSetupMode("beginner")}
-                className={`rounded-full px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.04em] transition ${
-                  setupMode === "beginner"
-                    ? "bg-white text-emerald-700 shadow-sm"
-                    : "text-slate-600 hover:text-slate-800"
-                }`}
-              >
-                Beginner
-              </button>
-              <button
-                type="button"
-                onClick={() => setSetupMode("advanced")}
-                className={`rounded-full px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.04em] transition ${
-                  setupMode === "advanced"
-                    ? "bg-white text-emerald-700 shadow-sm"
-                    : "text-slate-600 hover:text-slate-800"
-                }`}
-              >
-                Advanced
-              </button>
-            </div>
             <button
               type="button"
               onClick={handleRequestClose}
@@ -801,9 +746,7 @@ export function TreeSetupModal({
         <div className="grid flex-1 min-h-0 items-stretch gap-3 overflow-hidden p-4 lg:grid-cols-[minmax(410px,1fr)_minmax(470px,1.2fr)]">
           <div className="ui-scrollbar grid min-h-0 content-start gap-2.5 overflow-y-auto pb-3 pr-1">
             <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
-              {isBeginnerMode
-                ? "Beginner mode: 1) Build tree, 2) Auto layout or drag nodes, 3) Apply and Run."
-                : "Advanced mode: includes manual coordinates, rename, and subtree removal tools."}
+              Build tree, add/rename/remove nodes, auto layout or drag, then apply and run.
             </p>
 
             <p className="rounded-lg border border-teal-100 bg-teal-50 px-3 py-2 text-xs font-semibold text-teal-800">
@@ -815,8 +758,8 @@ export function TreeSetupModal({
 
             {isNodeLimitReached ? (
               <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
-                Node limit reached for {isBeginnerMode ? "Beginner" : "Advanced"} mode ({maxNodesAllowed}).
-                Remove or rename existing nodes, or switch mode to continue.
+                Node limit reached ({maxNodesAllowed} nodes).
+                Remove or rename existing nodes to continue.
               </p>
             ) : null}
 
@@ -908,53 +851,11 @@ export function TreeSetupModal({
                 Use drag-and-drop for quick edits. Auto Layout cleans up spacing.
               </p>
 
-              {setupMode === "advanced" ? (
-                <details className="mt-2 rounded-lg border border-slate-200 bg-white p-2.5">
-                  <summary className="cursor-pointer text-[11px] font-bold uppercase tracking-[0.04em] text-slate-600">
-                    Advanced: Manual Position Controls
-                  </summary>
-                  <div className="mt-2 grid grid-cols-12 gap-1.5">
-                    <input
-                      value={positionNodeValue}
-                      onChange={(event) => setPositionNodeValue(event.target.value)}
-                      placeholder="Node"
-                      className="col-span-12 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-sky-500 sm:col-span-3"
-                    />
-                    <input
-                      value={positionX}
-                      onChange={(event) => setPositionX(event.target.value)}
-                      placeholder="X"
-                      className="col-span-6 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-sky-500 sm:col-span-3"
-                    />
-                    <input
-                      value={positionY}
-                      onChange={(event) => setPositionY(event.target.value)}
-                      placeholder="Y"
-                      className="col-span-6 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-sky-500 sm:col-span-3"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleSetPosition}
-                      className="col-span-6 h-9 rounded-md bg-sky-600 px-3 text-sm font-extrabold text-white transition hover:bg-sky-700 sm:col-span-2"
-                    >
-                      Apply
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDraftPositions({})}
-                      className="col-span-6 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-100 sm:col-span-2"
-                    >
-                      Reset
-                    </button>
-                  </div>
-                </details>
-              ) : null}
             </section>
 
-            {setupMode === "advanced" ? (
-              <details className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <details className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <summary className="cursor-pointer text-xs font-extrabold uppercase tracking-[0.04em] text-slate-600">
-                  Node Actions (Advanced)
+                  Node Actions
                 </summary>
 
                 <div className="mt-2 grid gap-2 rounded-lg border border-slate-200 bg-white p-2.5">
@@ -1013,7 +914,6 @@ export function TreeSetupModal({
                   </div>
                 </div>
               </details>
-            ) : null}
 
             {error ? (
               <p className="rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700">

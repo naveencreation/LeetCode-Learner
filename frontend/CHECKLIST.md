@@ -22,6 +22,8 @@ Tracking all changes made during this session. Updated as fixes are completed.
 - [x] **Sliding segmented toggle** — Created shared `SegmentedToggle` component with animated sliding pill indicator. Applied to Snippet/Full Code (25 CodePanels) and Manual/Auto (UnifiedControlsBar)
 - [x] **Back arrow icon** — Replaced raw `←` with Lucide `ArrowLeft` in "Back To Trees List" button (`problem-focus-header.tsx`)
 - [x] **Style "Back To Trees List" button** — Teal-tinted pill (`border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-100`) to match other interactive buttons
+- [x] **Merge Beginner/Advanced modes** — Removed mode toggle from all 22 TreeSetupModal files. All features (rename, remove subtree, drag, auto layout) now always visible. Fixed 15-node limit. 8 formerly-simple modals upgraded to full feature parity. LCA p/q selectors preserved.
+- [x] **Remove Manual Position Controls** — Removed state, handler, and UI for manual x/y coordinate input from all 22 TreeSetupModal files. Drag-to-reposition and Auto Layout remain.
 
 ## In Progress
 

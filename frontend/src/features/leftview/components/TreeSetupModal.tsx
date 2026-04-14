@@ -78,7 +78,7 @@ function collectSubtreeValues(node: TreeNode | null, values: Set<number>): void 
 }
 
 function validateDraftTree(
-  root: TreeNode | null,
+  root: TreeNode,
   draftPositions: Record<number, NodePosition>,
 ): { valid: boolean; message: string | null } {
   const seenValues = new Set<number>();
@@ -157,7 +157,7 @@ function collectNodesAndEdges(
   }
 }
 
-function assignLeftViewIndex(
+function assignInorderIndex(
   node: TreeNode | null,
   map: Record<number, number>,
   counter: { value: number },
@@ -166,22 +166,22 @@ function assignLeftViewIndex(
     return;
   }
 
-  assignLeftViewIndex(node.left, map, counter);
+  assignInorderIndex(node.left, map, counter);
   map[node.val] = counter.value;
   counter.value += 1;
-  assignLeftViewIndex(node.right, map, counter);
+  assignInorderIndex(node.right, map, counter);
 }
 
 function buildAutoPositions(
-  root: TreeNode | null,
+  root: TreeNode,
   style: LayoutStyle = "balanced",
 ): Record<number, NodePosition> {
   const nodes: Array<{ value: number; depth: number }> = [];
   const edges: Array<[number, number]> = [];
   collectNodesAndEdges(root, 0, nodes, edges);
 
-  const leftviewIndex: Record<number, number> = {};
-  assignLeftViewIndex(root, leftviewIndex, { value: 0 });
+  const inorderIndex: Record<number, number> = {};
+  assignInorderIndex(root, inorderIndex, { value: 0 });
 
   const nodeCount = nodes.length;
   const maxDepth = nodes.reduce((max, node) => Math.max(max, node.depth), 0);
@@ -200,7 +200,7 @@ function buildAutoPositions(
   nodes.forEach((node) => {
     const depthCompression = style === "compact" ? 0.86 ** node.depth : 1;
     positions[node.value] = {
-      x: minX + leftviewIndex[node.value] * xStep,
+      x: minX + inorderIndex[node.value] * xStep,
       y: minY + node.depth * yStep * depthCompression,
     };
   });
@@ -290,8 +290,9 @@ export function TreeSetupModal({
   onApplyAndRun,
 }: TreeSetupModalProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const presetSelectRef = useRef<HTMLSelectElement | null>(null);
 
-  const [draftRoot, setDraftRoot] = useState<TreeNode | null>(cloneTree(root));
+  const [draftRoot, setDraftRoot] = useState<TreeNode>(cloneTree(root) as TreeNode);
   const [draftPreset, setDraftPreset] = useState<TreePresetKey>(selectedPreset);
   const [draftPositions, setDraftPositions] = useState<Record<number, NodePosition>>({
     ...customNodePositions,
@@ -302,9 +303,6 @@ export function TreeSetupModal({
   const [side, setSide] = useState<"left" | "right">("left");
   const [newValue, setNewValue] = useState("");
 
-  const [positionNodeValue, setPositionNodeValue] = useState("");
-  const [positionX, setPositionX] = useState("190");
-  const [positionY, setPositionY] = useState("52");
   const [draggingNodeValue, setDraggingNodeValue] = useState<number | null>(null);
 
   const [editFromValue, setEditFromValue] = useState("");
@@ -313,10 +311,8 @@ export function TreeSetupModal({
   const [removeParentValue, setRemoveParentValue] = useState("");
   const [removeSide, setRemoveSide] = useState<"left" | "right">("left");
   const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>("balanced");
-  const [setupMode, setSetupMode] = useState<"beginner" | "advanced">("beginner");
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
-  const isBeginnerMode = setupMode === "beginner";
-  const maxNodesAllowed = isBeginnerMode ? 10 : 20;
+  const maxNodesAllowed = 15;
 
   const currentNodeCount = (() => {
     const values = new Set<number>();
@@ -430,6 +426,16 @@ export function TreeSetupModal({
   };
 
   useEffect(() => {
+    const rafId = window.requestAnimationFrame(() => {
+      presetSelectRef.current?.focus();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  useEffect(() => {
     if (draggingNodeValue === null) {
       return;
     }
@@ -451,9 +457,6 @@ export function TreeSetupModal({
         },
       }));
 
-      setPositionNodeValue(String(draggingNodeValue));
-      setPositionX(String(Number(boundedX.toFixed(1))));
-      setPositionY(String(Number(boundedY.toFixed(1))));
     };
 
     const onMouseUp = () => {
@@ -471,7 +474,10 @@ export function TreeSetupModal({
 
   const handlePresetChange = (preset: TreePresetKey) => {
     setDraftPreset(preset);
-    setDraftRoot(presets[preset].create());
+    const presetRoot = presets[preset].create();
+    if (presetRoot) {
+      setDraftRoot(presetRoot);
+    }
     setDraftPositions({});
     setError(null);
   };
@@ -479,31 +485,13 @@ export function TreeSetupModal({
   const handleAddNode = () => {
     if (isNodeLimitReached) {
       setError(
-        `Node limit reached for ${isBeginnerMode ? "Beginner" : "Advanced"} mode (${maxNodesAllowed} nodes).`,
+        `Node limit reached (${maxNodesAllowed} nodes).`,
       );
       return;
     }
 
-    const value = Number(newValue);
-
-    if (draftRoot === null) {
-      if (!Number.isFinite(value)) {
-        setError("Root node value must be a valid number.");
-        return;
-      }
-
-      setDraftRoot({
-        val: value,
-        left: null,
-        right: null,
-      });
-      setParentValue(String(value));
-      setNewValue("");
-      setError(null);
-      return;
-    }
-
     const parent = Number(parentValue);
+    const value = Number(newValue);
 
     if (!Number.isFinite(parent) || !Number.isFinite(value)) {
       setError("Parent and new node value must be valid numbers.");
@@ -546,29 +534,8 @@ export function TreeSetupModal({
     setError(null);
   };
 
-  const handleSetPosition = () => {
-    const nodeValue = Number(positionNodeValue);
-    const x = Number(positionX);
-    const y = Number(positionY);
-
-    if (!Number.isFinite(nodeValue) || !Number.isFinite(x) || !Number.isFinite(y)) {
-      setError("Node, x and y must be valid numbers.");
-      return;
-    }
-
-    setDraftPositions((previous) => ({
-      ...previous,
-      [nodeValue]: { x, y },
-    }));
-    setError(null);
-  };
 
   const handleRenameNode = () => {
-    if (!draftRoot) {
-      setError("Tree is empty. Add a root node first.");
-      return;
-    }
-
     const fromValue = Number(editFromValue);
     const toValue = Number(editToValue);
 
@@ -619,11 +586,6 @@ export function TreeSetupModal({
   };
 
   const handleRemoveSubtree = () => {
-    if (!draftRoot) {
-      setError("Tree is empty. Nothing to remove.");
-      return;
-    }
-
     const parentValueNumber = Number(removeParentValue);
     if (!Number.isFinite(parentValueNumber)) {
       setError("Parent value must be a valid number.");
@@ -691,7 +653,7 @@ export function TreeSetupModal({
   const handleApplyAction = (
     applyHandler: (
       root: TreeNode | null,
-      positions: Record<number, NodePosition>,
+    positions: Record<number, NodePosition>,
       preset: TreePresetKey,
     ) => void,
   ) => {
@@ -771,30 +733,6 @@ export function TreeSetupModal({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <div className="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 p-0.5">
-              <button
-                type="button"
-                onClick={() => setSetupMode("beginner")}
-                className={`rounded-full px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.04em] transition ${
-                  setupMode === "beginner"
-                    ? "bg-white text-emerald-700 shadow-sm"
-                    : "text-slate-600 hover:text-slate-800"
-                }`}
-              >
-                Beginner
-              </button>
-              <button
-                type="button"
-                onClick={() => setSetupMode("advanced")}
-                className={`rounded-full px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.04em] transition ${
-                  setupMode === "advanced"
-                    ? "bg-white text-emerald-700 shadow-sm"
-                    : "text-slate-600 hover:text-slate-800"
-                }`}
-              >
-                Advanced
-              </button>
-            </div>
             <button
               type="button"
               onClick={handleRequestClose}
@@ -808,9 +746,7 @@ export function TreeSetupModal({
         <div className="grid flex-1 min-h-0 items-stretch gap-3 overflow-hidden p-4 lg:grid-cols-[minmax(410px,1fr)_minmax(470px,1.2fr)]">
           <div className="ui-scrollbar grid min-h-0 content-start gap-2.5 overflow-y-auto pb-3 pr-1">
             <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
-              {isBeginnerMode
-                ? "Beginner mode: 1) Build tree, 2) Auto layout or drag nodes, 3) Apply and Run."
-                : "Advanced mode: includes manual coordinates, rename, and subtree removal tools."}
+              Build tree, add/rename/remove nodes, auto layout or drag, then apply and run.
             </p>
 
             <p className="rounded-lg border border-teal-100 bg-teal-50 px-3 py-2 text-xs font-semibold text-teal-800">
@@ -822,8 +758,8 @@ export function TreeSetupModal({
 
             {isNodeLimitReached ? (
               <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
-                Node limit reached for {isBeginnerMode ? "Beginner" : "Advanced"} mode ({maxNodesAllowed}).
-                Remove or rename existing nodes, or switch mode to continue.
+                Node limit reached ({maxNodesAllowed} nodes).
+                Remove or rename existing nodes to continue.
               </p>
             ) : null}
 
@@ -832,7 +768,7 @@ export function TreeSetupModal({
                 Build Tree
               </h4>
               <p className="mb-2 text-xs font-semibold text-slate-500">
-                Pick a template first. If tree is empty, add a node to create the root.
+                Pick a template first, then add children to specific parent nodes.
               </p>
 
               <div className="rounded-lg border border-slate-200 bg-white p-2.5">
@@ -840,6 +776,7 @@ export function TreeSetupModal({
                   Preset Template
                 </p>
                 <select
+                  ref={presetSelectRef}
                   value={draftPreset}
                   onChange={(event) => handlePresetChange(event.target.value as TreePresetKey)}
                   className="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500"
@@ -860,14 +797,12 @@ export function TreeSetupModal({
                 <input
                   value={parentValue}
                   onChange={(event) => setParentValue(event.target.value)}
-                  placeholder={draftRoot ? "Parent" : "Parent (after root)"}
-                  disabled={!draftRoot}
+                  placeholder="Parent"
                   className="col-span-12 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500 sm:col-span-4"
                 />
                 <select
                   value={side}
                   onChange={(event) => setSide(event.target.value as "left" | "right")}
-                  disabled={!draftRoot}
                   className="col-span-12 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500 sm:col-span-3"
                 >
                   <option value="left">Left</option>
@@ -916,53 +851,11 @@ export function TreeSetupModal({
                 Use drag-and-drop for quick edits. Auto Layout cleans up spacing.
               </p>
 
-              {setupMode === "advanced" ? (
-                <details className="mt-2 rounded-lg border border-slate-200 bg-white p-2.5">
-                  <summary className="cursor-pointer text-[11px] font-bold uppercase tracking-[0.04em] text-slate-600">
-                    Advanced: Manual Position Controls
-                  </summary>
-                  <div className="mt-2 grid grid-cols-12 gap-1.5">
-                    <input
-                      value={positionNodeValue}
-                      onChange={(event) => setPositionNodeValue(event.target.value)}
-                      placeholder="Node"
-                      className="col-span-12 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-sky-500 sm:col-span-3"
-                    />
-                    <input
-                      value={positionX}
-                      onChange={(event) => setPositionX(event.target.value)}
-                      placeholder="X"
-                      className="col-span-6 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-sky-500 sm:col-span-3"
-                    />
-                    <input
-                      value={positionY}
-                      onChange={(event) => setPositionY(event.target.value)}
-                      placeholder="Y"
-                      className="col-span-6 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-sky-500 sm:col-span-3"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleSetPosition}
-                      className="col-span-6 h-9 rounded-md bg-sky-600 px-3 text-sm font-extrabold text-white transition hover:bg-sky-700 sm:col-span-2"
-                    >
-                      Apply
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDraftPositions({})}
-                      className="col-span-6 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-extrabold text-slate-700 transition hover:bg-slate-100 sm:col-span-2"
-                    >
-                      Reset
-                    </button>
-                  </div>
-                </details>
-              ) : null}
             </section>
 
-            {setupMode === "advanced" ? (
-              <details className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <details className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <summary className="cursor-pointer text-xs font-extrabold uppercase tracking-[0.04em] text-slate-600">
-                  Node Actions (Advanced)
+                  Node Actions
                 </summary>
 
                 <div className="mt-2 grid gap-2 rounded-lg border border-slate-200 bg-white p-2.5">
@@ -1021,7 +914,6 @@ export function TreeSetupModal({
                   </div>
                 </div>
               </details>
-            ) : null}
 
             {error ? (
               <p className="rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700">
@@ -1199,6 +1091,3 @@ export function TreeSetupModal({
     </div>
   );
 }
-
-
-
