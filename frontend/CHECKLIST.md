@@ -15,6 +15,7 @@ Tracking all changes made during this session. Updated as fixes are completed.
 - [x] **Rename CodeArena → ThinkDSA** — All 24 occurrences across 8 files + SVG logo files renamed
 - [x] **New ThinkDSA logo** — Replaced mark SVG with new design (code brackets + play + progress bar)
 - [x] **Start button label** — Controls bar shows "Start" at step 0, then "Next Step" after first click (`UnifiedControlsBar.tsx`)
+- [x] **Remove subtitle from header** — Hidden subtitle text across all 25 visualizers via `problem-focus-header.tsx` (kept as `sr-only` for accessibility)
 
 ## In Progress
 

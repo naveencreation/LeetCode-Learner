@@ -36,7 +36,7 @@ export function ProblemFocusHeader({
         <h1 className="text-[clamp(20px,2vw,28px)] font-extrabold leading-[1.15] tracking-[-0.02em] text-slate-900">
           {title}
         </h1>
-        <p className="mt-0.5 text-xs font-semibold text-slate-500">{subtitle}</p>
+        {subtitle ? <p className="mt-0.5 text-xs font-semibold text-slate-500 sr-only">{subtitle}</p> : null}
       </div>
 
       <div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
