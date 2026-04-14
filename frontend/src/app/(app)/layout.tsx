@@ -31,6 +31,8 @@ const traversalRoutes = [
   "/problems/binary-tree/construct-binary-tree-from-inorder-and-postorder",
   "/problems/binary-tree/flatten-binary-tree-to-linkedlist",
   "/problems/binary-tree/convert-bst-to-sorted-doubly-linked-list",
+  // Linked List visualizers
+  "/problems/linked-list/reverse-a-linkedlist",
 ] as const;
 
 export default function AppLayout({ children }: { children: ReactNode }) {
@@ -41,7 +43,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const isTraversalPage =
     !isGuidePage && traversalRoutes.some((route) => pathname.startsWith(route));
   const isBinaryTreeProblemRoute = pathname.startsWith("/problems/binary-tree/");
-  const isProblemFocusPage = isTraversalPage || isBinaryTreeProblemRoute;
+  const isLinkedListProblemRoute = pathname.startsWith("/problems/linked-list/");
+  const isProblemFocusPage = isTraversalPage || isBinaryTreeProblemRoute || isLinkedListProblemRoute;
 
   return (
     <div className="flex min-h-screen bg-muted/30">

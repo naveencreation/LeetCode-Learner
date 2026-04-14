@@ -541,6 +541,11 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return `/problems/binary-tree/${toSlug(problemName)}`;
   }
 
+  // ── Linked List problems ──
+  if (sectionName === "Linked List" && problemName === "Reverse a LinkedList") {
+    return "/problems/linked-list/reverse-a-linkedlist";
+  }
+
   return null;
 };
 
