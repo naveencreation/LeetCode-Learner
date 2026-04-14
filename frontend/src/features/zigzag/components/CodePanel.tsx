@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { CopyCodeButton } from "@/features/shared/components/CopyCodeButton";
+import { SegmentedToggle } from "@/features/shared/components/SegmentedToggle";
 
 import { ZIGZAG_CODE_LINES, ZIGZAG_LINE_LABELS } from "../constants";
 
@@ -77,6 +78,11 @@ function renderTokenizedCode(line: string): Array<{ text: string; className: str
   return tokens;
 }
 
+const VIEW_MODE_OPTIONS = [
+  { value: "snippet" as const, label: "Snippet" },
+  { value: "full" as const, label: "Full Code" },
+] as const;
+
 export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelProps) {
   const [viewMode, setViewMode] = useState<"snippet" | "full">("snippet");
   const preRef = useRef<HTMLPreElement | null>(null);
@@ -150,29 +156,12 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
           Python Code
         </h2>
         <div className="flex items-center gap-1.5">
-          <div className="inline-flex items-center rounded-full border border-slate-300 bg-slate-100 p-0.5">
-          <button
-            type="button"
-            onClick={() => handleViewModeChange("snippet")}
-            className={`rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
-              viewMode === "snippet"
-                ? "bg-slate-800 text-white"
-                : "text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            Snippet
-          </button>
-          <button
-            type="button"
-            onClick={() => handleViewModeChange("full")}
-            className={`rounded-full px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
-              viewMode === "full"
-                ? "bg-slate-800 text-white"
-                : "text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            Full Code
-          </button>
+          <SegmentedToggle
+            options={VIEW_MODE_OPTIONS}
+            value={viewMode}
+            onChange={handleViewModeChange}
+          />
+          <CopyCodeButton codeLines={ZIGZAG_CODE_LINES} />
         </div>
       </div>
 

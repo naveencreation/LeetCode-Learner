@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Pause, Play, RotateCcw } from "lucide-react";
+import { SegmentedToggle } from "@/features/shared/components/SegmentedToggle";
+
+const CONTROL_MODE_OPTIONS = [
+  { value: "manual" as const, label: "Manual" },
+  { value: "auto" as const, label: "Auto" },
+] as const;
 
 interface UnifiedControlsBarProps {
   isAtStart: boolean;
@@ -33,30 +39,13 @@ export function UnifiedControlsBar({
   return (
     <div className="w-full rounded-[10px] border border-slate-200 bg-slate-50 px-3 py-2">
       <div className="mb-2 flex items-center justify-between gap-2">
-        <div className="inline-flex items-center rounded-full border border-slate-200 bg-white p-0.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
-          <button
-            type="button"
-            onClick={() => setControlMode("manual")}
-            className={`rounded-full px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
-              controlMode === "manual"
-                ? "bg-slate-800 text-white shadow-sm"
-                : "text-slate-600 hover:bg-slate-100"
-            }`}
-          >
-            Manual
-          </button>
-          <button
-            type="button"
-            onClick={() => setControlMode("auto")}
-            className={`rounded-full px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] transition ${
-              controlMode === "auto"
-                ? "bg-teal-600 text-white shadow-sm"
-                : "text-slate-600 hover:bg-slate-100"
-            }`}
-          >
-            Auto
-          </button>
-        </div>
+        <SegmentedToggle
+          options={CONTROL_MODE_OPTIONS}
+          value={controlMode}
+          onChange={setControlMode}
+          activeClassName="bg-slate-800 text-white shadow-sm"
+          containerClassName="border-slate-200 bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]"
+        />
 
         {controlMode === "auto" ? (
           <div className="flex items-center gap-2">

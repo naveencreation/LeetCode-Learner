@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { Check, Copy } from "lucide-react";
 
 interface CopyCodeButtonProps {
-  codeLines: string[];
+  codeLines: readonly string[];
 }
 
 export function CopyCodeButton({ codeLines }: CopyCodeButtonProps) {

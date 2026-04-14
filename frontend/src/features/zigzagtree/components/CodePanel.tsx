@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { CopyCodeButton } from "@/features/shared/components/CopyCodeButton";
+import { SegmentedToggle } from "@/features/shared/components/SegmentedToggle";
 import { ZIGZAG_CODE_LINES, ZIGZAG_LINE_LABELS } from "../constants";
 
 interface CodePanelProps {
@@ -58,6 +59,11 @@ function renderTokenizedCode(line: string): Array<{ text: string; className: str
   return tokens;
 }
 
+const VIEW_MODE_OPTIONS = [
+  { value: "snippet" as const, label: "Snippet" },
+  { value: "full" as const, label: "Full Code" },
+] as const;
+
 export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelProps) {
   const [viewMode, setViewMode] = useState<"snippet" | "full">("snippet");
   const preRef = useRef<HTMLPreElement>(null);
@@ -86,9 +92,13 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
     <section className="flex h-full flex-col gap-1.5 overflow-hidden rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
       <div className="flex items-center justify-between">
         <h3 className="text-[13px] font-bold text-slate-800">Code (Python)</h3>
-        <div className="flex gap-1">
-          <button onClick={() => setViewMode("snippet")} className={`rounded-md px-2 py-1 text-[11px] font-semibold transition ${viewMode === "snippet" ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>Snippet</button>
-          <button onClick={() => setViewMode("full")} className={`rounded-md px-2 py-1 text-[11px] font-semibold transition ${viewMode === "full" ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}>Full Code</button>
+        <div className="flex items-center gap-1.5">
+          <SegmentedToggle
+            options={VIEW_MODE_OPTIONS}
+            value={viewMode}
+            onChange={setViewMode}
+          />
+          <CopyCodeButton codeLines={ZIGZAG_CODE_LINES} />
         </div>
       </div>
       <div className="min-h-0 overflow-hidden rounded-[10px] border border-[#3c3c3c] bg-[#1e1e1e] p-2">
