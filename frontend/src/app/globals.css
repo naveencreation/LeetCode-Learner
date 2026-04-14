@@ -128,28 +128,45 @@ a {
   }
 }
 
+/* ── Global scrollbar — thin, subtle, auto-hide ── */
+*,
 .ui-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #94a3b8 transparent;
+  scrollbar-color: transparent transparent;
 }
 
+*:hover,
+.ui-scrollbar:hover {
+  scrollbar-color: rgba(148, 163, 184, 0.45) transparent;
+}
+
+::-webkit-scrollbar,
 .ui-scrollbar::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
+  height: 6px;
 }
 
+::-webkit-scrollbar-track,
 .ui-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 
+::-webkit-scrollbar-thumb,
 .ui-scrollbar::-webkit-scrollbar-thumb {
-  border: 2px solid transparent;
   border-radius: 9999px;
-  background-clip: content-box;
-  background-color: #94a3b8;
+  background-color: transparent;
+  transition: background-color 0.2s;
 }
 
+*:hover > ::-webkit-scrollbar-thumb,
+:hover::-webkit-scrollbar-thumb,
+.ui-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.45);
+}
+
+::-webkit-scrollbar-thumb:hover,
 .ui-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #64748b;
+  background-color: rgba(100, 116, 139, 0.65);
 }
 
 @layer components {
