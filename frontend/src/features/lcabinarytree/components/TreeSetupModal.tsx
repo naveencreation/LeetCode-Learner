@@ -1,4 +1,42 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { Info } from "lucide-react";
+
+function InfoTip({ text, size = 14 }: { text: string; size?: number }) {
+  const iconRef = useRef<HTMLDivElement>(null);
+  const [show, setShow] = useState(false);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+
+  const handleEnter = () => {
+    if (iconRef.current) {
+      const rect = iconRef.current.getBoundingClientRect();
+      setPos({ top: rect.top - 8, left: rect.left + rect.width / 2 });
+    }
+    setShow(true);
+  };
+
+  return (
+    <div
+      ref={iconRef}
+      onMouseEnter={handleEnter}
+      onMouseLeave={() => setShow(false)}
+      className="inline-flex"
+    >
+      <Info size={size} className="cursor-help text-slate-400 transition hover:text-slate-600" />
+      {show
+        ? createPortal(
+            <div
+              style={{ top: pos.top, left: pos.left }}
+              className="pointer-events-none fixed z-[9999] w-52 -translate-x-1/2 -translate-y-full rounded-lg border border-slate-200 bg-white p-2.5 text-xs font-semibold text-slate-600 shadow-lg"
+            >
+              {text}
+            </div>,
+            document.body,
+          )
+        : null}
+    </div>
+  );
+}
 
 import { cloneTree } from "../constants";
 import type { NodePosition, TreeNode, TreePresetKey } from "../types";
@@ -834,17 +872,6 @@ export function TreeSetupModal({
 
         <div className="grid flex-1 min-h-0 items-stretch gap-3 overflow-hidden p-4 lg:grid-cols-[minmax(410px,1fr)_minmax(470px,1.2fr)]">
           <div className="ui-scrollbar grid min-h-0 content-start gap-2.5 overflow-y-auto pb-3 pr-1">
-            <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
-              Build tree, add/rename/remove nodes, auto layout or drag, then apply and run.
-            </p>
-
-            <p className="rounded-lg border border-teal-100 bg-teal-50 px-3 py-2 text-xs font-semibold text-teal-800">
-              Best learning experience: up to 10 nodes.
-              <span className="ml-1 text-teal-700">
-                Current: {currentNodeCount} / Limit: {maxNodesAllowed}
-              </span>
-            </p>
-
             {isNodeLimitReached ? (
               <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
                 Node limit reached ({maxNodesAllowed} nodes).
@@ -853,9 +880,12 @@ export function TreeSetupModal({
             ) : null}
 
             <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <h4 className="mb-2 text-xs font-extrabold uppercase tracking-[0.04em] text-slate-600">
-                Build Tree
-              </h4>
+              <div className="mb-2 flex items-center gap-1.5">
+                <h4 className="text-xs font-extrabold uppercase tracking-[0.04em] text-slate-600">
+                  Build Tree
+                </h4>
+                <InfoTip text={`Pick a template or add nodes manually. Current: ${currentNodeCount} / Limit: ${maxNodesAllowed} nodes.`} />
+              </div>
 
               <div className="grid gap-2">
                 <div className="rounded-lg border border-slate-200 bg-white p-2.5">
@@ -962,9 +992,12 @@ export function TreeSetupModal({
                 </div>
 
                 <div className="rounded-lg border border-slate-200 bg-white p-2.5">
-                  <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
-                    Layout
-                  </p>
+                  <div className="mb-1 flex items-center gap-1">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
+                      Layout
+                    </p>
+                    <InfoTip text="Drag nodes to reposition. Re-organize auto-arranges the tree." size={12} />
+                  </div>
                   <div className="grid grid-cols-12 gap-1.5">
                     <select
                       value={layoutStyle}
@@ -982,17 +1015,17 @@ export function TreeSetupModal({
                       Re-organize
                     </button>
                   </div>
-                  <p className="mt-1.5 text-xs font-semibold text-slate-500">
-                    Drag nodes to reposition. Re-organize cleans up spacing.
-                  </p>
                 </div>
               </div>
             </section>
 
             <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <h4 className="mb-2 text-xs font-extrabold uppercase tracking-[0.04em] text-slate-600">
-                Edit Tree
-              </h4>
+              <div className="mb-2 flex items-center gap-1.5">
+                <h4 className="text-xs font-extrabold uppercase tracking-[0.04em] text-slate-600">
+                  Edit Tree
+                </h4>
+                <InfoTip text="Rename node values or remove entire subtrees." />
+              </div>
 
               <div className="grid gap-2">
                 <div className="rounded-lg border border-slate-200 bg-white p-2.5">
