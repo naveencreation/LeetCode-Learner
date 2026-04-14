@@ -20,6 +20,8 @@ Tracking all changes made during this session. Updated as fixes are completed.
 - [x] **Fix hover override on Select Tree** — Removed inline `hover:bg-slate-50` from 23 TreePanel files so the teal hover (`hover:bg-teal-100`) from the CSS class takes effect
 - [x] **Copy code button** — Added `CopyCodeButton` component (Copy→Check icon) to all 25 CodePanel headers (`shared/components/CopyCodeButton.tsx`)
 - [x] **Sliding segmented toggle** — Created shared `SegmentedToggle` component with animated sliding pill indicator. Applied to Snippet/Full Code (25 CodePanels) and Manual/Auto (UnifiedControlsBar)
+- [x] **Back arrow icon** — Replaced raw `←` with Lucide `ArrowLeft` in "Back To Trees List" button (`problem-focus-header.tsx`)
+- [x] **Style "Back To Trees List" button** — Teal-tinted pill (`border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-100`) to match other interactive buttons
 
 ## In Progress
 

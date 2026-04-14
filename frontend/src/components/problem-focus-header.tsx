@@ -66,7 +66,7 @@ export function ProblemFocusHeader({
 
         <Link
           href={backHref}
-          className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[12px] font-semibold text-slate-700 transition hover:bg-slate-50"
+          className="inline-flex items-center gap-1 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[12px] font-semibold text-teal-700 transition hover:bg-teal-100"
         >
           <ArrowLeft size={14} strokeWidth={2.5} aria-hidden="true" />
           {backLabel}
