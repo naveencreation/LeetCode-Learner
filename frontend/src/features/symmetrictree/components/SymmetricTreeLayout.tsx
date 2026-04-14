@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { TraversalShell } from "@/features/shared/components/TraversalShell";
 import { UnifiedControlsBar } from "@/features/shared/components/UnifiedControlsBar";
 import { UnifiedCallStackPanel } from "@/features/shared/components/UnifiedCallStackPanel";
@@ -76,7 +77,7 @@ export function SymmetricTreeLayout() {
         { label: "Comparing", value: currentNode ?? "-" },
         { 
           label: "Result", 
-          value: symmetricResult === null ? "Checking..." : symmetricResult ? "Symmetric ✓" : "Not Symmetric ✗", 
+          value: symmetricResult === null ? "Checking..." : <span className="inline-flex items-center gap-1">{symmetricResult ? <><CheckCircle2 size={12} className="text-emerald-600" />Symmetric</> : <><XCircle size={12} className="text-rose-500" />Not Symmetric</>}</span>, 
           minWidthClassName: "min-w-[130px]" 
         },
       ]}

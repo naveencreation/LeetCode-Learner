@@ -34,7 +34,7 @@ function getExplanation(
   if (currentStep >= totalSteps) {
     return {
       title: "Balance Check Complete",
-      description: `All steps finished. Tree is ${result ? "balanced ✓" : "unbalanced ✗"}.`,
+      description: `All steps finished. Tree is ${result ? "balanced" : "unbalanced"}.`,
       details: [
         `Total execution steps: ${totalSteps}`,
         "Use Previous to replay each recursive check step by step.",
@@ -100,7 +100,7 @@ function getExplanation(
         description: step.isBalanced
           ? "Root returned valid height. Tree is balanced!"
           : "Root returned -1. Tree is unbalanced!",
-        details: [result ? "✓ All nodes satisfy balance property." : "✗ At least one node violates property."],
+        details: [result ? "All nodes satisfy balance property." : "At least one node violates property."],
       };
     default:
       return {

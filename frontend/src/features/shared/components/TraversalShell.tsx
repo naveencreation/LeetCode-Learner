@@ -6,7 +6,7 @@ import { ResizableTraversalGrid } from "@/features/shared/components/ResizableTr
 
 export interface TraversalShellStat {
   label: string;
-  value: string | number;
+  value: ReactNode;
   minWidthClassName?: string;
 }
 

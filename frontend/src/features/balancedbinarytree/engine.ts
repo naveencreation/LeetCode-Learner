@@ -244,8 +244,8 @@ export function generateBalancedBinaryTreeExecutionSteps(
     node: root,
     value: isBalanced ? 1 : 0,
     operation: isBalanced
-      ? "Tree is balanced ✓"
-      : "Tree is unbalanced ✗",
+      ? "Tree is balanced"
+      : "Tree is unbalanced",
     callStack: [],
     nodeStates: cloneNodeStates(nodeStates),
     isBalanced,

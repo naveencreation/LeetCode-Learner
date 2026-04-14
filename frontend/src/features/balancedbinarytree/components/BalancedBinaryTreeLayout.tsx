@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
+import { CheckCircle2, XCircle } from "lucide-react";
 import { TraversalShell } from "@/features/shared/components/TraversalShell";
 import { UnifiedControlsBar } from "@/features/shared/components/UnifiedControlsBar";
 import { UnifiedCallStackPanel } from "@/features/shared/components/UnifiedCallStackPanel";
@@ -75,7 +76,7 @@ export function BalancedbinarytreeLayout() {
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Processed", value: processedCount },
-        { label: "Result", value: result ? "BALANCED ✓" : "UNBALANCED ✗", minWidthClassName: "min-w-[110px]" },
+        { label: "Result", value: <span className="inline-flex items-center gap-1">{result ? <><CheckCircle2 size={12} className="text-emerald-600" />BALANCED</> : <><XCircle size={12} className="text-rose-500" />UNBALANCED</>}</span>, minWidthClassName: "min-w-[110px]" },
       ]}
       left={
         <CodePanel
