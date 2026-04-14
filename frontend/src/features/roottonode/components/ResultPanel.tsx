@@ -1,3 +1,5 @@
+import { CheckCircle2, XCircle, ArrowRight } from "lucide-react";
+
 interface ResultPanelProps {
   currentNode: number | null;
   currentPhase: string;
@@ -80,7 +82,7 @@ export function ResultPanel({
             : "border-amber-200 bg-amber-50 text-amber-900"
         }`}
       >
-        {currentStep >= totalSteps ? (found ? "✅ " : "❌ ") : "👉 "}
+        {currentStep >= totalSteps ? (found ? <><CheckCircle2 size={14} className="inline shrink-0 text-emerald-600" />{" "}</> : <><XCircle size={14} className="inline shrink-0 text-rose-500" />{" "}</>) : <><ArrowRight size={14} className="inline shrink-0 text-amber-500" />{" "}</>}
         <span className="font-bold">{completionMessage}</span>
       </div>
     </section>

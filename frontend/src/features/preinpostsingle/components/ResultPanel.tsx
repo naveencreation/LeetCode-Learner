@@ -1,3 +1,5 @@
+import { CheckCircle2, ArrowRight } from "lucide-react";
+
 interface ResultPanelProps {
   currentNode: number | null;
   currentPhase: string;
@@ -84,7 +86,7 @@ export function ResultPanel({
                 : "border-amber-200 bg-amber-50 text-amber-900"
             }`}
           >
-            {allDone ? "✅ " : "👉 "}
+            {allDone ? <><CheckCircle2 size={14} className="inline shrink-0 text-emerald-600" />{" "}</> : <><ArrowRight size={14} className="inline shrink-0 text-amber-500" />{" "}</>}
             <span className="font-bold">{completionMessage}</span>
           </div>
         </div>
