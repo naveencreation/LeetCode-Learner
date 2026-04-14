@@ -2,14 +2,17 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, BookOpen, Play, Search } from "lucide-react";
 import { useParams } from "next/navigation";
 
 import {
+  getGuideHref,
+  getPlatformLink,
   getProblemHref,
   sections,
   topicConfigurations,
 } from "../../page";
+import { GFGIcon, LeetCodeIcon } from "@/components/dsa-icons";
 
 export default function TopicProblemsPage() {
   const params = useParams<{ topicKey: string }>();
@@ -161,11 +164,13 @@ export default function TopicProblemsPage() {
 
           <div className="ui-scrollbar min-h-0 flex-1 space-y-2 overflow-y-auto p-3 sm:p-4">
             {filteredProblems.map((item, index) => {
+              const guideHref = getGuideHref(item.problem);
+              const platform = getPlatformLink(item.problem);
+
               if (item.href) {
                 return (
-                  <Link
+                  <div
                     key={`${item.sectionName}-${item.problem}`}
-                    href={item.href}
                     className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]"
                   >
                     <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-md border border-emerald-200 bg-emerald-50 px-1 text-xs font-bold tabular-nums text-emerald-700">
@@ -179,10 +184,42 @@ export default function TopicProblemsPage() {
                         {item.sectionName}
                       </p>
                     </div>
-                    <span className="traversal-pill border-emerald-200 bg-emerald-50 text-emerald-700">
-                      Live
-                    </span>
-                  </Link>
+                    <div className="flex items-center gap-1.5">
+                      <Link
+                        href={item.href}
+                        title="Open Visualizer"
+                        className="inline-flex h-7 items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"
+                      >
+                        <Play size={12} strokeWidth={2.5} aria-hidden="true" />
+                        <span className="hidden sm:inline">Visualize</span>
+                      </Link>
+                      {guideHref && (
+                        <Link
+                          href={guideHref}
+                          title="Read Guide"
+                          className="inline-flex h-7 items-center gap-1 rounded-md border border-sky-200 bg-sky-50 px-2 text-xs font-semibold text-sky-700 transition hover:bg-sky-100"
+                        >
+                          <BookOpen size={12} strokeWidth={2.5} aria-hidden="true" />
+                          <span className="hidden sm:inline">Learn</span>
+                        </Link>
+                      )}
+                      {platform && (
+                        <a
+                          href={platform.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={`Solve on ${platform.platform === "leetcode" ? "LeetCode" : "GeeksforGeeks"}`}
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-slate-50 transition hover:bg-slate-100"
+                        >
+                          {platform.platform === "leetcode" ? (
+                            <LeetCodeIcon size={14} aria-hidden="true" />
+                          ) : (
+                            <GFGIcon size={14} aria-hidden="true" />
+                          )}
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 );
               }
 
@@ -202,9 +239,26 @@ export default function TopicProblemsPage() {
                       {item.sectionName}
                     </p>
                   </div>
-                  <span className="traversal-pill border-slate-200 bg-slate-100 text-slate-600">
-                    Planned
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="traversal-pill border-slate-200 bg-slate-100 text-slate-600">
+                      Planned
+                    </span>
+                    {platform && (
+                      <a
+                        href={platform.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={`Solve on ${platform.platform === "leetcode" ? "LeetCode" : "GeeksforGeeks"}`}
+                        className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-slate-50 transition hover:bg-slate-100"
+                      >
+                        {platform.platform === "leetcode" ? (
+                          <LeetCodeIcon size={14} aria-hidden="true" />
+                        ) : (
+                          <GFGIcon size={14} aria-hidden="true" />
+                        )}
+                      </a>
+                    )}
+                  </div>
                 </div>
               );
             })}

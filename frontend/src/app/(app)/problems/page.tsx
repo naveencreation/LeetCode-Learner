@@ -1,31 +1,34 @@
 "use client";
 
 import Link from "next/link";
-import { type ReactNode, useMemo, useState } from "react";
+import { useMemo, useState, useCallback, useEffect, useRef } from "react";
 import {
-  BarChart3,
-  ChevronRight,
-  Database,
-  Gauge,
-  GitBranch,
-  Link2,
-  Network,
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  ChevronDown,
+  Clock,
+  Command,
+  Filter,
+  Layers,
+  ListChecks,
+  Play,
   Search,
-  Sigma,
   Sparkles,
-  Target,
-  Trees,
+  Zap,
 } from "lucide-react";
-
-const stats = {
-  totalSolved: 0,
-  easySolved: 0,
-  easyTotal: 25,
-  mediumSolved: 0,
-  mediumTotal: 93,
-  hardSolved: 0,
-  hardTotal: 73,
-};
+import { cn } from "@/lib/utils";
+import {
+  ArrayIcon,
+  LinkedListIcon,
+  BinaryTreeIcon,
+  BSTIcon,
+  GraphIcon,
+  DPIcon,
+  RecursionIcon,
+  LeetCodeIcon,
+  GFGIcon,
+} from "@/components/dsa-icons";
 
 export const sections = [
   {
@@ -241,18 +244,18 @@ export const sections = [
     name: "Binary Tree",
     solved: 0,
     problems: [
-      "Inorder Traversal",
-      "Preorder Traversal",
-      "Postorder Traversal",
-      "LeftView Of Binary Tree",
+      "Binary Tree Inorder Traversal",
+      "Binary Tree Preorder Traversal",
+      "Binary Tree Postorder Traversal",
+      "Left View of Binary Tree",
       "Bottom View of Binary Tree",
       "Top View of Binary Tree",
-      "Preorder Inorder Postorder in a single traversal",
-      "Vertical order traversal",
-      "Root to node path in a Binary Tree",
-      "Max width of a Binary Tree",
-      "Level order Traversal",
-      "Height of a Binary Tree",
+      "Preorder Inorder Postorder in One Traversal",
+      "Vertical Order Traversal of a Binary Tree",
+      "Root to Node Path in Binary Tree",
+      "Maximum Width of Binary Tree",
+      "Binary Tree Level Order Traversal",
+      "Maximum Depth of Binary Tree",
     ],
   },
   {
@@ -261,21 +264,21 @@ export const sections = [
     problems: [
       "Diameter of Binary Tree",
       "Balanced Binary Tree",
-      "LCA in Binary Tree",
-      "Check if two trees are identical or not",
-      "Zig Zag Traversal of Binary Tree",
+      "Lowest Common Ancestor of a Binary Tree",
+      "Same Tree",
+      "Binary Tree Zigzag Level Order Traversal",
       "Boundary Traversal of Binary Tree",
-      "Symmetric Binary Tree",
-      "Construct Binary Tree from inorder and preorder",
+      "Symmetric Tree",
+      "Construct Binary Tree from Preorder and Inorder Traversal",
     ],
   },
   {
     name: "Binary Tree Part-III",
     solved: 0,
     problems: [
-      "Construct Binary Tree from Inorder and Postorder",
-      "Flatten Binary Tree to LinkedList",
-      "Binary Tree to Double Linked List",
+      "Construct Binary Tree from Inorder and Postorder Traversal",
+      "Flatten Binary Tree to Linked List",
+      "Convert Binary Search Tree to Sorted Doubly Linked List",
     ],
   },
   {
@@ -383,14 +386,14 @@ export const topicConfigurations = [
     key: "arrays",
     title: "Arrays",
     description: "Patterns on arrays, matrix operations, and prefix tricks.",
-    icon: Database,
+    icon: ArrayIcon,
     matches: (sectionName: string) => sectionName.startsWith("Arrays"),
   },
   {
     key: "linked-list",
     title: "Linked List",
     description: "Pointer manipulation, reversal, merge, and cycle detection.",
-    icon: Link2,
+    icon: LinkedListIcon,
     matches: (sectionName: string) =>
       sectionName.startsWith("Linked List") ||
       sectionName === "Linked List and Arrays",
@@ -399,35 +402,35 @@ export const topicConfigurations = [
     key: "trees",
     title: "Trees",
     description: "Traversals, views, BSTs, and reconstruction techniques.",
-    icon: Trees,
+    icon: BinaryTreeIcon,
     matches: (sectionName: string) => sectionName.includes("Binary Tree"),
   },
   {
     key: "bst",
     title: "Binary Search Tree",
     description: "Ordered tree logic, floor/ceil, iterators, and Kth queries.",
-    icon: Search,
+    icon: BSTIcon,
     matches: (sectionName: string) => sectionName.includes("Binary Search Tree"),
   },
   {
     key: "graph",
     title: "Graph",
     description: "Traversal, cycle checks, shortest paths, and MST.",
-    icon: Network,
+    icon: GraphIcon,
     matches: (sectionName: string) => sectionName.startsWith("Graph"),
   },
   {
     key: "dp",
     title: "Dynamic Programming",
     description: "State transitions, optimization, and memoization patterns.",
-    icon: Sigma,
+    icon: DPIcon,
     matches: (sectionName: string) => sectionName.startsWith("Dynamic Programming"),
   },
   {
     key: "recursion",
     title: "Recursion",
     description: "Subsets, combinations, backtracking, and search trees.",
-    icon: GitBranch,
+    icon: RecursionIcon,
     matches: (sectionName: string) =>
       sectionName.startsWith("Recursion") || sectionName === "Trie",
   },
@@ -442,19 +445,19 @@ const toSlug = (value: string) =>
     .replace(/(^-|-$)/g, "");
 
 export const getProblemHref = (sectionName: string, problemName: string) => {
-  if (sectionName === "Binary Tree" && problemName === "Inorder Traversal") {
+  if (sectionName === "Binary Tree" && problemName === "Binary Tree Inorder Traversal") {
     return "/problems/binary-tree/inorder-traversal";
   }
 
-  if (sectionName === "Binary Tree" && problemName === "Preorder Traversal") {
+  if (sectionName === "Binary Tree" && problemName === "Binary Tree Preorder Traversal") {
     return "/problems/binary-tree/preorder-traversal";
   }
 
-  if (sectionName === "Binary Tree" && problemName === "Postorder Traversal") {
+  if (sectionName === "Binary Tree" && problemName === "Binary Tree Postorder Traversal") {
     return "/problems/binary-tree/postorder-traversal";
   }
 
-  if (sectionName === "Binary Tree" && problemName === "LeftView Of Binary Tree") {
+  if (sectionName === "Binary Tree" && problemName === "Left View of Binary Tree") {
     return "/problems/binary-tree/leftview-of-binary-tree";
   }
 
@@ -474,19 +477,19 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return "/problems/binary-tree/balanced-binary-tree";
   }
 
-  if (sectionName === "Binary Tree Part-II" && problemName === "LCA in Binary Tree") {
+  if (sectionName === "Binary Tree Part-II" && problemName === "Lowest Common Ancestor of a Binary Tree") {
     return "/problems/binary-tree/lca-in-binary-tree";
   }
 
-  if (sectionName === "Binary Tree Part-II" && problemName === "Zig Zag Traversal of Binary Tree") {
+  if (sectionName === "Binary Tree Part-II" && problemName === "Binary Tree Zigzag Level Order Traversal") {
     return "/problems/binary-tree/zigzag-level-order-traversal";
   }
 
-  if (sectionName === "Binary Tree Part-II" && problemName === "Check if two trees are identical or not") {
+  if (sectionName === "Binary Tree Part-II" && problemName === "Same Tree") {
     return "/problems/binary-tree/same-tree";
   }
 
-  if (sectionName === "Binary Tree Part-II" && problemName === "Symmetric Binary Tree") {
+  if (sectionName === "Binary Tree Part-II" && problemName === "Symmetric Tree") {
     return "/problems/binary-tree/symmetric-tree";
   }
 
@@ -494,19 +497,19 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return "/problems/binary-tree/boundary-of-binary-tree";
   }
 
-  if (sectionName === "Binary Tree Part-II" && problemName === "Construct Binary Tree from inorder and preorder") {
+  if (sectionName === "Binary Tree Part-II" && problemName === "Construct Binary Tree from Preorder and Inorder Traversal") {
     return "/problems/binary-tree/construct-binary-tree-from-inorder-and-preorder";
   }
 
-  if (sectionName === "Binary Tree Part-III" && problemName === "Construct Binary Tree from Inorder and Postorder") {
+  if (sectionName === "Binary Tree Part-III" && problemName === "Construct Binary Tree from Inorder and Postorder Traversal") {
     return "/problems/binary-tree/construct-binary-tree-from-inorder-and-postorder";
   }
 
-  if (sectionName === "Binary Tree Part-III" && problemName === "Flatten Binary Tree to LinkedList") {
+  if (sectionName === "Binary Tree Part-III" && problemName === "Flatten Binary Tree to Linked List") {
     return "/problems/binary-tree/flatten-binary-tree-to-linkedlist";
   }
 
-  if (sectionName === "Binary Tree Part-III" && problemName === "Binary Tree to Double Linked List") {
+  if (sectionName === "Binary Tree Part-III" && problemName === "Convert Binary Search Tree to Sorted Doubly Linked List") {
     return "/problems/binary-tree/convert-bst-to-sorted-doubly-linked-list";
   }
 
@@ -517,51 +520,143 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
   return null;
 };
 
+/* ─── Guide href mapping ─── */
+const guideMap: Record<string, string> = {
+  "Binary Tree Inorder Traversal": "/problems/binary-tree/inorder-guide",
+  "Binary Tree Preorder Traversal": "/problems/binary-tree/preorder-guide",
+  "Binary Tree Postorder Traversal": "/problems/binary-tree/postorder-guide",
+  "Left View of Binary Tree": "/problems/binary-tree/leftview-guide",
+  "Bottom View of Binary Tree": "/problems/binary-tree/bottomview-guide",
+  "Top View of Binary Tree": "/problems/binary-tree/topview-guide",
+  "Preorder Inorder Postorder in One Traversal": "/problems/binary-tree/preorder-inorder-postorder-single-guide",
+  "Vertical Order Traversal of a Binary Tree": "/problems/binary-tree/verticalorder-guide",
+  "Root to Node Path in Binary Tree": "/problems/binary-tree/roottonode-guide",
+  "Maximum Width of Binary Tree": "/problems/binary-tree/maxwidth-guide",
+  "Binary Tree Level Order Traversal": "/problems/binary-tree/levelorder-guide",
+  "Maximum Depth of Binary Tree": "/problems/binary-tree/height-guide",
+  "Diameter of Binary Tree": "/problems/binary-tree/diameter-guide",
+  "Balanced Binary Tree": "/problems/binary-tree/balanced-binary-tree-guide",
+  "Lowest Common Ancestor of a Binary Tree": "/problems/binary-tree/lca-in-binary-tree-guide",
+  "Same Tree": "/problems/binary-tree/same-tree-guide",
+  "Binary Tree Zigzag Level Order Traversal": "/problems/binary-tree/zigzag-level-order-traversal-guide",
+  "Boundary Traversal of Binary Tree": "/problems/binary-tree/boundary-of-binary-tree-guide",
+  "Symmetric Tree": "/problems/binary-tree/symmetric-tree-guide",
+  "Construct Binary Tree from Preorder and Inorder Traversal": "/problems/binary-tree/construct-binary-tree-from-inorder-and-preorder-guide",
+  "Construct Binary Tree from Inorder and Postorder Traversal": "/problems/binary-tree/construct-binary-tree-from-inorder-and-postorder-guide",
+  "Flatten Binary Tree to Linked List": "/problems/binary-tree/flatten-binary-tree-to-linkedlist-guide",
+  "Convert Binary Search Tree to Sorted Doubly Linked List": "/problems/binary-tree/bstdll-guide",
+};
+
+export const getGuideHref = (problemName: string): string | null =>
+  guideMap[problemName] ?? null;
+
+/* ─── Platform link mapping ─── */
+interface PlatformLink {
+  url: string;
+  platform: "leetcode" | "gfg";
+}
+
+const platformMap: Record<string, PlatformLink> = {
+  "Binary Tree Inorder Traversal": { url: "https://leetcode.com/problems/binary-tree-inorder-traversal", platform: "leetcode" },
+  "Binary Tree Preorder Traversal": { url: "https://leetcode.com/problems/binary-tree-preorder-traversal", platform: "leetcode" },
+  "Binary Tree Postorder Traversal": { url: "https://leetcode.com/problems/binary-tree-postorder-traversal", platform: "leetcode" },
+  "Left View of Binary Tree": { url: "https://www.geeksforgeeks.org/problems/left-view-of-binary-tree/1", platform: "gfg" },
+  "Bottom View of Binary Tree": { url: "https://www.geeksforgeeks.org/problems/bottom-view-of-binary-tree/1", platform: "gfg" },
+  "Top View of Binary Tree": { url: "https://www.geeksforgeeks.org/problems/top-view-of-binary-tree/1", platform: "gfg" },
+  "Preorder Inorder Postorder in One Traversal": { url: "https://www.geeksforgeeks.org/dsa/preorder-postorder-and-inorder-traversal-of-a-binary-tree-using-a-single-stack/", platform: "gfg" },
+  "Vertical Order Traversal of a Binary Tree": { url: "https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree", platform: "leetcode" },
+  "Root to Node Path in Binary Tree": { url: "https://www.geeksforgeeks.org/dsa/print-path-root-given-node-binary-tree/", platform: "gfg" },
+  "Maximum Width of Binary Tree": { url: "https://leetcode.com/problems/maximum-width-of-binary-tree", platform: "leetcode" },
+  "Binary Tree Level Order Traversal": { url: "https://leetcode.com/problems/binary-tree-level-order-traversal", platform: "leetcode" },
+  "Maximum Depth of Binary Tree": { url: "https://leetcode.com/problems/maximum-depth-of-binary-tree", platform: "leetcode" },
+  "Diameter of Binary Tree": { url: "https://leetcode.com/problems/diameter-of-binary-tree", platform: "leetcode" },
+  "Balanced Binary Tree": { url: "https://leetcode.com/problems/balanced-binary-tree", platform: "leetcode" },
+  "Lowest Common Ancestor of a Binary Tree": { url: "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree", platform: "leetcode" },
+  "Same Tree": { url: "https://leetcode.com/problems/same-tree", platform: "leetcode" },
+  "Binary Tree Zigzag Level Order Traversal": { url: "https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal", platform: "leetcode" },
+  "Boundary Traversal of Binary Tree": { url: "https://www.geeksforgeeks.org/problems/boundary-traversal-of-binary-tree/1", platform: "gfg" },
+  "Symmetric Tree": { url: "https://leetcode.com/problems/symmetric-tree", platform: "leetcode" },
+  "Construct Binary Tree from Preorder and Inorder Traversal": { url: "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal", platform: "leetcode" },
+  "Construct Binary Tree from Inorder and Postorder Traversal": { url: "https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal", platform: "leetcode" },
+  "Flatten Binary Tree to Linked List": { url: "https://leetcode.com/problems/flatten-binary-tree-to-linked-list", platform: "leetcode" },
+  "Convert Binary Search Tree to Sorted Doubly Linked List": { url: "https://leetcode.com/problems/convert-binary-search-tree-to-sorted-doubly-linked-list", platform: "leetcode" },
+};
+
+export const getPlatformLink = (problemName: string): PlatformLink | null =>
+  platformMap[problemName] ?? null;
+
+/* ─── Colour system ─── */
+interface Accent {
+  bg: string; border: string; text: string; icon: string;
+  glow: string; bar: string; hoverBorder: string;
+  stripe: string; ring: string;
+}
+const topicAccents: Record<string, Accent> = {
+  arrays:        { bg: "bg-blue-50",    border: "border-blue-200/80",    text: "text-blue-600",    icon: "text-blue-600",    glow: "from-blue-400/25",    bar: "from-blue-400 to-blue-500",       hoverBorder: "hover:border-blue-300",    stripe: "bg-blue-500",    ring: "ring-blue-500/20" },
+  "linked-list": { bg: "bg-violet-50",  border: "border-violet-200/80",  text: "text-violet-600",  icon: "text-violet-600",  glow: "from-violet-400/25",  bar: "from-violet-400 to-violet-500",   hoverBorder: "hover:border-violet-300",  stripe: "bg-violet-500",  ring: "ring-violet-500/20" },
+  trees:         { bg: "bg-emerald-50", border: "border-emerald-200/80", text: "text-emerald-600", icon: "text-emerald-600", glow: "from-emerald-400/25", bar: "from-emerald-400 to-emerald-500", hoverBorder: "hover:border-emerald-300", stripe: "bg-emerald-500", ring: "ring-emerald-500/20" },
+  bst:           { bg: "bg-teal-50",    border: "border-teal-200/80",    text: "text-teal-600",    icon: "text-teal-600",    glow: "from-teal-400/25",    bar: "from-teal-400 to-teal-500",       hoverBorder: "hover:border-teal-300",    stripe: "bg-teal-500",    ring: "ring-teal-500/20" },
+  graph:         { bg: "bg-orange-50",  border: "border-orange-200/80",  text: "text-orange-600",  icon: "text-orange-600",  glow: "from-orange-400/25",  bar: "from-orange-400 to-orange-500",   hoverBorder: "hover:border-orange-300",  stripe: "bg-orange-500",  ring: "ring-orange-500/20" },
+  dp:            { bg: "bg-rose-50",    border: "border-rose-200/80",    text: "text-rose-600",    icon: "text-rose-600",    glow: "from-rose-400/25",    bar: "from-rose-400 to-rose-500",       hoverBorder: "hover:border-rose-300",    stripe: "bg-rose-500",    ring: "ring-rose-500/20" },
+  recursion:     { bg: "bg-amber-50",   border: "border-amber-200/80",   text: "text-amber-600",   icon: "text-amber-600",   glow: "from-amber-400/25",   bar: "from-amber-400 to-amber-500",     hoverBorder: "hover:border-amber-300",   stripe: "bg-amber-500",   ring: "ring-amber-500/20" },
+};
+const defaultAccent: Accent = { bg: "bg-slate-50", border: "border-slate-200", text: "text-slate-600", icon: "text-slate-600", glow: "from-slate-500/10", bar: "from-slate-400 to-slate-500", hoverBorder: "hover:border-slate-300", stripe: "bg-slate-400", ring: "ring-slate-500/20" };
+
 export default function ProblemsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("topics");
+  const [searchQuery, setSearchQuery] = useState("");
   const [openSections, setOpenSections] = useState<string[]>([sections[0].name]);
+  const searchRef = useRef<HTMLInputElement>(null);
 
-  const totalProblemsFromList = useMemo(
-    () => sections.reduce((sum, section) => sum + section.problems.length, 0),
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const totalProblems = useMemo(
+    () => sections.reduce((sum, s) => sum + s.problems.length, 0),
+    [],
+  );
+  const totalSolved = useMemo(
+    () => sections.reduce((sum, s) => sum + s.solved, 0),
+    [],
+  );
+  const totalLive = useMemo(
+    () =>
+      sections.reduce(
+        (sum, s) =>
+          sum + s.problems.filter((p) => getProblemHref(s.name, p) !== null).length,
+        0,
+      ),
     [],
   );
 
-  const overallProgress =
-    totalProblemsFromList === 0
-      ? 0
-      : Math.round((stats.totalSolved / totalProblemsFromList) * 100);
-
-  const toggleSection = (sectionName: string) => {
-    setOpenSections((previous) =>
-      previous.includes(sectionName)
-        ? previous.filter((name) => name !== sectionName)
-        : [...previous, sectionName],
+  const toggleSection = useCallback((name: string) => {
+    setOpenSections((prev) =>
+      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name],
     );
-  };
-
-  const expandAll = () => {
-    setOpenSections(sections.map((section) => section.name));
-  };
-
-  const collapseAll = () => {
-    setOpenSections([]);
-  };
+  }, []);
 
   const topicCollections = useMemo(
     () =>
       topicConfigurations.map((topic) => {
-        const sectionItems = sections.filter((section) => topic.matches(section.name));
-        const problems = sectionItems.flatMap((section) =>
-          section.problems.map((problem) => ({
-            sectionName: section.name,
-            problem,
-            href: getProblemHref(section.name, problem),
+        const sectionItems = sections.filter((s) => topic.matches(s.name));
+        const problems = sectionItems.flatMap((s) =>
+          s.problems.map((p) => ({
+            sectionName: s.name,
+            problem: p,
+            href: getProblemHref(s.name, p),
           })),
         );
-        const liveCount = problems.filter((item) => Boolean(item.href)).length;
-        const solved = sectionItems.reduce((sum, section) => sum + section.solved, 0);
+        const liveCount = problems.filter((i) => Boolean(i.href)).length;
+        const solved = sectionItems.reduce((sum, s) => sum + s.solved, 0);
         const total = problems.length;
-
         return {
           ...topic,
           sectionsCount: sectionItems.length,
@@ -575,326 +670,530 @@ export default function ProblemsPage() {
     [],
   );
 
+  const filteredSections = useMemo(() => {
+    if (!searchQuery.trim()) return sections;
+    const q = searchQuery.toLowerCase();
+    return sections
+      .map((s) => ({
+        ...s,
+        problems: s.problems.filter((p) => p.toLowerCase().includes(q)),
+      }))
+      .filter((s) => s.problems.length > 0);
+  }, [searchQuery]);
+
+  const featured = topicCollections.reduce((best, t) =>
+    t.liveCount > best.liveCount ? t : best,
+  );
+
   return (
-    <section className="space-y-4">
-      <header className="traversal-panel space-y-3 p-5">
+    <div className="space-y-8">
+      {/* ═══ HERO ═══ */}
+      <header className="relative isolate overflow-hidden rounded-2xl border border-slate-200/50 bg-white">
+        {/* Dot grid */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.35]"
+          style={{
+            backgroundImage: "radial-gradient(circle, #94a3b8 0.8px, transparent 0.8px)",
+            backgroundSize: "20px 20px",
+          }}
+        />
+        {/* Gradient blobs */}
+        <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-gradient-to-br from-sky-300/25 via-indigo-300/15 to-transparent blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-16 -left-16 h-60 w-60 rounded-full bg-gradient-to-tr from-emerald-300/20 via-teal-200/10 to-transparent blur-3xl" />
+        <div className="pointer-events-none absolute left-1/2 top-0 h-40 w-96 -translate-x-1/2 bg-gradient-to-b from-violet-200/10 to-transparent blur-2xl" />
+        {/* Top accent stripe */}
+        <div className="absolute left-0 right-0 top-0 h-[3px] bg-gradient-to-r from-blue-500 via-violet-500 to-emerald-500 opacity-80" />
 
-        <h1 className="max-w-5xl text-[clamp(28px,2.5vw,40px)] font-extrabold leading-[1.06] tracking-[-0.03em] text-slate-900">
-          Top Coding Interview Problems
-        </h1>
+        <div className="relative px-6 pb-7 pt-10 sm:px-8 sm:pt-12">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-xl space-y-4">
+              <div className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white shadow-lg shadow-slate-900/20">
+                <Zap size={10} strokeWidth={2.5} aria-hidden="true" className="text-amber-400" />
+                Interview Prep
+              </div>
 
-        <p className="max-w-4xl text-sm leading-6 text-slate-600">
-          A structured collection of high-signal DSA problems for interview prep.
-          Explore by topic, track progress, and jump into interactive
-          visualizers where available.
-        </p>
+              <h1 className="text-[clamp(28px,3vw,42px)] font-extrabold leading-[1.08] tracking-[-0.035em] text-slate-900">
+                Problem<br />
+                <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-500 bg-clip-text text-transparent">
+                  Collection
+                </span>
+              </h1>
+
+              <p className="text-[15px] leading-relaxed text-slate-500">
+                <span className="font-semibold text-slate-700">{totalProblems}</span> problems across{" "}
+                <span className="font-semibold text-slate-700">{topicConfigurations.length}</span> topics.
+                Dive into interactive visualizers and structured learning paths.
+              </p>
+            </div>
+
+            {/* Stat blocks */}
+            <div className="flex shrink-0 items-stretch gap-3">
+              <StatBlock label="Total" value={totalProblems} sub="problems" />
+              <StatBlock label="Solved" value={totalSolved} sub={`of ${totalProblems}`} accent="emerald" />
+              <StatBlock label="Live" value={totalLive} sub="visualizers" accent="sky" />
+            </div>
+          </div>
+
+          {/* Search + view toggle */}
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <label className="relative block w-full max-w-lg">
+              <Search
+                size={16}
+                strokeWidth={2}
+                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                aria-hidden="true"
+              />
+              <input
+                ref={searchRef}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search problems..."
+                className="h-11 w-full rounded-xl border border-slate-200/80 bg-white pl-11 pr-20 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+              />
+              <kbd className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 sm:inline-flex">
+                <Command size={10} strokeWidth={2} aria-hidden="true" />K
+              </kbd>
+            </label>
+
+            <div className="inline-flex items-center self-start rounded-xl border border-slate-200/80 bg-white p-1 shadow-sm">
+              {(
+                [
+                  { key: "topics" as const, label: "Topics", icon: Layers },
+                  { key: "sheet" as const, label: "All Sections", icon: ListChecks },
+                ] as const
+              ).map((tab) => {
+                const TabIcon = tab.icon;
+                const active = viewMode === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setViewMode(tab.key)}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all",
+                      active
+                        ? "bg-slate-900 text-white shadow-lg shadow-slate-900/15"
+                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-700",
+                    )}
+                  >
+                    <TabIcon size={13} strokeWidth={2} aria-hidden="true" />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </header>
 
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          label="Overall Progress"
-          value={`${overallProgress}%`}
-          icon={<Gauge size={15} strokeWidth={2.2} aria-hidden="true" />}
-          tone="sky"
-        />
-        <StatCard
-          label="All Problems"
-          value={`${stats.totalSolved}/${totalProblemsFromList}`}
-          icon={<BarChart3 size={15} strokeWidth={2.2} aria-hidden="true" />}
-          tone="slate"
-        />
-        <StatCard
-          label="Easy"
-          value={`${stats.easySolved}/${stats.easyTotal}`}
-          icon={<Target size={15} strokeWidth={2.2} aria-hidden="true" />}
-          tone="emerald"
-        />
-        <StatCard
-          label="Medium"
-          value={`${stats.mediumSolved}/${stats.mediumTotal}`}
-          icon={<Target size={15} strokeWidth={2.2} aria-hidden="true" />}
-          tone="amber"
-        />
-      </div>
+      {/* ═══ FEATURED TOPIC ═══ */}
+      {viewMode === "topics" && !searchQuery.trim() && (
+        <FeaturedTopicCard topic={featured} accent={topicAccents[featured.key] ?? defaultAccent} />
+      )}
 
-      <div className="traversal-panel p-4">
-        <div className="traversal-panel-header">
-          <h2 className="traversal-panel-title text-rose-700">Hard</h2>
-          <button
-            type="button"
-            className="traversal-pill inline-flex items-center gap-1.5 border-rose-200 bg-rose-50 text-rose-700 transition hover:bg-rose-100"
-          >
-            <Sparkles size={12} strokeWidth={2} aria-hidden="true" />
-            Random Problem
-          </button>
-        </div>
-        <p className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 tabular-nums">
-          {stats.hardSolved}/{stats.hardTotal}
-        </p>
-      </div>
-
-      <div className="sticky top-4 z-10 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white/95 px-3 py-2 shadow-sm backdrop-blur">
-        <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1">
-          <button
-            type="button"
-            onClick={() => setViewMode("topics")}
-            className={`rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-[0.04em] transition ${
-              viewMode === "topics"
-                ? "bg-white text-slate-900 shadow-sm"
-                : "text-slate-500 hover:text-slate-700"
-            }`}
-          >
-            Topic Cards
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode("sheet")}
-            className={`rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-[0.04em] transition ${
-              viewMode === "sheet"
-                ? "bg-white text-slate-900 shadow-sm"
-                : "text-slate-500 hover:text-slate-700"
-            }`}
-          >
-            Section View
-          </button>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={expandAll}
-            className="traversal-pill transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={viewMode !== "sheet"}
-          >
-            Expand All
-          </button>
-          <button
-            type="button"
-            onClick={collapseAll}
-            className="traversal-pill transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={viewMode !== "sheet"}
-          >
-            Collapse All
-          </button>
-        </div>
-      </div>
-
+      {/* ═══ TOPIC CARDS / SECTION VIEW ═══ */}
       {viewMode === "topics" ? (
-        <>
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {topicCollections.map((topic) => {
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {topicCollections
+            .filter((t) => {
+              if (searchQuery.trim()) {
+                return t.problems.some((p) =>
+                  p.problem.toLowerCase().includes(searchQuery.toLowerCase()),
+                );
+              }
+              return t.key !== featured.key;
+            })
+            .map((topic) => {
               const Icon = topic.icon;
-
+              const accent = topicAccents[topic.key] ?? defaultAccent;
               return (
                 <Link
                   key={topic.key}
                   href={`/problems/topics/${topic.key}`}
-                  className="traversal-panel group relative overflow-hidden p-4 text-left transition hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
+                  className={cn(
+                    "group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200/60 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)]",
+                    accent.hoverBorder,
+                  )}
                 >
-                  <div className="pointer-events-none absolute right-0 top-0 h-20 w-24 bg-gradient-to-bl from-sky-100/80 to-transparent" />
-                  <div className="relative">
-                    <div className="mb-3 flex items-center justify-between gap-3">
-                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-sky-200 bg-sky-50 text-sky-700">
-                        <Icon size={16} strokeWidth={2.2} aria-hidden="true" />
+                  {/* Left accent stripe */}
+                  <div className={cn("absolute bottom-0 left-0 top-0 w-[3px] rounded-l-2xl opacity-0 transition-opacity duration-200 group-hover:opacity-100", accent.stripe)} />
+                  {/* Background glow */}
+                  <div className={cn("pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-gradient-to-br to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100", accent.glow)} />
+
+                  <div className="relative flex flex-1 flex-col p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <span
+                        className={cn(
+                          "inline-flex h-11 w-11 items-center justify-center rounded-xl border transition-all duration-200 group-hover:shadow-lg group-hover:ring-4",
+                          accent.bg, accent.border, accent.icon, accent.ring,
+                        )}
+                      >
+                        <Icon size={20} strokeWidth={1.8} aria-hidden="true" />
                       </span>
-                      <span className="traversal-pill border-slate-200 bg-slate-50 text-slate-600">
-                        {topic.sectionsCount} sections
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {topic.liveCount > 0 && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white shadow-sm">
+                            <Zap size={8} strokeWidth={2.5} aria-hidden="true" />
+                            {topic.liveCount}
+                          </span>
+                        )}
+                        <span className="rounded-full border border-slate-200/80 bg-slate-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.05em] text-slate-500">
+                          {topic.sectionsCount}s
+                        </span>
+                      </div>
                     </div>
 
-                    <h3 className="text-lg font-extrabold tracking-tight text-slate-900">
-                      {topic.title}
-                    </h3>
-                    <p className="mt-1 line-clamp-2 text-sm text-slate-600">
-                      {topic.description}
-                    </p>
+                    <div className="mt-4">
+                      <h3 className="text-[17px] font-bold tracking-tight text-slate-900">
+                        {topic.title}
+                      </h3>
+                      <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-slate-500">
+                        {topic.description}
+                      </p>
+                    </div>
 
-                    <div className="mt-3 space-y-2">
-                      <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
-                        <span>Progress</span>
+                    <div className="mt-auto pt-5">
+                      <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400">
                         <span className="tabular-nums">{topic.solved}/{topic.total}</span>
+                        <span className="tabular-nums">{topic.progress}%</span>
                       </div>
-                      <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
+                      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-sky-500 to-emerald-500"
-                          style={{ width: `${topic.progress}%` }}
+                          className={cn("h-full rounded-full bg-gradient-to-r transition-all duration-700 ease-out", accent.bar)}
+                          style={{ width: `${Math.max(topic.progress, 2)}%` }}
                         />
                       </div>
-                      <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
-                        <span>{topic.liveCount} live visualizers</span>
-                        <span>{topic.progress}% complete</span>
-                      </div>
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+                      <span className="text-xs font-semibold text-slate-400 transition-colors group-hover:text-slate-600">
+                        Explore topic
+                      </span>
+                      <span className={cn(
+                        "inline-flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200",
+                        "bg-slate-100 text-slate-400 group-hover:bg-slate-900 group-hover:text-white group-hover:shadow-lg",
+                      )}>
+                        <ArrowRight size={13} strokeWidth={2} aria-hidden="true" />
+                      </span>
                     </div>
                   </div>
                 </Link>
               );
             })}
-          </div>
-        </>
+        </div>
       ) : (
-        <div className="traversal-panel overflow-hidden">
-          <div className="divide-y">
-            {sections.map((section, index) => {
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-[0.06em] text-slate-400">
+              {filteredSections.length} {filteredSections.length === 1 ? "section" : "sections"}
+            </p>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setOpenSections(filteredSections.map((s) => s.name))}
+                className="rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+              >
+                Expand all
+              </button>
+              <span className="text-slate-300">&middot;</span>
+              <button
+                type="button"
+                onClick={() => setOpenSections([])}
+                className="rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+              >
+                Collapse all
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            {filteredSections.map((section, sIdx) => {
               const isOpen = openSections.includes(section.name);
-              const panelId = `section-${index}-${section.name
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/(^-|-$)/g, "")}`;
-              const sectionProgress =
+              const panelId = `section-panel-${sIdx}`;
+              const progress =
                 section.problems.length === 0
                   ? 0
-                  : (section.solved / section.problems.length) * 100;
+                  : Math.round((section.solved / section.problems.length) * 100);
+              const liveCt = section.problems.filter(
+                (p) => getProblemHref(section.name, p) !== null,
+              ).length;
 
               return (
-                <article key={section.name} className="overflow-hidden">
+                <article
+                  key={section.name}
+                  className={cn(
+                    "overflow-hidden rounded-xl border bg-white transition-shadow",
+                    isOpen ? "border-slate-200 shadow-sm" : "border-slate-200/60",
+                  )}
+                >
                   <button
                     type="button"
                     onClick={() => toggleSection(section.name)}
-                    className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition hover:bg-slate-50 sm:px-5"
+                    className="group flex w-full items-center gap-4 px-5 py-4 text-left transition hover:bg-slate-50/60"
                     aria-expanded={isOpen}
                     aria-controls={panelId}
                   >
-                    <ChevronRight
-                      size={14}
-                      strokeWidth={2}
-                      className={`text-slate-500 transition-transform ${isOpen ? "rotate-90" : "rotate-0"}`}
-                      aria-hidden="true"
-                    />
+                    <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-xs font-bold tabular-nums text-slate-500 transition group-hover:bg-slate-200/80">
+                      {sIdx + 1}
+                    </span>
 
-                    <h2 className="text-[1rem] font-semibold leading-tight tracking-normal text-slate-900 sm:text-[1.08rem]">
-                      {section.name}
-                    </h2>
+                    <div className="min-w-0 flex-1">
+                      <h2 className="truncate text-[15px] font-semibold text-slate-800">
+                        {section.name}
+                      </h2>
+                    </div>
 
-                    <div className="ml-auto flex items-center gap-3">
-                      <div className="h-1.5 w-24 overflow-hidden rounded-full bg-slate-200 sm:w-36 md:w-40">
+                    <div className="flex shrink-0 items-center gap-3">
+                      {liveCt > 0 && (
+                        <span className="hidden items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white sm:inline-flex">
+                          {liveCt} live
+                        </span>
+                      )}
+                      <div className="hidden h-1.5 w-20 overflow-hidden rounded-full bg-slate-100 sm:block md:w-28">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-sky-500 to-emerald-500"
-                          style={{ width: `${sectionProgress}%` }}
+                          className="h-full rounded-full bg-gradient-to-r from-slate-300 to-slate-400 transition-all"
+                          style={{ width: `${progress}%` }}
                         />
                       </div>
-                      <span className="w-[64px] whitespace-nowrap text-right text-sm font-semibold tabular-nums text-slate-500 sm:w-[72px] sm:text-base">
-                        {section.solved} / {section.problems.length}
+                      <span className="w-[52px] text-right text-xs font-semibold tabular-nums text-slate-400">
+                        {section.solved}/{section.problems.length}
                       </span>
+                      <ChevronDown
+                        size={14}
+                        strokeWidth={2.2}
+                        className={cn(
+                          "shrink-0 text-slate-400 transition-transform duration-200",
+                          isOpen ? "rotate-0" : "-rotate-90",
+                        )}
+                        aria-hidden="true"
+                      />
                     </div>
                   </button>
 
-                  {isOpen ? (
+                  {isOpen && (
                     <div
                       id={panelId}
-                      className="border-t bg-slate-50/70 px-5 py-4 sm:px-6"
+                      className="border-t border-slate-100 bg-slate-50/40 px-5 py-4"
                     >
-                      <div className="mb-3 flex items-center justify-between">
-                        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                          Problem List
-                        </p>
-                        <p className="text-xs font-semibold text-slate-500">
-                          {section.problems.length} total
-                        </p>
-                      </div>
-
-                      <div className="grid gap-2 lg:grid-cols-2">
-                        {section.problems.map((problem, problemIndex) => {
+                      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                        {section.problems.map((problem, pIdx) => {
                           const href = getProblemHref(section.name, problem);
+                          const isLive = href !== null;
+                          const guideHref = getGuideHref(problem);
+                          const platform = getPlatformLink(problem);
 
-                          if (href) {
+                          if (isLive) {
                             return (
-                              <Link
+                              <div
                                 key={problem}
-                                href={href}
-                                className="group flex w-full items-start gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-left transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]"
+                                className="group/card flex items-center gap-2.5 rounded-lg border border-slate-200/80 bg-white px-3 py-2.5 transition-all hover:border-emerald-300 hover:shadow-md hover:shadow-emerald-100/50"
                               >
-                                <span className="mt-0.5 inline-flex h-6 min-w-6 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-1 text-xs font-semibold tabular-nums text-slate-500">
-                                  {problemIndex + 1}
+                                <span className="inline-flex h-6 min-w-[24px] items-center justify-center rounded-md border border-emerald-200 bg-emerald-50 px-1 text-[11px] font-bold tabular-nums text-emerald-600">
+                                  {pIdx + 1}
                                 </span>
-                                <div className="flex min-w-0 flex-1 items-start justify-between gap-2">
-                                  <span className="line-clamp-2 text-sm font-semibold leading-5 text-slate-800 transition group-hover:text-slate-900">
-                                    {problem}
-                                  </span>
-                                  <span className="traversal-pill border-emerald-200 bg-emerald-50 text-[9px] text-emerald-700">
-                                    Live
-                                  </span>
+                                <span className="flex-1 truncate text-[13px] font-medium text-slate-700">
+                                  {problem}
+                                </span>
+                                <div className="flex shrink-0 items-center gap-1">
+                                  <Link href={href} title="Visualizer" className="inline-flex h-6 w-6 items-center justify-center rounded border border-emerald-200 bg-emerald-50 text-emerald-600 transition hover:bg-emerald-100">
+                                    <Play size={11} strokeWidth={2.5} aria-hidden="true" />
+                                  </Link>
+                                  {guideHref && (
+                                    <Link href={guideHref} title="Learn" className="inline-flex h-6 w-6 items-center justify-center rounded border border-sky-200 bg-sky-50 text-sky-600 transition hover:bg-sky-100">
+                                      <BookOpen size={11} strokeWidth={2.5} aria-hidden="true" />
+                                    </Link>
+                                  )}
+                                  {platform && (
+                                    <a href={platform.url} target="_blank" rel="noopener noreferrer" title={platform.platform === "leetcode" ? "LeetCode" : "GeeksforGeeks"} className="inline-flex h-6 w-6 items-center justify-center rounded border border-slate-200 bg-slate-50 transition hover:bg-slate-100">
+                                      {platform.platform === "leetcode" ? <LeetCodeIcon size={12} aria-hidden="true" /> : <GFGIcon size={12} aria-hidden="true" />}
+                                    </a>
+                                  )}
                                 </div>
-                              </Link>
+                              </div>
                             );
                           }
 
                           return (
-                            <button
+                            <div
                               key={problem}
-                              type="button"
-                              className="group flex w-full items-start gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-left transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]"
+                              className="flex items-center gap-2.5 rounded-lg border border-dashed border-slate-200/80 bg-white/50 px-3 py-2.5"
                             >
-                              <span className="mt-0.5 inline-flex h-6 min-w-6 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-1 text-xs font-semibold tabular-nums text-slate-500">
-                                {problemIndex + 1}
+                              <span className="inline-flex h-6 min-w-[24px] items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-1 text-[11px] font-bold tabular-nums text-slate-400">
+                                {pIdx + 1}
                               </span>
-                              <div className="flex min-w-0 flex-1 items-start justify-between gap-2">
-                                <span className="line-clamp-2 text-sm font-semibold leading-5 text-slate-800 transition group-hover:text-slate-900">
-                                  {problem}
-                                </span>
-                                <span className="traversal-pill border-slate-200 bg-slate-100 text-[9px] text-slate-600">
-                                  Planned
-                                </span>
+                              <span className="flex-1 truncate text-[13px] font-medium text-slate-500">
+                                {problem}
+                              </span>
+                              <div className="flex shrink-0 items-center gap-1">
+                                {platform && (
+                                  <a href={platform.url} target="_blank" rel="noopener noreferrer" title={platform.platform === "leetcode" ? "LeetCode" : "GeeksforGeeks"} className="inline-flex h-6 w-6 items-center justify-center rounded border border-slate-200 bg-slate-50 transition hover:bg-slate-100">
+                                    {platform.platform === "leetcode" ? <LeetCodeIcon size={12} aria-hidden="true" /> : <GFGIcon size={12} aria-hidden="true" />}
+                                  </a>
+                                )}
+                                <Clock size={11} strokeWidth={2} className="shrink-0 text-slate-300" aria-hidden="true" />
                               </div>
-                            </button>
+                            </div>
                           );
                         })}
                       </div>
                     </div>
-                  ) : null}
+                  )}
                 </article>
               );
             })}
           </div>
+
+          {filteredSections.length === 0 && (
+            <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-white py-20 text-center">
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                <Filter size={20} strokeWidth={1.5} className="text-slate-400" aria-hidden="true" />
+              </div>
+              <p className="mt-4 text-sm font-semibold text-slate-700">No matching sections</p>
+              <p className="mt-1 text-xs text-slate-400">
+                Try a different search term or clear the filter.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-slate-800"
+              >
+                Clear search
+              </button>
+            </div>
+          )}
         </div>
       )}
-    </section>
+    </div>
   );
 }
 
-function StatCard({
-  label,
-  value,
-  icon,
-  tone,
-}: {
-  label: string;
-  value: string;
-  icon: ReactNode;
-  tone: "sky" | "slate" | "emerald" | "amber";
+/* ═══ FEATURED TOPIC — wide highlighted card ═══ */
+function FeaturedTopicCard({ topic, accent }: {
+  topic: {
+    key: string; title: string; description: string;
+    icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
+    liveCount: number; solved: number; total: number; progress: number; sectionsCount: number;
+    problems: { sectionName: string; problem: string; href: string | null }[];
+  };
+  accent: Accent;
 }) {
-  const toneClasses = {
-    sky: {
-      card: "from-sky-50 to-white",
-      badge: "border-sky-200 bg-sky-100 text-sky-700",
-    },
-    slate: {
-      card: "from-slate-50 to-white",
-      badge: "border-slate-200 bg-slate-100 text-slate-700",
-    },
-    emerald: {
-      card: "from-emerald-50 to-white",
-      badge: "border-emerald-200 bg-emerald-100 text-emerald-700",
-    },
-    amber: {
-      card: "from-amber-50 to-white",
-      badge: "border-amber-200 bg-amber-100 text-amber-700",
-    },
-  }[tone];
+  const Icon = topic.icon;
+  const topProblems = topic.problems.filter((p) => p.href).slice(0, 5);
 
   return (
-    <div
-      className={`traversal-panel bg-gradient-to-br px-4 py-3 ${toneClasses.card}`}
+    <Link
+      href={`/problems/topics/${topic.key}`}
+      className={cn(
+        "group relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-slate-200/50 bg-white p-6 transition-all duration-200 hover:shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-8 lg:flex-row lg:items-center lg:gap-10",
+        accent.hoverBorder,
+      )}
     >
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-semibold text-slate-600">{label}</p>
-        <span
-          className={`inline-flex h-7 w-7 items-center justify-center rounded-full border ${toneClasses.badge}`}
-        >
-          {icon}
-        </span>
+      <div className={cn("pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-gradient-to-br to-transparent blur-3xl", accent.glow)} />
+      <div className={cn("pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-gradient-to-tr to-transparent opacity-50 blur-2xl", accent.glow)} />
+
+      <div className="relative flex-1 space-y-4">
+        <div className="flex items-center gap-3">
+          <span className={cn(
+            "inline-flex h-12 w-12 items-center justify-center rounded-2xl border transition-all group-hover:shadow-lg group-hover:ring-4",
+            accent.bg, accent.border, accent.icon, accent.ring,
+          )}>
+            <Icon size={24} strokeWidth={1.6} aria-hidden="true" />
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-amber-900 shadow-sm">
+            <Sparkles size={9} strokeWidth={2.5} aria-hidden="true" />
+            Featured
+          </span>
+        </div>
+
+        <div>
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-[28px]">
+            {topic.title}
+          </h2>
+          <p className="mt-2 max-w-md text-[14px] leading-relaxed text-slate-500">
+            {topic.description} — {topic.liveCount} interactive visualizers ready to explore.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-5">
+          <div>
+            <p className="text-2xl font-extrabold tabular-nums text-slate-900">{topic.total}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-slate-400">Problems</p>
+          </div>
+          <div className="h-8 w-px bg-slate-200" />
+          <div>
+            <p className="text-2xl font-extrabold tabular-nums text-emerald-600">{topic.liveCount}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-slate-400">Live</p>
+          </div>
+          <div className="h-8 w-px bg-slate-200" />
+          <div>
+            <p className="text-2xl font-extrabold tabular-nums text-slate-900">{topic.sectionsCount}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-slate-400">Sections</p>
+          </div>
+        </div>
       </div>
-      <p className="mt-2 text-4xl font-extrabold tracking-tight text-slate-900 tabular-nums">
+
+      {topProblems.length > 0 && (
+        <div className="relative w-full shrink-0 lg:w-72">
+          <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.06em] text-slate-400">
+            Top problems
+          </p>
+          <div className="space-y-1.5">
+            {topProblems.map((p, i) => (
+              <div
+                key={p.problem}
+                className="flex items-center gap-2.5 rounded-lg border border-slate-100 bg-slate-50/60 px-3 py-2 transition group-hover:border-slate-200 group-hover:bg-white"
+              >
+                <span className={cn(
+                  "inline-flex h-5 min-w-[20px] items-center justify-center rounded text-[10px] font-bold tabular-nums",
+                  accent.bg, accent.text,
+                )}>
+                  {i + 1}
+                </span>
+                <span className="flex-1 truncate text-[12px] font-medium text-slate-600">
+                  {p.problem}
+                </span>
+                <ArrowUpRight size={11} strokeWidth={2} className="shrink-0 text-slate-400" aria-hidden="true" />
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-slate-400 transition group-hover:text-slate-700">
+            View all {topic.total} problems
+            <ArrowRight size={12} strokeWidth={2} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
+          </div>
+        </div>
+      )}
+    </Link>
+  );
+}
+
+/* ─── Stat block for hero ─── */
+function StatBlock({
+  label,
+  value,
+  sub,
+  accent,
+}: {
+  label: string;
+  value: number;
+  sub: string;
+  accent?: "emerald" | "sky";
+}) {
+  const valueColor = accent === "emerald"
+    ? "text-emerald-600"
+    : accent === "sky"
+      ? "text-sky-600"
+      : "text-slate-900";
+
+  return (
+    <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200/60 bg-white/80 px-5 py-3.5 backdrop-blur-sm">
+      <p className={cn("text-2xl font-extrabold tabular-nums tracking-tight", valueColor)}>
         {value}
+      </p>
+      <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-slate-400">
+        {label}
+      </p>
+      <p className="text-[9px] font-medium text-slate-300">
+        {sub}
       </p>
     </div>
   );
