@@ -245,6 +245,22 @@ a {
   to { opacity: 1; transform: translateX(0); }
 }
 
+@keyframes llNodePop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.09); }
+  100% { transform: scale(1); }
+}
+
+@keyframes llPulse {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 1; }
+}
+
+@keyframes llDashFlow {
+  from { stroke-dashoffset: 24; }
+  to   { stroke-dashoffset: 0; }
+}
+
 .animate-fade-in {
   animation: fadeIn 200ms ease-out both;
 }
