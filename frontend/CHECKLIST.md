@@ -18,6 +18,7 @@ Tracking all changes made during this session. Updated as fixes are completed.
 - [x] **Remove subtitle from header** — Hidden subtitle text across all 25 visualizers via `problem-focus-header.tsx` (kept as `sr-only` for accessibility)
 - [x] **Style "Select Tree" button** — Teal-tinted pill (`border-teal-200 bg-teal-50 text-teal-700`) via `traversal-pill` class in `globals.css`
 - [x] **Fix hover override on Select Tree** — Removed inline `hover:bg-slate-50` from 23 TreePanel files so the teal hover (`hover:bg-teal-100`) from the CSS class takes effect
+- [x] **Copy code button** — Added `CopyCodeButton` component (Copy→Check icon) to all 25 CodePanel headers (`shared/components/CopyCodeButton.tsx`)
 
 ## In Progress
 

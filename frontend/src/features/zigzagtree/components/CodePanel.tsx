@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import { CopyCodeButton } from "@/features/shared/components/CopyCodeButton";
 import { ZIGZAG_CODE_LINES, ZIGZAG_LINE_LABELS } from "../constants";
 
 interface CodePanelProps {

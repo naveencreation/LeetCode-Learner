@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import { CopyCodeButton } from "@/features/shared/components/CopyCodeButton";
 
 import { TOP_VIEW_CODE_LINES } from "../constants";
 
@@ -181,6 +182,7 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
               Full Code
             </button>
           </div>
+          <CopyCodeButton codeLines={TOP_VIEW_CODE_LINES} />
 </div>
       </div>
 

@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import { CopyCodeButton } from "@/features/shared/components/CopyCodeButton";
 
 import { MAX_WIDTH_CODE_LINES } from "../constants";
 
@@ -182,6 +183,7 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
               Full Code
             </button>
           </div>
+          <CopyCodeButton codeLines={MAX_WIDTH_CODE_LINES} />
 </div>
       </div>
 

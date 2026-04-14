@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import { CopyCodeButton } from "@/features/shared/components/CopyCodeButton";
 
 import { ROOT_TO_NODE_CODE_LINES, ROOT_TO_NODE_LINE_LABELS } from "../constants";
 
@@ -171,6 +172,7 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
               Full Code
             </button>
           </div>
+          <CopyCodeButton codeLines={ROOT_TO_NODE_CODE_LINES} />
 </div>
       </div>
 

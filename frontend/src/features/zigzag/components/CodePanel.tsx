@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from "react";
+import { CopyCodeButton } from "@/features/shared/components/CopyCodeButton";
 
 import { ZIGZAG_CODE_LINES, ZIGZAG_LINE_LABELS } from "../constants";
 
@@ -148,7 +149,8 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
         <h2 className="traversal-panel-title">
           Python Code
         </h2>
-        <div className="inline-flex items-center rounded-full border border-slate-300 bg-slate-100 p-0.5">
+        <div className="flex items-center gap-1.5">
+          <div className="inline-flex items-center rounded-full border border-slate-300 bg-slate-100 p-0.5">
           <button
             type="button"
             onClick={() => handleViewModeChange("snippet")}
