@@ -75,6 +75,7 @@ export function LcaBinaryTreeLayout() {
       title="LCA in Binary Tree"
       subtitle="Find the lowest common ancestor using one recursive traversal"
       guideHref="/problems/binary-tree/lca-in-binary-tree-guide"
+      currentHref="/problems/binary-tree/lca-in-binary-tree"
       headerExtraActions={
         <div className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-emerald-800">
           <span className="text-emerald-700">Targets:</span>

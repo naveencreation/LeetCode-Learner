@@ -67,6 +67,7 @@ export function InorderLayout() {
       title="Inorder Tree Traversal"
       subtitle="Left -> Root -> Right recursion visualizer"
       guideHref="/problems/binary-tree/inorder-guide"
+      currentHref="/problems/binary-tree/inorder-traversal"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Visited", value: result.length },

@@ -71,6 +71,7 @@ export function RootToNodeLayout() {
       title="Root To Node Path in Binary Tree"
       subtitle="DFS with backtracking path visualizer"
       guideHref="/problems/binary-tree/roottonode-guide"
+      currentHref="/problems/binary-tree/root-to-node-path-in-a-binary-tree"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Path", value: found ? `[${result.join(", ")}]` : "Not Found", minWidthClassName: "min-w-[110px]" },

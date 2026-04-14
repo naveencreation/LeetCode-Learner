@@ -469,6 +469,30 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return "/problems/binary-tree/top-view-of-binary-tree";
   }
 
+  if (sectionName === "Binary Tree" && problemName === "Preorder Inorder Postorder in One Traversal") {
+    return "/problems/binary-tree/preorder-inorder-postorder-in-a-single-traversal";
+  }
+
+  if (sectionName === "Binary Tree" && problemName === "Vertical Order Traversal of a Binary Tree") {
+    return "/problems/binary-tree/vertical-order-traversal";
+  }
+
+  if (sectionName === "Binary Tree" && problemName === "Root to Node Path in Binary Tree") {
+    return "/problems/binary-tree/root-to-node-path-in-a-binary-tree";
+  }
+
+  if (sectionName === "Binary Tree" && problemName === "Maximum Width of Binary Tree") {
+    return "/problems/binary-tree/max-width-of-a-binary-tree";
+  }
+
+  if (sectionName === "Binary Tree" && problemName === "Binary Tree Level Order Traversal") {
+    return "/problems/binary-tree/level-order-traversal";
+  }
+
+  if (sectionName === "Binary Tree" && problemName === "Maximum Depth of Binary Tree") {
+    return "/problems/binary-tree/height-of-a-binary-tree";
+  }
+
   if (sectionName === "Binary Tree Part-II" && problemName === "Diameter of Binary Tree") {
     return "/problems/binary-tree/diameter-of-binary-tree";
   }

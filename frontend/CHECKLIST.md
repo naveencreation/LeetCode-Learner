@@ -26,9 +26,59 @@ Tracking all changes made during this session. Updated as fixes are completed.
 - [x] **Remove Manual Position Controls** — Removed state, handler, and UI for manual x/y coordinate input from all 22 TreeSetupModal files. Drag-to-reposition and Auto Layout remain.
 - [x] **Regroup left panel** — Merged 4 sections into 2: "Build Tree" (Preset + Add Child + Layout/Auto Layout) and "Edit Tree" (Rename + Remove Subtree, always visible). Consistent white sub-cards within slate sections.
 - [x] **Add Left / Add Right buttons** — Replaced Left/Right dropdown + Add button with two distinct "+ Left" (filled teal) and "+ Right" (outlined teal) buttons. Fewer clicks per node.
+- [x] **Smooth animations & transitions** — Full animation pass across all panels. Added shared CSS keyframes (`fadeIn`, `slideUpFadeIn`, `scaleIn`, `nodePulse`, `badgePopIn`, `frameSlideIn`) in `globals.css`. TreePanel SVG nodes get smooth fill/stroke transitions + pulse on current node. TreeSetupModal gets fade-in backdrop, slide-up card, scale-in dialogs, fade-in tooltips. CallStack frames get slide-in + staggered delay. CodePanel lines get `transition-all duration-200`. ResultPanel badges get `animate-badge-pop`. Added `prefers-reduced-motion` media query.
+- [x] **Replace emojis with Lucide icons** — Replaced ✅/❌/👉 emojis in 22 ResultPanel files with `CheckCircle2`, `XCircle`, `ArrowRight` from lucide-react. Replaced ✓/✗ in `balancedbinarytree` (Layout, ExplanationPanel, engine) and `symmetrictree` (Layout) with Lucide icons or plain text. Widened `TraversalShellStat.value` type to `ReactNode`.
+- [x] **Type fixes** — Added missing `NodePosition`/`TreePresetKey` exports in `balancedtree`, `zigzagtree`, `lc105`, `lc106`, `lc114`. Fixed duplicate export in `zigzag`. Restored `sametree` custom dual-tree TreeSetupModal. Added missing `handleViewModeChange` in `sametree/CodePanel`.
 
 ## In Progress
 
 
 ## Upcoming
+
+### Binary Tree (current)
+- [ ] Additional tree problems (Morris traversal, serialize/deserialize, max path sum, etc.)
+
+### Arrays & Strings
+- [ ] Two pointers (two sum, container with most water, trapping rain water)
+- [ ] Sliding window (max subarray, minimum window substring)
+- [ ] Prefix sums & Kadane's algorithm
+- [ ] Binary search variations (rotated sorted array, search insert position)
+
+### Linked Lists
+- [ ] Reversal (reverse linked list, reverse in K-group)
+- [ ] Cycle detection (Floyd's algorithm)
+- [ ] Merge / intersection / reorder
+
+### Stacks & Queues
+- [ ] Monotonic stack (next greater element, daily temperatures)
+- [ ] Valid parentheses, min stack
+- [ ] Queue using stacks
+
+### Graphs
+- [ ] BFS / DFS traversal visualizer
+- [ ] Topological sort (course schedule)
+- [ ] Shortest path (Dijkstra, Bellman-Ford)
+- [ ] Union-Find (connected components, redundant connection)
+
+### Dynamic Programming
+- [ ] 1D DP (climbing stairs, house robber, coin change)
+- [ ] 2D DP (unique paths, edit distance, LCS)
+- [ ] Knapsack variants (0/1, unbounded)
+- [ ] Subsequence problems (LIS, palindromic subsequence)
+
+### Recursion & Backtracking
+- [ ] Permutations & combinations
+- [ ] N-Queens, Sudoku solver
+- [ ] Word search, subsets
+
+### Sorting & Searching
+- [ ] Merge sort / quick sort visualizer
+- [ ] Quick select (Kth largest)
+- [ ] Heap operations visualizer
+
+### Advanced
+- [ ] Tries (prefix search, autocomplete)
+- [ ] Segment trees / BIT (range queries)
+- [ ] Greedy (interval scheduling, activity selection)
+- [ ] Bit manipulation patterns
 

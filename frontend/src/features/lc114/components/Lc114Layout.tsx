@@ -68,6 +68,7 @@ export function Lc114Layout() {
       title="Flatten Binary Tree to Linked List"
       subtitle="In-place pointer rewiring into preorder right chain"
       guideHref="/problems/binary-tree/flatten-binary-tree-to-linkedlist-guide"
+      currentHref="/problems/binary-tree/flatten-binary-tree-to-linkedlist"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Chain Size", value: `${chain.length}` },

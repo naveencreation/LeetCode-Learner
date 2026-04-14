@@ -72,6 +72,7 @@ export function SymmetricTreeLayout() {
       title="Symmetric Tree"
       subtitle="Check if a binary tree is a mirror of itself"
       guideHref="/problems/binary-tree/symmetric-tree-guide"
+      currentHref="/problems/binary-tree/symmetric-tree"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Comparing", value: currentNode ?? "-" },

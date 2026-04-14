@@ -92,6 +92,7 @@ export function LevelOrderLayout() {
       title="Level Order of Binary Tree"
       subtitle="Queue-based BFS visualizer for level-by-level traversal"
       guideHref="/problems/binary-tree/levelorder-guide"
+      currentHref="/problems/binary-tree/level-order-traversal"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Levels", value: result.length },

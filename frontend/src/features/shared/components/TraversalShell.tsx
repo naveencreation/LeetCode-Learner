@@ -25,6 +25,8 @@ interface TraversalShellProps {
   headerExtraActions?: ReactNode;
   contentGapClassName?: string;
   gridClassName?: string;
+  topicKey?: string;
+  currentHref?: string;
 }
 
 export function TraversalShell({
@@ -42,6 +44,8 @@ export function TraversalShell({
   headerExtraActions,
   contentGapClassName = "gap-1.5",
   gridClassName = "xl:grid-cols-[minmax(300px,1.2fr)_minmax(380px,1.45fr)_minmax(250px,0.95fr)]",
+  topicKey = "trees",
+  currentHref,
 }: TraversalShellProps) {
   const [resetLayout, setResetLayout] = useState<(() => void) | null>(null);
 
@@ -54,6 +58,8 @@ export function TraversalShell({
           title={title}
           subtitle={subtitle}
           guideHref={guideHref}
+          topicKey={topicKey}
+          currentHref={currentHref}
           extraActions={
             <div className="flex items-center gap-1.5">
               {headerExtraActions ?? null}

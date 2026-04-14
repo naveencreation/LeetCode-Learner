@@ -68,6 +68,7 @@ export function DiameterLayout() {
       title="Diameter of Binary Tree"
       subtitle="Longest path between any two nodes"
       guideHref="/problems/binary-tree/diameter-guide"
+      currentHref="/problems/binary-tree/diameter-of-binary-tree"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Best Diameter", value: `${currentDiameter}` },

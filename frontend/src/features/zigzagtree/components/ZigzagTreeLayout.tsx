@@ -65,6 +65,7 @@ export function ZigzagTreeLayout() {
       title="Zigzag Level Order Traversal"
       subtitle="BFS with alternating level directions"
       guideHref="/problems/binary-tree/zigzag-level-order-guide"
+      currentHref="/problems/binary-tree/zigzag-level-order"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Level", value: executedStep?.currentLevel ?? "-" },

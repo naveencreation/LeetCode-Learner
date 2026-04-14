@@ -92,6 +92,7 @@ export function MaxWidthLayout() {
       title="Max Width of Binary Tree"
       subtitle="Level-order visualizer with virtual index span tracking"
       guideHref="/problems/binary-tree/maxwidth-guide"
+      currentHref="/problems/binary-tree/max-width-of-a-binary-tree"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Levels", value: result.length },

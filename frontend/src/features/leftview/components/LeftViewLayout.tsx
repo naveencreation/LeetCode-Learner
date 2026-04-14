@@ -95,6 +95,7 @@ export function LeftViewLayout() {
       title="Left View of Binary Tree"
       subtitle="Level-order visualizer: first visible node from each level"
       guideHref="/problems/binary-tree/leftview-guide"
+      currentHref="/problems/binary-tree/leftview-of-binary-tree"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Visited", value: result.length },

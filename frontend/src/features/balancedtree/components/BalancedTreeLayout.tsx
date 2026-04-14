@@ -62,6 +62,7 @@ export function BalancedTreeLayout() {
       title="Balanced Binary Tree"
       subtitle="Check if tree is height-balanced"
       guideHref="/problems/binary-tree/balanced-binary-tree-guide"
+      currentHref="/problems/binary-tree/balanced-binary-tree"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Status", value: result === true ? "Balanced" : result === false ? "Unbalanced" : "-" },

@@ -76,6 +76,7 @@ export function ZigzagLayout() {
       title="Zigzag Level Order Traversal"
       subtitle="BFS pattern reversal visualizer for alternating level directions"
       guideHref="/problems/binary-tree/zigzag-level-order-traversal-guide"
+      currentHref="/problems/binary-tree/zigzag-level-order-traversal"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Visited", value: result.length },

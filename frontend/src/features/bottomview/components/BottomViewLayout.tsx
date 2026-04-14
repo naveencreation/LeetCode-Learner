@@ -95,6 +95,7 @@ export function BottomViewLayout() {
       title="Bottom View of Binary Tree"
       subtitle="Level-order visualizer: deepest visible node per horizontal distance"
       guideHref="/problems/binary-tree/bottomview-guide"
+      currentHref="/problems/binary-tree/bottom-view-of-binary-tree"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Visited", value: result.length },

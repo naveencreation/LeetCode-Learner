@@ -84,6 +84,7 @@ export function SameTreeLayout() {
       title="Same Tree"
       subtitle="Compare two binary trees for structural and value equality"
       guideHref="/problems/binary-tree/same-tree-guide"
+      currentHref="/problems/binary-tree/same-tree"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Comparing", value: `p=${currentNodeP ?? "-"}, q=${currentNodeQ ?? "-"}` },

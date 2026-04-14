@@ -70,6 +70,7 @@ export function BoundaryTreeLayout() {
       title="Boundary of Binary Tree"
       subtitle="Anti-clockwise boundary: left → leaves → right (reversed)"
       guideHref="/problems/binary-tree/boundary-of-binary-tree-guide"
+      currentHref="/problems/binary-tree/boundary-of-binary-tree"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Phase", value: currentPhase ?? "-" },

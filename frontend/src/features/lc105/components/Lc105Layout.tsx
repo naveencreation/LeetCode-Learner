@@ -70,6 +70,7 @@ export function Lc105Layout() {
       title="Construct Binary Tree from Inorder and Preorder"
       subtitle="Root pick from preorder + inorder range partitioning"
       guideHref="/problems/binary-tree/construct-binary-tree-from-inorder-and-preorder-guide"
+      currentHref="/problems/binary-tree/construct-binary-tree-from-inorder-and-preorder"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Created", value: `${createdOrder.length}` },

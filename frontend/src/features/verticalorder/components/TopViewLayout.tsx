@@ -95,6 +95,7 @@ export function TopViewLayout() {
       title="Vertical Order Traversal of Binary Tree"
       subtitle="Level-order visualizer: collect nodes by column, then sort by row/value"
       guideHref="/problems/binary-tree/verticalorder-guide"
+      currentHref="/problems/binary-tree/vertical-order-traversal"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Columns", value: result.length },

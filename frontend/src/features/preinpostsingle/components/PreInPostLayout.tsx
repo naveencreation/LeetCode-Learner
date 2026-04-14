@@ -78,6 +78,7 @@ export function PreInPostLayout() {
       title="Preorder + Inorder + Postorder (Single Traversal)"
       subtitle="One stack with state machine (1=PRE, 2=IN, 3=POST)"
       guideHref="/problems/binary-tree/preorder-inorder-postorder-single-guide"
+      currentHref="/problems/binary-tree/preorder-inorder-postorder-in-a-single-traversal"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Distinct", value: new Set([...preResult, ...inResult, ...postResult]).size },

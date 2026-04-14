@@ -93,6 +93,7 @@ export function TopViewLayout() {
       title="Top View of Binary Tree"
       subtitle="Level-order visualizer: first node per horizontal distance"
       guideHref="/problems/binary-tree/topview-guide"
+      currentHref="/problems/binary-tree/top-view-of-binary-tree"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Visited", value: result.length },

@@ -92,6 +92,7 @@ export function HeightLayout() {
       title="Height of Binary Tree"
       subtitle="Recursive DFS visualizer for maximum depth computation"
       guideHref="/problems/binary-tree/height-guide"
+      currentHref="/problems/binary-tree/height-of-a-binary-tree"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Computed", value: result.length },

@@ -67,6 +67,7 @@ export function BstdllLayout() {
       title="BST to Circular Doubly Linked List"
       subtitle="Inorder pointer-rewiring visualizer (LeetCode 426)"
       guideHref="/problems/binary-tree/bstdll-guide"
+      currentHref="/problems/binary-tree/convert-bst-to-sorted-doubly-linked-list"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Linked", value: result.length },

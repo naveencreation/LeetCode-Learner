@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, List } from "lucide-react";
 import type { ReactNode } from "react";
+import { ProblemListDrawer } from "@/components/problem-list-drawer";
 
 type ProblemFocusStat = {
   label: string;
@@ -19,6 +21,8 @@ interface ProblemFocusHeaderProps {
   extraActions?: ReactNode;
   backHref?: string;
   backLabel?: string;
+  topicKey?: string;
+  currentHref?: string;
 }
 
 export function ProblemFocusHeader({
@@ -30,7 +34,11 @@ export function ProblemFocusHeader({
   extraActions,
   backHref = "/problems/topics/trees#problem-list",
   backLabel = "Back To Trees List",
+  topicKey,
+  currentHref,
 }: ProblemFocusHeaderProps) {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   return (
     <header className="sticky top-0 z-20 grid shrink-0 items-center gap-1.5 border-b border-slate-100/90 bg-white/85 px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-white/70 lg:grid-cols-[minmax(280px,1fr)_auto] md:px-4">
       <div className="min-w-0">
@@ -64,6 +72,17 @@ export function ProblemFocusHeader({
           </div>
         ))}
 
+        {topicKey && currentHref ? (
+          <button
+            type="button"
+            onClick={() => setDrawerOpen(true)}
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[12px] font-extrabold text-slate-700 transition hover:bg-slate-50"
+          >
+            <List size={14} strokeWidth={2.5} />
+            <span className="hidden sm:inline">Problem List</span>
+          </button>
+        ) : null}
+
         <Link
           href={backHref}
           className="inline-flex items-center gap-1 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[12px] font-semibold text-teal-700 transition hover:bg-teal-100"
@@ -72,6 +91,15 @@ export function ProblemFocusHeader({
           {backLabel}
         </Link>
       </div>
+
+      {topicKey && currentHref ? (
+        <ProblemListDrawer
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          topicKey={topicKey}
+          currentHref={currentHref}
+        />
+      ) : null}
     </header>
   );
 }

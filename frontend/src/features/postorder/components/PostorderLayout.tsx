@@ -67,6 +67,7 @@ export function PostorderLayout() {
       title="Postorder Tree Traversal"
       subtitle="Left -> Right -> Root recursion visualizer"
       guideHref="/problems/binary-tree/postorder-guide"
+      currentHref="/problems/binary-tree/postorder-traversal"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Visited", value: result.length },

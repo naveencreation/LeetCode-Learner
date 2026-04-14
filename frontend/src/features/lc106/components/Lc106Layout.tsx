@@ -70,6 +70,7 @@ export function Lc106Layout() {
       title="Construct Binary Tree from Inorder and Postorder"
       subtitle="Root pick from postorder + inorder range partitioning (right first)"
       guideHref="/problems/binary-tree/construct-binary-tree-from-inorder-and-postorder-guide"
+      currentHref="/problems/binary-tree/construct-binary-tree-from-inorder-and-postorder"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Created", value: `${createdOrder.length}` },

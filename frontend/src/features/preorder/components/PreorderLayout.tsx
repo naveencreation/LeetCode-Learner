@@ -67,6 +67,7 @@ export function PreorderLayout() {
       title="Preorder Tree Traversal"
       subtitle="Root -> Left -> Right recursion visualizer"
       guideHref="/problems/binary-tree/preorder-guide"
+      currentHref="/problems/binary-tree/preorder-traversal"
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Visited", value: result.length },
