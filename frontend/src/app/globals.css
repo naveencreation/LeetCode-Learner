@@ -183,7 +183,7 @@ a {
   }
 
   .traversal-pill {
-    @apply rounded-full border border-slate-200 bg-white px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-slate-700;
+    @apply rounded-full border border-teal-200 bg-teal-50 px-2 py-1 text-[10px] font-extrabold uppercase tracking-[0.04em] text-teal-700 transition hover:bg-teal-100;
   }
 
   .traversal-kbd {
