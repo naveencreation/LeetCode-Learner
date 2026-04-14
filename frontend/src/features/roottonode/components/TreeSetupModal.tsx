@@ -300,7 +300,6 @@ export function TreeSetupModal({
   const [error, setError] = useState<string | null>(null);
 
   const [parentValue, setParentValue] = useState("1");
-  const [side, setSide] = useState<"left" | "right">("left");
   const [newValue, setNewValue] = useState("");
 
   const [draggingNodeValue, setDraggingNodeValue] = useState<number | null>(null);
@@ -309,7 +308,7 @@ export function TreeSetupModal({
   const [editToValue, setEditToValue] = useState("");
 
   const [removeParentValue, setRemoveParentValue] = useState("");
-  const [removeSide, setRemoveSide] = useState<"left" | "right">("left");
+  const [pendingRemove, setPendingRemove] = useState<{ side: "left" | "right"; parent: string } | null>(null);
   const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>("balanced");
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
   const maxNodesAllowed = 15;
@@ -482,7 +481,7 @@ export function TreeSetupModal({
     setError(null);
   };
 
-  const handleAddNode = () => {
+  const handleAddNode = (side: "left" | "right") => {
     if (isNodeLimitReached) {
       setError(
         `Node limit reached (${maxNodesAllowed} nodes).`,
@@ -585,7 +584,7 @@ export function TreeSetupModal({
     setError(null);
   };
 
-  const handleRemoveSubtree = () => {
+  const handleRemoveSubtree = (removeSide: "left" | "right") => {
     const parentValueNumber = Number(removeParentValue);
     if (!Number.isFinite(parentValueNumber)) {
       setError("Parent value must be a valid number.");
@@ -724,7 +723,7 @@ export function TreeSetupModal({
         </div>
       ) : null}
 
-      <div className="flex max-h-[92vh] w-full max-w-[1120px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.35)]">
+      <div className="relative flex max-h-[92vh] w-full max-w-[1120px] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_70px_rgba(15,23,42,0.35)]">
         <div className="flex items-center justify-between border-b px-5 py-3.5">
           <div>
             <h3 className="text-lg font-extrabold text-slate-900">Tree Setup</h3>
@@ -764,105 +763,104 @@ export function TreeSetupModal({
             ) : null}
 
             <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <h4 className="mb-1.5 text-xs font-extrabold uppercase tracking-[0.04em] text-slate-600">
+              <h4 className="mb-2 text-xs font-extrabold uppercase tracking-[0.04em] text-slate-600">
                 Build Tree
               </h4>
-              <p className="mb-2 text-xs font-semibold text-slate-500">
-                Pick a template first, then add children to specific parent nodes.
-              </p>
 
-              <div className="rounded-lg border border-slate-200 bg-white p-2.5">
-                <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
-                  Preset Template
-                </p>
-                <select
-                  ref={presetSelectRef}
-                  value={draftPreset}
-                  onChange={(event) => handlePresetChange(event.target.value as TreePresetKey)}
-                  className="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500"
-                >
-                  {Object.entries(presets).map(([key, preset]) => (
-                    <option key={key} value={key}>
-                      {preset.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <div className="grid gap-2">
+                <div className="rounded-lg border border-slate-200 bg-white p-2.5">
+                  <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
+                    Preset Template
+                  </p>
+                  <select
+                    ref={presetSelectRef}
+                    value={draftPreset}
+                    onChange={(event) => handlePresetChange(event.target.value as TreePresetKey)}
+                    className="h-9 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500"
+                  >
+                    {Object.entries(presets).map(([key, preset]) => (
+                      <option key={key} value={key}>
+                        {preset.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              <div className="mt-2 rounded-lg border border-slate-200 bg-white p-2.5">
-                <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
-                  Add Child Node
-                </p>
-              <div className="grid grid-cols-12 gap-1.5">
-                <input
-                  value={parentValue}
-                  onChange={(event) => setParentValue(event.target.value)}
-                  placeholder="Parent"
-                  className="col-span-12 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500 sm:col-span-4"
-                />
-                <select
-                  value={side}
-                  onChange={(event) => setSide(event.target.value as "left" | "right")}
-                  className="col-span-12 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500 sm:col-span-3"
-                >
-                  <option value="left">Left</option>
-                  <option value="right">Right</option>
-                </select>
-                <input
-                  value={newValue}
-                  onChange={(event) => setNewValue(event.target.value)}
-                  placeholder="Value"
-                  className="col-span-8 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500 sm:col-span-3"
-                />
-                <button
-                  type="button"
-                  onClick={handleAddNode}
-                  disabled={isNodeLimitReached}
-                  className="col-span-4 h-9 rounded-md bg-teal-600 px-3 text-sm font-extrabold text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:bg-teal-300 sm:col-span-2"
-                >
-                  Add
-                </button>
-              </div>
+                <div className="rounded-lg border border-slate-200 bg-white p-2.5">
+                  <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
+                    Add Child Node
+                  </p>
+                  <div className="grid grid-cols-12 gap-1.5">
+                    <input
+                      value={parentValue}
+                      onChange={(event) => setParentValue(event.target.value)}
+                      placeholder="Parent"
+                      className="col-span-6 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500 sm:col-span-3"
+                    />
+                    <input
+                      value={newValue}
+                      onChange={(event) => setNewValue(event.target.value)}
+                      placeholder="Value"
+                      className="col-span-6 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-teal-500 sm:col-span-3"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleAddNode("left")}
+                      disabled={isNodeLimitReached}
+                      className="col-span-6 h-9 rounded-md bg-teal-600 px-3 text-sm font-extrabold text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:bg-teal-300 sm:col-span-3"
+                    >
+                      + Left
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleAddNode("right")}
+                      disabled={isNodeLimitReached}
+                      className="col-span-6 h-9 rounded-md bg-sky-600 px-3 text-sm font-extrabold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-sky-300 sm:col-span-3"
+                    >
+                      + Right
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-lg border border-slate-200 bg-white p-2.5">
+                  <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
+                    Layout
+                  </p>
+                  <div className="grid grid-cols-12 gap-1.5">
+                    <select
+                      value={layoutStyle}
+                      onChange={(event) => setLayoutStyle(event.target.value as LayoutStyle)}
+                      className="col-span-8 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-emerald-500"
+                    >
+                      <option value="balanced">Balanced Layout</option>
+                      <option value="compact">Compact Layout</option>
+                    </select>
+                    <button
+                      type="button"
+                      onClick={handleAutoLayout}
+                      className="col-span-4 h-9 rounded-md bg-emerald-600 px-3 text-sm font-extrabold text-white transition hover:bg-emerald-700"
+                    >
+                      Re-organize
+                    </button>
+                  </div>
+                  <p className="mt-1.5 text-xs font-semibold text-slate-500">
+                    Drag nodes to reposition. Re-organize cleans up spacing.
+                  </p>
+                </div>
               </div>
             </section>
 
             <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <h4 className="mb-1.5 text-xs font-extrabold uppercase tracking-[0.04em] text-slate-600">
-                Layout
+              <h4 className="mb-2 text-xs font-extrabold uppercase tracking-[0.04em] text-slate-600">
+                Edit Tree
               </h4>
-              <div className="grid grid-cols-12 gap-1.5">
-                <select
-                  value={layoutStyle}
-                  onChange={(event) => setLayoutStyle(event.target.value as LayoutStyle)}
-                  className="col-span-8 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-emerald-500"
-                >
-                  <option value="balanced">Balanced Layout</option>
-                  <option value="compact">Compact Layout</option>
-                </select>
-                <button
-                  type="button"
-                  onClick={handleAutoLayout}
-                  className="col-span-4 h-9 rounded-md bg-emerald-600 px-3 text-sm font-extrabold text-white transition hover:bg-emerald-700"
-                >
-                  Auto Layout
-                </button>
-              </div>
-              <p className="mt-1.5 text-xs font-semibold text-slate-500">
-                Use drag-and-drop for quick edits. Auto Layout cleans up spacing.
-              </p>
 
-            </section>
-
-            <details className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                <summary className="cursor-pointer text-xs font-extrabold uppercase tracking-[0.04em] text-slate-600">
-                  Node Actions
-                </summary>
-
-                <div className="mt-2 grid gap-2 rounded-lg border border-slate-200 bg-white p-2.5">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
+              <div className="grid gap-2">
+                <div className="rounded-lg border border-slate-200 bg-white p-2.5">
+                  <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
                     Rename Node
                   </p>
-                  <div className="grid grid-cols-12 gap-2">
+                  <div className="grid grid-cols-12 gap-1.5">
                     <input
                       value={editFromValue}
                       onChange={(event) => setEditFromValue(event.target.value)}
@@ -885,35 +883,43 @@ export function TreeSetupModal({
                   </div>
                 </div>
 
-                <div className="mt-2 grid gap-2 rounded-lg border border-slate-200 bg-white p-2.5">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
+                <div className="rounded-lg border border-slate-200 bg-white p-2.5">
+                  <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.04em] text-slate-500">
                     Remove Subtree
                   </p>
-                  <div className="grid grid-cols-12 gap-2">
+                  <div className="grid grid-cols-12 gap-1.5">
                     <input
                       value={removeParentValue}
                       onChange={(event) => setRemoveParentValue(event.target.value)}
                       placeholder="Parent"
                       className="col-span-12 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-rose-500 sm:col-span-4"
                     />
-                    <select
-                      value={removeSide}
-                      onChange={(event) => setRemoveSide(event.target.value as "left" | "right")}
-                      className="col-span-12 h-9 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-rose-500 sm:col-span-4"
-                    >
-                      <option value="left">Remove Left</option>
-                      <option value="right">Remove Right</option>
-                    </select>
                     <button
                       type="button"
-                      onClick={handleRemoveSubtree}
-                      className="col-span-12 h-9 rounded-md bg-rose-600 px-3 text-sm font-extrabold text-white transition hover:bg-rose-700 sm:col-span-4"
+                      onClick={() => {
+                        const v = Number(removeParentValue);
+                        if (!Number.isFinite(v)) { setError("Parent value must be a valid number."); return; }
+                        setPendingRemove({ side: "left", parent: removeParentValue });
+                      }}
+                      className="col-span-6 h-9 rounded-md bg-rose-600 px-3 text-sm font-extrabold text-white transition hover:bg-rose-700 sm:col-span-4"
                     >
-                      Remove
+                      Remove Left
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const v = Number(removeParentValue);
+                        if (!Number.isFinite(v)) { setError("Parent value must be a valid number."); return; }
+                        setPendingRemove({ side: "right", parent: removeParentValue });
+                      }}
+                      className="col-span-6 h-9 rounded-md bg-orange-600 px-3 text-sm font-extrabold text-white transition hover:bg-orange-700 sm:col-span-4"
+                    >
+                      Remove Right
                     </button>
                   </div>
                 </div>
-              </details>
+              </div>
+            </section>
 
             {error ? (
               <p className="rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700">
@@ -1088,6 +1094,40 @@ export function TreeSetupModal({
           </button>
         </div>
       </div>
+
+      {pendingRemove ? (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="w-80 rounded-xl border border-slate-200 bg-white p-5 shadow-xl">
+            <h4 className="text-sm font-extrabold text-slate-800">Remove Subtree</h4>
+            <p className="mt-2 text-sm font-semibold text-slate-600">
+              Are you sure you want to remove the{" "}
+              <span className="font-extrabold text-rose-600">{pendingRemove.side}</span>{" "}
+              subtree of node{" "}
+              <span className="font-extrabold text-slate-800">{pendingRemove.parent}</span>?
+              This cannot be undone.
+            </p>
+            <div className="mt-4 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setPendingRemove(null)}
+                className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  handleRemoveSubtree(pendingRemove.side);
+                  setPendingRemove(null);
+                }}
+                className="rounded-md bg-rose-600 px-3 py-1.5 text-sm font-extrabold text-white transition hover:bg-rose-700"
+              >
+                Yes, Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

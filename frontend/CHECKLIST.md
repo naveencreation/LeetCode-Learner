@@ -24,6 +24,8 @@ Tracking all changes made during this session. Updated as fixes are completed.
 - [x] **Style "Back To Trees List" button** — Teal-tinted pill (`border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-100`) to match other interactive buttons
 - [x] **Merge Beginner/Advanced modes** — Removed mode toggle from all 22 TreeSetupModal files. All features (rename, remove subtree, drag, auto layout) now always visible. Fixed 15-node limit. 8 formerly-simple modals upgraded to full feature parity. LCA p/q selectors preserved.
 - [x] **Remove Manual Position Controls** — Removed state, handler, and UI for manual x/y coordinate input from all 22 TreeSetupModal files. Drag-to-reposition and Auto Layout remain.
+- [x] **Regroup left panel** — Merged 4 sections into 2: "Build Tree" (Preset + Add Child + Layout/Auto Layout) and "Edit Tree" (Rename + Remove Subtree, always visible). Consistent white sub-cards within slate sections.
+- [x] **Add Left / Add Right buttons** — Replaced Left/Right dropdown + Add button with two distinct "+ Left" (filled teal) and "+ Right" (outlined teal) buttons. Fewer clicks per node.
 
 ## In Progress
 
