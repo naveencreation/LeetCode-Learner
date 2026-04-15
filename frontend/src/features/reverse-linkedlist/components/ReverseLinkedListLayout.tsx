@@ -114,7 +114,6 @@ export function ReverseLinkedListLayout() {
           totalSteps={totalSteps}
           currentOperation={currentOperation}
           activeStep={displayStep}
-          originalValues={originalValues}
         />
       }
       middleFooter={
@@ -136,7 +135,6 @@ export function ReverseLinkedListLayout() {
       rightTop={
         <PointerStatePanel
           activeStep={displayStep}
-          currentStep={currentStep}
         />
       }
       rightBottom={

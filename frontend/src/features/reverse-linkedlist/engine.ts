@@ -44,7 +44,7 @@ export function generateReverseSteps(head: ListNode | null): {
   nodeStates[head.val] = "current";
   executionSteps.push({
     type: "init",
-    operation: `Initialize: prev = None, curr = ${head.val}`,
+    operation: `Initialize pointers: prev = None, curr = ${head.val}`,
     nodeStates: cloneStates(nodeStates),
     pointers: snap(pointers),
     links: cloneLinks(links),
@@ -64,7 +64,7 @@ export function generateReverseSteps(head: ListNode | null): {
     }
     executionSteps.push({
       type: "save_next",
-      operation: `Save next: next_node = ${nextNode ? nextNode.val : "None"}`,
+      operation: `Store next_node: ${nextNode ? nextNode.val : "None"}`,
       nodeStates: cloneStates(nodeStates),
       pointers: snap(pointers),
       links: cloneLinks(links),
@@ -75,7 +75,7 @@ export function generateReverseSteps(head: ListNode | null): {
     nodeStates[curr.val] = "reversed";
     executionSteps.push({
       type: "reverse_link",
-      operation: `Reverse link: ${curr.val}.next = ${prev ? prev.val : "None"}`,
+      operation: `Reverse pointer: ${curr.val}.next = ${prev ? prev.val : "None"}`,
       nodeStates: cloneStates(nodeStates),
       pointers: snap(pointers),
       links: cloneLinks(links),
@@ -86,7 +86,7 @@ export function generateReverseSteps(head: ListNode | null): {
     nodeStates[curr.val] = "completed";
     executionSteps.push({
       type: "move_prev",
-      operation: `Move prev: prev = ${curr.val}`,
+      operation: `Advance prev: prev = ${curr.val}`,
       nodeStates: cloneStates(nodeStates),
       pointers: snap(pointers),
       links: cloneLinks(links),
@@ -111,7 +111,7 @@ export function generateReverseSteps(head: ListNode | null): {
 
     executionSteps.push({
       type: "move_curr",
-      operation: `Move curr: curr = ${curr ? curr.val : "None"}`,
+      operation: `Advance curr: curr = ${curr ? curr.val : "None"}`,
       nodeStates: cloneStates(nodeStates),
       pointers: snap(pointers),
       links: cloneLinks(links),
@@ -121,7 +121,7 @@ export function generateReverseSteps(head: ListNode | null): {
   // Final: complete
   executionSteps.push({
     type: "complete",
-    operation: `Complete: return prev = ${prev?.val ?? "None"} (new head)`,
+    operation: `Return prev as new head: ${prev?.val ?? "None"}`,
     nodeStates: cloneStates(nodeStates),
     pointers: snap(pointers),
     links: cloneLinks(links),

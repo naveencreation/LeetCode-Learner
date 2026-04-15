@@ -1,25 +1,27 @@
 import { OPERATION_TO_LINE_MAP } from "./constants";
 import type { ExecutionStep } from "./types";
 
-export function getPhaseLabel(step: ExecutionStep | undefined): string {
-  if (!step) return "Ready";
+const PHASE_LABELS: Record<ExecutionStep["type"], string> = {
+  init: "Initialization",
+  save_next: "Store next_node",
+  reverse_link: "Reverse curr.next",
+  move_prev: "Move prev",
+  move_curr: "Move curr",
+  complete: "Return new head",
+};
 
-  switch (step.type) {
-    case "init":
-      return "Initialize";
-    case "save_next":
-      return "Save Next";
-    case "reverse_link":
-      return "Reverse Link";
-    case "move_prev":
-      return "Move Prev";
-    case "move_curr":
-      return "Move Curr";
-    case "complete":
-      return "Complete";
-    default:
-      return "Ready";
-  }
+const OPERATION_BADGES: Record<ExecutionStep["type"], string> = {
+  init: "Initialize Pointers",
+  save_next: "Store next_node",
+  reverse_link: "Reverse curr.next",
+  move_prev: "Move prev",
+  move_curr: "Move curr",
+  complete: "Return Reversed Head",
+};
+
+export function getPhaseLabel(step: ExecutionStep | undefined): string {
+  if (!step) return "Ready to Reverse";
+  return PHASE_LABELS[step.type] ?? "Ready to Reverse";
 }
 
 export function getCodeLineForStep(step: ExecutionStep | undefined): number {
@@ -28,6 +30,6 @@ export function getCodeLineForStep(step: ExecutionStep | undefined): number {
 }
 
 export function getOperationBadge(step: ExecutionStep | undefined): string {
-  if (!step) return "READY";
-  return step.type.toUpperCase().replace("_", " ");
+  if (!step) return "Ready to Reverse";
+  return OPERATION_BADGES[step.type] ?? "Ready to Reverse";
 }

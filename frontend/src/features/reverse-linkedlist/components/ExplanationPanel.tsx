@@ -15,13 +15,13 @@ function getExplanation(
 ) {
   if (!step && currentStep === 0) {
     return {
-      title: "Ready to Start",
+      title: "Ready to Reverse",
       description:
-        'Click "Next Step" to begin. We will reverse the linked list in-place using three pointers.',
+        'Click "Next Step" to begin. We use the standard 3-pointer method: prev, curr, next_node.',
       details: [
-        "prev tracks the already-reversed portion.",
-        "curr is the node we're about to process.",
-        "next_node saves the reference before we break the link.",
+        "prev points to the reversed part.",
+        "curr points to the node being processed.",
+        "next_node stores curr.next before changing links.",
       ],
     };
   }
@@ -29,10 +29,10 @@ function getExplanation(
   if (currentStep >= totalSteps) {
     return {
       title: "Reversal Complete",
-      description: "All nodes processed. prev is the new head of the reversed list.",
+      description: "All nodes are processed. prev now points to the new head.",
       details: [
         `Total execution steps: ${totalSteps}`,
-        "Use Previous to replay each pointer movement slowly.",
+        "Use Previous to replay each pointer movement step by step.",
       ],
     };
   }
@@ -41,44 +41,44 @@ function getExplanation(
     case "init":
       return {
         title: "Initialize Pointers",
-        description: "Set prev = None and curr = head to begin the traversal.",
+        description: "Set prev = None and curr = head.",
         details: [
-          "prev starts as None — nothing is reversed yet.",
-          "curr starts at head — the first node to process.",
+          "Nothing is reversed yet.",
+          "curr starts at the first node.",
         ],
       };
     case "save_next":
       return {
-        title: "Save Next Reference",
-        description: "Before breaking the link, save curr.next so we don't lose the rest of the list.",
+        title: "Store next_node",
+        description: "Save curr.next before changing the link.",
         details: [
-          "Without this step, we'd lose access to remaining nodes.",
+          "This prevents losing the rest of the list.",
           `Line ${currentCodeLine}: next_node = curr.next`,
         ],
       };
     case "reverse_link":
       return {
-        title: "Reverse the Link",
-        description: "Point curr.next backwards to prev. This is the core reversal operation.",
+        title: "Reverse curr.next",
+        description: "Point curr.next to prev to reverse one link.",
         details: [
-          "The forward link is now broken.",
-          "curr now points backward to the reversed portion.",
+          "Current node now points backward.",
+          "Reversed part grows by one node each iteration.",
           `Line ${currentCodeLine}: curr.next = prev`,
         ],
       };
     case "move_prev":
       return {
-        title: "Advance prev",
-        description: "Move prev forward to curr. The reversed portion grows by one node.",
+        title: "Move prev to curr",
+        description: "Set prev = curr.",
         details: [
-          "prev always points to the head of the reversed sub-list.",
+          "prev becomes the new head of reversed part.",
           `Line ${currentCodeLine}: prev = curr`,
         ],
       };
     case "move_curr":
       return {
-        title: "Advance curr",
-        description: "Move curr to the saved next_node. Ready to process the next node.",
+        title: "Move curr Forward",
+        description: "Set curr = next_node and continue.",
         details: [
           "If curr becomes None, the loop ends.",
           `Line ${currentCodeLine}: curr = next_node`,
@@ -86,8 +86,8 @@ function getExplanation(
       };
     case "complete":
       return {
-        title: "Return New Head",
-        description: "curr is None, loop is done. prev is the new head of the fully reversed list.",
+        title: "Return Reversed Head",
+        description: "curr is None, traversal is done. prev is now the reversed head.",
         details: [
           `Line ${currentCodeLine}: return prev`,
           "Time complexity: O(n), Space: O(1).",

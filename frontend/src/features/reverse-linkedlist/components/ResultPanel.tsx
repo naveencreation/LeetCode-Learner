@@ -8,7 +8,6 @@ interface ResultPanelProps {
   totalSteps: number;
   currentOperation: string;
   activeStep: ExecutionStep | undefined;
-  originalValues: number[];
 }
 
 export function ResultPanel({
@@ -18,7 +17,6 @@ export function ResultPanel({
   totalSteps,
   currentOperation,
   activeStep,
-  originalValues,
 }: ResultPanelProps) {
   // Build reversed list so far from the links snapshot
   const reversedSoFar: number[] = [];

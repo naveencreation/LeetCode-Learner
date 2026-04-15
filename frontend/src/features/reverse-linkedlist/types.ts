@@ -1,4 +1,4 @@
-import type { LinkedListNodeState, ListNode } from "../shared/linked-list-types";
+import type { LinkedListNodeState } from "../shared/linked-list-types";
 
 export type ReverseOperationType =
   | "init"

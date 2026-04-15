@@ -37,9 +37,9 @@ const stateColors: Record<
 
 // ── Pointer badge config ──────────────────────────────────────────────
 const pointerConfig = [
-  { key: "prev"      as const, label: "prev",      color: "#f43f5e", textColor: "#fff", offset: 0 },
-  { key: "curr"      as const, label: "curr",      color: "#d97706", textColor: "#fff", offset: 0 },
-  { key: "nextSaved" as const, label: "next",      color: "#3b82f6", textColor: "#fff", offset: 0 },
+  { key: "prev"      as const, label: "prev", color: "#f43f5e", textColor: "#fff", offset: 0 },
+  { key: "curr"      as const, label: "curr", color: "#d97706", textColor: "#fff", offset: 0 },
+  { key: "nextSaved" as const, label: "next", color: "#3b82f6", textColor: "#fff", offset: 0 },
 ] as const;
 
 // Arrow marker IDs
@@ -270,7 +270,7 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
           const stemX = bx + badgeW / 2;
 
           return (
-            <g key={`ptr-${pc.key}`}>
+            <g key={`ptr-${idx}-${pc.key}`}>
               {/* Vertical stem */}
               <line
                 x1={stemX} y1={by + BADGE_H}
