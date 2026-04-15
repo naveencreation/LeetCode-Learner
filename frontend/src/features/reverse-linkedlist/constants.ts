@@ -17,10 +17,12 @@ export const PYTHON_CODE_LINES = PYTHON_CODE.split("\n");
 
 export const OPERATION_TO_LINE_MAP: Record<ReverseOperationType, number> = {
   init: 3,          // prev = None
+  loop_check: 6,    // while curr:
   save_next: 7,     // next_node = curr.next
   reverse_link: 8,  // curr.next = prev
   move_prev: 9,     // prev = curr
   move_curr: 10,    // curr = next_node
+  loop_exit: 6,     // while curr: (exit condition)
   complete: 12,     // return prev
 };
 
@@ -29,7 +31,7 @@ export const REVERSE_LINE_LABELS: Record<number, string> = {
   2: "Method Signature",
   3: "Initialize prev",
   4: "Initialize curr",
-  6: "Loop Condition",
+  6: "Loop Condition Check",
   7: "Store next_node",
   8: "Reverse curr.next",
   9: "Move prev",

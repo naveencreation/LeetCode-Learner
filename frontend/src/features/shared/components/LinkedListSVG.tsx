@@ -46,6 +46,7 @@ const pointerConfig = [
 const MARKERS = {
   forward:  "ll-fwd",
   reversed: "ll-rev",
+  reversedActive: "ll-rev-active",
   done:     "ll-done",
   null:     "ll-null",
 };
@@ -101,6 +102,9 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
         <marker id={MARKERS.reversed} markerWidth="10" markerHeight="10" refX="1"  refY="5" orient="auto-start-reverse">
           <path d="M9,1.5 L1,5 L9,8.5" fill="none" stroke="#7c3aed" strokeWidth="1.8" strokeLinecap="round"/>
         </marker>
+        <marker id={MARKERS.reversedActive} markerWidth="10" markerHeight="10" refX="1"  refY="5" orient="auto-start-reverse">
+          <path d="M9,1.5 L1,5 L9,8.5" fill="none" stroke="#ef4444" strokeWidth="1.8" strokeLinecap="round"/>
+        </marker>
         <marker id={MARKERS.null}     markerWidth="10" markerHeight="10" refX="9"  refY="5" orient="auto">
           <path d="M1,1.5 L9,5 L1,8.5" fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round"/>
         </marker>
@@ -129,6 +133,7 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
         const targetIdx = positionMap[target];
         if (targetIdx === undefined) return null;
         const isReversed = targetIdx < i;
+        const isActiveReverse = isReversed && state === "reversed" && pointers.curr === val;
 
         if (isReversed) {
           // Arc above the chain
@@ -141,9 +146,10 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
               key={`arr-${val}-${target}`}
               d={`M${x1},${nodeYTop} C${x1},${arcY} ${x2},${arcY} ${x2},${nodeYTop}`}
               fill="none"
-              stroke="#7c3aed"
+              stroke={isActiveReverse ? "#ef4444" : "#7c3aed"}
               strokeWidth="2.5"
-              markerEnd={`url(#${MARKERS.reversed})`}
+              strokeDasharray={isActiveReverse ? "5 3" : undefined}
+              markerEnd={`url(#${isActiveReverse ? MARKERS.reversedActive : MARKERS.reversed})`}
               style={{ transition: "d 0.4s ease" }}
             />
           );

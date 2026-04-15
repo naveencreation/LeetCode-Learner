@@ -35,9 +35,11 @@ export function ResultPanel({
   }
 
   const completionMessage =
-    currentStep >= totalSteps
+    currentStep === 0
+      ? "Press Next to initialize pointers."
+      : currentStep >= totalSteps
       ? `Complete! Reversed: [${reversedSoFar.join(", ")}]`
-      : `Step ${currentStep + 1}: ${currentOperation}`;
+      : `Step ${currentStep} / ${totalSteps}: ${currentOperation}`;
 
   return (
     <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_minmax(0,1fr)] gap-1.5 p-2">

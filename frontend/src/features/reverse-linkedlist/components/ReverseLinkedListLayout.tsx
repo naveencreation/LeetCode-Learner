@@ -83,7 +83,8 @@ export function ReverseLinkedListLayout() {
       guideHref="/problems/linked-list/reverse-a-linkedlist-guide"
       currentHref="/problems/linked-list/reverse-a-linkedlist"
       stats={[
-        { label: "Step", value: `${currentStep}/${totalSteps}` },
+        { label: "Step", value: `${currentStep} / ${totalSteps}` },
+        { label: "Phase", value: currentPhase, minWidthClassName: "min-w-[96px]" },
         { label: "Nodes", value: originalValues.length },
         {
           label: "Result",
@@ -103,6 +104,10 @@ export function ReverseLinkedListLayout() {
           nodeStates={nodeStates}
           activeStep={displayStep}
           currentOperation={currentOperation}
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          currentPhase={currentPhase}
+          reversedCount={reversedSoFar.length}
           onOpenListSetup={() => setIsListSetupOpen(true)}
         />
       }

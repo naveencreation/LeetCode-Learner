@@ -11,6 +11,7 @@ const pointerConfig = [
     color: "text-rose-600",
     bg: "bg-rose-50",
     border: "border-rose-200",
+    glow: "rgba(244, 63, 94, 0.35)",
   },
   {
     key: "curr" as const,
@@ -18,6 +19,7 @@ const pointerConfig = [
     color: "text-amber-700",
     bg: "bg-amber-50",
     border: "border-amber-200",
+    glow: "rgba(245, 158, 11, 0.35)",
   },
   {
     key: "nextSaved" as const,
@@ -25,6 +27,7 @@ const pointerConfig = [
     color: "text-blue-600",
     bg: "bg-blue-50",
     border: "border-blue-200",
+    glow: "rgba(59, 130, 246, 0.35)",
   },
 ];
 
@@ -34,6 +37,8 @@ function getInvariantMessage(step: ExecutionStep | undefined): string {
   }
 
   switch (step.type) {
+    case "loop_check":
+      return "Check curr first: if it is not None, we run one more reversal cycle.";
     case "save_next":
       return "Store next_node first so the remaining list is not lost after reversing the link.";
     case "reverse_link":
@@ -42,6 +47,8 @@ function getInvariantMessage(step: ExecutionStep | undefined): string {
       return "Move prev forward to the current node (new head of reversed part).";
     case "move_curr":
       return "Move curr to next_node to continue with the next unreversed node.";
+    case "loop_exit":
+      return "curr is None, so the loop exits and prev is ready to be returned.";
     case "complete":
       return "Loop ends when curr is None. prev is the new head.";
     default:
@@ -63,10 +70,20 @@ export function PointerStatePanel({ activeStep }: PointerStatePanelProps) {
         <div className="space-y-2">
           {pointerConfig.map((ptr) => {
             const val = pointers[ptr.key];
+            const isActive = val !== null && val !== undefined;
             return (
               <div
                 key={ptr.key}
-                className={`flex items-center justify-between rounded-xl border ${ptr.border} ${ptr.bg} px-3 py-2.5`}
+                className={`flex items-center justify-between rounded-xl border ${ptr.border} ${ptr.bg} px-3 py-2.5 transition-all duration-200 ${
+                  isActive ? "scale-[1.01]" : ""
+                }`}
+                style={
+                  isActive
+                    ? {
+                        boxShadow: `0 0 0 1px ${ptr.glow}, 0 8px 18px -14px ${ptr.glow}`,
+                      }
+                    : undefined
+                }
               >
                 <span className={`text-[12px] font-extrabold ${ptr.color}`}>
                   {ptr.label}
