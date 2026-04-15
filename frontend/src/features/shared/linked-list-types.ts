@@ -18,7 +18,11 @@ export type LinkedListPresetKey =
   | "medium"
   | "long"
   | "single"
-  | "two_nodes";
+  | "two_nodes"
+  | "descending"
+  | "even_chain"
+  | "staggered"
+  | "custom";
 
 export interface LinkedListPreset {
   label: string;
@@ -83,5 +87,21 @@ export const linkedListPresets: Record<LinkedListPresetKey, LinkedListPreset> = 
   two_nodes: {
     label: "2 Nodes",
     create: () => createLinkedList([1, 2]),
+  },
+  descending: {
+    label: "Descending 5",
+    create: () => createLinkedList([9, 7, 5, 3, 1]),
+  },
+  even_chain: {
+    label: "Even Chain 8",
+    create: () => createLinkedList([2, 4, 6, 8, 10, 12, 14, 16]),
+  },
+  staggered: {
+    label: "Staggered 6",
+    create: () => createLinkedList([1, 4, 7, 10, 13, 16]),
+  },
+  custom: {
+    label: "Custom",
+    create: () => createLinkedList([1, 2, 3, 4, 5]),
   },
 };

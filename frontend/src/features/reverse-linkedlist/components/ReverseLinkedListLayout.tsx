@@ -149,6 +149,7 @@ export function ReverseLinkedListLayout() {
         isListSetupOpen ? (
           <ListSetupModal
             selectedPreset={selectedPreset}
+            currentValues={originalValues}
             onClose={() => setIsListSetupOpen(false)}
             onApply={(head, preset) => {
               applyListConfiguration(head, preset, false);

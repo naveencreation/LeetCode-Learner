@@ -116,6 +116,7 @@ export function useGenericLinkedList<TStep>(
   return {
     head,
     selectedPreset,
+    isCustomPreset: selectedPreset === "custom",
     presets: config.presets,
     originalValues,
     executionSteps,
