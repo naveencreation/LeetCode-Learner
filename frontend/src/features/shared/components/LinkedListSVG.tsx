@@ -81,6 +81,21 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
   const nodeYTop = CHAIN_Y;
   const nodeCY   = nodeYTop + NODE_H / 2;
 
+  const hasReversedArcAt = (index: number): boolean => {
+    if (index < 0 || index >= values.length) {
+      return false;
+    }
+
+    const sourceVal = values[index];
+    const targetVal = links[sourceVal];
+    if (targetVal === null || targetVal === undefined) {
+      return false;
+    }
+
+    const targetIdx = positionMap[targetVal];
+    return targetIdx !== undefined && targetIdx < index;
+  };
+
   return (
     <svg
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
@@ -99,11 +114,11 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
         <marker id={MARKERS.done}     markerWidth="10" markerHeight="10" refX="9"  refY="5" orient="auto">
           <path d="M1,1.5 L9,5 L1,8.5" fill="none" stroke="#16a34a" strokeWidth="1.8" strokeLinecap="round"/>
         </marker>
-        <marker id={MARKERS.reversed} markerWidth="10" markerHeight="10" refX="1"  refY="5" orient="auto-start-reverse">
-          <path d="M9,1.5 L1,5 L9,8.5" fill="none" stroke="#7c3aed" strokeWidth="1.8" strokeLinecap="round"/>
+        <marker id={MARKERS.reversed} markerWidth="11" markerHeight="10" refX="9"  refY="5" orient="auto-start-reverse">
+          <path d="M1.2,1.6 L9,5 L1.2,8.4 Z" fill="#7c3aed"/>
         </marker>
-        <marker id={MARKERS.reversedActive} markerWidth="10" markerHeight="10" refX="1"  refY="5" orient="auto-start-reverse">
-          <path d="M9,1.5 L1,5 L9,8.5" fill="none" stroke="#ef4444" strokeWidth="1.8" strokeLinecap="round"/>
+        <marker id={MARKERS.reversedActive} markerWidth="11" markerHeight="10" refX="9"  refY="5" orient="auto-start-reverse">
+          <path d="M1.2,1.6 L9,5 L1.2,8.4 Z" fill="#ef4444"/>
         </marker>
         <marker id={MARKERS.null}     markerWidth="10" markerHeight="10" refX="9"  refY="5" orient="auto">
           <path d="M1,1.5 L9,5 L1,8.5" fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round"/>
@@ -134,23 +149,29 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
         if (targetIdx === undefined) return null;
         const isReversed = targetIdx < i;
         const isActiveReverse = isReversed && state === "reversed" && pointers.curr === val;
+        const hasAdjacentReversedArc = isReversed && (hasReversedArcAt(i - 1) || hasReversedArcAt(i + 1));
+        const reverseArcOpacity = hasAdjacentReversedArc && !isActiveReverse ? 0.74 : 1;
 
         if (isReversed) {
           // Arc above the chain
           const x1 = nodeX(i)         + DIVIDER / 2 + DIVIDER; // right zone centre
           const x2 = nodeX(targetIdx) + DIVIDER / 2 + DIVIDER;
-          const arcH = 32 + Math.abs(i - targetIdx) * 6;
+          const nodeDistance = Math.abs(i - targetIdx);
+          const arcH = 32 + nodeDistance * 6.5;
           const arcY = nodeYTop - arcH;
+          const controlX2 = x2 + Math.min(22, 10 + nodeDistance * 4);
           return (
             <path
               key={`arr-${val}-${target}`}
-              d={`M${x1},${nodeYTop} C${x1},${arcY} ${x2},${arcY} ${x2},${nodeYTop}`}
+              d={`M${x1},${nodeYTop} C${x1},${arcY} ${controlX2},${nodeYTop} ${x2},${nodeYTop}`}
               fill="none"
               stroke={isActiveReverse ? "#ef4444" : "#7c3aed"}
-              strokeWidth="2.5"
-              strokeDasharray={isActiveReverse ? "5 3" : undefined}
+              strokeWidth={isActiveReverse ? "2.9" : "2.6"}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity={reverseArcOpacity}
               markerEnd={`url(#${isActiveReverse ? MARKERS.reversedActive : MARKERS.reversed})`}
-              style={{ transition: "d 0.4s ease" }}
+              style={{ transition: "d 0.4s ease, stroke 0.25s ease, opacity 0.2s ease" }}
             />
           );
         }
