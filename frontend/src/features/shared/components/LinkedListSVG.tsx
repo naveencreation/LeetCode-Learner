@@ -7,7 +7,14 @@ interface LinkedListSVGProps {
   values: number[];
   nodeStates: Record<number, LinkedListNodeState>;
   links: Record<number, number | null>;
-  pointers: { prev: number | null; curr: number | null; nextSaved: number | null };
+  pointers: { 
+    prev: number | null; 
+    curr: number | null; 
+    nextSaved: number | null;
+    // Alternative pointer names for slow/fast (tortoise/hare) algorithm
+    slow?: number | null;
+    fast?: number | null;
+  };
 }
 
 // ── Layout constants ──────────────────────────────────────────────────
@@ -36,10 +43,12 @@ const stateColors: Record<
 };
 
 // ── Pointer badge config ──────────────────────────────────────────────
-const pointerConfig = [
-  { key: "prev"      as const, label: "prev", color: "#f43f5e", textColor: "#fff", offset: 0 },
-  { key: "curr"      as const, label: "curr", color: "#d97706", textColor: "#fff", offset: 0 },
-  { key: "nextSaved" as const, label: "next", color: "#3b82f6", textColor: "#fff", offset: 0 },
+const pointerConfigBase = [
+  { key: "prev"      as const, label: "prev", color: "#f43f5e", textColor: "#ffffff", offset: 0 },
+  { key: "curr"      as const, label: "curr", color: "#d97706", textColor: "#ffffff", offset: 0 },
+  { key: "nextSaved" as const, label: "next", color: "#3b82f6", textColor: "#ffffff", offset: 0 },
+  { key: "slow"      as const, label: "slow", color: "#f59e0b", textColor: "#ffffff", offset: 0 },  // amber-500
+  { key: "fast"      as const, label: "fast", color: "#3b82f6", textColor: "#ffffff", offset: 0 },  // blue-500
 ] as const;
 
 // Arrow marker IDs
@@ -66,8 +75,8 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
 
   // Group pointers by node index to handle stacking
   const ptrByIndex = useMemo(() => {
-    const map: Record<number, Array<typeof pointerConfig[number]>> = {};
-    for (const pc of pointerConfig) {
+    const map: Record<number, Array<typeof pointerConfigBase[number]>> = {};
+    for (const pc of pointerConfigBase) {
       const val = pointers[pc.key];
       if (val === null || val === undefined) continue;
       const idx = positionMap[val];
@@ -101,27 +110,28 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
       className="h-full w-full"
       preserveAspectRatio="xMidYMid meet"
+      style={{ willChange: 'transform' }} // GPU acceleration hint
     >
       <defs>
-        {/* Drop shadow filter */}
-        <filter id="ll-shadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#0f172a" floodOpacity="0.10" />
+        {/* Drop shadow filter — optimized for crisp edges */}
+        <filter id="ll-shadow" x="-25%" y="-25%" width="150%" height="150%">
+          <feDropShadow dx="0" dy="1.5" stdDeviation="2" floodColor="#0f172a" floodOpacity="0.08" />
         </filter>
-        {/* Arrow markers */}
-        <marker id={MARKERS.forward}  markerWidth="10" markerHeight="10" refX="9"  refY="5" orient="auto">
-          <path d="M1,1.5 L9,5 L1,8.5" fill="none" stroke="#64748b" strokeWidth="1.8" strokeLinecap="round"/>
+        {/* Arrow markers — pixel-perfect sizing */}
+        <marker id={MARKERS.forward}  markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L7,4 L0,7" fill="none" stroke="#64748b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         </marker>
-        <marker id={MARKERS.done}     markerWidth="10" markerHeight="10" refX="9"  refY="5" orient="auto">
-          <path d="M1,1.5 L9,5 L1,8.5" fill="none" stroke="#16a34a" strokeWidth="1.8" strokeLinecap="round"/>
+        <marker id={MARKERS.done}     markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L7,4 L0,7" fill="none" stroke="#16a34a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         </marker>
-        <marker id={MARKERS.reversed} markerWidth="11" markerHeight="10" refX="9"  refY="5" orient="auto-start-reverse">
-          <path d="M1.2,1.6 L9,5 L1.2,8.4 Z" fill="#7c3aed"/>
+        <marker id={MARKERS.reversed} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse">
+          <path d="M0.8,1.5 L7,4 L0.8,6.5 Z" fill="#7c3aed"/>
         </marker>
-        <marker id={MARKERS.reversedActive} markerWidth="11" markerHeight="10" refX="9"  refY="5" orient="auto-start-reverse">
-          <path d="M1.2,1.6 L9,5 L1.2,8.4 Z" fill="#ef4444"/>
+        <marker id={MARKERS.reversedActive} markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto-start-reverse">
+          <path d="M0.8,1.5 L7,4 L0.8,6.5 Z" fill="#ef4444"/>
         </marker>
-        <marker id={MARKERS.null}     markerWidth="10" markerHeight="10" refX="9"  refY="5" orient="auto">
-          <path d="M1,1.5 L9,5 L1,8.5" fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round"/>
+        <marker id={MARKERS.null}     markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,1 L7,4 L0,7" fill="none" stroke="#94a3b8" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
         </marker>
       </defs>
 
@@ -196,12 +206,12 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
       <rect
         x={nullX} y={nodeYTop + (NODE_H - NULL_H) / 2}
         width={NULL_W} height={NULL_H}
-        rx={8}
-        fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="5 3"
+        rx={6}
+        fill="#f8fafc" stroke="#cbd5e1" strokeWidth="1.5" strokeDasharray="4 3"
       />
       <text
-        x={nullX + NULL_W / 2} y={nodeYTop + NODE_H / 2 + 1}
-        textAnchor="middle" dominantBaseline="middle"
+        x={nullX + NULL_W / 2} y={nodeYTop + NODE_H / 2}
+        textAnchor="middle" dominantBaseline="central"
         fontSize="11" fontWeight="700" fill="#94a3b8"
       >
         null
@@ -218,63 +228,71 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
         return (
           <g
             key={`node-${val}-${state}`}
-            style={isActive ? { animation: "llNodePop 320ms cubic-bezier(0.34,1.2,0.64,1) both", transformOrigin: `${x + NODE_W / 2}px ${y + NODE_H / 2}px` } : undefined}
+            className={isActive ? "ll-node-active" : ""}
+            style={isActive ? { 
+              animation: "llNodePop 320ms cubic-bezier(0.34,1.2,0.64,1) both", 
+              transformOrigin: `${x + NODE_W / 2}px ${y + NODE_H / 2}px`,
+              willChange: 'transform'
+            } : undefined}
           >
-            {/* Glow ring */}
-            {isActive && (
+            {/* Glow ring — pixel-perfect inset */}
+            {isActive && c.glow !== "none" && (
               <rect
-                x={x - 4} y={y - 4}
-                width={NODE_W + 8} height={NODE_H + 8}
-                rx={14}
+                x={x - 3} y={y - 3}
+                width={NODE_W + 6} height={NODE_H + 6}
+                rx={12}
                 fill="none"
                 stroke={c.glow}
-                strokeWidth="2.5"
-                style={{ animation: "llPulse 1.6s ease-in-out infinite", opacity: 0.6 }}
+                strokeWidth="2"
+                opacity={0.6}
+                style={{ animation: "llPulse 1.6s ease-in-out infinite" }}
               />
             )}
 
-            {/* Node body with shadow */}
+            {/* Node body with shadow — crisp edges */}
             <rect
               x={x} y={y}
               width={NODE_W} height={NODE_H}
               rx={10}
               fill={c.valFill}
               stroke={c.stroke}
-              strokeWidth="2"
+              strokeWidth="1.5"
               filter="url(#ll-shadow)"
-              style={{ transition: "fill 0.25s, stroke 0.25s" }}
+              style={{ transition: "fill 180ms ease, stroke 180ms ease" }}
             />
 
-            {/* Right "next" zone */}
+            {/* Right "next" zone — precise inset */}
             <rect
-              x={x + DIVIDER} y={y + 2}
-              width={NODE_W - DIVIDER - 2} height={NODE_H - 4}
-              rx={8}
+              x={x + DIVIDER + 1} y={y + 2}
+              width={NODE_W - DIVIDER - 3} height={NODE_H - 4}
+              rx={7}
               fill={c.nextFill}
-              style={{ transition: "fill 0.25s" }}
+              style={{ transition: "fill 180ms ease" }}
             />
 
-            {/* Divider line */}
+            {/* Divider line — hairline precision */}
             <line
-              x1={x + DIVIDER} y1={y + 6}
-              x2={x + DIVIDER} y2={y + NODE_H - 6}
-              stroke={c.stroke} strokeWidth="1" opacity="0.5"
+              x1={x + DIVIDER} y1={y + 5}
+              x2={x + DIVIDER} y2={y + NODE_H - 5}
+              stroke={c.stroke} strokeWidth="1" opacity="0.4" strokeLinecap="round"
             />
 
-            {/* Value */}
+            {/* Value — pixel-perfect centered */}
             <text
-              x={x + DIVIDER / 2} y={y + NODE_H / 2 + 1}
-              textAnchor="middle" dominantBaseline="middle"
+              x={x + DIVIDER / 2} y={y + NODE_H / 2}
+              textAnchor="middle" dominantBaseline="central"
               fontSize="15" fontWeight="800" fill={c.text}
+              style={{ userSelect: 'none' }}
             >
               {val}
             </text>
 
-            {/* "next" label */}
+            {/* "next" label — pixel-perfect centered */}
             <text
-              x={x + DIVIDER + (NODE_W - DIVIDER) / 2} y={y + NODE_H / 2 + 1}
-              textAnchor="middle" dominantBaseline="middle"
-              fontSize="9" fontWeight="700" fill={c.stroke} opacity="0.8"
+              x={x + DIVIDER + (NODE_W - DIVIDER) / 2} y={y + NODE_H / 2}
+              textAnchor="middle" dominantBaseline="central"
+              fontSize="9" fontWeight="700" fill={c.stroke} opacity="0.75"
+              style={{ userSelect: 'none' }}
             >
               next
             </text>
@@ -288,38 +306,41 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
         const cx  = nodeX(idx) + NODE_W / 2;
 
         return ptrs.map((pc, slot) => {
-          // Stagger: each extra pointer shifts left/right
-          const badgeW = 42;
-          const totalW = ptrs.length * badgeW + (ptrs.length - 1) * 4;
+          // Stagger: each extra pointer shifts left/right with tighter spacing
+          const badgeW = 40;
+          const badgeGap = 3;
+          const totalW = ptrs.length * badgeW + (ptrs.length - 1) * badgeGap;
           const startX = cx - totalW / 2;
-          const bx = startX + slot * (badgeW + 4);
-          const by = nodeYTop - BADGE_H - 6;
+          const bx = Math.round(startX + slot * (badgeW + badgeGap));
+          const by = nodeYTop - BADGE_H - 8; // Slightly higher for cleaner look
           const stemX = bx + badgeW / 2;
 
           return (
             <g key={`ptr-${idx}-${pc.key}`}>
-              {/* Vertical stem */}
+              {/* Vertical stem — hairline */}
               <line
                 x1={stemX} y1={by + BADGE_H}
-                x2={stemX} y2={nodeYTop - 2}
-                stroke={pc.color} strokeWidth="2"
+                x2={stemX} y2={nodeYTop - 3}
+                stroke={pc.color} strokeWidth="1.5" strokeLinecap="round"
               />
-              {/* Triangle tip */}
+              {/* Triangle tip — crisp triangle */}
               <polygon
-                points={`${stemX},${nodeYTop - 1} ${stemX - 4},${nodeYTop - 7} ${stemX + 4},${nodeYTop - 7}`}
+                points={`${stemX},${nodeYTop - 2} ${stemX - 3},${nodeYTop - 7} ${stemX + 3},${nodeYTop - 7}`}
                 fill={pc.color}
               />
-              {/* Badge pill */}
+              {/* Badge pill — crisp shadowless */}
               <rect
                 x={bx} y={by}
                 width={badgeW} height={BADGE_H}
-                rx={6}
+                rx={5}
                 fill={pc.color}
               />
+              {/* Badge text — pixel-perfect centered */}
               <text
-                x={bx + badgeW / 2} y={by + BADGE_H / 2 + 1}
-                textAnchor="middle" dominantBaseline="middle"
-                fontSize="11" fontWeight="800" fill={pc.textColor}
+                x={bx + badgeW / 2} y={by + BADGE_H / 2}
+                textAnchor="middle" dominantBaseline="central"
+                fontSize="10" fontWeight="800" fill={pc.textColor}
+                style={{ userSelect: 'none' }}
               >
                 {pc.label}
               </text>

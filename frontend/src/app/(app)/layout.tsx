@@ -33,6 +33,7 @@ const traversalRoutes = [
   "/problems/binary-tree/convert-bst-to-sorted-doubly-linked-list",
   // Linked List visualizers
   "/problems/linked-list/reverse-a-linkedlist",
+  "/problems/linked-list/middle-of-linkedlist",
 ] as const;
 
 export default function AppLayout({ children }: { children: ReactNode }) {

@@ -546,6 +546,10 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return "/problems/linked-list/reverse-a-linkedlist";
   }
 
+  if (sectionName === "Linked List" && problemName === "Find the middle of LinkedList") {
+    return "/problems/linked-list/middle-of-linkedlist";
+  }
+
   return null;
 };
 
