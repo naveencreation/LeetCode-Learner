@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   ChevronLeft,
@@ -11,6 +10,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 
+import { LogoMark } from "@/components/Logo";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -73,12 +73,9 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
           )}
         >
           <div className="flex min-w-0 items-center gap-2 overflow-hidden">
-            <Image
-              src="/thinkdsa-mark.svg"
-              alt="ThinkDSA logo"
-              width={28}
-              height={28}
-              className="h-7 w-7 shrink-0"
+            <LogoMark
+              size={28}
+              className="shrink-0"
             />
             <p
               className={cn(

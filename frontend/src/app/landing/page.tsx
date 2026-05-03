@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Space_Grotesk, Outfit, JetBrains_Mono } from "next/font/google";
+import { Logo } from "@/components/Logo";
 import { TortoiseHareVis } from "./components/TortoiseHareVis";
 
 const spaceGrotesk = Space_Grotesk({
@@ -138,10 +139,12 @@ function Navbar() {
       }`}
     >
       <div className="max-w-[1200px] mx-auto px-6 h-full flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3 no-underline">
-          <div className="w-9 h-9 bg-gradient-to-br from-[var(--l-primary)] to-[var(--l-primary-soft)] rounded-[10px] flex items-center justify-center font-[var(--font-space-grotesk)] font-bold text-xl text-[var(--l-bg)] flex-shrink-0 shadow-[0_4px_16px_oklch(65%_0.22_280_/_0.4)]">
-            T
-          </div>
+        <Link href="/" className="flex items-center gap-3 no-underline group">
+          <Logo 
+            size={36} 
+            color="oklch(65% 0.22 280)"
+            className="transition-all duration-300 group-hover:scale-105"
+          />
           <span className="font-[var(--font-space-grotesk)] font-semibold text-2xl text-[var(--l-text)] tracking-tight">
             ThinkDSA
           </span>
@@ -596,10 +599,12 @@ function Footer() {
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr] gap-16 mb-16">
           <div>
-            <Link href="/" className="flex items-center gap-3 no-underline mb-4">
-              <div className="w-9 h-9 bg-gradient-to-br from-[var(--l-primary)] to-[var(--l-primary-soft)] rounded-[10px] flex items-center justify-center font-[var(--font-space-grotesk)] font-bold text-xl text-[var(--l-bg)]">
-                T
-              </div>
+            <Link href="/" className="flex items-center gap-3 no-underline mb-4 group">
+              <Logo 
+                size={36} 
+                color="oklch(65% 0.22 280)"
+                className="transition-all duration-300 group-hover:scale-105"
+              />
               <span className="font-[var(--font-space-grotesk)] font-semibold text-2xl text-[var(--l-text)] tracking-tight">
                 ThinkDSA
               </span>
