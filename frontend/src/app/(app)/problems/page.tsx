@@ -550,6 +550,10 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return "/problems/linked-list/middle-of-linkedlist";
   }
 
+  if (sectionName === "Linked List" && problemName === "Remove N-th node from back of LinkedList") {
+    return "/problems/linked-list/remove-nth-from-end";
+  }
+
   return null;
 };
 

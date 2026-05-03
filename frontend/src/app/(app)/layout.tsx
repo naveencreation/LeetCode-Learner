@@ -34,6 +34,7 @@ const traversalRoutes = [
   // Linked List visualizers
   "/problems/linked-list/reverse-a-linkedlist",
   "/problems/linked-list/middle-of-linkedlist",
+  "/problems/linked-list/remove-nth-from-end",
 ] as const;
 
 export default function AppLayout({ children }: { children: ReactNode }) {
