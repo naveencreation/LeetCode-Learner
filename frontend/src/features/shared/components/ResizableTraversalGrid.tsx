@@ -502,7 +502,7 @@ export function ResizableTraversalGrid({
           className="grid h-full min-h-0 gap-1.5 xl:gap-0"
           style={middleStackTemplateRows ? { gridTemplateRows: middleStackTemplateRows } : undefined}
         >
-          <div ref={middleTopPanelRef} className="min-h-0">
+          <div ref={middleTopPanelRef} className="h-full min-h-0">
             {middleTop}
           </div>
 
@@ -522,11 +522,11 @@ export function ResizableTraversalGrid({
             />
           </button>
 
-          <div ref={middleBottomPanelRef} className="min-h-0">
+          <div ref={middleBottomPanelRef} className="h-full min-h-0">
             {middleBottom}
           </div>
 
-          <div ref={middleControlsRef} className="min-h-0 pt-1.5 xl:pt-1.5">
+          <div ref={middleControlsRef} className="h-full min-h-0 pt-1.5 xl:pt-1.5">
             {middleFooter}
           </div>
         </div>
@@ -538,7 +538,7 @@ export function ResizableTraversalGrid({
           className="grid h-full min-h-0 gap-1.5 xl:gap-0"
           style={rightStackTemplateRows ? { gridTemplateRows: rightStackTemplateRows } : undefined}
         >
-          <div ref={rightTopPanelRef} className="min-h-0">
+          <div ref={rightTopPanelRef} className="h-full min-h-0">
             {rightTop}
           </div>
 
@@ -558,7 +558,7 @@ export function ResizableTraversalGrid({
             />
           </button>
 
-          <div ref={rightBottomPanelRef} className="min-h-0">
+          <div ref={rightBottomPanelRef} className="h-full min-h-0">
             {rightBottom}
           </div>
         </div>
