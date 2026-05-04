@@ -95,7 +95,7 @@ export function PointerStatePanel({ activeStep }: PointerStatePanelProps) {
 
           <div className="mt-3 rounded-xl border border-cyan-200 bg-cyan-50 px-3 py-2.5">
             <p className="text-[11px] font-bold uppercase tracking-wide text-cyan-700">
-              Algorithm Insight
+              Why This Step Matters
             </p>
             <p className="mt-1 text-[12px] font-semibold leading-relaxed text-cyan-900">
               {invariantMessage}

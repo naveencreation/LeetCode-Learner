@@ -1,11 +1,10 @@
+import type { ListNode, LinkedListNodeState } from "@/features/shared/linked-list-types";
 import type {
   ExecutionStep,
-  MiddleOperationType,
   PointerSnapshot,
-  ListNode,
-  MiddleStepMetadata,
+  DetectCycleOperationType,
+  DetectCycleStepMetadata,
 } from "./types";
-import type { LinkedListNodeState } from "@/features/shared/linked-list-types";
 
 function cloneNodeStates(
   states: Record<number, LinkedListNodeState>,
@@ -24,13 +23,13 @@ function snap(pointers: PointerSnapshot): PointerSnapshot {
 }
 
 function createMetadata(
-  phase: "Setup" | "Loop" | "Movement" | "Complete",
+  phase: "Setup" | "Check" | "Movement" | "Result",
   severity: "neutral" | "info" | "warning" | "critical" | "success",
   title: string,
   description: string,
   badge: string,
   tip?: string,
-): MiddleStepMetadata {
+): DetectCycleStepMetadata {
   return {
     phase,
     severity,
@@ -43,9 +42,9 @@ function createMetadata(
 
 function pushStep(
   steps: ExecutionStep[],
-  type: MiddleOperationType,
+  type: DetectCycleOperationType,
   operation: string,
-  metadata: MiddleStepMetadata,
+  metadata: DetectCycleStepMetadata,
   pointers: PointerSnapshot,
   nodeStates: Record<number, LinkedListNodeState>,
   links: Record<number, number | null>,
@@ -65,36 +64,47 @@ function initializeNodeStates(
   states: Record<number, LinkedListNodeState>,
 ): void {
   if (node === null) return;
+  if (states[node.val] !== undefined) return; // Already visited (cycle)
   states[node.val] = "unvisited";
   initializeNodeStates(node.next, states);
 }
 
 function buildLinksMap(node: ListNode | null): Record<number, number | null> {
   const links: Record<number, number | null> = {};
+  const visited = new Set<number>();
   let current = node;
   while (current !== null) {
+    if (visited.has(current.val)) break; // Stop at cycle
+    visited.add(current.val);
     links[current.val] = current.next?.val ?? null;
     current = current.next;
   }
   return links;
 }
 
-export function generateMiddleOfLinkedListSteps(head: ListNode | null): {
+export function generateDetectCycleSteps(
+  head: ListNode | null,
+  cyclePosition: number | null = null,
+): {
   executionSteps: ExecutionStep[];
   initialNodeStates: Record<number, LinkedListNodeState>;
   originalValues: number[];
+  hasCycle: boolean;
 } {
   const executionSteps: ExecutionStep[] = [];
   const nodeStates: Record<number, LinkedListNodeState> = {};
 
   if (head === null) {
-    return { executionSteps, initialNodeStates: nodeStates, originalValues: [] };
+    return { executionSteps, initialNodeStates: nodeStates, originalValues: [], hasCycle: false };
   }
 
-  // Build original values array and initialize states
+  // Build original values array
   const originalValues: number[] = [];
   let temp: ListNode | null = head;
+  const visited = new Set<number>();
   while (temp !== null) {
+    if (visited.has(temp.val)) break;
+    visited.add(temp.val);
     originalValues.push(temp.val);
     temp = temp.next;
   }
@@ -103,6 +113,9 @@ export function generateMiddleOfLinkedListSteps(head: ListNode | null): {
   const initialNodeStates = cloneNodeStates(nodeStates);
   const links = buildLinksMap(head);
 
+  // Detect if cycle exists
+  const hasCycle = cyclePosition !== null;
+
   // Initialize pointers
   let slow: ListNode | null = head;
   let fast: ListNode | null = head;
@@ -110,6 +123,7 @@ export function generateMiddleOfLinkedListSteps(head: ListNode | null): {
   const pointers: PointerSnapshot = {
     slow: slow?.val ?? null,
     fast: fast?.val ?? null,
+    hasCycle: null,
   };
 
   // Mark initial positions
@@ -133,7 +147,11 @@ export function generateMiddleOfLinkedListSteps(head: ListNode | null): {
   );
 
   // Main loop: while fast and fast.next exist
-  while (fast !== null && fast.next !== null) {
+  const maxIterations = 100; // Prevent infinite loops
+  let iteration = 0;
+  while (fast !== null && fast.next !== null && iteration < maxIterations) {
+    iteration++;
+
     // Check loop condition
     pointers.slow = slow?.val ?? null;
     pointers.fast = fast?.val ?? null;
@@ -143,7 +161,7 @@ export function generateMiddleOfLinkedListSteps(head: ListNode | null): {
       "check_loop",
       `Check: fast (${fast.val}) and fast.next (${fast.next.val}) exist`,
       createMetadata(
-        "Loop",
+        "Check",
         "info",
         "Check Loop Condition",
         "Verify that fast pointer can advance (fast and fast.next exist).",
@@ -207,30 +225,52 @@ export function generateMiddleOfLinkedListSteps(head: ListNode | null): {
         nodeStates,
         links,
       );
+
+      // Check if they meet (cycle detected)
+      if (fast && slow && fast.val === slow.val) {
+        pointers.hasCycle = true;
+
+        pushStep(
+          executionSteps,
+          "cycle_detected",
+          `Cycle detected: slow (${slow.val}) == fast (${fast.val})`,
+          createMetadata(
+            "Result",
+            "success",
+            "Cycle Found!",
+            "The slow and fast pointers met, confirming a cycle exists.",
+            "Cycle ✓",
+            "Time O(n), space O(1).",
+          ),
+          pointers,
+          nodeStates,
+          links,
+        );
+
+        return { executionSteps, initialNodeStates, originalValues, hasCycle: true };
+      }
     }
   }
 
-  // Loop exit - found middle
-  if (slow) {
-    nodeStates[slow.val] = "completed";
+  // Loop exit - no cycle
+  pointers.hasCycle = false;
 
-    pushStep(
-      executionSteps,
-      "found_middle",
-      `Found middle: return slow (${slow.val})`,
-      createMetadata(
-        "Complete",
-        "success",
-        "Middle Node Found!",
-        "The fast pointer reached the end. Slow is at the middle.",
-        "Done ✓",
-        "Time O(n), space O(1).",
-      ),
-      { slow: slow.val, fast: fast?.val ?? null },
-      nodeStates,
-      links,
-    );
-  }
+  pushStep(
+    executionSteps,
+    "no_cycle",
+    "No cycle found: fast reached end of list",
+    createMetadata(
+      "Result",
+      "neutral",
+      "No Cycle",
+      "The fast pointer reached the end without meeting slow pointer.",
+      "No Cycle",
+      "Time O(n), space O(1).",
+    ),
+    pointers,
+    nodeStates,
+    links,
+  );
 
-  return { executionSteps, initialNodeStates, originalValues };
+  return { executionSteps, initialNodeStates, originalValues, hasCycle: false };
 }

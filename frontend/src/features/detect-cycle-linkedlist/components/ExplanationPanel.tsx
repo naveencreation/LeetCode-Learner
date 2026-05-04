@@ -76,13 +76,14 @@ function getExplanation(
 ): ExplanationContent {
   if (!step && currentStep === 0) {
     return {
-      title: "Ready to Find Middle",
+      title: "Ready to Detect Cycle",
       description:
-        'Press "Start" to begin. We will use the Tortoise and Hare algorithm to find the middle node.',
+        'Press "Start" to begin. We will use Floyd\'s algorithm to detect if a cycle exists.',
       details: [
         "slow moves 1 step at a time",
         "fast moves 2 steps at a time",
-        "When fast reaches the end, slow is at the middle",
+        "If they meet, there's a cycle",
+        "If fast reaches end, no cycle",
       ],
       badge: "Ready",
     };
@@ -90,8 +91,8 @@ function getExplanation(
 
   if (currentStep >= totalSteps) {
     return {
-      title: "Middle Found!",
-      description: "The slow pointer is now at the middle node of the linked list.",
+      title: "Detection Complete!",
+      description: "The cycle detection algorithm has finished execution.",
       details: [
         `Total execution steps: ${totalSteps}`,
         "Algorithm runs in O(n) time with O(1) space",
@@ -125,9 +126,9 @@ function getExplanation(
         title: metadataTitle ?? "Check Loop Condition",
         description: metadataDescription ?? "Verify that fast pointer can advance (fast and fast.next exist).",
         details: [
-          metadataPhase ? `Phase: ${metadataPhase}` : "Phase: Loop",
-          "Line 6: while fast and fast.next",
-          "If condition fails, we've reached the end",
+          metadataPhase ? `Phase: ${metadataPhase}` : "Phase: Check",
+          "Line 7: while fast and fast.next",
+          "If condition fails, we've reached the end (no cycle)",
         ],
         badge: metadataBadge ?? "Check",
       };
@@ -155,17 +156,29 @@ function getExplanation(
         ],
         badge: metadataBadge ?? "Fast +2",
       };
-    case "found_middle":
+    case "cycle_detected":
       return {
-        title: metadataTitle ?? "Middle Node Found!",
-        description: metadataDescription ?? "The fast pointer reached the end. Slow is at the middle.",
+        title: metadataTitle ?? "Cycle Detected!",
+        description: metadataDescription ?? "The slow and fast pointers met, confirming a cycle exists.",
         details: [
-          metadataPhase ? `Phase: ${metadataPhase}` : "Phase: Complete",
-          `Line ${currentCodeLine}: return slow`,
+          metadataPhase ? `Phase: ${metadataPhase}` : "Phase: Result",
+          `Line ${currentCodeLine}: if slow == fast`,
           "Complexity: O(n) time, O(1) space",
           ...(metadataTip ? [metadataTip] : []),
         ],
-        badge: metadataBadge ?? "Done ✓",
+        badge: metadataBadge ?? "Cycle ✓",
+      };
+    case "no_cycle":
+      return {
+        title: metadataTitle ?? "No Cycle Found",
+        description: metadataDescription ?? "The fast pointer reached the end without meeting slow pointer.",
+        details: [
+          metadataPhase ? `Phase: ${metadataPhase}` : "Phase: Result",
+          `Line ${currentCodeLine}: return False`,
+          "Complexity: O(n) time, O(1) space",
+          ...(metadataTip ? [metadataTip] : []),
+        ],
+        badge: metadataBadge ?? "No Cycle",
       };
     default:
       return {

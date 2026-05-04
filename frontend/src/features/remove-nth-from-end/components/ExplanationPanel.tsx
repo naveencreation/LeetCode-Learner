@@ -1,4 +1,11 @@
-import { CheckCircle2, Circle, Info, type LucideIcon } from "lucide-react";
+import {
+  AlertCircle,
+  AlertTriangle,
+  CheckCircle2,
+  Circle,
+  Info,
+  type LucideIcon,
+} from "lucide-react";
 import type { ExecutionStep } from "../types";
 
 interface ExplanationPanelProps {
@@ -16,15 +23,49 @@ interface ExplanationContent {
 }
 
 const EXPLANATION_BADGE_VARIANTS = {
-  neutral: { className: "border-slate-200 bg-slate-50 text-slate-700", icon: Circle },
-  info: { className: "border-sky-200 bg-sky-50 text-sky-700", icon: Info },
-  success: { className: "border-emerald-200 bg-emerald-50 text-emerald-700", icon: CheckCircle2 },
+  neutral: {
+    className: "border-slate-200 bg-slate-50 text-slate-700",
+    icon: Circle,
+  },
+  info: {
+    className: "border-sky-200 bg-sky-50 text-sky-700",
+    icon: Info,
+  },
+  warning: {
+    className: "border-amber-200 bg-amber-50 text-amber-700",
+    icon: AlertTriangle,
+  },
+  critical: {
+    className: "border-rose-200 bg-rose-50 text-rose-700",
+    icon: AlertCircle,
+  },
+  success: {
+    className: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    icon: CheckCircle2,
+  },
 } satisfies Record<string, { className: string; icon: LucideIcon }>;
 
-function getExplanationBadgeConfig(step: ExecutionStep | undefined) {
-  if (!step) return EXPLANATION_BADGE_VARIANTS.neutral;
-  if (step.type === "complete") return EXPLANATION_BADGE_VARIANTS.success;
-  return EXPLANATION_BADGE_VARIANTS.info;
+function getSeverityPulseDuration(severity: string): string {
+  switch (severity) {
+    case "critical":
+      return "0.8s";
+    case "warning":
+      return "1.05s";
+    case "success":
+      return "1.35s";
+    case "info":
+      return "1.8s";
+    default:
+      return "2.1s";
+  }
+}
+
+function getExplanationBadgeConfig(step: ExecutionStep | undefined): {
+  className: string;
+  icon: LucideIcon;
+} {
+  const severity = step?.metadata?.severity ?? "neutral";
+  return EXPLANATION_BADGE_VARIANTS[severity];
 }
 
 function getExplanation(
@@ -62,68 +103,79 @@ function getExplanation(
     };
   }
 
+  const metadataTitle = step?.metadata?.title;
+  const metadataDescription = step?.metadata?.description;
+  const metadataPhase = step?.metadata?.phase;
+  const metadataTip = step?.metadata?.tip;
+  const metadataBadge = step?.metadata?.badge;
+
   switch (step?.type) {
     case "init":
       return {
-        title: "Initialize Pointers",
-        description: "Create dummy node (0) pointing to head. Fast starts at head, slow at dummy.",
+        title: metadataTitle ?? "Initialize Pointers",
+        description: metadataDescription ?? "Create dummy node (0) pointing to head. Fast starts at head, slow at dummy.",
         details: [
-          "Phase: Setup",
+          metadataPhase ? `Phase: ${metadataPhase}` : "Phase: Setup",
           "dummy = ListNode(0, head)",
           `n = ${step.pointers.n}: remove ${step.pointers.n}${step.pointers.n === 1 ? "st" : step.pointers.n === 2 ? "nd" : step.pointers.n === 3 ? "rd" : "th"} node from end`,
           "Dummy node ensures we can remove head without special case",
+          ...(metadataTip ? [metadataTip] : []),
         ],
-        badge: "Setup",
+        badge: metadataBadge ?? "Setup",
       };
     case "advance_fast_n":
       return {
-        title: "Advance Fast Pointer",
-        description: "Move the fast pointer n steps ahead to create an n-node gap.",
+        title: metadataTitle ?? "Advance Fast Pointer",
+        description: metadataDescription ?? "Move the fast pointer n steps ahead to create an n-node gap.",
         details: [
-          "Phase: Advance Fast",
+          metadataPhase ? `Phase: ${metadataPhase}` : "Phase: Advance Fast",
           `Line ${currentCodeLine}: for _ in range(n)`,
           "Slow stays at dummy while fast moves ahead",
           "After this, fast is n nodes ahead of slow",
+          ...(metadataTip ? [metadataTip] : []),
         ],
-        badge: "Fast +n",
+        badge: metadataBadge ?? "Fast +n",
       };
     case "advance_together":
       return {
-        title: "Move Together",
-        description: "Move both fast and slow pointers one step forward until fast reaches end.",
+        title: metadataTitle ?? "Move Together",
+        description: metadataDescription ?? "Move both fast and slow pointers one step forward until fast reaches end.",
         details: [
-          "Phase: Movement",
+          metadataPhase ? `Phase: ${metadataPhase}` : "Phase: Movement",
           `Line ${currentCodeLine}: while fast:`,
           "slow = slow.next, fast = fast.next",
           "Maintains the n-node gap between pointers",
           "When loop ends, slow is before target node",
+          ...(metadataTip ? [metadataTip] : []),
         ],
-        badge: "Both +1",
+        badge: metadataBadge ?? "Both +1",
       };
     case "remove_node":
       return {
-        title: "Remove Target Node",
-        description: "Skip the target node by setting slow.next to slow.next.next.",
+        title: metadataTitle ?? "Remove Target Node",
+        description: metadataDescription ?? "Skip the target node by setting slow.next to slow.next.next.",
         details: [
-          "Phase: Remove",
+          metadataPhase ? `Phase: ${metadataPhase}` : "Phase: Remove",
           `Line ${currentCodeLine}: slow.next = slow.next.next`,
           `Target: ${step.pointers.target}`,
           "This effectively removes the nth node from end",
           "Works for all cases: head, middle, or tail",
+          ...(metadataTip ? [metadataTip] : []),
         ],
-        badge: "Remove",
+        badge: metadataBadge ?? "Remove",
       };
     case "complete":
       return {
-        title: "Removal Complete!",
-        description: "Return dummy.next as the new head of the modified list.",
+        title: metadataTitle ?? "Removal Complete!",
+        description: metadataDescription ?? "Return dummy.next as the new head of the modified list.",
         details: [
-          "Phase: Complete",
+          metadataPhase ? `Phase: ${metadataPhase}` : "Phase: Complete",
           `Line ${currentCodeLine}: return dummy.next`,
           "Complexity: O(n) time, O(1) space",
           "Dummy node pattern elegantly solved edge cases",
+          ...(metadataTip ? [metadataTip] : []),
         ],
-        badge: "Done ✓",
+        badge: metadataBadge ?? "Done ✓",
       };
     default:
       return {
@@ -146,6 +198,7 @@ export function ExplanationPanel({
     className: explanationBadgeClass,
     icon: ExplanationBadgeIcon,
   } = getExplanationBadgeConfig(activeStep);
+  const explanationSeverity = activeStep?.metadata?.severity ?? "neutral";
   const isExplanationActive = Boolean(activeStep);
 
   return (
@@ -157,6 +210,13 @@ export function ExplanationPanel({
             className={`h-3 w-3 ${isExplanationActive ? "motion-safe:animate-pulse" : ""}`}
             strokeWidth={2.3}
             aria-hidden="true"
+            style={
+              isExplanationActive
+                ? {
+                    animationDuration: getSeverityPulseDuration(explanationSeverity),
+                  }
+                : undefined
+            }
           />
           <span>{explanation.badge}</span>
         </span>

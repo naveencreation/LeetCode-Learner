@@ -7,6 +7,9 @@ export type RemoveNthOperationType =
   | "remove_node"
   | "complete";
 
+export type RemoveNthPhase = "Setup" | "Advance Fast" | "Movement" | "Remove" | "Complete";
+export type RemoveNthSeverity = "neutral" | "info" | "warning" | "critical" | "success";
+
 export interface PointerSnapshot {
   fast: number | null;
   slow: number | null;
@@ -14,9 +17,19 @@ export interface PointerSnapshot {
   n: number;
 }
 
+export interface RemoveNthStepMetadata {
+  phase: RemoveNthPhase;
+  severity: RemoveNthSeverity;
+  title: string;
+  description: string;
+  badge: string;
+  tip?: string;
+}
+
 export interface ExecutionStep {
   type: RemoveNthOperationType;
   operation: string;
+  metadata: RemoveNthStepMetadata;
   nodeStates: Record<number, LinkedListNodeState>;
   pointers: PointerSnapshot;
   links: Record<number, number | null>;

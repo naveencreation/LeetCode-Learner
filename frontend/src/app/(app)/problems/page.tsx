@@ -558,6 +558,14 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return "/problems/linked-list/remove-nth-from-end";
   }
 
+  if (sectionName === "Linked List Part-II" && problemName === "Detect a cycle in Linked List") {
+    return "/problems/linked-list/detect-cycle";
+  }
+
+  if (sectionName === "Linked List Part-II" && problemName === "Reverse a LinkedList in groups of size k") {
+    return "/problems/linked-list/reverse-k-group";
+  }
+
   return null;
 };
 
@@ -621,6 +629,8 @@ const platformMap: Record<string, PlatformLink> = {
   "Construct Binary Tree from Inorder and Postorder Traversal": { url: "https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal", platform: "leetcode" },
   "Flatten Binary Tree to Linked List": { url: "https://leetcode.com/problems/flatten-binary-tree-to-linked-list", platform: "leetcode" },
   "Convert Binary Search Tree to Sorted Doubly Linked List": { url: "https://leetcode.com/problems/convert-binary-search-tree-to-sorted-doubly-linked-list", platform: "leetcode" },
+  "Detect a cycle in Linked List": { url: "https://leetcode.com/problems/linked-list-cycle", platform: "leetcode" },
+  "Reverse a LinkedList in groups of size k": { url: "https://leetcode.com/problems/reverse-nodes-in-k-group", platform: "leetcode" },
 };
 
 export const getPlatformLink = (problemName: string): PlatformLink | null =>

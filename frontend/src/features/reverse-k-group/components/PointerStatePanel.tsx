@@ -6,46 +6,70 @@ interface PointerStatePanelProps {
 
 const pointerConfig = [
   {
-    key: "slow" as const,
-    label: "slow",
-    color: "text-amber-700",
-    bg: "bg-amber-50",
-    border: "border-amber-200",
-    glow: "rgba(245, 158, 11, 0.35)",
+    key: "current" as const,
+    label: "current",
+    color: "text-violet-700",
+    bg: "bg-violet-50",
+    border: "border-violet-200",
+    glow: "rgba(139, 92, 246, 0.35)",
   },
   {
-    key: "fast" as const,
-    label: "fast",
+    key: "groupStart" as const,
+    label: "groupStart",
     color: "text-blue-600",
     bg: "bg-blue-50",
     border: "border-blue-200",
     glow: "rgba(59, 130, 246, 0.35)",
   },
+  {
+    key: "groupEnd" as const,
+    label: "groupEnd",
+    color: "text-emerald-600",
+    bg: "bg-emerald-50",
+    border: "border-emerald-200",
+    glow: "rgba(16, 185, 129, 0.35)",
+  },
+  {
+    key: "prevGroupEnd" as const,
+    label: "prevGroupEnd",
+    color: "text-amber-700",
+    bg: "bg-amber-50",
+    border: "border-amber-200",
+    glow: "rgba(245, 158, 11, 0.35)",
+  },
 ];
 
 function getInvariantMessage(step: ExecutionStep | undefined): string {
   if (!step) {
-    return "Initialize both pointers at head. The slow pointer will lag behind the fast pointer.";
+    return "Initialize with k value. The algorithm reverses nodes in groups of size k.";
   }
 
   switch (step.type) {
     case "init":
-      return "Both pointers start at head. Slow moves 1 step, fast moves 2 steps per iteration.";
-    case "check_loop":
-      return "Check if fast can advance. If fast reaches null or fast.next is null, we've reached the end.";
-    case "advance_slow":
-      return "Slow pointer advances by 1. This pointer will eventually reach the middle.";
-    case "advance_fast":
-      return "Fast pointer advances by 2. This pointer finds the end of the list twice as fast.";
-    case "found_middle":
-      return "Fast reached the end! Slow is now at the middle node. Algorithm complete.";
+      return "Set k to determine group size. Each group of k nodes will be reversed.";
+    case "check_group":
+      return "Check if remaining nodes are >= k. If not, keep them in original order.";
+    case "reverse_group":
+      return "Reverse k nodes using three-pointer technique (prev, curr, next).";
+    case "connect_groups":
+      return "Connect reversed group to the previous group's end node.";
+    case "incomplete":
+      return "Remaining nodes less than k, so they stay unchanged.";
+    case "complete":
+      return "All groups processed. Time O(n), space O(1).";
     default:
-      return "The slow pointer moves at half the speed of fast pointer, so it ends at middle.";
+      return "Reverse nodes in groups of size k.";
   }
 }
 
 export function PointerStatePanel({ activeStep }: PointerStatePanelProps) {
-  const pointers = activeStep?.pointers ?? { slow: null, fast: null };
+  const pointers = activeStep?.pointers ?? {
+    current: null,
+    groupStart: null,
+    groupEnd: null,
+    prevGroupEnd: null,
+    k: 3,
+  };
   const invariantMessage = getInvariantMessage(activeStep);
 
   return (
@@ -83,7 +107,16 @@ export function PointerStatePanel({ activeStep }: PointerStatePanelProps) {
             );
           })}
 
-          <div className="mt-3 rounded-xl border border-cyan-200 bg-cyan-50 px-3 py-2.5">
+          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
+              Group Size (k)
+            </p>
+            <p className="mt-1 text-[14px] font-extrabold text-slate-800">
+              {pointers.k}
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-cyan-200 bg-cyan-50 px-3 py-2.5">
             <p className="text-[11px] font-bold uppercase tracking-wide text-cyan-700">
               Why This Step Matters
             </p>
@@ -103,7 +136,7 @@ export function PointerStatePanel({ activeStep }: PointerStatePanelProps) {
             </div>
           ) : (
             <p className="pt-1 text-[12px] font-medium text-slate-400">
-              Click Next to initialize slow and fast pointers.
+              Click Next to start reversing nodes in groups.
             </p>
           )}
         </div>

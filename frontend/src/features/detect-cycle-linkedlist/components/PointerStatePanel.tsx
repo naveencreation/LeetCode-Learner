@@ -25,7 +25,7 @@ const pointerConfig = [
 
 function getInvariantMessage(step: ExecutionStep | undefined): string {
   if (!step) {
-    return "Initialize both pointers at head. The slow pointer will lag behind the fast pointer.";
+    return "Initialize both pointers at head. If they meet, there's a cycle. If fast reaches end, no cycle.";
   }
 
   switch (step.type) {
@@ -34,18 +34,20 @@ function getInvariantMessage(step: ExecutionStep | undefined): string {
     case "check_loop":
       return "Check if fast can advance. If fast reaches null or fast.next is null, we've reached the end.";
     case "advance_slow":
-      return "Slow pointer advances by 1. This pointer will eventually reach the middle.";
+      return "Slow pointer advances by 1. This pointer will eventually meet fast if there's a cycle.";
     case "advance_fast":
-      return "Fast pointer advances by 2. This pointer finds the end of the list twice as fast.";
-    case "found_middle":
-      return "Fast reached the end! Slow is now at the middle node. Algorithm complete.";
+      return "Fast pointer advances by 2. This pointer moves twice as fast to detect cycles.";
+    case "cycle_detected":
+      return "Fast and slow met! This confirms a cycle exists in the linked list.";
+    case "no_cycle":
+      return "Fast reached the end without meeting slow. No cycle exists in the linked list.";
     default:
-      return "The slow pointer moves at half the speed of fast pointer, so it ends at middle.";
+      return "The slow pointer moves at half the speed of fast pointer to detect cycles.";
   }
 }
 
 export function PointerStatePanel({ activeStep }: PointerStatePanelProps) {
-  const pointers = activeStep?.pointers ?? { slow: null, fast: null };
+  const pointers = activeStep?.pointers ?? { slow: null, fast: null, hasCycle: null };
   const invariantMessage = getInvariantMessage(activeStep);
 
   return (

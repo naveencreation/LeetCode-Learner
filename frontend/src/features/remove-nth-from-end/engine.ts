@@ -3,6 +3,7 @@ import type {
   ExecutionStep,
   PointerSnapshot,
   RemoveNthOperationType,
+  RemoveNthStepMetadata,
 } from "./types";
 
 function cloneNodeStates(
@@ -21,10 +22,29 @@ function snap(pointers: PointerSnapshot): PointerSnapshot {
   return { ...pointers };
 }
 
+function createMetadata(
+  phase: "Setup" | "Advance Fast" | "Movement" | "Remove" | "Complete",
+  severity: "neutral" | "info" | "warning" | "critical" | "success",
+  title: string,
+  description: string,
+  badge: string,
+  tip?: string,
+): RemoveNthStepMetadata {
+  return {
+    phase,
+    severity,
+    title,
+    description,
+    badge,
+    tip,
+  };
+}
+
 function pushStep(
   steps: ExecutionStep[],
   type: RemoveNthOperationType,
   operation: string,
+  metadata: RemoveNthStepMetadata,
   pointers: PointerSnapshot,
   nodeStates: Record<number, LinkedListNodeState>,
   links: Record<number, number | null>,
@@ -32,6 +52,7 @@ function pushStep(
   steps.push({
     type,
     operation,
+    metadata,
     nodeStates: cloneNodeStates(nodeStates),
     pointers: snap(pointers),
     links: cloneLinks(links),
@@ -128,6 +149,14 @@ export function generateRemoveNthSteps(
     executionSteps,
     "init",
     `Initialize: dummy created, fast = head (${fast?.val}), slow = dummy, n = ${n}`,
+    createMetadata(
+      "Setup",
+      "info",
+      "Initialize Pointers",
+      "Create dummy node (0) pointing to head. Fast starts at head, slow at dummy.",
+      "Setup",
+      "Dummy node ensures we can remove head without special case.",
+    ),
     pointers,
     nodeStates,
     links,
@@ -143,6 +172,14 @@ export function generateRemoveNthSteps(
         executionSteps,
         "advance_fast_n",
         `Advance fast: step ${i + 1} of ${n}, fast = ${fast?.val ?? "null"}`,
+        createMetadata(
+          "Advance Fast",
+          "info",
+          "Advance Fast Pointer",
+          "Move the fast pointer n steps ahead to create an n-node gap.",
+          "Fast +n",
+          "Slow stays at dummy while fast moves ahead.",
+        ),
         pointers,
         nodeStates,
         links,
@@ -185,6 +222,14 @@ export function generateRemoveNthSteps(
       executionSteps,
       "advance_together",
       `Move together #${iteration}: slow = ${slow?.val}, fast = ${fast?.val ?? "null"}`,
+      createMetadata(
+        "Movement",
+        "info",
+        "Move Together",
+        "Move both fast and slow pointers one step forward until fast reaches end.",
+        "Both +1",
+        "Maintains the n-node gap between pointers.",
+      ),
       pointers,
       nodeStates,
       links,
@@ -209,6 +254,14 @@ export function generateRemoveNthSteps(
       executionSteps,
       "remove_node",
       `Remove: ${slow.val}.next = ${slow.next.next?.val ?? "null"} (skipped ${removedVal})`,
+      createMetadata(
+        "Remove",
+        "warning",
+        "Remove Target Node",
+        "Skip the target node by setting slow.next to slow.next.next.",
+        "Remove",
+        "Works for all cases: head, middle, or tail.",
+      ),
       pointers,
       nodeStates,
       links,
@@ -225,6 +278,14 @@ export function generateRemoveNthSteps(
     executionSteps,
     "complete",
     `Return dummy.next: ${slow === head && targetVal === head?.val ? (head?.next?.val ?? "null") : head?.val}`,
+    createMetadata(
+      "Complete",
+      "success",
+      "Removal Complete!",
+      "Return dummy.next as the new head of the modified list.",
+      "Done ✓",
+      "Time O(n), space O(1).",
+    ),
     pointers,
     nodeStates,
     links,

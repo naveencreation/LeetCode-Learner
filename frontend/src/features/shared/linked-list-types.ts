@@ -67,6 +67,28 @@ export function cloneLinkedList(head: ListNode | null): ListNode | null {
   return newHead;
 }
 
+export function createLinkedListWithCycle(values: number[], cycleToIndex: number): ListNode | null {
+  if (values.length === 0) return null;
+  const head: ListNode = { val: values[0], next: null };
+  let current = head;
+  for (let i = 1; i < values.length; i++) {
+    const node: ListNode = { val: values[i], next: null };
+    current.next = node;
+    current = node;
+  }
+  
+  // Create cycle by pointing last node to the node at cycleToIndex
+  if (cycleToIndex >= 0 && cycleToIndex < values.length) {
+    let cycleNode = head;
+    for (let i = 0; i < cycleToIndex; i++) {
+      cycleNode = cycleNode.next!;
+    }
+    current.next = cycleNode;
+  }
+  
+  return head;
+}
+
 export const linkedListPresets: Record<LinkedListPresetKey, LinkedListPreset> = {
   short: {
     label: "3 Nodes",

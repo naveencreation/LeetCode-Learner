@@ -1,23 +1,25 @@
 import type { LinkedListNodeState, ListNode } from "@/features/shared/linked-list-types";
 
-export type MiddleOperationType =
+export type DetectCycleOperationType =
   | "init"           // slow = head, fast = head
+  | "check_loop"     // while fast and fast.next
   | "advance_slow"   // slow = slow.next
   | "advance_fast"   // fast = fast.next.next
-  | "check_loop"     // while fast and fast.next
-  | "found_middle";  // return slow
+  | "cycle_detected" // fast == slow (cycle found)
+  | "no_cycle";      // fast or fast.next is null (no cycle)
 
-export type MiddlePhase = "Setup" | "Loop" | "Movement" | "Complete";
-export type MiddleSeverity = "neutral" | "info" | "warning" | "critical" | "success";
+export type DetectCyclePhase = "Setup" | "Check" | "Movement" | "Result";
+export type DetectCycleSeverity = "neutral" | "info" | "warning" | "critical" | "success";
 
 export interface PointerSnapshot {
   slow: number | null;
   fast: number | null;
+  hasCycle: boolean | null;
 }
 
-export interface MiddleStepMetadata {
-  phase: MiddlePhase;
-  severity: MiddleSeverity;
+export interface DetectCycleStepMetadata {
+  phase: DetectCyclePhase;
+  severity: DetectCycleSeverity;
   title: string;
   description: string;
   badge: string;
@@ -25,9 +27,9 @@ export interface MiddleStepMetadata {
 }
 
 export interface ExecutionStep {
-  type: MiddleOperationType;
+  type: DetectCycleOperationType;
   operation: string;
-  metadata: MiddleStepMetadata;
+  metadata: DetectCycleStepMetadata;
   nodeStates: Record<number, LinkedListNodeState>;
   pointers: PointerSnapshot;
   links: Record<number, number | null>;
