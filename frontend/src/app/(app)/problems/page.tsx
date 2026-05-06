@@ -558,12 +558,40 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
     return "/problems/linked-list/remove-nth-from-end";
   }
 
+  if (sectionName === "Linked List" && problemName === "Delete a given Node when a node is given") {
+    return "/problems/linked-list/delete-node";
+  }
+
+  if (sectionName === "Linked List" && problemName === "Add two numbers as LinkedList") {
+    return "/problems/linked-list/add-two-numbers";
+  }
+
+  if (sectionName === "Linked List Part-II" && problemName === "Find intersection point of Y LinkedList") {
+    return "/problems/linked-list/find-intersection";
+  }
+
   if (sectionName === "Linked List Part-II" && problemName === "Detect a cycle in Linked List") {
     return "/problems/linked-list/detect-cycle";
   }
 
   if (sectionName === "Linked List Part-II" && problemName === "Reverse a LinkedList in groups of size k") {
     return "/problems/linked-list/reverse-k-group";
+  }
+
+  if (sectionName === "Linked List Part-II" && problemName === "Check if a LinkedList is palindrome or not") {
+    return "/problems/linked-list/palindrome-linkedlist";
+  }
+
+  if (sectionName === "Linked List Part-II" && problemName === "Find the starting point of the Loop of LinkedList") {
+    return "/problems/linked-list/loop-start";
+  }
+
+  if (sectionName === "Linked List and Arrays" && problemName === "Rotate a LinkedList") {
+    return "/problems/linked-list/rotate-linkedlist";
+  }
+
+  if (sectionName === "Linked List and Arrays" && problemName === "Clone a Linked List with random and next pointer") {
+    return "/problems/linked-list/clone-linkedlist";
   }
 
   return null;

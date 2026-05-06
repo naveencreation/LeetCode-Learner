@@ -154,7 +154,7 @@ function Navbar() {
           {["How It Works", "Features", "Compare", "FAQ"].map((item, i) => (
             <li key={item}>
               <a
-                href={`#${["solution", "features", "compare", "faq"][i]}`}
+                href={`#${["how-it-works", "features", "compare", "faq"][i]}`}
                 className="text-sm font-medium text-[var(--l-text-3)] no-underline relative transition-colors duration-200 py-2 group"
               >
                 {item}
@@ -464,6 +464,235 @@ function SolutionSection() {
   );
 }
 
+// Features Section
+function FeaturesSection() {
+  return (
+    <section id="features" className="py-32 bg-[var(--l-bg)]">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <div className="text-center mb-20">
+          <span className="lp-reveal inline-flex items-center gap-3 font-[var(--font-outfit)] text-xs font-semibold tracking-[0.2em] uppercase text-[var(--l-primary)]">
+            <span className="w-6 h-0.5 bg-gradient-to-r from-[var(--l-primary)] to-transparent" />
+            Capabilities
+          </span>
+          <h2 className="lp-reveal lp-delay-2 mt-5 font-[var(--font-space-grotesk)] text-[clamp(2.5rem,5vw,4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[var(--l-text)]">
+            Everything you need to{" "}
+            <span
+              className="font-bold"
+              style={{
+                background: "linear-gradient(135deg, var(--l-primary) 0%, var(--l-accent) 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              truly understand
+            </span>
+            <br />
+            algorithms
+          </h2>
+        </div>
+
+        {/* Bento top row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+          {/* Big card 1: Pointer-Aware Visualizer */}
+          <article className="lp-reveal lp-delay-1 relative bg-[var(--l-surface)] border border-[var(--l-border)] rounded-2xl p-8 transition-all duration-400 hover:border-[oklch(65%_0.22_280_/_0.5)] hover:translate-y-[-6px] hover:shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+            <span className="inline-block text-[10px] font-semibold uppercase tracking-[0.1em] px-3 py-1 rounded-full mb-4 bg-[oklch(65%_0.22_280_/_0.12)] border border-[oklch(65%_0.22_280_/_0.28)] text-[var(--l-primary)]">
+              Core
+            </span>
+            <h3 className="font-[var(--font-space-grotesk)] font-bold text-[1.1875rem] text-[var(--l-text)] mb-3">
+              Pointer-Aware Visualizer
+            </h3>
+            <p className="text-[0.9375rem] text-[var(--l-muted)] leading-[1.72] mb-6">
+              Fast and slow pointers rendered in real-time. As each step executes, both pointers reposition with animated transitions, so you see the race unfold rather than guessing.
+            </p>
+            {/* Phase bar */}
+            <div className="flex gap-2 mt-2">
+              {["Init", "Step", "Cond", "Exit"].map((label, i) => (
+                <div key={label} className="flex-1">
+                  <div
+                    className={`w-2 h-2 rounded-full mb-1 transition-colors duration-200 ${
+                      i < 3 ? "bg-[var(--l-primary)] shadow-[0_0_8px_var(--l-primary)]" : "bg-[var(--l-border)]"
+                    }`}
+                  />
+                  <div
+                    className={`h-[3px] rounded-sm transition-colors duration-200 ${
+                      i < 3 ? "bg-[var(--l-primary)]" : "bg-[var(--l-border)]"
+                    }`}
+                  />
+                  <div
+                    className={`font-[var(--font-jetbrains)] text-[10px] uppercase tracking-[0.06em] mt-1 ${
+                      i < 3 ? "text-[var(--l-primary)]" : "text-[var(--l-ghost)]"
+                    }`}
+                  >
+                    {label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+
+          {/* Big card 2: Condition Evaluator */}
+          <article className="lp-reveal lp-delay-2 relative bg-[var(--l-surface)] border border-[var(--l-border)] rounded-2xl p-8 transition-all duration-400 hover:border-[oklch(65%_0.22_280_/_0.5)] hover:translate-y-[-6px] hover:shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+            <span className="inline-block text-[10px] font-semibold uppercase tracking-[0.1em] px-3 py-1 rounded-full mb-4 bg-[oklch(73%_0.15_280_/_0.12)] border border-[oklch(73%_0.15_280_/_0.28)] text-[var(--l-accent)]">
+              Unique
+            </span>
+            <h3 className="font-[var(--font-space-grotesk)] font-bold text-[1.1875rem] text-[var(--l-text)] mb-3">
+              Condition Evaluator
+            </h3>
+            <p className="text-[0.9375rem] text-[var(--l-muted)] leading-[1.72] mb-6">
+              Every loop guard and conditional is dissected at each step — TRUE / FALSE chips show the evaluated state of each sub-expression so you never have to guess why a branch is taken.
+            </p>
+            <div className="flex gap-2 flex-wrap">
+              <span className="font-[var(--font-jetbrains)] text-[11px] px-3 py-1.5 rounded-md bg-[oklch(88%_0.2_155_/_0.1)] border border-[oklch(88%_0.2_155_/_0.3)] text-[var(--l-success)]">
+                fast ≠ null · TRUE
+              </span>
+              <span className="font-[var(--font-jetbrains)] text-[11px] px-3 py-1.5 rounded-md bg-[oklch(68%_0.19_22_/_0.1)] border border-[oklch(68%_0.19_22_/_0.3)] text-[var(--l-error)]">
+                fast.next ≠ null · FALSE
+              </span>
+              <span className="font-[var(--font-jetbrains)] text-[11px] px-3 py-1.5 rounded-md bg-[oklch(85%_0.17_75_/_0.1)] border border-[oklch(85%_0.17_75_/_0.3)] text-[var(--l-warning)]">
+                → EXIT LOOP
+              </span>
+            </div>
+          </article>
+        </div>
+
+        {/* Bento bottom row: 3 small cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          {[
+            {
+              title: "60+ Curated Problems",
+              body: "Arrays, trees, graphs, heaps, DP — every pattern you'll meet in a FAANG loop, pre-loaded.",
+              icon: (
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              ),
+            },
+            {
+              title: "Speed Control",
+              body: "Replay at 0.25× to internalize nuance, or scrub to any step and jump backwards — total execution control.",
+              icon: (
+                <>
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </>
+              ),
+            },
+            {
+              title: "Annotate & Export",
+              body: "Add notes to any step. Export annotated walkthroughs to share with peers or revisit later.",
+              icon: (
+                <path
+                  d="M12 20h9 M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              ),
+            },
+          ].map((card, i) => (
+            <article
+              key={i}
+              className={`lp-reveal lp-delay-${i + 1} bg-[var(--l-surface)] border border-[var(--l-border)] rounded-2xl p-7 transition-all duration-400 hover:border-[oklch(65%_0.22_280_/_0.4)] hover:translate-y-[-5px] hover:shadow-[0_20px_48px_rgba(0,0,0,0.3)]`}
+            >
+              <div className="text-[var(--l-primary)] mb-4">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                  {card.icon}
+                </svg>
+              </div>
+              <h3 className="font-[var(--font-space-grotesk)] font-bold text-[0.9375rem] text-[var(--l-text)] mb-2">
+                {card.title}
+              </h3>
+              <p className="text-[0.875rem] text-[var(--l-muted)] leading-[1.65]">{card.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// How It Works Section
+function HowItWorksSection() {
+  const steps = [
+    {
+      num: "01",
+      title: "Pick a pattern",
+      body: "Choose from 60+ problems organized by pattern type — two-pointer, BFS, DP memoization, and more.",
+    },
+    {
+      num: "02",
+      title: "Step through execution",
+      body: "Advance line by line. Watch variable state update, structures transform, and pointers reposition live.",
+    },
+    {
+      num: "03",
+      title: "Understand the decisions",
+      body: "Each conditional is evaluated openly. Know exactly why the loop continues, why the swap happens.",
+    },
+    {
+      num: "04",
+      title: "Write from memory",
+      body: "After visualizing, the whiteboard is yours. Write the algorithm from scratch — the mental model is now real.",
+    },
+  ];
+
+  return (
+    <section id="how-it-works" className="py-32 bg-[var(--l-bg-2)]">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <div className="text-center mb-20">
+          <span className="lp-reveal inline-flex items-center gap-3 font-[var(--font-outfit)] text-xs font-semibold tracking-[0.2em] uppercase text-[var(--l-primary)]">
+            <span className="w-6 h-0.5 bg-gradient-to-r from-[var(--l-primary)] to-transparent" />
+            How It Works
+          </span>
+          <h2 className="lp-reveal lp-delay-2 mt-5 font-[var(--font-space-grotesk)] text-[clamp(2.5rem,5vw,4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[var(--l-text)]">
+            From confusion to{" "}
+            <span
+              className="font-bold"
+              style={{
+                background: "linear-gradient(135deg, var(--l-primary) 0%, var(--l-accent) 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              confident recall
+            </span>
+            {" "}in 4 steps
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative">
+          {/* Connecting line on desktop */}
+          <div
+            className="hidden lg:block absolute top-[44px] left-[calc(12.5%+24px)] right-[calc(12.5%+24px)] h-px pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, var(--l-border), var(--l-border), var(--l-border), transparent)",
+            }}
+          />
+
+          {steps.map((step, i) => (
+            <article
+              key={i}
+              className={`lp-reveal lp-delay-${i + 1} group bg-[var(--l-surface)] border border-[var(--l-border)] rounded-2xl p-8 text-center transition-all duration-400 hover:border-[oklch(65%_0.22_280_/_0.5)] hover:translate-y-[-6px] hover:shadow-[0_24px_60px_rgba(0,0,0,0.35)]`}
+            >
+              <div className="w-14 h-14 rounded-full bg-[var(--l-surface)] border border-[var(--l-border)] flex items-center justify-center font-[var(--font-space-grotesk)] font-bold text-base text-[var(--l-primary)] mx-auto mb-6 relative z-10 transition-all duration-400 group-hover:bg-[oklch(65%_0.22_280_/_0.12)] group-hover:border-[oklch(65%_0.22_280_/_0.5)] group-hover:shadow-[0_0_24px_oklch(65%_0.22_280_/_0.2)]">
+                {step.num}
+              </div>
+              <h3 className="font-[var(--font-space-grotesk)] font-bold text-[1.0625rem] text-[var(--l-text)] mb-3">
+                {step.title}
+              </h3>
+              <p className="text-[0.9rem] text-[var(--l-muted)] leading-[1.7]">{step.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // Compare Section
 function CompareSection() {
   const rows = [
@@ -620,7 +849,7 @@ function Footer() {
               {["How It Works", "Features", "Compare", "FAQ"].map((item, i) => (
                 <li key={item}>
                   <a
-                    href={`#${["solution", "features", "compare", "faq"][i]}`}
+                    href={`#${["how-it-works", "features", "compare", "faq"][i]}`}
                     className="text-sm text-[var(--l-ghost)] no-underline transition-colors duration-200 hover:text-[var(--l-text)]"
                   >
                     {item}
@@ -681,6 +910,8 @@ export default function LandingPage() {
         <MarqueeSection />
         <ProblemSection />
         <SolutionSection />
+        <FeaturesSection />
+        <HowItWorksSection />
         <CompareSection />
         <CTASection />
       </main>
