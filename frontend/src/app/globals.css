@@ -350,6 +350,79 @@ a {
   --l-ease-dramatic: cubic-bezier(0.87, 0, 0.13, 1);
 }
 
+/* ── Landing Page Scrollbar — themed for dark electric violet ── */
+/* Override global transparent scrollbar with !important for landing theme */
+.landing-theme {
+  scrollbar-width: thin !important;
+  scrollbar-color: oklch(26% 0.06 280) oklch(6% 0.03 280) !important;
+}
+
+.landing-theme * {
+  scrollbar-width: thin !important;
+  scrollbar-color: oklch(26% 0.06 280) oklch(6% 0.03 280) !important;
+}
+
+/* WebKit scrollbar overrides */
+.landing-theme::-webkit-scrollbar,
+.landing-theme *::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.landing-theme::-webkit-scrollbar-track,
+.landing-theme *::-webkit-scrollbar-track {
+  background: oklch(6% 0.03 280) !important;
+  border-radius: 4px !important;
+}
+
+.landing-theme::-webkit-scrollbar-thumb,
+.landing-theme *::-webkit-scrollbar-thumb {
+  background: oklch(26% 0.06 280) !important;
+  border-radius: 4px !important;
+  border: 2px solid oklch(6% 0.03 280) !important;
+}
+
+.landing-theme::-webkit-scrollbar-thumb:hover,
+.landing-theme *::-webkit-scrollbar-thumb:hover {
+  background: oklch(34% 0.07 280) !important;
+}
+
+.landing-theme::-webkit-scrollbar-corner,
+.landing-theme *::-webkit-scrollbar-corner {
+  background: oklch(6% 0.03 280) !important;
+}
+
+/* ── Landing Page Root Scrollbar — applies to <html> element ── */
+html[data-landing="true"] {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(26% 0.06 280) oklch(6% 0.03 280);
+}
+
+html[data-landing="true"]::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+html[data-landing="true"]::-webkit-scrollbar-track {
+  background: oklch(6% 0.03 280);
+  border-radius: 4px;
+}
+
+html[data-landing="true"]::-webkit-scrollbar-thumb {
+  background: oklch(26% 0.06 280);
+  border-radius: 4px;
+  border: 2px solid oklch(6% 0.03 280);
+  transition: background 0.2s ease;
+}
+
+html[data-landing="true"]::-webkit-scrollbar-thumb:hover {
+  background: oklch(34% 0.07 280);
+}
+
+html[data-landing="true"]::-webkit-scrollbar-corner {
+  background: oklch(6% 0.03 280);
+}
+
 /* ── Landing Page Keyframes ────────────────────────────────────────────── */
 @keyframes lp-fade-up {
   from { opacity: 0; transform: translateY(40px) scale(0.98); }
