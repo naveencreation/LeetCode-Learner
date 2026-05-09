@@ -95,6 +95,7 @@ export const sections = [
     name: "Linked List Part-II",
     solved: 0,
     problems: [
+      "Reorder List",
       "Find intersection point of Y LinkedList",
       "Detect a cycle in Linked List",
       "Reverse a LinkedList in groups of size k",
@@ -564,6 +565,10 @@ export const getProblemHref = (sectionName: string, problemName: string) => {
 
   if (sectionName === "Linked List" && problemName === "Add two numbers as LinkedList") {
     return "/problems/linked-list/add-two-numbers";
+  }
+
+  if (sectionName === "Linked List Part-II" && problemName === "Reorder List") {
+    return "/problems/linked-list/reorder-linkedlist";
   }
 
   if (sectionName === "Linked List Part-II" && problemName === "Find intersection point of Y LinkedList") {

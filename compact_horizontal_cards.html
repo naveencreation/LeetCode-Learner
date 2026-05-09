@@ -1,0 +1,100 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600&family=DM+Mono:wght@400;500&display=swap');
+  .wrap { padding: 1.5rem 0; font-family: 'DM Sans', sans-serif; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+  .header h2 { font-size: 22px; font-weight: 600; margin: 0; color: var(--color-text-primary); }
+  .header .meta { font-size: 12px; color: var(--color-text-tertiary); font-family: 'DM Mono', monospace; }
+  .search { display: flex; align-items: center; gap: 8px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 8px 14px; margin-bottom: 1.25rem; }
+  .search i { color: var(--color-text-tertiary); font-size: 16px; }
+  .search span { font-size: 13px; color: var(--color-text-tertiary); }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px 16px; cursor: pointer; display: flex; align-items: center; gap: 14px; transition: border-color 0.15s, transform 0.15s; position: relative; overflow: hidden; }
+  .card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg); opacity: 0; transition: opacity 0.15s; }
+  .card:hover { border-color: var(--color-border-secondary); transform: translateY(-1px); }
+  .card:hover::before { opacity: 1; }
+  .icon-box { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .icon-box i { font-size: 22px; }
+  .body { flex: 1; min-width: 0; }
+  .title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+  .title-row h3 { font-size: 14px; font-weight: 600; margin: 0; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .badge { font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: 10px; font-family: 'DM Mono', monospace; flex-shrink: 0; }
+  .sub { font-size: 11.5px; color: var(--color-text-secondary); margin: 0 0 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .prog-row { display: flex; align-items: center; gap: 8px; }
+  .prog-track { flex: 1; height: 3px; background: var(--color-border-tertiary); border-radius: 2px; }
+  .prog-fill { height: 3px; border-radius: 2px; transition: width 0.6s ease; }
+  .score { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--color-text-tertiary); white-space: nowrap; }
+  .arrow { color: var(--color-text-tertiary); margin-left: 4px; flex-shrink: 0; font-size: 16px; transition: transform 0.15s; }
+  .card:hover .arrow { transform: translateX(2px); }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--color-text-tertiary); font-family: 'DM Mono', monospace; margin: 1.25rem 0 0.6rem; }
+</style>
+
+<div class="wrap">
+  <h2 class="sr-only">Problem topics in compact horizontal card layout</h2>
+  <div class="header">
+    <h2 class="wrap-title" style="font-size:22px;font-weight:600;margin:0;color:var(--color-text-primary)">Problems</h2>
+    <span class="meta">186 problems · 7 topics · 36 visualizers</span>
+  </div>
+
+  <div class="search">
+    <i class="ti ti-search" aria-hidden="true"></i>
+    <span>Search problems…</span>
+  </div>
+
+  <div class="section-label">Data Structures</div>
+  <div class="grid" id="ds-grid"></div>
+
+  <div class="section-label">Algorithms</div>
+  <div class="grid" id="algo-grid"></div>
+</div>
+
+<script>
+const ds = [
+  { name: "Arrays", desc: "Patterns, matrix ops, prefix tricks", icon: "ti-layout-grid", sections: 4, total: 24, done: 0, color: "#378ADD", bg: "#E6F1FB", tc: "#0C447C", badge: null },
+  { name: "Linked List", desc: "Reversal, merge, cycle detection", icon: "ti-link", sections: 3, total: 18, done: 13, color: "#1D9E75", bg: "#E1F5EE", tc: "#085041", badge: 13 },
+  { name: "Trees", desc: "Traversals, views, BSTs, reconstruction", icon: "ti-binary-tree", sections: 3, total: 23, done: 23, color: "#D85A30", bg: "#FAECE7", tc: "#712B13", badge: 23 },
+  { name: "Binary Search Tree", desc: "Floor/ceil, iterators, Kth queries", icon: "ti-binary-tree-2", sections: 2, total: 15, done: 0, color: "#D4537E", bg: "#FBEAF0", tc: "#72243E", badge: null },
+  { name: "Graph", desc: "Cycle checks, shortest paths, MST", icon: "ti-topology-star-3", sections: 2, total: 19, done: 0, color: "#7F77DD", bg: "#EEEDFE", tc: "#3C3489", badge: null },
+  { name: "Heap / Priority Queue", desc: "Min-max heaps, top-K, merge streams", icon: "ti-stack", sections: 2, total: 12, done: 5, color: "#BA7517", bg: "#FAEEDA", tc: "#633806", badge: null },
+];
+
+const algo = [
+  { name: "Dynamic Programming", desc: "State transitions, memoization patterns", icon: "ti-code", sections: 2, total: 15, done: 0, color: "#7F77DD", bg: "#EEEDFE", tc: "#3C3489", badge: null },
+  { name: "Backtracking", desc: "Permutations, subsets, N-Queens", icon: "ti-refresh", sections: 2, total: 14, done: 0, color: "#D85A30", bg: "#FAECE7", tc: "#712B13", badge: null },
+];
+
+function pct(d, t) { return t === 0 ? 0 : Math.round(d / t * 100); }
+
+function renderCards(items, containerId) {
+  const container = document.getElementById(containerId);
+  items.forEach(t => {
+    const p = pct(t.done, t.total);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.cssText = `--accent: ${t.color}`;
+    card.innerHTML = `
+      <style>.card:hover::before { background: var(--accent, #378ADD); }</style>
+      <div class="icon-box" style="background:${t.bg}">
+        <i class="ti ${t.icon}" aria-hidden="true" style="color:${t.color}"></i>
+      </div>
+      <div class="body">
+        <div class="title-row">
+          <h3>${t.name}</h3>
+          ${t.badge ? `<span class="badge" style="background:${t.bg};color:${t.tc}">${t.badge} done</span>` : ''}
+        </div>
+        <p class="sub">${t.sections} sections · ${t.desc}</p>
+        <div class="prog-row">
+          <div class="prog-track">
+            <div class="prog-fill" style="width:${p}%;background:${t.color}"></div>
+          </div>
+          <span class="score">${t.done}/${t.total} · ${p}%</span>
+        </div>
+      </div>
+      <i class="ti ti-chevron-right arrow" aria-hidden="true"></i>`;
+    container.appendChild(card);
+  });
+}
+
+renderCards(ds, 'ds-grid');
+renderCards(algo, 'algo-grid');
+</script>
