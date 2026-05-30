@@ -83,7 +83,7 @@ export default function TopicProblemsPage() {
 
   return (
     <section className="flex min-h-0 flex-col gap-4 xl:h-[calc(100dvh-5.5rem)]">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-end gap-2">
         <Link
           href="/problems"
           className="traversal-pill inline-flex items-center gap-1.5 transition hover:bg-slate-50"
@@ -98,7 +98,7 @@ export default function TopicProblemsPage() {
           {/* ── Icon + Title inline ── */}
           <div className="flex items-center gap-3">
             <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-sky-200 bg-sky-50 text-sky-700">
-              <Icon size={18} strokeWidth={2.2} aria-hidden="true" />
+              <span className="text-[18px] font-black uppercase tracking-widest">{topicData.title.charAt(0)}</span>
             </div>
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
               {topicData.title}
