@@ -22,8 +22,8 @@ export function ResultPanel({
     currentStep === 0
       ? `Press "Start" to reverse nodes in groups of size ${k}.`
       : currentStep >= totalSteps
-      ? `Complete! Reversed ${activeStep?.pointers.groupEnd ?? 0} nodes in groups of ${k}.`
-      : `Step ${currentStep} / ${totalSteps}: ${currentOperation}`;
+      ? `Complete! The new head of the list is ${activeStep?.pointers.newHead ?? "unchanged"}.`
+      : `Step ${currentStep} / ${totalSteps}: ${currentOperation};`
 
   return (
     <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_minmax(0,1fr)] gap-1.5 p-2">
@@ -55,6 +55,10 @@ export function ResultPanel({
               Pointer Positions
             </p>
             <div className="grid grid-cols-2 gap-1.5 rounded-lg border border-slate-200 bg-white p-1.5">
+              <div className="col-span-2 rounded-lg border border-rose-200 bg-rose-50 px-2 py-1.5 text-center">
+                <p className="text-[9px] font-bold uppercase tracking-wide text-rose-600">Result (New Head)</p>
+                <p className="text-[14px] font-extrabold text-rose-800">{activeStep?.pointers.newHead ?? "Pending"}</p>
+              </div>
               <div className="rounded-lg border border-violet-200 bg-violet-50 px-2 py-1.5 text-center">
                 <p className="text-[9px] font-bold uppercase tracking-wide text-violet-600">Current</p>
                 <p className="text-[14px] font-extrabold text-violet-800">{activeStep?.pointers.current ?? "None"}</p>

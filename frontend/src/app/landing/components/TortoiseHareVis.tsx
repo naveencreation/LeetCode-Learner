@@ -225,32 +225,43 @@ export function TortoiseHareVis() {
             </div>
           </div>
 
-          {/* Conditions */}
-          <div className="mt-8 flex items-center justify-center gap-6">
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--l-surface-2)] border border-[var(--l-border)]">
-              <span className="text-sm text-[var(--l-text-2)]">fast exists:</span>
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                  step.condFast
-                    ? "bg-[var(--l-success)] text-[var(--l-bg)]"
-                    : "bg-[var(--l-error)] text-[var(--l-bg)]"
-                }`}
-              >
-                {step.condFast ? "TRUE" : "FALSE"}
-              </span>
-            </div>
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--l-surface-2)] border border-[var(--l-border)]">
-              <span className="text-sm text-[var(--l-text-2)]">fast.next exists:</span>
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                  step.condNext
-                    ? "bg-[var(--l-success)] text-[var(--l-bg)]"
-                    : "bg-[var(--l-error)] text-[var(--l-bg)]"
-                }`}
-              >
-                {step.condNext ? "TRUE" : "FALSE"}
-              </span>
-            </div>
+          {/* Conditions / Result */}
+          <div className="mt-8 flex items-center justify-center gap-6 h-[50px]">
+            {step.done ? (
+              <div className="flex items-center gap-3 px-6 py-2.5 rounded-xl bg-[oklch(82%_0.2_145_/_0.1)] border border-[var(--l-success)] animate-fade-in shadow-[0_0_20px_oklch(82%_0.2_145_/_0.2)]">
+                <span className="font-[var(--font-jetbrains)] text-sm font-bold text-[var(--l-success)]">Result =</span>
+                <span className="px-4 py-1 rounded-md text-base font-extrabold bg-[var(--l-success)] text-[var(--l-bg)]">
+                  3
+                </span>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[var(--l-surface-2)] border border-[var(--l-border)]">
+                  <span className="text-sm text-[var(--l-text-2)]">fast exists:</span>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      step.condFast
+                        ? "bg-[var(--l-success)] text-[var(--l-bg)]"
+                        : "bg-[var(--l-error)] text-[var(--l-bg)]"
+                    }`}
+                  >
+                    {step.condFast ? "TRUE" : "FALSE"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-[var(--l-surface-2)] border border-[var(--l-border)]">
+                  <span className="text-sm text-[var(--l-text-2)]">fast.next exists:</span>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      step.condNext
+                        ? "bg-[var(--l-success)] text-[var(--l-bg)]"
+                        : "bg-[var(--l-error)] text-[var(--l-bg)]"
+                    }`}
+                  >
+                    {step.condNext ? "TRUE" : "FALSE"}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

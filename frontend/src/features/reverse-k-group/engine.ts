@@ -113,6 +113,7 @@ export function generateReverseKGroupSteps(
   let prevGroupEnd: ListNode | null = null; // Will be dummy initially
   let groupStart: ListNode | null = head;
   let groupEnd: ListNode | null = null;
+  let newHead: ListNode | null = head;
   let groupNumber = 1;
 
   const pointers: PointerSnapshot = {
@@ -120,6 +121,7 @@ export function generateReverseKGroupSteps(
     groupStart: groupStart?.val ?? null,
     groupEnd: (groupEnd as ListNode | null)?.val ?? null,
     prevGroupEnd: (prevGroupEnd as ListNode | null | undefined)?.val ?? null,
+    newHead: newHead?.val ?? null,
     k,
   };
 
@@ -206,6 +208,11 @@ export function generateReverseKGroupSteps(
       curr.next = prev;
       prev = curr;
       curr = next;
+    }
+
+    if (groupNumber === 1) {
+      newHead = prev;
+      pointers.newHead = newHead?.val ?? null;
     }
 
     // Update links

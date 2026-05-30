@@ -896,6 +896,11 @@ export default function LandingPage() {
       className={`${spaceGrotesk.variable} ${outfit.variable} ${jetbrainsMono.variable} landing-theme bg-[var(--l-bg)] text-[var(--l-text)] min-h-screen`}
       style={{ fontFamily: "var(--font-outfit)" }}
     >
+      <style>{`
+        .landing-theme, .landing-theme * {
+          cursor: none !important;
+        }
+      `}</style>
       <CustomCursor />
       <Navbar />
       <main>

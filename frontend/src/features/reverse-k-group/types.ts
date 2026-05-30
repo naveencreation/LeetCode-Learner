@@ -16,6 +16,7 @@ export interface PointerSnapshot {
   groupStart: number | null;
   groupEnd: number | null;
   prevGroupEnd: number | null | undefined;
+  newHead: number | null;
   k: number;
 }
 
