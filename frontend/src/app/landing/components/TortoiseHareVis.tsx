@@ -160,20 +160,20 @@ export function TortoiseHareVis() {
                 <div key={i} className="relative">
                   {/* Pointer Labels */}
                   {(isSlow || isFast) && (
-                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex gap-1">
+                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex gap-1 whitespace-nowrap">
                       {isBoth ? (
-                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-[oklch(85%_0.18_85)] to-[var(--l-primary)] text-[var(--l-bg)]">
+                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-[oklch(85%_0.18_85)] to-[var(--l-primary)] text-[var(--l-bg)] whitespace-nowrap">
                           slow & fast
                         </span>
                       ) : (
                         <>
                           {isSlow && (
-                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-[oklch(85%_0.18_85)] text-[var(--l-bg)]">
+                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-[oklch(85%_0.18_85)] text-[var(--l-bg)] whitespace-nowrap">
                               slow
                             </span>
                           )}
                           {isFast && (
-                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-[var(--l-primary)] text-[var(--l-bg)]">
+                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-[var(--l-primary)] text-[var(--l-bg)] whitespace-nowrap">
                               fast
                             </span>
                           )}

@@ -27,36 +27,34 @@ const jetbrainsMono = JetBrains_Mono({
 // Custom Cursor Component
 function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
-  const mousePos = useRef({ x: 0, y: 0 });
-  const ringPos = useRef({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const isTouchDevice = window.matchMedia("(hover: none)").matches;
     if (isTouchDevice) return;
 
+    // Show cursor on first movement
+    setIsVisible(true);
+
     const handleMouseMove = (e: MouseEvent) => {
-      mousePos.current = { x: e.clientX, y: e.clientY };
       if (dotRef.current) {
         dotRef.current.style.left = `${e.clientX}px`;
         dotRef.current.style.top = `${e.clientY}px`;
       }
     };
 
-    const animateRing = () => {
-      ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.15;
-      ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.15;
-      if (ringRef.current) {
-        ringRef.current.style.left = `${ringPos.current.x}px`;
-        ringRef.current.style.top = `${ringPos.current.y}px`;
-      }
-      requestAnimationFrame(animateRing);
+    const handleMouseLeave = () => {
+      setIsVisible(false);
+    };
+
+    const handleMouseEnter = () => {
+      setIsVisible(true);
     };
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target.closest("a, button, [role='button']")) {
+      if (target.closest("a, button, [role='button'], input, select, textarea")) {
         setIsHovering(true);
       }
     };
@@ -68,13 +66,15 @@ function CustomCursor() {
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseover", handleMouseOver);
     document.addEventListener("mouseout", handleMouseOut);
-    const animationId = requestAnimationFrame(animateRing);
+    document.body.addEventListener("mouseleave", handleMouseLeave);
+    document.body.addEventListener("mouseenter", handleMouseEnter);
 
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseover", handleMouseOver);
       document.removeEventListener("mouseout", handleMouseOut);
-      cancelAnimationFrame(animationId);
+      document.body.removeEventListener("mouseleave", handleMouseLeave);
+      document.body.removeEventListener("mouseenter", handleMouseEnter);
     };
   }, []);
 
@@ -84,20 +84,17 @@ function CustomCursor() {
   }
 
   return (
-    <>
-      <div
-        ref={dotRef}
-        className="fixed w-2 h-2 bg-[var(--l-primary)] rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 transition-opacity duration-200 mix-blend-screen"
-        style={{ left: 0, top: 0 }}
-      />
-      <div
-        ref={ringRef}
-        className={`fixed w-10 h-10 border-2 rounded-full pointer-events-none z-[9998] -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${
-          isHovering ? "w-14 h-14 border-[oklch(65%_0.22_280_/_0.8)]" : "border-[oklch(65%_0.22_280_/_0.4)]"
-        }`}
-        style={{ left: 0, top: 0 }}
-      />
-    </>
+    <div
+      ref={dotRef}
+      className={`fixed rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out mix-blend-screen ${
+        isVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
+      } ${
+        isHovering
+          ? "w-6 h-6 bg-[oklch(78%_0.18_195_/_0.25)] border-2 border-[var(--l-accent)] shadow-[0_0_15px_var(--l-accent-glow)]"
+          : "w-2.5 h-2.5 bg-[var(--l-primary)] shadow-[0_0_8px_var(--l-primary)]"
+      }`}
+      style={{ left: 0, top: 0 }}
+    />
   );
 }
 
@@ -232,10 +229,6 @@ function HeroSection() {
             what they&apos;re doing.
           </span>
         </h1>
-
-        <p className="lp-reveal lp-delay-3 text-lg text-[var(--l-text-2)] leading-relaxed max-w-[60ch] mx-auto mb-8">
-          ThinkDSA lets you step through code line-by-line, watch every pointer move in real time, and build the intuition that actually gets you through technical interviews.
-        </p>
 
         <div className="lp-reveal lp-delay-4 flex items-center justify-center gap-4 flex-wrap mb-4">
           <Link

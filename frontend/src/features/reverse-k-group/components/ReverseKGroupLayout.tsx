@@ -85,77 +85,78 @@ export function ReverseKGroupLayout() {
   return (
     <LinkedListShell
       title="Reverse Nodes in k-Group"
-      stats={stats}
-      statsConfig={[
-        { key: "step", label: "Step" },
-        { key: "k", label: "Group Size (k)" },
-        { key: "phase", label: "Phase" },
-        { key: "operation", label: "Action" },
+      subtitle="Reversing linked list nodes in groups of k"
+      guideHref="/problems/linked-list/reverse-nodes-in-k-group-guide"
+      currentHref="/problems/linked-list/reverse-nodes-in-k-group"
+      stats={[
+        { label: "Step", value: `${currentStep} / ${totalSteps}` },
+        { label: "Group Size (k)", value: activeStep?.pointers.k ?? k },
+        { label: "Phase", value: currentPhase, minWidthClassName: "min-w-[96px]" },
+        { label: "Action", value: currentOperation, minWidthClassName: "min-w-[120px]" },
       ]}
-    >
-      {(shellProps) => (
-        <>
-          <UnifiedControlsBar
-            currentStep={currentStep}
-            totalSteps={totalSteps}
-            isAtStart={isAtStart}
-            isAtEnd={isAtEnd}
-            controlMode={controlMode}
-            setControlMode={setControlMode}
-            isPlaying={isPlaying}
-            autoPlaySpeedMs={autoPlaySpeedMs}
-            setAutoPlaySpeedMs={setAutoPlaySpeedMs}
-            playTraversal={playTraversal}
-            pauseTraversal={pauseTraversal}
-            nextStep={nextStep}
-            previousStep={previousStep}
-            resetTraversal={resetTraversal}
-            onOpenListSetup={() => setIsListSetupOpen(true)}
-            {...shellProps}
-          />
-
-          <CodePanel
-            currentCodeLine={currentCodeLine}
-            executionLineNumbers={executionLineNumbers}
-          />
-
-          <ExplanationPanel activeStep={displayStep} />
-
-          <PointerStatePanel activeStep={displayStep} />
-
-          <ResultPanel
-            currentStep={currentStep}
-            totalSteps={totalSteps}
-            currentOperation={currentOperation}
-            currentPhase={currentPhase}
-            activeStep={displayStep}
+      left={
+        <CodePanel
+          currentCodeLine={currentCodeLine}
+          executionLineNumbers={executionLineNumbers}
+        />
+      }
+      middleTop={
+        <LinkedListPanel
+          originalValues={originalValues}
+          nodeStates={nodeStates}
+          activeStep={displayStep}
+          currentOperation={currentOperation}
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          currentPhase={currentPhase}
+          onOpenListSetup={() => setIsListSetupOpen(true)}
+        />
+      }
+      middleBottom={
+        <ResultPanel
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          currentOperation={currentOperation}
+          currentPhase={currentPhase}
+          activeStep={displayStep}
+          k={k}
+        />
+      }
+      middleFooter={
+        <UnifiedControlsBar
+          isAtStart={isAtStart}
+          isAtEnd={isAtEnd}
+          controlMode={controlMode}
+          setControlMode={setControlMode}
+          isPlaying={isPlaying}
+          autoPlaySpeedMs={autoPlaySpeedMs}
+          setAutoPlaySpeedMs={setAutoPlaySpeedMs}
+          playTraversal={playTraversal}
+          pauseTraversal={pauseTraversal}
+          nextStep={nextStep}
+          previousStep={previousStep}
+          resetTraversal={resetTraversal}
+        />
+      }
+      rightTop={
+        <PointerStatePanel activeStep={displayStep} />
+      }
+      rightBottom={
+        <ExplanationPanel activeStep={displayStep} />
+      }
+      modal={
+        isListSetupOpen ? (
+          <ListSetupModal
+            selectedPreset={selectedPreset}
+            currentValues={originalValues}
+            onClose={() => setIsListSetupOpen(false)}
+            onApply={handleApplyList}
+            onApplyAndRun={handleApplyAndRun}
             k={k}
+            onKChange={setK}
           />
-
-          <LinkedListPanel
-            originalValues={originalValues}
-            nodeStates={nodeStates}
-            activeStep={displayStep}
-            currentOperation={currentOperation}
-            currentStep={currentStep}
-            totalSteps={totalSteps}
-            currentPhase={currentPhase}
-            onOpenListSetup={() => setIsListSetupOpen(true)}
-          />
-
-          {isListSetupOpen && (
-            <ListSetupModal
-              selectedPreset={selectedPreset}
-              currentValues={originalValues}
-              onClose={() => setIsListSetupOpen(false)}
-              onApply={handleApplyList}
-              onApplyAndRun={handleApplyAndRun}
-              k={k}
-              onKChange={setK}
-            />
-          )}
-        </>
-      )}
-    </LinkedListShell>
+        ) : null
+      }
+    />
   );
 }
