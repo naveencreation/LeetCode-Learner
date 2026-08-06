@@ -14,42 +14,15 @@ import type {
 import type { StepProjection } from "../shared/useGenericTraversal";
 import type { CallStackFrame } from "../shared/types";
 
-// Problem-specific state projection logic
+import { projectStandardTraversalState } from "../shared/projectTreeState";
+
+// Problem-specific state projection logic using shared helper
 function projectStateForStep(
   currentStep: number,
   executionSteps: ExecutionStep[],
   initialNodeStates: Record<number, NodeVisualState>,
 ): StepProjection {
-  if (currentStep <= 0) {
-    return {
-      result: [],
-      visitedNodes: new Set<number>(),
-      currentNode: null,
-      nodeStates: { ...initialNodeStates },
-    };
-  }
-
-  const result: number[] = [];
-  const visitedNodes = new Set<number>();
-
-  for (let index = 0; index < currentStep; index += 1) {
-    const step = executionSteps[index];
-    if (step.type === "visit" && typeof step.value === "number") {
-      result.push(step.value);
-      visitedNodes.add(step.value);
-    }
-  }
-
-  const previousStep = executionSteps[currentStep - 1];
-  const currentNode = previousStep?.node?.val ?? null;
-  const nodeStates = previousStep?.nodeStates ?? { ...initialNodeStates };
-
-  return {
-    result,
-    visitedNodes,
-    currentNode,
-    nodeStates,
-  };
+  return projectStandardTraversalState(currentStep, executionSteps, initialNodeStates);
 }
 
 // Thin wrapper around generic hook

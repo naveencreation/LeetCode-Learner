@@ -50,41 +50,14 @@ interface PostorderTraversalReturn {
   applyTreeConfiguration: (nextRoot: TreeNode, nextPositions: Record<number, any>, preset: TreePresetKey, runImmediately?: boolean) => void;
 }
 
+import { projectStandardTraversalState } from "../shared/projectTreeState";
+
 function projectStateForStep(
   currentStep: number,
   executionSteps: ExecutionStep[],
   initialNodeStates: Record<number, NodeVisualState>,
 ): StepProjection {
-  if (currentStep <= 0) {
-    return {
-      result: [],
-      visitedNodes: new Set<number>(),
-      currentNode: null,
-      nodeStates: { ...initialNodeStates },
-    };
-  }
-
-  const result: number[] = [];
-  const visitedNodes = new Set<number>();
-
-  for (let index = 0; index < currentStep; index += 1) {
-    const step = executionSteps[index];
-    if (step.type === "visit" && typeof step.value === "number") {
-      result.push(step.value);
-      visitedNodes.add(step.value);
-    }
-  }
-
-  const previousStep = executionSteps[currentStep - 1];
-  const currentNode = previousStep?.node?.val ?? null;
-  const nodeStates = previousStep?.nodeStates ?? { ...initialNodeStates };
-
-  return {
-    result,
-    visitedNodes,
-    currentNode,
-    nodeStates,
-  };
+  return projectStandardTraversalState(currentStep, executionSteps, initialNodeStates);
 }
 
 export function usePostorderTraversal(): PostorderTraversalReturn {

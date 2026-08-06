@@ -1,39 +1,14 @@
 import { OPERATION_TO_LINE_MAP } from "./constants";
 import type { ExecutionStep } from "./types";
+import {
+  getCodeLineForStep as genericGetCodeLineForStep,
+  getOperationBadge,
+  getPhaseLabel,
+} from "../shared/tree-selectors";
 
-export function getPhaseLabel(step: ExecutionStep | undefined): string {
-  if (!step) {
-    return "Enter Function";
-  }
-
-  switch (step.type) {
-    case "traverse_left":
-      return "Traverse Left";
-    case "traverse_right":
-      return "Traverse Right";
-    case "visit":
-      return "Process Node";
-    case "enter_function":
-      return "Enter Function";
-    case "exit_function":
-      return "Exit Function";
-    default:
-      return "Complete";
-  }
-}
+export { getPhaseLabel, getOperationBadge };
 
 export function getCodeLineForStep(step: ExecutionStep | undefined): number {
-  if (!step) {
-    return 0;
-  }
-
-  return OPERATION_TO_LINE_MAP[step.type];
+  return genericGetCodeLineForStep(step, OPERATION_TO_LINE_MAP);
 }
 
-export function getOperationBadge(step: ExecutionStep | undefined): string {
-  if (!step) {
-    return "READY";
-  }
-
-  return step.operation.split(" ")[0].toUpperCase();
-}

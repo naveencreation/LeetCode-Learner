@@ -1,4 +1,11 @@
-import type { NodeVisualState } from "../shared/types";
+import type {
+  CallStackFrame,
+  GenericExecutionStep,
+  NodePosition,
+  NodeVisualState,
+  TreeNode,
+  TreePresetKey,
+} from "../shared/tree-types";
 
 export type LevelOrderOperationType =
   | "level_start"
@@ -10,37 +17,9 @@ export type LevelOrderOperationType =
   | "level_end"
   | "finish";
 
-export type { NodeVisualState };
+export type { TreeNode, NodePosition, TreePresetKey, CallStackFrame, NodeVisualState };
 
-export interface TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-}
-
-export interface NodePosition {
-  x: number;
-  y: number;
-}
-
-export type TreePresetKey =
-  | "complete"
-  | "left_skewed"
-  | "right_skewed"
-  | "sparse_random"
-  | "custom_empty";
-
-export interface CallStackFrame {
-  nodeVal: number;
-  depth: number;
-  id: number;
-  state: "pending" | "executing" | "returned";
-}
-
-export interface ExecutionStep {
-  type: LevelOrderOperationType;
-  node: TreeNode | null;
-  value: number | undefined;
+export interface ExecutionStep extends GenericExecutionStep<LevelOrderOperationType> {
   index?: number;
   level?: number;
   levelStartIndex?: number;
@@ -48,10 +27,8 @@ export interface ExecutionStep {
   width?: number;
   maxWidth?: number;
   levelNodes?: number[];
-  operation: string;
-  callStack: CallStackFrame[];
-  nodeStates: Record<number, NodeVisualState>;
 }
+
 
 export interface LevelOrderTraversalState {
   currentStep: number;

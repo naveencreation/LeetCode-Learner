@@ -28,12 +28,12 @@ export function getPhaseLabel(step: ExecutionStep | undefined): string {
   }
 }
 
-export function getCodeLineForStep(step: ExecutionStep | undefined): number {
-  if (!step) {
-    return 0;
-  }
+import {
+  getCodeLineForStep as genericGetCodeLineForStep,
+} from "../shared/tree-selectors";
 
-  return OPERATION_TO_LINE_MAP[step.type];
+export function getCodeLineForStep(step: ExecutionStep | undefined): number {
+  return genericGetCodeLineForStep(step, OPERATION_TO_LINE_MAP);
 }
 
 export function getOperationBadge(step: ExecutionStep | undefined): string {

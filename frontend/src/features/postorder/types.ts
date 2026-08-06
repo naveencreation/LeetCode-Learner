@@ -1,4 +1,11 @@
-import type { NodeVisualState } from "../shared/types";
+import type {
+  CallStackFrame,
+  GenericExecutionStep,
+  NodePosition,
+  NodeVisualState,
+  TreeNode,
+  TreePresetKey,
+} from "../shared/tree-types";
 
 export type PostorderOperationType =
   | "enter_function"
@@ -7,41 +14,9 @@ export type PostorderOperationType =
   | "traverse_right"
   | "exit_function";
 
-export type { NodeVisualState };
+export type { TreeNode, NodePosition, TreePresetKey, CallStackFrame, NodeVisualState };
 
-export interface TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-}
-
-export interface NodePosition {
-  x: number;
-  y: number;
-}
-
-export type TreePresetKey =
-  | "complete"
-  | "left_skewed"
-  | "right_skewed"
-  | "sparse_random"
-  | "custom_empty";
-
-export interface CallStackFrame {
-  nodeVal: number;
-  depth: number;
-  id: number;
-  state: "pending" | "executing" | "returned";
-}
-
-export interface ExecutionStep {
-  type: PostorderOperationType;
-  node: TreeNode | null;
-  value: number | undefined;
-  operation: string;
-  callStack: CallStackFrame[];
-  nodeStates: Record<number, NodeVisualState>;
-}
+export type ExecutionStep = GenericExecutionStep<PostorderOperationType>;
 
 export interface PostorderTraversalState {
   currentStep: number;
@@ -51,5 +26,6 @@ export interface PostorderTraversalState {
   executionSteps: ExecutionStep[];
   nodeStates: Record<number, NodeVisualState>;
 }
+
 
 
