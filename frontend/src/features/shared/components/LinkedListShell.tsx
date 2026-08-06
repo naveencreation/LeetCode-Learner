@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { ProblemFocusHeader } from "@/components/problem-focus-header";
 import { ResizableTraversalGrid } from "@/features/shared/components/ResizableTraversalGrid";
 
@@ -18,13 +18,13 @@ interface LinkedListShellProps {
   left: ReactNode;
   middleTop: ReactNode;
   middleBottom: ReactNode;
-  middleFooter: ReactNode;
+  middleFooter?: ReactNode;
   rightTop: ReactNode;
   rightBottom: ReactNode;
   modal?: ReactNode;
   headerExtraActions?: ReactNode;
   topicKey?: string;
-  currentHref?: string;
+  currentHref: string;
 }
 
 export function LinkedListShell({
@@ -43,7 +43,7 @@ export function LinkedListShell({
   topicKey = "linked-list",
   currentHref,
 }: LinkedListShellProps) {
-  const [resetLayout, setResetLayout] = useState<(() => void) | null>(null);
+  const resetLayoutRef = useRef<(() => void) | null>(null);
 
   return (
     <section className="relative h-full min-h-0 overflow-hidden bg-[linear-gradient(140deg,#f0f0ff_0%,#fdfdfc_60%,#eef4fb_100%)]">
@@ -63,7 +63,7 @@ export function LinkedListShell({
               {headerExtraActions ?? null}
               <button
                 type="button"
-                onClick={() => resetLayout?.()}
+                onClick={() => resetLayoutRef.current?.()}
                 className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-extrabold uppercase tracking-[0.04em] text-slate-700 transition hover:bg-slate-50"
                 title="Reset all panel sizes"
               >
@@ -81,7 +81,7 @@ export function LinkedListShell({
           middleFooter={middleFooter}
           rightTop={rightTop}
           rightBottom={rightBottom}
-          onResetReady={(resetFn) => setResetLayout(() => resetFn)}
+          onResetReady={(resetFn) => { resetLayoutRef.current = resetFn; }}
         />
 
         {modal ?? null}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { createLinkedList, type ListNode } from "@/features/shared/linked-list-types";
@@ -23,12 +23,17 @@ export function ListSetupModal({
   onApply,
   onApplyAndRun,
 }: ListSetupModalProps) {
-  const [customInput, setCustomInput] = useState(currentValues.join(", ") || DEFAULT_CUSTOM_INPUT);
+  const [customInput, setCustomInput] = useState(() => currentValues.join(", ") || DEFAULT_CUSTOM_INPUT);
   const [randomInput, setRandomInput] = useState(() => {
     const entries = Object.entries(currentRandomMap).map(([k, v]) => `${k}:${v ?? "null"}`);
     return entries.join(", ");
   });
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const nodeCount = useMemo(() => {
     const values = customInput.split(",").map((s) => s.trim()).filter((s) => s !== "").map((s) => parseInt(s, 10));
@@ -63,6 +68,8 @@ export function ListSetupModal({
     else onApply(head, randomMap);
   };
 
+  if (!mounted) return null;
+
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
@@ -72,15 +79,15 @@ export function ListSetupModal({
         </div>
 
         <div className="mb-4">
-          <label className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">Custom Input <span className="text-[10px] font-normal text-slate-400">(comma-separated)</span></label>
-          <textarea value={customInput} onChange={(e) => { setCustomInput(e.target.value); setError(null); }}
+          <label htmlFor="custom-input" className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">Custom Input <span className="text-[10px] font-normal text-slate-400">(comma-separated)</span></label>
+          <textarea id="custom-input" value={customInput} onChange={(e) => { setCustomInput(e.target.value); setError(null); }}
             placeholder="e.g., 7, 13, 11" className="w-full rounded-lg border border-slate-200 p-3 text-sm font-mono focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" rows={2} />
           <p className="mt-1 text-[10px] text-slate-500">Nodes: {nodeCount} / {MAX_LIST_NODES}</p>
         </div>
 
         <div className="mb-4">
-          <label className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">Random Pointers <span className="text-[10px] font-normal text-slate-400">(index:target, e.g. 0:null, 1:0)</span></label>
-          <textarea value={randomInput} onChange={(e) => { setRandomInput(e.target.value); setError(null); }}
+          <label htmlFor="random-input" className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">Random Pointers <span className="text-[10px] font-normal text-slate-400">(index:target, e.g. 0:null, 1:0)</span></label>
+          <textarea id="random-input" value={randomInput} onChange={(e) => { setRandomInput(e.target.value); setError(null); }}
             placeholder="e.g., 0:null, 1:0, 2:null" className="w-full rounded-lg border border-slate-200 p-3 text-sm font-mono focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" rows={2} />
         </div>
 

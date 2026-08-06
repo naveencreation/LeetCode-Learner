@@ -121,7 +121,12 @@ export function ListSetupModal({
   const [customInput, setCustomInput] = useState(DEFAULT_CUSTOM_INPUT);
   const [isCustom, setIsCustom] = useState(false);
   const [hasCycle, setHasCycle] = useState(false);
-  const [cyclePosition, setCyclePosition] = useState<number | null>(null);
+  const [cyclePosition, setCyclePosition] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const backdropRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -131,14 +136,7 @@ export function ListSetupModal({
     ? (customValues ?? [])
     : linkedListToArray(linkedListPresets[activePreset].create());
 
-  // Update cycle position when hasCycle changes
-  useEffect(() => {
-    if (hasCycle && previewValues.length > 1) {
-      setCyclePosition(0); // Default to cycling to first node
-    } else {
-      setCyclePosition(null);
-    }
-  }, [hasCycle, previewValues.length]);
+  const activeCyclePosition = Math.min(cyclePosition, Math.max(0, previewValues.length - 1));
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -155,8 +153,9 @@ export function ListSetupModal({
     if (!values || values.length === 0) return;
     
     let head: ListNode | null;
-    if (hasCycle && cyclePosition !== null && cyclePosition < values.length) {
-      head = createLinkedListWithCycle(values, cyclePosition);
+    const targetPosition = Math.min(cyclePosition, values.length - 1);
+    if (hasCycle && values.length > 1 && targetPosition >= 0) {
+      head = createLinkedListWithCycle(values, targetPosition);
     } else {
       head = createLinkedList(values);
     }
@@ -172,8 +171,9 @@ export function ListSetupModal({
     if (!values || values.length === 0) return;
     
     let head: ListNode | null;
-    if (hasCycle && cyclePosition !== null && cyclePosition < values.length) {
-      head = createLinkedListWithCycle(values, cyclePosition);
+    const targetPosition = Math.min(cyclePosition, values.length - 1);
+    if (hasCycle && values.length > 1 && targetPosition >= 0) {
+      head = createLinkedListWithCycle(values, targetPosition);
     } else {
       head = createLinkedList(values);
     }
@@ -184,6 +184,8 @@ export function ListSetupModal({
 
   const isValid = (isCustom && customValues && customValues.length > 0) || 
     (!isCustom && linkedListPresets[activePreset].create);
+
+  if (!mounted) return null;
 
   return createPortal(
     <div
@@ -300,11 +302,12 @@ export function ListSetupModal({
             </div>
             {hasCycle && previewValues.length > 1 && (
               <div className="mt-2">
-                <label className="mb-1 block text-[10px] font-bold text-slate-600">
+                <label htmlFor="cycle-node-select" className="mb-1 block text-[10px] font-bold text-slate-600">
                   Cycle to node:
                 </label>
                 <select
-                  value={cyclePosition ?? 0}
+                  id="cycle-node-select"
+                  value={activeCyclePosition}
                   onChange={(e) => setCyclePosition(Number(e.target.value))}
                   className="w-full rounded border border-slate-200 px-2 py-1 text-xs font-medium text-slate-800 focus:border-violet-400 focus:outline-none"
                 >

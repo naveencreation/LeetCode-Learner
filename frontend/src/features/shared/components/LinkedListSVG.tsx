@@ -60,6 +60,8 @@ const MARKERS = {
   null:     "ll-null",
 };
 
+const nodeX = (i: number) => PAD_X + i * (NODE_W + GAP);
+
 export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedListSVGProps) {
   const positionMap = useMemo(() => {
     const map: Record<number, number> = {};
@@ -68,7 +70,6 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
   }, [values]);
 
   const totalNodes = values.length;
-  const nodeX = (i: number) => PAD_X + i * (NODE_W + GAP);
   const nullX = PAD_X + totalNodes * (NODE_W + GAP);
   const svgWidth  = nullX + NULL_W + PAD_X;
   const svgHeight = CHAIN_Y + NODE_H + 16; // small bottom pad
@@ -110,7 +111,6 @@ export function LinkedListSVG({ values, nodeStates, links, pointers }: LinkedLis
       viewBox={`0 0 ${svgWidth} ${svgHeight}`}
       className="h-full w-full"
       preserveAspectRatio="xMidYMid meet"
-      style={{ willChange: 'transform' }} // GPU acceleration hint
     >
       <defs>
         {/* Drop shadow filter — optimized for crisp edges */}

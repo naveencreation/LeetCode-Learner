@@ -359,7 +359,7 @@ export function TreeSetupModal({
 }: TreeSetupModalProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
-  const [draftRoot, setDraftRoot] = useState<TreeNode | null>(cloneTree(root));
+  const [draftRoot, setDraftRoot] = useState<TreeNode | null>(() => cloneTree(root));
   const [draftPreset, setDraftPreset] = useState<TreePresetKey>(selectedPreset);
   const [draftPositions, setDraftPositions] = useState<Record<number, NodePosition>>({
     ...customNodePositions,

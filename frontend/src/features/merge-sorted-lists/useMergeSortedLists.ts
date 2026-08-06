@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ListNode, LinkedListNodeState } from "../shared/linked-list-types";
 import { linkedListPresets, createLinkedList } from "../shared/linked-list-types";
 import { generateMergeSteps } from "./engine";
@@ -44,7 +44,7 @@ export function useMergeSortedLists() {
   const pauseTraversal = () => setIsPlaying(false);
 
   // Auto-play
-  useMemo(() => {
+  useEffect(() => {
     if (controlMode !== "auto" || !isPlaying || currentStep >= executionSteps.length) return;
     const id = window.setInterval(() => {
       setCurrentStep((p) => (p < executionSteps.length ? p + 1 : p));

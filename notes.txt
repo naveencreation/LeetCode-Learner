@@ -1,1 +1,0 @@
-Before we do anything, read CODEBASE_UNDERSTANDING.md and complete the full protocol. Fill in the Knowledge Card at the end and keep it in context for this entire session.

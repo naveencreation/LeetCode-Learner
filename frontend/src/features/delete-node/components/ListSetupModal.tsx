@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Info } from "lucide-react";
 import {
@@ -68,8 +68,13 @@ export function ListSetupModal({
   onApplyAndRun,
 }: ListSetupModalProps) {
   const [preset, setPreset] = useState<LinkedListPresetKey>(selectedPreset);
-  const [customInput, setCustomInput] = useState(currentValues.join(", "));
+  const [customInput, setCustomInput] = useState(() => currentValues.join(", "));
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleApply = () => {
     setError(null);
@@ -158,6 +163,8 @@ export function ListSetupModal({
     return count;
   }, [preset, customInput]);
 
+  if (!mounted) return null;
+
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
@@ -173,9 +180,9 @@ export function ListSetupModal({
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-slate-700 mb-3">
+          <span className="block text-sm font-semibold text-slate-700 mb-3">
             Preset Lists
-          </label>
+          </span>
           <div className="grid grid-cols-3 gap-2">
             {presetKeys.map((key) => (
               <button
@@ -207,10 +214,11 @@ export function ListSetupModal({
 
         {preset === "custom" && (
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-slate-700 mb-2">
+            <label htmlFor="custom-list-values" className="block text-sm font-semibold text-slate-700 mb-2">
               Custom List Values
             </label>
             <textarea
+              id="custom-list-values"
               value={customInput}
               onChange={(e) => setCustomInput(e.target.value)}
               placeholder="e.g., 1, 2, 3, 4, 5"

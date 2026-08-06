@@ -112,7 +112,8 @@ export function ListSetupModal({
   const [activePreset, setActivePreset] = useState<LinkedListPresetKey>(selectedPreset);
   const [customInput, setCustomInput] = useState(DEFAULT_CUSTOM_INPUT);
   const [isCustom, setIsCustom] = useState(false);
-  const [nInput, setNInput] = useState(currentN.toString());
+  const [nInput, setNInput] = useState(() => currentN.toString());
+  const [mounted, setMounted] = useState(false);
 
   const backdropRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -125,6 +126,10 @@ export function ListSetupModal({
   const listLength = previewValues.length;
   const nValue = parseInt(nInput, 10);
   const isNValid = !isNaN(nValue) && nValue >= 1 && nValue <= listLength;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -161,12 +166,20 @@ export function ListSetupModal({
   const isValid = (isCustom && customValues && customValues.length > 0) || 
     (!isCustom && linkedListPresets[activePreset].create);
 
+  if (!mounted) return null;
+
   return createPortal(
     <div
       ref={backdropRef}
       className="animate-fade-in fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4"
       onClick={(e) => {
         if (e.target === backdropRef.current) onClose();
+      }}
+      role="button"
+      tabIndex={-1}
+      aria-label="Close modal"
+      onKeyDown={(e) => {
+        if (e.target === backdropRef.current && (e.key === "Enter" || e.key === " ")) onClose();
       }}
     >
       <div

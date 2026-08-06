@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Info } from "lucide-react";
 import {
@@ -70,9 +70,14 @@ export function ListSetupModal({
   onApplyAndRun,
 }: ListSetupModalProps) {
   const [preset, setPreset] = useState<LinkedListPresetKey>(selectedPreset);
-  const [customInput, setCustomInput] = useState(currentValues.join(", ") || DEFAULT_CUSTOM_INPUT);
+  const [customInput, setCustomInput] = useState(() => currentValues.join(", ") || DEFAULT_CUSTOM_INPUT);
   const [cycleIndex, setCycleIndex] = useState(2);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const nodeCount = useMemo(() => {
     if (preset === "custom") {
@@ -91,47 +96,47 @@ export function ListSetupModal({
     return count;
   }, [preset, customInput]);
 
-  const buildList = (): { head: ListNode | null; isCustom: boolean } => {
-    if (preset === "custom") {
+  const handleApply = (run = false) => {
+    setError(null);
+    let head: ListNode | null = null;
+    const isCustom = preset === "custom";
+
+    if (isCustom) {
       const values = customInput
         .split(",")
         .map((s) => s.trim())
         .filter((s) => s !== "")
         .map((s) => parseInt(s, 10));
 
-      if (values.length === 0) return { head: null, isCustom: true };
-      if (values.length > MAX_LIST_NODES) return { head: null, isCustom: true };
+      if (values.some(isNaN)) {
+        setError("Please enter valid numbers separated by commas");
+        return;
+      }
+      if (values.length === 0) {
+        setError("Please enter at least one number");
+        return;
+      }
+      if (values.length > MAX_LIST_NODES) {
+        setError(`Maximum ${MAX_LIST_NODES} nodes allowed`);
+        return;
+      }
 
-      const validCycleIndex = Math.min(Math.max(cycleIndex, 0), values.length - 1);
-      return { head: createLinkedListWithCycle(values, validCycleIndex), isCustom: true };
-    }
-
-    const presetFn = linkedListPresets[preset]?.create;
-    const head = presetFn ? presetFn() : null;
-    // Add cycle to preset list
-    if (head) {
-      const values: number[] = [];
-      let curr: ListNode | null = head;
-      while (curr !== null) { values.push(curr.val); curr = curr.next; }
-      const validCycleIndex = Math.min(Math.max(cycleIndex, 0), values.length - 1);
-      return { head: createLinkedListWithCycle(values, validCycleIndex), isCustom: false };
-    }
-    return { head, isCustom: false };
-  };
-
-  const handleApply = (run = false) => {
-    setError(null);
-    const { head, isCustom } = buildList();
-
-    if (isCustom && head === null) {
-      setError("Please enter valid numbers separated by commas");
-      return;
+      if (cycleIndex >= 0 && cycleIndex < values.length) {
+        head = createLinkedListWithCycle(values, cycleIndex);
+      } else {
+        head = createLinkedList(values);
+      }
+    } else {
+      const presetFn = linkedListPresets[preset]?.create;
+      head = presetFn ? presetFn() : null;
     }
 
     const finalPreset = isCustom ? "custom" : preset;
     if (run) onApplyAndRun(head, finalPreset);
     else onApply(head, finalPreset);
   };
+
+  if (!mounted) return null;
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -148,11 +153,12 @@ export function ListSetupModal({
         </div>
 
         <div className="mb-4">
-          <label className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">
+          <label htmlFor="cycle-index-input" className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">
             Cycle Start Index
             <InfoTip text="Index (0-based) where the last node should point to create a cycle." />
           </label>
           <input
+            id="cycle-index-input"
             type="number"
             value={cycleIndex}
             onChange={(e) => setCycleIndex(parseInt(e.target.value) || 0)}
@@ -184,11 +190,12 @@ export function ListSetupModal({
         </div>
 
         <div className="mb-4">
-          <label className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">
+          <label htmlFor="custom-input" className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">
             Custom Input
             <InfoTip text="Enter comma-separated numbers. Max 15 nodes." />
           </label>
           <textarea
+            id="custom-input"
             value={customInput}
             onChange={(e) => { setCustomInput(e.target.value); setPreset("custom"); setError(null); }}
             placeholder="e.g., 1, 2, 3, 4, 5, 6"

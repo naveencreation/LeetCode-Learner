@@ -41,7 +41,7 @@ export function useGenericTraversal<TStep, TPresetKey extends string>(
 ) {
   const [root, setRoot] = useState<TreeNode | null>(() => config.createSampleTree());
   const [selectedPreset, setSelectedPreset] = useState<TPresetKey>(
-    Object.keys(config.presets)[0] as TPresetKey,
+    () => Object.keys(config.presets)[0] as TPresetKey,
   );
   const [customNodePositions, setCustomNodePositions] = useState<Record<number, NodePosition>>({});
   const [controlMode, setControlModeState] = useState<"manual" | "auto">("manual");

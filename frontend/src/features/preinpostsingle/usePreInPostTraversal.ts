@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import { PRE_IN_POST_TREE_PRESETS, cloneTree, createSampleTree } from "./constants";
 import { generatePreInPostExecutionSteps } from "./engine";
 import { getCodeLineForStep, getOperationBadge, getPhaseLabel } from "./selectors";
@@ -56,33 +55,30 @@ function projectStateForStep(
   };
 }
 
+const generateSteps = (root: TreeNode | null) => {
+  if (!root) {
+    return {
+      executionSteps: [],
+      initialNodeStates: {},
+    };
+  }
+
+  return generatePreInPostExecutionSteps(root);
+};
+
+const TRAVERSAL_CONFIG = {
+  generateSteps,
+  presets: PRE_IN_POST_TREE_PRESETS,
+  cloneTree,
+  createSampleTree,
+  getCodeLineForStep,
+  getOperationBadge,
+  getPhaseLabel,
+  projectStateForStep,
+};
+
 export function usePreInPostTraversal() {
-  const generateSteps = (root: TreeNode | null) => {
-    if (!root) {
-      return {
-        executionSteps: [],
-        initialNodeStates: {},
-      };
-    }
-
-    return generatePreInPostExecutionSteps(root);
-  };
-
-  const config = useMemo(
-    () => ({
-      generateSteps,
-      presets: PRE_IN_POST_TREE_PRESETS,
-      cloneTree,
-      createSampleTree,
-      getCodeLineForStep,
-      getOperationBadge,
-      getPhaseLabel,
-      projectStateForStep,
-    }),
-    [generateSteps],
-  );
-
-  const state = useGenericTraversal(config);
+  const state = useGenericTraversal(TRAVERSAL_CONFIG);
   const executedStep = state.executedStep as ExecutionStep | undefined;
 
   return {

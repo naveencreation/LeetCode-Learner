@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Info } from "lucide-react";
 import {
@@ -34,9 +34,14 @@ export function ListSetupModal({
   onApplyAndRun,
 }: ListSetupModalProps) {
   const [preset, setPreset] = useState<LinkedListPresetKey>(selectedPreset);
-  const [customInput, setCustomInput] = useState(currentValues.join(", ") || DEFAULT_CUSTOM_INPUT);
+  const [customInput, setCustomInput] = useState(() => currentValues.join(", ") || DEFAULT_CUSTOM_INPUT);
   const [k, setK] = useState(currentK);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const nodeCount = useMemo(() => {
     if (preset === "custom") {
@@ -74,6 +79,8 @@ export function ListSetupModal({
     else onApply(head, finalPreset, k);
   };
 
+  if (!mounted) return null;
+
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
@@ -83,8 +90,8 @@ export function ListSetupModal({
         </div>
 
         <div className="mb-4">
-          <label className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">K (rotations)<Info size={14} className="text-slate-400" /></label>
-          <input type="number" value={k} onChange={(e) => setK(parseInt(e.target.value) || 0)} min={0} className="w-full rounded-lg border border-slate-200 p-3 text-sm font-mono focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+          <label htmlFor="k-rotations-input" className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">K (rotations)<Info size={14} className="text-slate-400" /></label>
+          <input id="k-rotations-input" type="number" value={k} onChange={(e) => setK(parseInt(e.target.value) || 0)} min={0} className="w-full rounded-lg border border-slate-200 p-3 text-sm font-mono focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
         </div>
 
         <div className="mb-6 grid grid-cols-2 gap-2">
@@ -100,8 +107,8 @@ export function ListSetupModal({
         </div>
 
         <div className="mb-4">
-          <label className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">Custom Input <span className="text-[10px] font-normal text-slate-400">(comma-separated)</span></label>
-          <textarea value={customInput} onChange={(e) => { setCustomInput(e.target.value); setPreset("custom"); setError(null); }}
+          <label htmlFor="custom-input" className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">Custom Input <span className="text-[10px] font-normal text-slate-400">(comma-separated)</span></label>
+          <textarea id="custom-input" value={customInput} onChange={(e) => { setCustomInput(e.target.value); setPreset("custom"); setError(null); }}
             placeholder="e.g., 1, 2, 3, 4, 5" className="w-full rounded-lg border border-slate-200 p-3 text-sm font-mono focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" rows={2} />
           <p className="mt-1 text-[10px] text-slate-500">Nodes: {nodeCount} / {MAX_LIST_NODES}</p>
         </div>

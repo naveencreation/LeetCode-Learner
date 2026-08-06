@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { createLinkedList, type ListNode } from "@/features/shared/linked-list-types";
@@ -23,6 +23,11 @@ export function ListSetupModal({
   const [list1Input, setList1Input] = useState(DEFAULT_LIST1);
   const [list2Input, setList2Input] = useState(DEFAULT_LIST2);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleApply = () => {
     setError(null);
@@ -92,6 +97,8 @@ export function ListSetupModal({
     onApplyAndRun(list1, list2);
   };
 
+  if (!mounted) return null;
+
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
@@ -107,10 +114,11 @@ export function ListSetupModal({
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-slate-700 mb-2">
+          <label htmlFor="list1-input" className="block text-sm font-semibold text-slate-700 mb-2">
             List 1 Values
           </label>
           <textarea
+            id="list1-input"
             value={list1Input}
             onChange={(e) => setList1Input(e.target.value)}
             placeholder="e.g., 2, 4, 3"
@@ -120,10 +128,11 @@ export function ListSetupModal({
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-slate-700 mb-2">
+          <label htmlFor="list2-input" className="block text-sm font-semibold text-slate-700 mb-2">
             List 2 Values
           </label>
           <textarea
+            id="list2-input"
             value={list2Input}
             onChange={(e) => setList2Input(e.target.value)}
             placeholder="e.g., 5, 6, 4"
@@ -133,12 +142,10 @@ export function ListSetupModal({
         </div>
 
         {error && (
-          <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">
-            {error}
-          </div>
+          <p className="mb-6 text-sm font-medium text-rose-500">{error}</p>
         )}
 
-        <div className="flex gap-3">
+        <div className="flex gap-4">
           <button
             type="button"
             onClick={onClose}

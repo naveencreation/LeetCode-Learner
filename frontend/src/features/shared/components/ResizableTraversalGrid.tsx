@@ -193,14 +193,20 @@ export function ResizableTraversalGrid({
     return `${LAYOUT_STORAGE_PREFIX}${pathname}`;
   }, [pathname, storageKey]);
 
+  const resolvedStorageKeyRef = useRef(resolvedStorageKey);
   useEffect(() => {
-    if (!resolvedStorageKey) {
+    resolvedStorageKeyRef.current = resolvedStorageKey;
+  }, [resolvedStorageKey]);
+
+  useEffect(() => {
+    const key = resolvedStorageKeyRef.current;
+    if (!key) {
       setHasLoadedLayoutMemory(true);
       return;
     }
 
     try {
-      const raw = window.localStorage.getItem(resolvedStorageKey);
+      const raw = window.localStorage.getItem(key);
       if (!raw) {
         return;
       }
@@ -231,7 +237,7 @@ export function ResizableTraversalGrid({
     } finally {
       setHasLoadedLayoutMemory(true);
     }
-  }, [resolvedStorageKey]);
+  }, []);
 
   useEffect(() => {
     if (!resolvedStorageKey || !hasLoadedLayoutMemory) {

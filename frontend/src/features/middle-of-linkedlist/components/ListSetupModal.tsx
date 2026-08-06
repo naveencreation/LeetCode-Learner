@@ -119,6 +119,12 @@ export function ListSetupModal({
     ? (customValues ?? [])
     : linkedListToArray(linkedListPresets[activePreset].create());
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
@@ -152,12 +158,20 @@ export function ListSetupModal({
   const isValid = (isCustom && customValues && customValues.length > 0) || 
     (!isCustom && linkedListPresets[activePreset].create);
 
+  if (!mounted) return null;
+
   return createPortal(
     <div
       ref={backdropRef}
       className="animate-fade-in fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4"
       onClick={(e) => {
         if (e.target === backdropRef.current) onClose();
+      }}
+      role="button"
+      tabIndex={-1}
+      aria-label="Close modal"
+      onKeyDown={(e) => {
+        if (e.target === backdropRef.current && (e.key === "Enter" || e.key === " ")) onClose();
       }}
     >
       <div

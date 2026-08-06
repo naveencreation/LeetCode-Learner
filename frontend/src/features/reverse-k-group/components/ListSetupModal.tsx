@@ -39,10 +39,15 @@ export function ListSetupModal({ selectedPreset, currentValues, onClose, onApply
   const [activePreset, setActivePreset] = useState<LinkedListPresetKey>(selectedPreset);
   const [customInput, setCustomInput] = useState(DEFAULT_CUSTOM_INPUT);
   const [isCustom, setIsCustom] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const backdropRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const customValues = useMemo(() => parseDraftValues(customInput), [customInput]);
   const previewValues = isCustom ? (customValues ?? []) : linkedListToArray(linkedListPresets[activePreset].create());
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) { if (e.key === "Escape") onClose(); }
@@ -68,8 +73,20 @@ export function ListSetupModal({ selectedPreset, currentValues, onClose, onApply
 
   const isValid = (isCustom && customValues && customValues.length > 0) || (!isCustom && linkedListPresets[activePreset].create);
 
+  if (!mounted) return null;
+
   return createPortal(
-    <div ref={backdropRef} className="animate-fade-in fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4" onClick={(e) => { if (e.target === backdropRef.current) onClose(); }}>
+    <div
+      ref={backdropRef}
+      className="animate-fade-in fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-4"
+      onClick={(e) => { if (e.target === backdropRef.current) onClose(); }}
+      role="button"
+      tabIndex={-1}
+      aria-label="Close modal"
+      onKeyDown={(e) => {
+        if (e.target === backdropRef.current && (e.key === "Enter" || e.key === " ")) onClose();
+      }}
+    >
       <div ref={cardRef} className="animate-scale-in w-full max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl">
         <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3">
           <h2 className="text-sm font-extrabold text-slate-800">Select Linked List</h2>
@@ -94,8 +111,8 @@ export function ListSetupModal({ selectedPreset, currentValues, onClose, onApply
           <div className="mb-4">
             <p className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500">Group Size (k)</p>
             <div className="flex items-center gap-3">
-              <input type="range" min="2" max={previewValues.length} value={k} onChange={(e) => onKChange(Number(e.target.value))} className="flex-1" />
-              <input type="number" min="2" max={previewValues.length} value={k} onChange={(e) => onKChange(Number(e.target.value))} className="w-20 rounded border border-slate-200 px-3 py-2 text-sm" />
+              <input type="range" min="2" max={previewValues.length} value={k} onChange={(e) => { const val = parseInt(e.target.value, 10); if (!isNaN(val)) onKChange(val); }} className="flex-1" />
+              <input type="number" min="2" max={previewValues.length} value={k} onChange={(e) => { const val = parseInt(e.target.value, 10); if (!isNaN(val)) onKChange(val); }} className="w-20 rounded border border-slate-200 px-3 py-2 text-sm" />
             </div>
           </div>
           <div className="mb-4">

@@ -30,7 +30,10 @@ function CustomCursor() {
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     const isTouchDevice = window.matchMedia("(hover: none)").matches;
     if (isTouchDevice) return;
 
@@ -79,6 +82,7 @@ function CustomCursor() {
   }, []);
 
   // Don't render on touch devices
+  if (!mounted) return null;
   if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) {
     return null;
   }

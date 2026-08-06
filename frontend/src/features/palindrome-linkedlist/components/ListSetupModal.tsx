@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Info } from "lucide-react";
 import {
@@ -69,8 +69,13 @@ export function ListSetupModal({
   onApplyAndRun,
 }: ListSetupModalProps) {
   const [preset, setPreset] = useState<LinkedListPresetKey>(selectedPreset);
-  const [customInput, setCustomInput] = useState(currentValues.join(", ") || DEFAULT_CUSTOM_INPUT);
+  const [customInput, setCustomInput] = useState(() => currentValues.join(", ") || DEFAULT_CUSTOM_INPUT);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const nodeCount = useMemo(() => {
     if (preset === "custom") {
@@ -121,6 +126,8 @@ export function ListSetupModal({
     else onApply(head, finalPreset);
   };
 
+  if (!mounted) return null;
+
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
@@ -156,11 +163,12 @@ export function ListSetupModal({
         </div>
 
         <div className="mb-4">
-          <label className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">
+          <label htmlFor="custom-input" className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-700">
             Custom Input
             <InfoTip text="Enter comma-separated numbers. Max 15 nodes." />
           </label>
           <textarea
+            id="custom-input"
             value={customInput}
             onChange={(e) => { setCustomInput(e.target.value); setPreset("custom"); setError(null); }}
             placeholder="e.g., 1, 2, 3, 2, 1"

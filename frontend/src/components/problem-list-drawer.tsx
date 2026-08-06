@@ -57,6 +57,17 @@ export function ProblemListDrawer({
   const nextProblem =
     currentIndex < problems.length - 1 ? problems[currentIndex + 1] : null;
 
+  const [mounted, setMounted] = useState(false);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   // Scroll active into view when drawer opens
   useEffect(() => {
     if (open && activeRef.current && listRef.current) {
@@ -70,13 +81,13 @@ export function ProblemListDrawer({
   useEffect(() => {
     if (!open) return;
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") onCloseRef.current();
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [open, onClose]);
+  }, [open]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
   const liveCount = problems.filter((p) => Boolean(p.href)).length;
 
@@ -86,6 +97,14 @@ export function ProblemListDrawer({
       <div
         className="animate-fade-in absolute inset-0 bg-slate-950/40 backdrop-blur-[2px]"
         onClick={onClose}
+        role="button"
+        tabIndex={-1}
+        aria-label="Close drawer"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            onClose();
+          }
+        }}
       />
 
       {/* Drawer panel */}

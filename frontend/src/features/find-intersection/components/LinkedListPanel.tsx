@@ -70,7 +70,7 @@ export function LinkedListPanel({
         </div>
         <div className="rounded-lg border border-rose-200 bg-rose-50 px-2 py-1 text-center">
           <p className="text-[9px] font-bold uppercase tracking-wide text-rose-600">Diff</p>
-          <p className="text-[11px] font-extrabold text-rose-800">{Math.abs(activeStep?.pointers.lengthA ?? 0 - (activeStep?.pointers.lengthB ?? 0))}</p>
+          <p className="text-[11px] font-extrabold text-rose-800">{Math.abs((activeStep?.pointers.lengthA ?? 0) - (activeStep?.pointers.lengthB ?? 0))}</p>
         </div>
       </div>
 

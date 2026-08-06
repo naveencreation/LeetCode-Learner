@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { createLinkedList, type ListNode } from "@/features/shared/linked-list-types";
@@ -23,6 +23,11 @@ export function ListSetupModal({
   const [list1Input, setList1Input] = useState(DEFAULT_LIST1);
   const [list2Input, setList2Input] = useState(DEFAULT_LIST2);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleApply = () => {
     setError(null);
@@ -112,6 +117,8 @@ export function ListSetupModal({
     onApplyAndRun(list1, list2);
   };
 
+  if (!mounted) return null;
+
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
@@ -133,10 +140,11 @@ export function ListSetupModal({
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-slate-700 mb-2">
+          <label htmlFor="list-a-input" className="block text-sm font-semibold text-slate-700 mb-2">
             List A Values
           </label>
           <textarea
+            id="list-a-input"
             value={list1Input}
             onChange={(e) => setList1Input(e.target.value)}
             placeholder="e.g., 1, 2, 3, 4"
@@ -146,10 +154,11 @@ export function ListSetupModal({
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-slate-700 mb-2">
+          <label htmlFor="list-b-input" className="block text-sm font-semibold text-slate-700 mb-2">
             List B Values
           </label>
           <textarea
+            id="list-b-input"
             value={list2Input}
             onChange={(e) => setList2Input(e.target.value)}
             placeholder="e.g., 5, 6, 4"

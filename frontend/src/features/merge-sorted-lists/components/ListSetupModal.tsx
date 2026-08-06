@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Info } from "lucide-react";
 import {
@@ -116,6 +116,11 @@ export function ListSetupModal({
   const [preset2, setPreset2] = useState<LinkedListPresetKey>(selectedPreset2 as LinkedListPresetKey);
   const [customInput1, setCustomInput1] = useState(DEFAULT_CUSTOM_INPUT_1);
   const [customInput2, setCustomInput2] = useState(DEFAULT_CUSTOM_INPUT_2);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const parsedNode1 = preset1 === "custom" ? createLinkedList(parseDraftValues(customInput1) ?? []) : linkedListPresets[preset1].create();
   const parsedNode2 = preset2 === "custom" ? createLinkedList(parseDraftValues(customInput2) ?? []) : linkedListPresets[preset2].create();
@@ -134,6 +139,8 @@ export function ListSetupModal({
     const list2 = preset2 === "custom" ? createLinkedList(parseDraftValues(customInput2) ?? []) : linkedListPresets[preset2].create();
     onApplyAndRun(list1, list2, preset1, preset2);
   };
+
+  if (!mounted) return null;
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -175,8 +182,9 @@ export function ListSetupModal({
 
             {preset1 === "custom" && (
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600">Custom Values (comma-separated)</label>
+                <label htmlFor="custom-input-1" className="text-xs font-bold text-slate-600">Custom Values (comma-separated)</label>
                 <input
+                  id="custom-input-1"
                   type="text"
                   value={customInput1}
                   onChange={(e) => setCustomInput1(e.target.value)}
@@ -217,8 +225,9 @@ export function ListSetupModal({
 
             {preset2 === "custom" && (
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-600">Custom Values (comma-separated)</label>
+                <label htmlFor="custom-input-2" className="text-xs font-bold text-slate-600">Custom Values (comma-separated)</label>
                 <input
+                  id="custom-input-2"
                   type="text"
                   value={customInput2}
                   onChange={(e) => setCustomInput2(e.target.value)}
