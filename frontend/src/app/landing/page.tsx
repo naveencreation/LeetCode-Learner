@@ -24,83 +24,7 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains",
 });
 
-// Custom Cursor Component
-function CustomCursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
-  const [isHovering, setIsHovering] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
 
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const isTouchDevice = window.matchMedia("(hover: none)").matches;
-    if (isTouchDevice) return;
-
-    // Show cursor on first movement
-    setIsVisible(true);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (dotRef.current) {
-        dotRef.current.style.left = `${e.clientX}px`;
-        dotRef.current.style.top = `${e.clientY}px`;
-      }
-    };
-
-    const handleMouseLeave = () => {
-      setIsVisible(false);
-    };
-
-    const handleMouseEnter = () => {
-      setIsVisible(true);
-    };
-
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest("a, button, [role='button'], input, select, textarea")) {
-        setIsHovering(true);
-      }
-    };
-
-    const handleMouseOut = () => {
-      setIsHovering(false);
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseover", handleMouseOver);
-    document.addEventListener("mouseout", handleMouseOut);
-    document.body.addEventListener("mouseleave", handleMouseLeave);
-    document.body.addEventListener("mouseenter", handleMouseEnter);
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseover", handleMouseOver);
-      document.removeEventListener("mouseout", handleMouseOut);
-      document.body.removeEventListener("mouseleave", handleMouseLeave);
-      document.body.removeEventListener("mouseenter", handleMouseEnter);
-    };
-  }, []);
-
-  // Don't render on touch devices
-  if (!mounted) return null;
-  if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) {
-    return null;
-  }
-
-  return (
-    <div
-      ref={dotRef}
-      className={`fixed rounded-full pointer-events-none z-[9999] -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out mix-blend-screen ${
-        isVisible ? "opacity-100 scale-100" : "opacity-0 scale-50"
-      } ${
-        isHovering
-          ? "w-6 h-6 bg-[oklch(78%_0.18_195_/_0.25)] border-2 border-[var(--l-accent)] shadow-[0_0_15px_var(--l-accent-glow)]"
-          : "w-2.5 h-2.5 bg-[var(--l-primary)] shadow-[0_0_8px_var(--l-primary)]"
-      }`}
-      style={{ left: 0, top: 0 }}
-    />
-  );
-}
 
 // Scroll Reveal Hook
 function useScrollReveal() {
@@ -188,50 +112,26 @@ function Navbar() {
 function HeroSection() {
   return (
     <section className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden py-24">
-      {/* Background glow */}
+      {/* Subtle Background Accent */}
       <div
-        className="absolute w-[1000px] h-[800px] top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none -z-10 animate-[lp-glow-pulse_10s_ease-in-out_infinite]"
+        className="absolute w-[1000px] h-[800px] top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none -z-10 opacity-30"
         style={{
-          background: "radial-gradient(ellipse, oklch(65% 0.22 280 / 0.15) 0%, transparent 60%)",
+          background: "radial-gradient(ellipse at center, oklch(65% 0.22 280 / 0.15) 0%, transparent 70%)",
         }}
-      />
-
-      {/* Floating orbs */}
-      <div
-        className="absolute top-[20%] left-[10%] w-[200px] h-[200px] rounded-full blur-[40px] pointer-events-none animate-[lp-float_8s_ease-in-out_infinite]"
-        style={{ background: "radial-gradient(circle, oklch(78% 0.18 195 / 0.2) 0%, transparent 70%)" }}
-      />
-      <div
-        className="absolute top-[60%] right-[15%] w-[300px] h-[300px] rounded-full blur-[60px] pointer-events-none animate-[lp-float-delayed_10s_ease-in-out_infinite]"
-        style={{ background: "radial-gradient(circle, oklch(65% 0.22 280 / 0.15) 0%, transparent 70%)" }}
       />
 
       <div className="max-w-[1200px] mx-auto px-6 relative z-10 text-center">
         <div className="lp-reveal mb-6">
-          <span className="inline-flex items-center gap-3 border border-[oklch(65%_0.22_280_/_0.3)] bg-[oklch(65%_0.22_280_/_0.08)] text-[var(--l-primary)] rounded-full px-5 py-3 text-xs font-semibold tracking-widest uppercase backdrop-blur-sm">
-            <span className="w-2 h-2 rounded-full bg-[var(--l-primary)] shadow-[0_0_12px_var(--l-primary)] animate-[lp-breathe_2s_ease-in-out_infinite]" />
-            Interactive Algorithm Visualization
+          <span className="inline-flex items-center gap-2 border border-[var(--l-border-2)] bg-[var(--l-surface)] text-[var(--l-primary)] rounded-full px-4 py-2 text-xs font-semibold tracking-wider uppercase">
+            <span className="w-2 h-2 rounded-full bg-[var(--l-primary)]" />
+            Interactive Algorithm Visualizer
           </span>
         </div>
 
-        <h1 className="lp-reveal lp-delay-2 mb-6 font-[var(--font-space-grotesk)] text-[clamp(3rem,8vw,6rem)] font-semibold leading-[0.95] tracking-[-0.04em] text-[var(--l-text)]">
-          You&apos;re not bad at
+        <h1 className="lp-reveal lp-delay-2 mb-6 font-[var(--font-space-grotesk)] text-[clamp(3rem,8vw,5.5rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-[var(--l-text)]">
+          Master algorithms through
           <br />
-          <span className="text-[var(--l-primary)] font-bold">algorithms.</span>
-          <br />
-          You just can&apos;t see
-          <br />
-          <span
-            className="font-bold"
-            style={{
-              background: "linear-gradient(135deg, var(--l-text) 0%, var(--l-primary) 50%, var(--l-accent) 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}
-          >
-            what they&apos;re doing.
-          </span>
+          <span className="text-[var(--l-primary)] font-bold">visual execution.</span>
         </h1>
 
         <div className="lp-reveal lp-delay-4 flex items-center justify-center gap-4 flex-wrap mb-4">
@@ -900,7 +800,6 @@ export default function LandingPage() {
       className={`${spaceGrotesk.variable} ${outfit.variable} ${jetbrainsMono.variable} landing-theme bg-[var(--l-bg)] text-[var(--l-text)] min-h-screen`}
       style={{ fontFamily: "var(--font-outfit)" }}
     >
-      <CustomCursor />
       <Navbar />
       <main>
         <HeroSection />
