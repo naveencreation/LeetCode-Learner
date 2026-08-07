@@ -288,16 +288,19 @@ export function TreePanel({
                   <span className="h-3 w-3 rounded-full bg-slate-300 shadow-sm" /> Unvisited
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded-full bg-amber-400 shadow-sm" /> Current
+                  <span className="h-3 w-3 rounded-full bg-orange-300 shadow-sm" /> Entering Frame
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded-full bg-sky-400 shadow-sm" /> Left Child
+                  <span className="h-3 w-3 rounded-full bg-sky-400 shadow-sm" /> Exploring Left
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded-full bg-violet-400 shadow-sm" /> Right Child
+                  <span className="h-3 w-3 rounded-full bg-amber-400 shadow-sm" /> Recording Value
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded-full bg-emerald-500 shadow-sm" /> Done / Appended
+                  <span className="h-3 w-3 rounded-full bg-violet-400 shadow-sm" /> Exploring Right
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full bg-emerald-500 shadow-sm" /> Done ✓
                 </div>
               </div>
             </div>
