@@ -97,6 +97,7 @@ interface ZigzagTraversalReturn {
   currentNode: number | null;
   nodeStates: Record<number, NodeVisualState>;
   currentOperation: string;
+  currentOperationFull: string;
   currentPhase: string;
   currentCodeLine: number;
   operationBadge: string;

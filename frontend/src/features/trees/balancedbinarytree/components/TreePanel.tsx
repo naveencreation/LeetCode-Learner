@@ -20,6 +20,12 @@ const stateStyles: Record<NodeVisualState,
     text: "#475569",
     glow: "rgba(148, 163, 184, 0.2)",
   },
+  entering: {
+    fill: "#fed7aa",
+    stroke: "#f97316",
+    text: "#7c2d12",
+    glow: "rgba(249, 115, 22, 0.25)",
+  },
   exploring_left: {
     fill: "#bfdbfe",
     stroke: "#60a5fa",

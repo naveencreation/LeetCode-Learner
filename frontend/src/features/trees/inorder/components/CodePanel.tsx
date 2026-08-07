@@ -203,10 +203,10 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
                   ) : null}
                   <span
                     className={`select-none text-right font-bold ${
-                      isActive ? "text-[#c6c6c6]" : "text-[#858585] group-hover:text-[#a5a5a5]"
+                      isActive ? "text-[#569cd6]" : "text-[#858585] group-hover:text-[#a5a5a5]"
                     }`}
                   >
-                    {isActive ? "●" : index + 1}
+                    {index + 1}
                   </span>
                   <span className="whitespace-pre font-[var(--font-geist-mono)] font-medium tracking-[0.01em]">
                     {renderTokenizedCode(line).map((token, tokenIndex) => (
@@ -222,9 +222,6 @@ export function CodePanel({ currentCodeLine, executionLineNumbers }: CodePanelPr
         </pre>
       </div>
 
-      <div className="rounded-lg border border-slate-200 bg-slate-100 px-2 py-1.5 text-[11px] font-bold text-slate-700">
-        Current Line ({statusLine}): {statusLabel}
-      </div>
     </section>
   );
 }

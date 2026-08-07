@@ -24,6 +24,7 @@ export function InorderLayout() {
     currentCodeLine,
     currentNode,
     currentOperation,
+    currentOperationFull,
     currentPhase,
     currentStep,
     executionSteps,
@@ -71,7 +72,6 @@ export function InorderLayout() {
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Visited", value: result.length },
-        { label: "Result", value: `[${result.join(", ")}]`, minWidthClassName: "min-w-[110px]" },
       ]}
       left={
         <CodePanel
@@ -96,7 +96,7 @@ export function InorderLayout() {
           result={result}
           currentStep={currentStep}
           totalSteps={totalSteps}
-          currentOperation={currentOperation}
+          currentOperation={currentOperationFull}
         />
       }
       middleFooter={

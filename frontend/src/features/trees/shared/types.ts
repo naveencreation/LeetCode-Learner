@@ -28,6 +28,7 @@ export type TreePresetKey =
 // Unified NodeVisualState that supports all problem types
 export type NodeVisualState =
   | "unvisited"
+  | "entering"
   | "exploring_left"
   | "current"
   | "processing"

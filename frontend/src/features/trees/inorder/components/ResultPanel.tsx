@@ -20,7 +20,7 @@ export function ResultPanel({
   const completionMessage =
     currentStep >= totalSteps
       ? `Perfect! Traversal complete. Result: [${result?.join(", ") ?? ""}]`
-      : `Step ${currentStep + 1}: ${currentOperation}`;
+      : currentOperation || "Click Next to begin";
 
   return (
     <section className="traversal-panel grid h-full min-h-0 overflow-hidden grid-rows-[auto_minmax(0,1fr)] gap-1.5 p-2">

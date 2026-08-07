@@ -41,7 +41,15 @@ function projectStateForStep(
   }
 
   const previousStep = executionSteps[currentStep - 1];
-  const currentNode = previousStep?.node?.val ?? null;
+  // currentNode: use the active (current) step's node value so it stays
+  // in sync with what the code panel and explanation panel are showing.
+  // For base_case steps node is null (no tree node = None child), so we
+  // explicitly return null — the Phase box will show "-" which is correct.
+  const activeStepForNode = executionSteps[currentStep];
+  const currentNode =
+    activeStepForNode?.type === "base_case"
+      ? null
+      : (activeStepForNode?.node?.val ?? previousStep?.node?.val) ?? null;
   const nodeStates = previousStep?.nodeStates ?? { ...initialNodeStates };
 
   return {
@@ -67,6 +75,7 @@ interface InorderTraversalReturn {
   currentNode: number | null;
   nodeStates: Record<number, NodeVisualState>;
   currentOperation: string;
+  currentOperationFull: string;
   currentPhase: string;
   currentCodeLine: number;
   operationBadge: string;

@@ -76,18 +76,19 @@ export function ProblemFocusHeader({
           <button
             type="button"
             onClick={() => setDrawerOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[12px] font-extrabold text-slate-700 transition hover:bg-slate-50"
+            title="Open Problem List"
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200/80 bg-slate-50 px-2.5 py-1.5 text-[12px] font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
           >
-            <List size={14} strokeWidth={2.5} />
+            <List size={14} strokeWidth={2} />
             <span className="hidden sm:inline">Problem List</span>
           </button>
         ) : null}
 
         <Link
           href={backHref}
-          className="inline-flex items-center gap-1 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[12px] font-semibold text-teal-700 transition hover:bg-teal-100"
+          className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-[12px] font-bold text-teal-700 transition hover:bg-teal-100 shadow-sm"
         >
-          <ArrowLeft size={14} strokeWidth={2.5} aria-hidden="true" />
+          <ArrowLeft size={13} strokeWidth={2.5} aria-hidden="true" />
           {backLabel}
         </Link>
       </div>

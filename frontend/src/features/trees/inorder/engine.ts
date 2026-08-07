@@ -22,16 +22,22 @@ function getCallStackSnapshot(
   stage: "executing" | "exiting",
   activeId: number,
 ): CallStackFrame[] {
+  if (stage === "exiting") {
+    return stack
+      .filter((frame) => frame.id !== activeId)
+      .map((frame, idx, arr) => ({
+        nodeVal: frame.nodeVal,
+        depth: frame.depth,
+        id: frame.id,
+        state: idx === arr.length - 1 ? "executing" : "pending",
+      }));
+  }
+
   return stack.map((frame) => ({
     nodeVal: frame.nodeVal,
     depth: frame.depth,
     id: frame.id,
-    state:
-      frame.id === activeId
-        ? "executing"
-        : stage === "exiting"
-          ? "returned"
-          : "pending",
+    state: frame.id === activeId ? "executing" : "pending",
   }));
 }
 
@@ -66,6 +72,7 @@ function pushStep(
   });
 }
 
+
 export function generateInorderExecutionSteps(root: TreeNode | null): {
   executionSteps: ExecutionStep[];
   initialNodeStates: Record<number, NodeVisualState>;
@@ -82,7 +89,10 @@ export function generateInorderExecutionSteps(root: TreeNode | null): {
   initializeNodeStates(root, nodeStates);
   const initialNodeStates = cloneNodeStates(nodeStates);
 
-  function traverse(node: TreeNode | null, depth: number): void {
+  function traverse(node: TreeNode | null, depth: number, parentNode?: TreeNode, direction?: "left" | "right"): void {
+    // When inorder(None) is called — base case fires immediately and returns.
+    // The traverse_left / traverse_right step already describes this; no extra
+    // standalone base_case step is emitted (it was redundant without a visual).
     if (node === null) {
       return;
     }
@@ -90,7 +100,8 @@ export function generateInorderExecutionSteps(root: TreeNode | null): {
     const frameId = frameCounter++;
     callStack.push({ nodeVal: node.val, depth, id: frameId });
 
-    nodeStates[node.val] = "exploring_left";
+    // Mark node as ENTERING (distinct warm color) while the enter_function frame is pushed
+    nodeStates[node.val] = "entering";
     pushStep(
       executionSteps,
       "enter_function",
@@ -100,41 +111,44 @@ export function generateInorderExecutionSteps(root: TreeNode | null): {
       nodeStates,
     );
 
-    if (node.left) {
-      pushStep(
-        executionSteps,
-        "traverse_left",
-        node,
-        `Traverse left from node ${node.val}`,
-        getCallStackSnapshot(callStack, "executing", frameId),
-        nodeStates,
-      );
-      traverse(node.left, depth + 1);
-    }
+    // Transition to exploring_left BEFORE emitting traverse_left
+    nodeStates[node.val] = "exploring_left";
+    pushStep(
+      executionSteps,
+      "traverse_left",
+      node,
+      node.left
+        ? `Call inorder(node.left=${node.left.val})  ← go left`
+        : `Call inorder(node.left=None) → base case`,
+      getCallStackSnapshot(callStack, "executing", frameId),
+      nodeStates,
+    );
+    traverse(node.left, depth + 1, node, "left");
 
     nodeStates[node.val] = "current";
     pushStep(
       executionSteps,
       "visit",
       node,
-      `Process node ${node.val}`,
+      `Process node ${node.val} → append ${node.val} to result`,
       getCallStackSnapshot(callStack, "executing", frameId),
       nodeStates,
     );
 
     nodeStates[node.val] = "exploring_right";
 
-    if (node.right) {
-      pushStep(
-        executionSteps,
-        "traverse_right",
-        node,
-        `Traverse right from node ${node.val}`,
-        getCallStackSnapshot(callStack, "executing", frameId),
-        nodeStates,
-      );
-      traverse(node.right, depth + 1);
-    }
+    // ── Fix #1: Always emit traverse_right step (even when right child is null) ──
+    pushStep(
+      executionSteps,
+      "traverse_right",
+      node,
+      node.right
+        ? `Call inorder(node.right=${node.right.val})  ← go right`
+        : `Call inorder(node.right=None) → base case`,
+      getCallStackSnapshot(callStack, "executing", frameId),
+      nodeStates,
+    );
+    traverse(node.right, depth + 1, node, "right");
 
     nodeStates[node.val] = "completed";
     pushStep(

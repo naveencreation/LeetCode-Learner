@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Info } from "lucide-react";
 
 import type { ExecutionStep, NodePosition, NodeVisualState, TreeNode } from "../types";
 
@@ -19,6 +20,12 @@ const stateStyles: Record<string,
     stroke: "#cbd5e1",
     text: "#475569",
     glow: "rgba(148, 163, 184, 0.2)",
+  },
+  entering: {
+    fill: "#fed7aa",
+    stroke: "#f97316",
+    text: "#7c2d12",
+    glow: "rgba(249, 115, 22, 0.25)",
   },
   exploring_left: {
     fill: "#bfdbfe",
@@ -265,6 +272,37 @@ export function TreePanel({
           Tree Structure
         </h2>
         <div className="flex items-center gap-2">
+          <div className="relative group">
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 shadow-sm"
+            >
+              <Info size={13} className="text-slate-500 shrink-0" />
+              Legend
+            </button>
+
+            {/* Hover Popover */}
+            <div className="pointer-events-none absolute right-0 top-full z-30 mt-1 w-44 opacity-0 transition-all duration-150 group-hover:pointer-events-auto group-hover:opacity-100">
+              <div className="grid gap-1.5 rounded-xl border border-slate-200 bg-white/95 p-2.5 text-[11px] font-semibold text-slate-700 shadow-xl backdrop-blur-md">
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full bg-slate-300 shadow-sm" /> Unvisited
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full bg-amber-400 shadow-sm" /> Current
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full bg-sky-400 shadow-sm" /> Left Child
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full bg-violet-400 shadow-sm" /> Right Child
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full bg-emerald-500 shadow-sm" /> Done / Appended
+                </div>
+              </div>
+            </div>
+          </div>
+
           <button
             type="button"
             onClick={onOpenTreeSetup}
@@ -392,12 +430,6 @@ export function TreePanel({
         </svg>
       </div>
 
-      <div className="rounded-lg border border-teal-100 bg-teal-50 px-2.5 py-2 text-xs">
-        <div className="flex items-center justify-between gap-2">
-          <span className="font-bold text-slate-500">Operation:</span>
-          <span className="max-w-[72%] truncate text-right font-extrabold text-teal-700">{currentOperation}</span>
-        </div>
-      </div>
     </section>
   );
 }

@@ -2,6 +2,7 @@ import type { NodeVisualState } from "../shared/types";
 
 export type InorderOperationType =
   | "enter_function"
+  | "base_case"
   | "traverse_left"
   | "visit"
   | "traverse_right"

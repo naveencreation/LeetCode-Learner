@@ -71,7 +71,6 @@ export function PostorderLayout() {
       stats={[
         { label: "Step", value: `${currentStep}/${totalSteps}` },
         { label: "Visited", value: result.length },
-        { label: "Result", value: `[${result.join(", ")}]`, minWidthClassName: "min-w-[110px]" },
       ]}
       left={
         <CodePanel

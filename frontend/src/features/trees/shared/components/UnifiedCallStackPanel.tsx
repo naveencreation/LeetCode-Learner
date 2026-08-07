@@ -31,7 +31,7 @@ export function UnifiedCallStackPanel({
       </div>
 
       <div className="min-h-0 space-y-1.5 overflow-auto rounded-[10px] border border-slate-200 bg-gradient-to-b from-slate-50 to-slate-100 p-2">
-        {activeCallStack.length === 0 ? (
+        {!Array.isArray(activeCallStack) || activeCallStack.length === 0 ? (
           <p className="flex min-h-full items-center justify-center py-8 text-center text-xs italic text-slate-500">
             Stack is empty. Click Next to begin!
           </p>

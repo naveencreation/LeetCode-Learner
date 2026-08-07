@@ -166,6 +166,7 @@ export function useGenericTraversal<TStep, TPresetKey extends string>(
     
     // Selectors
     currentOperation: displayStep ? config.getOperationBadge(displayStep) : "Waiting...",
+    currentOperationFull: (displayStep as any)?.operation ?? "Click Next to begin",
     currentPhase: config.getPhaseLabel(displayStep),
     currentCodeLine: config.getCodeLineForStep(displayStep),
     operationBadge: config.getOperationBadge(displayStep),
