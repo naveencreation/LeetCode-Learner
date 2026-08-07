@@ -12,6 +12,12 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local temp/plugin clone content not part of app source:
+    ".tmp-awesome-copilot/**",
+    // Legacy static prototype scripts not part of the Next.js app runtime:
+    "public/inorder-prototype/**",
+    // One-off local script file:
+    "fix.js",
   ]),
 ]);
 

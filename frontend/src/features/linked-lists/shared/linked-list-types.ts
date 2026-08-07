@@ -1,0 +1,129 @@
+// Shared types used across all linked list problems
+
+export interface ListNode {
+  val: number;
+  next: ListNode | null;
+}
+
+export type LinkedListNodeState =
+  | "unvisited"
+  | "prev"
+  | "current"
+  | "next_saved"
+  | "reversed"
+  | "completed";
+
+export type LinkedListPresetKey =
+  | "short"
+  | "medium"
+  | "long"
+  | "single"
+  | "two_nodes"
+  | "descending"
+  | "even_chain"
+  | "staggered"
+  | "custom";
+
+export interface LinkedListPreset {
+  label: string;
+  create: () => ListNode | null;
+}
+
+// ── Helpers ──
+
+export function createLinkedList(values: number[]): ListNode | null {
+  if (values.length === 0) return null;
+  const head: ListNode = { val: values[0], next: null };
+  let current = head;
+  for (let i = 1; i < values.length; i++) {
+    const node: ListNode = { val: values[i], next: null };
+    current.next = node;
+    current = node;
+  }
+  return head;
+}
+
+export function linkedListToArray(head: ListNode | null): number[] {
+  const result: number[] = [];
+  let current = head;
+  while (current) {
+    result.push(current.val);
+    current = current.next;
+  }
+  return result;
+}
+
+export function cloneLinkedList(head: ListNode | null): ListNode | null {
+  if (!head) return null;
+  const newHead: ListNode = { val: head.val, next: null };
+  let src = head.next;
+  let dst = newHead;
+  while (src) {
+    const node: ListNode = { val: src.val, next: null };
+    dst.next = node;
+    dst = node;
+    src = src.next;
+  }
+  return newHead;
+}
+
+export function createLinkedListWithCycle(values: number[], cycleToIndex: number): ListNode | null {
+  if (values.length === 0) return null;
+  const head: ListNode = { val: values[0], next: null };
+  let current = head;
+  for (let i = 1; i < values.length; i++) {
+    const node: ListNode = { val: values[i], next: null };
+    current.next = node;
+    current = node;
+  }
+  
+  // Create cycle by pointing last node to the node at cycleToIndex
+  if (cycleToIndex >= 0 && cycleToIndex < values.length) {
+    let cycleNode = head;
+    for (let i = 0; i < cycleToIndex; i++) {
+      cycleNode = cycleNode.next!;
+    }
+    current.next = cycleNode;
+  }
+  
+  return head;
+}
+
+export const linkedListPresets: Record<LinkedListPresetKey, LinkedListPreset> = {
+  short: {
+    label: "3 Nodes",
+    create: () => createLinkedList([1, 2, 3]),
+  },
+  medium: {
+    label: "5 Nodes",
+    create: () => createLinkedList([1, 2, 3, 4, 5]),
+  },
+  long: {
+    label: "7 Nodes",
+    create: () => createLinkedList([1, 2, 3, 4, 5, 6, 7]),
+  },
+  single: {
+    label: "1 Node",
+    create: () => createLinkedList([1]),
+  },
+  two_nodes: {
+    label: "2 Nodes",
+    create: () => createLinkedList([1, 2]),
+  },
+  descending: {
+    label: "Descending 5",
+    create: () => createLinkedList([9, 7, 5, 3, 1]),
+  },
+  even_chain: {
+    label: "Even Chain 8",
+    create: () => createLinkedList([2, 4, 6, 8, 10, 12, 14, 16]),
+  },
+  staggered: {
+    label: "Staggered 6",
+    create: () => createLinkedList([1, 4, 7, 10, 13, 16]),
+  },
+  custom: {
+    label: "Custom",
+    create: () => createLinkedList([1, 2, 3, 4, 5]),
+  },
+};

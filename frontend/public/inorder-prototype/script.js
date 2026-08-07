@@ -284,14 +284,20 @@ function updateExplanation() {
     if (currentStep === 0) {
         titleElem.textContent = '🎯 Ready to Start';
         descElem.textContent = 'Click "Next Step" to begin exploring the inorder traversal algorithm. Watch how the recursion unfolds!';
-        detailsElem.innerHTML = '<div class="explanation-detail-item">In-order traversal visits nodes in order: Left → Root → Right</div>';
+        const detailDiv = document.createElement('div');
+        detailDiv.className = 'explanation-detail-item';
+        detailDiv.textContent = 'In-order traversal visits nodes in order: Left → Root → Right';
+        detailsElem.replaceChildren(detailDiv);
         return;
     }
     
     if (currentStep === executionSteps.length) {
         titleElem.textContent = '🎉 Traversal Complete!';
         descElem.textContent = `Successfully traversed all nodes in inorder! The result array contains all values in ascending order: [${result.join(', ')}]`;
-        detailsElem.innerHTML = '<div class="explanation-detail-item">Total steps taken: ' + executionSteps.length + '</div>';
+        const detailDiv = document.createElement('div');
+        detailDiv.className = 'explanation-detail-item';
+        detailDiv.textContent = `Total steps taken: ${executionSteps.length}`;
+        detailsElem.replaceChildren(detailDiv);
         return;
     }
     
@@ -305,9 +311,13 @@ function updateExplanation() {
     titleElem.textContent = explanation.title;
     descElem.textContent = explanation.description;
     
-    detailsElem.innerHTML = explanation.details
-        .map(detail => `<div class="explanation-detail-item">${detail}</div>`)
-        .join('');
+    const detailElements = explanation.details.map(detail => {
+        const div = document.createElement('div');
+        div.className = 'explanation-detail-item';
+        div.textContent = detail;
+        return div;
+    });
+    detailsElem.replaceChildren(...detailElements);
 }
 
 // ============================================
@@ -369,11 +379,18 @@ function updateUI() {
     // Update result array
     const resultArrayDiv = document.getElementById('resultArray');
     if (result.length === 0) {
-        resultArrayDiv.innerHTML = '<span class="placeholder">Traversal result appears here...</span>';
+        const placeholder = document.createElement('span');
+        placeholder.className = 'placeholder';
+        placeholder.textContent = 'Traversal result appears here...';
+        resultArrayDiv.replaceChildren(placeholder);
     } else {
-        resultArrayDiv.innerHTML = result.map((val, idx) => 
-            `<div class="array-item">${val}</div>`
-        ).join('');
+        const items = result.map((val) => {
+            const item = document.createElement('div');
+            item.className = 'array-item';
+            item.textContent = String(val);
+            return item;
+        });
+        resultArrayDiv.replaceChildren(...items);
     }
 
     // Update call stack visualization
@@ -385,11 +402,23 @@ function updateUI() {
     // Update status message
     const statusDiv = document.getElementById('status');
     if (currentStep === executionSteps.length) {
-        statusDiv.innerHTML = `✅ <strong>Perfect!</strong> Traversal complete. Result: [${result.join(', ')}]`;
+        const strong = document.createElement('strong');
+        strong.textContent = 'Perfect!';
+        statusDiv.replaceChildren(
+            '✅ ',
+            strong,
+            ` Traversal complete. Result: [${result.join(', ')}]`
+        );
         statusDiv.classList.add('completed');
     } else {
         const nextStep = executionSteps[currentStep];
-        statusDiv.innerHTML = `👉 <strong>Step ${currentStep + 1}:</strong> ${nextStep.operation}`;
+        const strong = document.createElement('strong');
+        strong.textContent = `Step ${currentStep + 1}:`;
+        statusDiv.replaceChildren(
+            '👉 ',
+            strong,
+            ` ${nextStep.operation}`
+        );
         statusDiv.classList.remove('completed');
     }
 
@@ -409,7 +438,10 @@ function updateCallStackVisualization() {
     const container = document.getElementById('callStackContainer');
     
     if (currentStep === 0) {
-        container.innerHTML = '<div class="call-stack-empty">Stack is empty. Click Next to begin!</div>';
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'call-stack-empty';
+        emptyDiv.textContent = 'Stack is empty. Click Next to begin!';
+        container.replaceChildren(emptyDiv);
         return;
     }
 
@@ -417,30 +449,48 @@ function updateCallStackVisualization() {
     const callStack = currentExecution.callStack;
 
     if (callStack.length === 0) {
-        container.innerHTML = '<div class="call-stack-empty">Stack is empty</div>';
+        const emptyDiv = document.createElement('div');
+        emptyDiv.className = 'call-stack-empty';
+        emptyDiv.textContent = 'Stack is empty';
+        container.replaceChildren(emptyDiv);
         return;
     }
 
     // Sort by depth to show top of stack at bottom
     const sortedStack = callStack.sort((a, b) => b.depth - a.depth);
 
-    const html = sortedStack.map((frame, idx) => {
+    const frameElements = sortedStack.map((frame) => {
         const depth = frame.depth;
         const indentLevel = depth * 20;
         const statusClass = frame.state;
         const statusText = frame.state.toUpperCase();
 
-        return `
-            <div class="call-stack-frame ${statusClass}" style="--depth-indent: ${indentLevel}px;">
-                <span class="call-stack-status">${statusText}</span>
-                <span class="call-stack-node">inorder(${frame.nodeVal})</span>
-                <span class="call-stack-arrow">→</span>
-                <span style="color: #6b7280; font-size: 12px;">Depth: ${depth}</span>
-            </div>
-        `;
-    }).join('');
+        const frameDiv = document.createElement('div');
+        frameDiv.className = `call-stack-frame ${statusClass}`;
+        frameDiv.style.setProperty('--depth-indent', `${indentLevel}px`);
 
-    container.innerHTML = html;
+        const statusSpan = document.createElement('span');
+        statusSpan.className = 'call-stack-status';
+        statusSpan.textContent = statusText;
+
+        const nodeSpan = document.createElement('span');
+        nodeSpan.className = 'call-stack-node';
+        nodeSpan.textContent = `inorder(${frame.nodeVal})`;
+
+        const arrowSpan = document.createElement('span');
+        arrowSpan.className = 'call-stack-arrow';
+        arrowSpan.textContent = '→';
+
+        const depthSpan = document.createElement('span');
+        depthSpan.style.color = '#6b7280';
+        depthSpan.style.fontSize = '12px';
+        depthSpan.textContent = `Depth: ${depth}`;
+
+        frameDiv.append(statusSpan, nodeSpan, arrowSpan, depthSpan);
+        return frameDiv;
+    });
+
+    container.replaceChildren(...frameElements);
 }
 
 // ============================================

@@ -1,0 +1,33 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>ThinkDSA Icon</title>
+  <desc>ThinkDSA app icon — code brackets with play button and progress bar</desc>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="#2C2C2A"/>
+
+  <!-- Left bracket < -->
+  <path d="M148 148 L80 256 L148 364"
+    fill="none"
+    stroke="#EEEDFE"
+    stroke-width="36"
+    stroke-linecap="round"
+    stroke-linejoin="round"/>
+
+  <!-- Right bracket > -->
+  <path d="M364 148 L432 256 L364 364"
+    fill="none"
+    stroke="#EEEDFE"
+    stroke-width="36"
+    stroke-linecap="round"
+    stroke-linejoin="round"/>
+
+  <!-- Play button triangle -->
+  <path d="M196 172 L196 316 L360 256 Z"
+    fill="#EF9F27"/>
+
+  <!-- Progress bar track -->
+  <rect x="64" y="396" width="384" height="28" rx="14" fill="#444441"/>
+
+  <!-- Progress bar fill (~62%) -->
+  <rect x="64" y="396" width="238" height="28" rx="14" fill="#EF9F27"/>
+</svg>

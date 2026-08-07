@@ -1,5 +1,7 @@
-import type { Metadata } from "next";
+"use client";
+
 import { Geist, Geist_Mono } from "next/font/google";
+import { usePathname } from "next/navigation";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,24 +14,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "CodeArena",
-  description: "CodeArena - interactive tree traversal learning app",
-  icons: {
-    icon: "/codearena-mark.svg",
-    shortcut: "/codearena-mark.svg",
-    apple: "/codearena-mark.svg",
-  },
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const isLanding = pathname === "/" || pathname === "/landing";
+
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="theme min-h-screen bg-background text-foreground antialiased">
+    <html lang="en" data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable}`} data-landing={isLanding ? "true" : undefined}>
+      <body
+        suppressHydrationWarning
+        className="theme min-h-screen bg-background text-foreground antialiased"
+      >
         {children}
       </body>
     </html>

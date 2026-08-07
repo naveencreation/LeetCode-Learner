@@ -1,0 +1,506 @@
+<style>
+  * { box-sizing: border-box; }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; font-family: var(--font-sans); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber { background: #FAEEDA; color: #854F0B; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .badge-coral { background: #FAECE7; color: #993C1D; }
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+  .rule-box { background: #E6F1FB; padding: 1rem 1.25rem; border-left: 3px solid #378ADD; border-radius: 0; }
+  .rule-text { font-size: 18px; font-weight: 500; color: #0C447C; line-height: 1.8; }
+  .step-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13.5px; line-height: 2; }
+  .c-kw { color: #cba6f7; } .c-fn { color: #89b4fa; } .c-cm { color: #6c7086; font-style:italic; } .c-plain { color: #cdd6f4; } .c-num { color: #fab387; }
+  .dry-run-row { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .dry-run-row:last-child { border-bottom: none; }
+  .dry-cell { padding: 10px 14px; font-size: 13px; color: var(--color-text-primary); line-height: 1.5; }
+  .dry-head { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); padding: 8px 14px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .complexity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why { font-size: 13px; margin-top: 6px; }
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot { width: 8px; height: 8px; border-radius: 50%; background: #378ADD; flex-shrink: 0; margin-top: 7px; }
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+  .analogy-box { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+  .highlight-row { background: var(--color-background-secondary); }
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+  .deep-section { margin-bottom: 3rem; }
+  .callout { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+  .trace-step { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge { min-width: 68px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; white-space: nowrap; }
+  .trace-going { background: #E6F1FB; color: #185FA5; }
+  .trace-record { background: #E1F5EE; color: #0F6E56; }
+  .trace-sort { background: #EEEDFE; color: #534AB7; }
+  .trace-content { flex: 1; }
+  .trace-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+  .stack-visual { font-family: var(--font-mono); font-size: 13px; background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .stack-frame { padding: 5px 10px; border-radius: 4px; margin-bottom: 4px; color: #cdd6f4; }
+  .stack-top { background: #313244; border-left: 2px solid #89b4fa; }
+  .stack-mid { background: #1e1e2e; border-left: 2px solid #45475a; color: #6c7086; }
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+</style>
+
+<div class="page">
+
+  <div class="section">
+    <p class="section-label">Binary Tree · BFS + Sorting</p>
+    <h1 class="hero-title">Vertical Order Traversal</h1>
+    <p class="hero-sub">Group all nodes by column (horizontal distance), then by row, then by value — and return each column's nodes top-to-bottom.</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-teal">BFS</span>
+      <span class="badge badge-purple">Sorting</span>
+      <span class="badge badge-amber">HashMap</span>
+      <span class="badge badge-coral">LeetCode 987</span>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn" id="btn-deep" onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ═══════════════ QUICK MODE ═══════════════ -->
+  <div id="quick-mode">
+    <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);margin-bottom:2rem;">
+
+    <div class="section">
+      <p class="section-label">01 · The rule</p>
+      <div class="rule-box" style="margin-bottom:0.75rem;">
+        <p class="rule-text">
+          Assign every node a <strong style="font-weight:500;">(col, row)</strong> coordinate.<br>
+          Group by col → sort each group by (row, value) → return columns left to right.
+        </p>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">Root is at (col=0, row=0). Left child: col−1. Right child: col+1. Each level down: row+1.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">02 · The key difference from bottom/top view</p>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;">
+          <div style="padding:1rem 1.25rem;border-right:0.5px solid var(--color-border-tertiary);">
+            <p style="font-size:12px;font-weight:500;color:#185FA5;margin:0 0 6px;">Bottom / Top View</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">One node per column. Either the topmost or bottommost wins.</p>
+          </div>
+          <div style="padding:1rem 1.25rem;">
+            <p style="font-size:12px;font-weight:500;color:#0F6E56;margin:0 0 6px;">Vertical Order Traversal</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;"><strong style="font-weight:500;">All nodes</strong> per column, sorted by row then value. No node is dropped.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">03 · How to think</p>
+      <div class="card">
+        <div class="step-row"><div class="step-num">1</div><div><div class="step-text">BFS the tree, tracking <code style="font-size:13px;background:var(--color-background-secondary);padding:2px 5px;border-radius:4px;">(node, col, row)</code> for each node</div><div class="step-sub">Root starts at (col=0, row=0). Left: col−1, row+1. Right: col+1, row+1.</div></div></div>
+        <div class="step-row"><div class="step-num">2</div><div><div class="step-text">Collect into a map: <code style="font-size:13px;background:var(--color-background-secondary);padding:2px 5px;border-radius:4px;">col → list of (row, val)</code></div><div class="step-sub">Every node appends to its column's list — nothing is overwritten or discarded.</div></div></div>
+        <div class="step-row"><div class="step-num">3</div><div><div class="step-text">Sort each column's list by <code style="font-size:13px;background:var(--color-background-secondary);padding:2px 5px;border-radius:4px;">(row, val)</code></div><div class="step-sub">Nodes in the same cell (same col and row) are ordered by value ascending.</div></div></div>
+        <div class="step-row" style="margin-bottom:0;"><div class="step-num">4</div><div><div class="step-text">Return columns sorted by col from min to max</div><div class="step-sub">Extract just the values from each sorted column list.</div></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">04 · Diagram</p>
+      <div style="display:flex;justify-content:center;margin-bottom:1rem;">
+        <svg viewBox="0 0 400 260" width="400" height="260" xmlns="http://www.w3.org/2000/svg">
+          <!-- col labels -->
+          <text x="60"  y="16" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">col=−2</text>
+          <text x="130" y="16" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">col=−1</text>
+          <text x="200" y="16" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">col=0</text>
+          <text x="270" y="16" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">col=+1</text>
+          <text x="340" y="16" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">col=+2</text>
+          <!-- vertical grid lines -->
+          <line x1="60"  y1="22" x2="60"  y2="248" stroke="#313244" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <line x1="130" y1="22" x2="130" y2="248" stroke="#313244" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <line x1="200" y1="22" x2="200" y2="248" stroke="#313244" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <line x1="270" y1="22" x2="270" y2="248" stroke="#313244" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <line x1="340" y1="22" x2="340" y2="248" stroke="#313244" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <!-- row labels -->
+          <text x="6" y="68"  font-size="10" fill="#6c7086" font-family="monospace">row 0</text>
+          <text x="6" y="138" font-size="10" fill="#6c7086" font-family="monospace">row 1</text>
+          <text x="6" y="208" font-size="10" fill="#6c7086" font-family="monospace">row 2</text>
+          <!-- horizontal row guides -->
+          <line x1="40" y1="64"  x2="390" y2="64"  stroke="#313244" stroke-width="0.5" stroke-dasharray="2,5"/>
+          <line x1="40" y1="134" x2="390" y2="134" stroke="#313244" stroke-width="0.5" stroke-dasharray="2,5"/>
+          <line x1="40" y1="204" x2="390" y2="204" stroke="#313244" stroke-width="0.5" stroke-dasharray="2,5"/>
+          <!-- tree edges -->
+          <line x1="200" y1="64"  x2="130" y2="134" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="200" y1="64"  x2="270" y2="134" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="130" y1="134" x2="60"  y2="204" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="130" y1="134" x2="200" y2="204" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="270" y1="134" x2="200" y2="204" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="270" y1="134" x2="340" y2="204" stroke="#B5D4F4" stroke-width="1.5"/>
+          <!-- root node 1 at (col=0,row=0) -->
+          <circle cx="200" cy="64" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="200" y="69" text-anchor="middle" font-size="14" font-weight="500" fill="#0C447C">1</text>
+          <!-- node 2 at (col=-1,row=1) -->
+          <circle cx="130" cy="134" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="130" y="139" text-anchor="middle" font-size="14" font-weight="500" fill="#0C447C">2</text>
+          <!-- node 3 at (col=+1,row=1) -->
+          <circle cx="270" cy="134" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="270" y="139" text-anchor="middle" font-size="14" font-weight="500" fill="#0C447C">3</text>
+          <!-- node 4 at (col=-2,row=2) -->
+          <circle cx="60" cy="204" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="60" y="209" text-anchor="middle" font-size="14" font-weight="500" fill="#085041">4</text>
+          <!-- node 5 at (col=0,row=2) — same col as root -->
+          <circle cx="200" cy="204" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2"/>
+          <text x="200" y="209" text-anchor="middle" font-size="14" font-weight="500" fill="#633806">5</text>
+          <!-- node 6 at (col=0,row=2) — same col AND row as node 5! -->
+          <!-- shown slightly offset for clarity, annotated -->
+          <circle cx="200" cy="204" r="22" fill="none" stroke="#E24B4A" stroke-width="1.5" stroke-dasharray="3,3"/>
+          <text x="227" y="196" font-size="10" fill="#E24B4A" font-family="monospace">5 &amp; 6 share</text>
+          <text x="227" y="208" font-size="10" fill="#E24B4A" font-family="monospace">(col=0,row=2)</text>
+          <text x="227" y="220" font-size="10" fill="#E24B4A" font-family="monospace">sort by val →</text>
+          <text x="227" y="232" font-size="10" fill="#E24B4A" font-family="monospace">[5, 6] in output</text>
+          <!-- node 7 at (col=+2,row=2) -->
+          <circle cx="340" cy="204" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="340" y="209" text-anchor="middle" font-size="14" font-weight="500" fill="#085041">7</text>
+          <!-- col coordinate labels under nodes -->
+          <text x="200" y="93"  text-anchor="middle" font-size="10" fill="#378ADD" font-family="monospace">(0,0)</text>
+          <text x="130" y="163" text-anchor="middle" font-size="10" fill="#378ADD" font-family="monospace">(−1,1)</text>
+          <text x="270" y="163" text-anchor="middle" font-size="10" fill="#378ADD" font-family="monospace">(+1,1)</text>
+          <text x="60"  y="233" text-anchor="middle" font-size="10" fill="#378ADD" font-family="monospace">(−2,2)</text>
+          <text x="340" y="233" text-anchor="middle" font-size="10" fill="#378ADD" font-family="monospace">(+2,2)</text>
+        </svg>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div style="display:grid;grid-template-columns:60px 1fr 1fr;">
+          <div class="dry-head" style="border-right:0.5px solid var(--color-border-tertiary);">Col</div>
+          <div class="dry-head" style="border-right:0.5px solid var(--color-border-tertiary);">Nodes (row, val) sorted</div>
+          <div class="dry-head">Output column</div>
+        </div>
+        <div class="dry-run-row"><div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);font-family:monospace;">−2</div><div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);">(2, 4)</div><div class="dry-cell">[4]</div></div>
+        <div class="dry-run-row highlight-row"><div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);font-family:monospace;">−1</div><div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);">(1, 2)</div><div class="dry-cell">[2]</div></div>
+        <div class="dry-run-row"><div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);font-family:monospace;">0</div><div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);">(0,1), (2,5), (2,6) — tie broken by val</div><div class="dry-cell"><strong style="font-weight:500;">[1, 5, 6]</strong></div></div>
+        <div class="dry-run-row highlight-row"><div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);font-family:monospace;">+1</div><div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);">(1, 3)</div><div class="dry-cell">[3]</div></div>
+        <div class="dry-run-row"><div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);font-family:monospace;">+2</div><div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);">(2, 7)</div><div class="dry-cell">[7]</div></div>
+      </div>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin-top:8px;">Final answer: <code style="font-size:12px;background:var(--color-background-secondary);padding:2px 6px;border-radius:4px;">[[4], [2], [1,5,6], [3], [7]]</code></p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">05 · Code</p>
+      <div class="code-block">
+        <div><span class="c-kw">from</span><span class="c-plain"> collections </span><span class="c-kw">import</span><span class="c-plain"> defaultdict, deque</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-kw">def</span> <span class="c-fn">verticalOrder</span><span class="c-plain">(root):</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">if not</span><span class="c-plain"> root: </span><span class="c-kw">return</span><span class="c-plain"> []</span></div>
+        <div><span class="c-plain">    col_map = defaultdict(list)         </span><span class="c-cm"># col → [(row, val), ...]</span></div>
+        <div><span class="c-plain">    queue = deque([(root, </span><span class="c-num">0</span><span class="c-plain">, </span><span class="c-num">0</span><span class="c-plain">)])      </span><span class="c-cm"># (node, col, row)</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">while</span><span class="c-plain"> queue:</span></div>
+        <div><span class="c-plain">        node, col, row = queue.</span><span class="c-fn">popleft</span><span class="c-plain">()</span></div>
+        <div><span class="c-plain">        col_map[col].</span><span class="c-fn">append</span><span class="c-plain">((row, node.val))  </span><span class="c-cm"># collect all nodes</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">if</span><span class="c-plain"> node.left:</span></div>
+        <div><span class="c-plain">            queue.</span><span class="c-fn">append</span><span class="c-plain">((node.left,  col-</span><span class="c-num">1</span><span class="c-plain">, row+</span><span class="c-num">1</span><span class="c-plain">))</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">if</span><span class="c-plain"> node.right:</span></div>
+        <div><span class="c-plain">            queue.</span><span class="c-fn">append</span><span class="c-plain">((node.right, col+</span><span class="c-num">1</span><span class="c-plain">, row+</span><span class="c-num">1</span><span class="c-plain">))</span></div>
+        <div><span class="c-plain">    result = []</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">for</span><span class="c-plain"> col </span><span class="c-kw">in</span><span class="c-plain"> </span><span class="c-fn">sorted</span><span class="c-plain">(col_map):         </span><span class="c-cm"># columns left → right</span></div>
+        <div><span class="c-plain">        sorted_col = </span><span class="c-fn">sorted</span><span class="c-plain">(col_map[col])  </span><span class="c-cm"># sort by (row, val)</span></div>
+        <div><span class="c-plain">        result.</span><span class="c-fn">append</span><span class="c-plain">([v </span><span class="c-kw">for</span><span class="c-plain"> _, v </span><span class="c-kw">in</span><span class="c-plain"> sorted_col])</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">return</span><span class="c-plain"> result</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">06 · Complexity</p>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E6F1FB;"><div class="complexity-label" style="color:#185FA5;">Time</div><div class="complexity-value" style="color:#0C447C;">O(n log n)</div><div class="complexity-why" style="color:#185FA5;">BFS is O(n). Sorting all nodes across all columns is O(n log n) total.</div></div>
+        <div class="complexity-card" style="background:#EEEDFE;"><div class="complexity-label" style="color:#534AB7;">Space</div><div class="complexity-value" style="color:#3C3489;">O(n)</div><div class="complexity-why" style="color:#534AB7;">Queue holds at most one full level. col_map stores all n nodes. Both O(n).</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">07 · Interview uses</p>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">LeetCode 987</strong> — the exact problem. Knowing the sort-by-(row,val) tie-breaking rule is what separates correct answers.</p></div>
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Top / Bottom view</strong> — vertical order is the general case; top/bottom are special cases where only one node per column is kept.</p></div>
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Diagonal traversal</strong> — same (col, row) coordinate idea but with different axis definitions.</p></div>
+        <div class="interview-item" style="border:none;"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Print tree in columns</strong> — any problem asking you to output nodes grouped by their vertical alignment uses this exact setup.</p></div>
+      </div>
+    </div>
+  </div><!-- end quick-mode -->
+
+  <!-- ═══════════════ DEEP MODE ═══════════════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);margin-bottom:2rem;">
+
+    <div class="deep-section">
+      <p class="section-label">01 · What does "vertical order" actually mean?</p>
+      <h2 class="section-title">Imagining the tree as a grid</h2>
+      <p class="deep-para">Picture the binary tree drawn on graph paper. Every node sits at an exact grid position — a column and a row. The root is at (col=0, row=0). Each step left decreases the column by 1, each step right increases it by 1. Each level down increases the row by 1.</p>
+      <div style="display:flex;justify-content:center;margin:1.5rem 0;">
+        <svg viewBox="0 0 420 280" width="420" height="280" xmlns="http://www.w3.org/2000/svg">
+          <!-- col labels -->
+          <text x="70"  y="18" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">col=−2</text>
+          <text x="140" y="18" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">col=−1</text>
+          <text x="210" y="18" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">col=0</text>
+          <text x="280" y="18" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">col=+1</text>
+          <text x="350" y="18" text-anchor="middle" font-size="11" fill="#6c7086" font-family="monospace">col=+2</text>
+          <!-- row labels -->
+          <text x="8" y="74"  font-size="10" fill="#6c7086" font-family="monospace">row 0</text>
+          <text x="8" y="144" font-size="10" fill="#6c7086" font-family="monospace">row 1</text>
+          <text x="8" y="214" font-size="10" fill="#6c7086" font-family="monospace">row 2</text>
+          <!-- grid lines vertical -->
+          <line x1="70"  y1="24" x2="70"  y2="260" stroke="#313244" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <line x1="140" y1="24" x2="140" y2="260" stroke="#313244" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <line x1="210" y1="24" x2="210" y2="260" stroke="#313244" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <line x1="280" y1="24" x2="280" y2="260" stroke="#313244" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <line x1="350" y1="24" x2="350" y2="260" stroke="#313244" stroke-width="0.8" stroke-dasharray="3,4"/>
+          <!-- grid lines horizontal -->
+          <line x1="46" y1="70"  x2="395" y2="70"  stroke="#313244" stroke-width="0.5" stroke-dasharray="2,5"/>
+          <line x1="46" y1="140" x2="395" y2="140" stroke="#313244" stroke-width="0.5" stroke-dasharray="2,5"/>
+          <line x1="46" y1="210" x2="395" y2="210" stroke="#313244" stroke-width="0.5" stroke-dasharray="2,5"/>
+          <!-- tree edges -->
+          <line x1="210" y1="70"  x2="140" y2="140" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="210" y1="70"  x2="280" y2="140" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="140" y1="140" x2="70"  y2="210" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="140" y1="140" x2="210" y2="210" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="280" y1="140" x2="210" y2="210" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="280" y1="140" x2="350" y2="210" stroke="#B5D4F4" stroke-width="1.5"/>
+          <!-- nodes -->
+          <circle cx="210" cy="70"  r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="210" y="75"  text-anchor="middle" font-size="14" font-weight="500" fill="#0C447C">1</text>
+          <text x="210" y="100" text-anchor="middle" font-size="10" fill="#378ADD" font-family="monospace">(0,0)</text>
+          <circle cx="140" cy="140" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="140" y="145" text-anchor="middle" font-size="14" font-weight="500" fill="#0C447C">2</text>
+          <text x="140" y="170" text-anchor="middle" font-size="10" fill="#378ADD" font-family="monospace">(−1,1)</text>
+          <circle cx="280" cy="140" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="280" y="145" text-anchor="middle" font-size="14" font-weight="500" fill="#0C447C">3</text>
+          <text x="280" y="170" text-anchor="middle" font-size="10" fill="#378ADD" font-family="monospace">(+1,1)</text>
+          <circle cx="70"  cy="210" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="70"  y="215" text-anchor="middle" font-size="14" font-weight="500" fill="#085041">4</text>
+          <text x="70"  y="240" text-anchor="middle" font-size="10" fill="#1D9E75" font-family="monospace">(−2,2)</text>
+          <!-- nodes 5 and 6 share (0,2) — show both with offset -->
+          <circle cx="197" cy="210" r="20" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2"/>
+          <text x="197" y="215" text-anchor="middle" font-size="13" font-weight="500" fill="#633806">5</text>
+          <circle cx="223" cy="210" r="20" fill="#FAECE7" stroke="#D85A30" stroke-width="2"/>
+          <text x="223" y="215" text-anchor="middle" font-size="13" font-weight="500" fill="#712B13">6</text>
+          <text x="210" y="242" text-anchor="middle" font-size="10" fill="#D85A30" font-family="monospace">both at (0,2)</text>
+          <text x="210" y="255" text-anchor="middle" font-size="10" fill="#D85A30" font-family="monospace">sort by val → 5,6</text>
+          <circle cx="350" cy="210" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="350" y="215" text-anchor="middle" font-size="14" font-weight="500" fill="#085041">7</text>
+          <text x="350" y="240" text-anchor="middle" font-size="10" fill="#1D9E75" font-family="monospace">(+2,2)</text>
+        </svg>
+      </div>
+      <div class="callout callout-info"><p><strong style="font-weight:500;">Vertical order collects all nodes in each column.</strong> Unlike top/bottom view which keeps only one node per column, vertical order keeps every node and groups them by (row, value). The orange nodes 5 and 6 both land on col=0 at row=2 — both appear in the output, sorted by value.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">02 · Why this is harder than top/bottom view</p>
+      <h2 class="section-title">Three things that make vertical order tricky</h2>
+      <div class="card" style="padding:0; overflow:hidden; margin-bottom:1rem;">
+        <div style="display:grid;grid-template-columns:28px 1fr;">
+          <div class="dry-head" style="border-right:0.5px solid var(--color-border-tertiary);">#</div>
+          <div class="dry-head">The challenge</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);">1</div>
+          <div class="dry-cell"><strong style="font-weight:500;">Multiple nodes per column.</strong> You can't just overwrite — you must collect every node and store it alongside its row number.</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);">2</div>
+          <div class="dry-cell"><strong style="font-weight:500;">Tie-breaking by value.</strong> Two nodes can share the same (col, row). In that case, the smaller value comes first. This is a common interview trap.</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell" style="border-right:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);">3</div>
+          <div class="dry-cell"><strong style="font-weight:500;">Sorting at the end.</strong> Within each column the nodes must be in (row, val) order — BFS alone doesn't guarantee this when ties exist.</div>
+        </div>
+      </div>
+      <div class="callout callout-warn"><p><strong style="font-weight:500;">The most common mistake in interviews:</strong> forgetting to sort by value when two nodes share the same (col, row). BFS gives them in arrival order which may not be value order.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">03 · Why BFS with (col, row) tracking</p>
+      <h2 class="section-title">Why not DFS?</h2>
+      <p class="deep-para">You can use either BFS or DFS for this problem. Here is the honest comparison:</p>
+      <div class="compare-row">
+        <div style="padding:1rem;background:#E6F1FB;border-radius:var(--border-radius-md);border:2px solid #378ADD;">
+          <p style="font-size:12px;font-weight:500;color:#185FA5;margin:0 0 8px;">BFS — recommended</p>
+          <p style="font-size:13px;color:#0C447C;margin:0;line-height:1.6;">Naturally processes level by level. Row is implicitly tracked. Simpler to reason about. You still need to sort per column at the end.</p>
+        </div>
+        <div style="padding:1rem;background:#EEEDFE;border-radius:var(--border-radius-md);">
+          <p style="font-size:12px;font-weight:500;color:#534AB7;margin:0 0 8px;">DFS — also valid</p>
+          <p style="font-size:13px;color:#3C3489;margin:0;line-height:1.6;">Must explicitly pass (col, row) through recursion. Same final sort needed. Slightly harder to read. Produces the same result.</p>
+        </div>
+      </div>
+      <div class="callout callout-success"><p>Both approaches have the same O(n log n) time complexity because the final sort dominates. BFS is preferred because it's more intuitive for level-based grouping.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">04 · The real-world analogy</p>
+      <h2 class="section-title">Think of the tree as a city skyline</h2>
+      <div class="analogy-box" style="margin-bottom:1rem;">
+        <p class="analogy-text">Imagine the tree is a set of buildings on a street. Each building stands at a specific street position (column) and has multiple floors (rows). Vertical order traversal is like reading out every building from left to right, and for each building listing every floor from ground up. If two buildings share the exact same address and floor, you list the smaller-numbered one first.</p>
+      </div>
+      <div class="callout callout-info"><p>The critical difference from bottom/top view: in those, you only report the ground floor (bottom) or the top floor (top) of each building. In vertical order, you report <strong style="font-weight:500;">every floor of every building</strong>.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">05 · Code — line by line</p>
+      <h2 class="section-title">Understanding every decision in the code</h2>
+      <div class="code-block" style="margin-bottom:1.25rem;">
+        <div><span class="c-kw">from</span><span class="c-plain"> collections </span><span class="c-kw">import</span><span class="c-plain"> defaultdict, deque</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-kw">def</span> <span class="c-fn">verticalOrder</span><span class="c-plain">(root):</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">if not</span><span class="c-plain"> root: </span><span class="c-kw">return</span><span class="c-plain"> []        </span><span class="c-cm"># edge case: empty tree</span></div>
+        <div><span class="c-plain">    col_map = defaultdict(list)     </span><span class="c-cm"># col → [(row, val), ...]</span></div>
+        <div><span class="c-plain">    queue = deque([(root, </span><span class="c-num">0</span><span class="c-plain">, </span><span class="c-num">0</span><span class="c-plain">)])  </span><span class="c-cm"># (node, col, row)</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">while</span><span class="c-plain"> queue:</span></div>
+        <div><span class="c-plain">        node, col, row = queue.</span><span class="c-fn">popleft</span><span class="c-plain">()</span></div>
+        <div><span class="c-plain">        col_map[col].</span><span class="c-fn">append</span><span class="c-plain">((row, node.val)) </span><span class="c-cm"># store row too — needed for sort</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">if</span><span class="c-plain"> node.left:</span></div>
+        <div><span class="c-plain">            queue.</span><span class="c-fn">append</span><span class="c-plain">((node.left,  col-</span><span class="c-num">1</span><span class="c-plain">, row+</span><span class="c-num">1</span><span class="c-plain">))</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">if</span><span class="c-plain"> node.right:</span></div>
+        <div><span class="c-plain">            queue.</span><span class="c-fn">append</span><span class="c-plain">((node.right, col+</span><span class="c-num">1</span><span class="c-plain">, row+</span><span class="c-num">1</span><span class="c-plain">))</span></div>
+        <div><span class="c-plain">    result = []</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">for</span><span class="c-plain"> col </span><span class="c-kw">in</span><span class="c-plain"> </span><span class="c-fn">sorted</span><span class="c-plain">(col_map):       </span><span class="c-cm"># left col → right col</span></div>
+        <div><span class="c-plain">        sorted_nodes = </span><span class="c-fn">sorted</span><span class="c-plain">(col_map[col]) </span><span class="c-cm"># sort by (row, val) — tuple sort</span></div>
+        <div><span class="c-plain">        result.</span><span class="c-fn">append</span><span class="c-plain">([v </span><span class="c-kw">for</span><span class="c-plain"> _, v </span><span class="c-kw">in</span><span class="c-plain"> sorted_nodes])</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">return</span><span class="c-plain"> result</span></div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why store <code style="font-size:13px;">(row, val)</code> instead of just <code style="font-size:13px;">val</code> in col_map?</div>
+        <div class="qa-a">Because within a column, nodes must be sorted top-to-bottom (by row), and ties broken by value. If you only stored val, you'd lose the row information needed to sort correctly. Storing (row, val) as a tuple lets Python's default tuple sort handle both: it first sorts by row, then by val for equal rows.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Does Python's <code style="font-size:13px;">sorted()</code> on a list of tuples sort by the first element then second?</div>
+        <div class="qa-a">Yes. Python sorts tuples lexicographically — it compares the first element first, and only moves to the second element if the first is equal. So <code style="font-size:13px;">sorted([(2,6),(2,5),(1,3)])</code> gives <code style="font-size:13px;">[(1,3),(2,5),(2,6)]</code> — which is exactly the (row, val) order we need.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why use <code style="font-size:13px;">defaultdict(list)</code> instead of a regular dict?</div>
+        <div class="qa-a"><code style="font-size:13px;">defaultdict(list)</code> auto-creates an empty list for any new key, so <code style="font-size:13px;">col_map[col].append(...)</code> works without checking if the key exists first. With a regular dict you'd need <code style="font-size:13px;">col_map.setdefault(col, []).append(...)</code> — same result, more verbose.</div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">06 · Full trace — every BFS step</p>
+      <h2 class="section-title">Walking through the example tree step by step</h2>
+      <p class="deep-para" style="margin-bottom:1.5rem;">Tree: root=1 (col=0,row=0). Left=2 (col=−1,row=1) with children 4 (col=−2,row=2) and 5 (col=0,row=2). Right=3 (col=+1,row=1) with children 6 (col=0,row=2) and 7 (col=+2,row=2).</p>
+
+      <div class="trace-step"><span class="trace-badge trace-going">Init</span><div class="trace-content"><p class="trace-title">Queue = [(1, col=0, row=0)]</p><p class="trace-desc">Start BFS with root. col_map = {}</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Record</span><div class="trace-content"><p class="trace-title">Dequeue (1, 0, 0) → col_map[0] = [(0,1)]</p><p class="trace-desc">Node 1 at col=0, row=0. Enqueue left child 2 at (col=−1,row=1) and right child 3 at (col=+1,row=1). Queue: [(2,−1,1),(3,+1,1)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Record</span><div class="trace-content"><p class="trace-title">Dequeue (2, −1, 1) → col_map[−1] = [(1,2)]</p><p class="trace-desc">Node 2 at col=−1, row=1. Enqueue 4 at (col=−2,row=2) and 5 at (col=0,row=2). Queue: [(3,+1,1),(4,−2,2),(5,0,2)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Record</span><div class="trace-content"><p class="trace-title">Dequeue (3, +1, 1) → col_map[+1] = [(1,3)]</p><p class="trace-desc">Node 3 at col=+1, row=1. Enqueue 6 at (col=0,row=2) and 7 at (col=+2,row=2). Queue: [(4,−2,2),(5,0,2),(6,0,2),(7,+2,2)]</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Record</span><div class="trace-content"><p class="trace-title">Dequeue (4, −2, 2) → col_map[−2] = [(2,4)]</p><p class="trace-desc">Node 4 at col=−2, row=2. Leaf — nothing enqueued.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Record</span><div class="trace-content"><p class="trace-title">Dequeue (5, 0, 2) → col_map[0] = [(0,1),(2,5)]</p><p class="trace-desc">Node 5 at col=0, row=2. Same column as root (1) but different row. Appended — not overwritten. Leaf — nothing enqueued.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Record</span><div class="trace-content"><p class="trace-title">Dequeue (6, 0, 2) → col_map[0] = [(0,1),(2,5),(2,6)]</p><p class="trace-desc">Node 6 also at col=0, row=2 — same as node 5! Both appended. Tie will be resolved by sorting. Leaf — nothing enqueued.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Record</span><div class="trace-content"><p class="trace-title">Dequeue (7, +2, 2) → col_map[+2] = [(2,7)]</p><p class="trace-desc">Node 7 at col=+2, row=2. Leaf. Queue now empty. BFS done.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-sort">Sort</span><div class="trace-content"><p class="trace-title">Sort each column by (row, val)</p><p class="trace-desc">col=−2: [(2,4)] → [4]. col=−1: [(1,2)] → [2]. col=0: [(0,1),(2,5),(2,6)] sorted → [(0,1),(2,5),(2,6)] → [1,5,6]. col=+1: [(1,3)] → [3]. col=+2: [(2,7)] → [7].</p></div></div>
+      <div class="trace-step" style="margin-bottom:0;"><span class="trace-badge trace-sort">Done</span><div class="trace-content"><p class="trace-title">Final result: [[4], [2], [1,5,6], [3], [7]] ✓</p><p class="trace-desc">Columns sorted left to right. Each column's nodes in (row, val) order. The tie between 5 and 6 resolved correctly by value.</p></div></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">07 · Common beginner mistakes</p>
+      <h2 class="section-title">What trips people up</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Overwriting instead of appending to col_map</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Vertical order keeps ALL nodes per column. Using <code style="font-size:12px;">col_map[col] = val</code> (overwrite) instead of <code style="font-size:12px;">col_map[col].append((row, val))</code> loses nodes at the same column and gives wrong output.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Not storing row — only storing value</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">If you only store <code style="font-size:12px;">col_map[col].append(val)</code>, you lose the row information. Without row you cannot correctly sort nodes within the same column top-to-bottom.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting to sort by value when row is tied</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">If two nodes share the same (col, row), BFS arrival order is not guaranteed to be value order. <code style="font-size:12px;">sorted(col_map[col])</code> on tuples handles this automatically — but if you sort only by row, tied nodes may appear in the wrong order.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting to sort col_map keys before building result</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">dict keys in Python 3.7+ preserve insertion order, which for BFS is root → left subtree → right subtree — not necessarily left-to-right by column. Always use <code style="font-size:12px;">sorted(col_map)</code>.</p></div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Confusing this with bottom view</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Bottom view keeps only one node per column (the deepest). Vertical order keeps all of them. The code change is small — append vs overwrite — but the output is completely different.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">08 · Complexity — the full explanation</p>
+      <h2 class="section-title">Why O(n log n) time and O(n) space?</h2>
+      <div class="complexity-grid" style="margin-bottom:1rem;">
+        <div class="complexity-card" style="background:#E6F1FB;"><div class="complexity-label" style="color:#185FA5;">Time</div><div class="complexity-value" style="color:#0C447C;">O(n log n)</div><div class="complexity-why" style="color:#185FA5;">BFS visits each node once — O(n). Sorting all n nodes across all columns combined is O(n log n). Sorting the column keys is at most O(n log n) too. Dominated by the sort.</div></div>
+        <div class="complexity-card" style="background:#EEEDFE;"><div class="complexity-label" style="color:#534AB7;">Space</div><div class="complexity-value" style="color:#3C3489;">O(n)</div><div class="complexity-why" style="color:#534AB7;">Queue holds at most one full level at a time — O(w) where w is max width, bounded by O(n). col_map stores all n (row, val) pairs. Total: O(n).</div></div>
+      </div>
+      <div class="callout callout-warn"><p><strong style="font-weight:500;">Interview tip:</strong> If asked "can you do this in O(n)?", the answer is no in the general case — the sort is necessary and unavoidable. However, if you know the column range in advance (e.g., bounded width), you could use counting sort for O(n). Mention this to show depth.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">09 · Interview context</p>
+      <h2 class="section-title">Where you'll actually use this</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">LeetCode 987 — Vertical Order Traversal (Hard)</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The exact problem. The tie-breaking sort by value is the hidden difficulty — most solutions fail on cases where two nodes share (col, row).</p></div></div>
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Top View and Bottom View (special cases)</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Both are simplified versions — take only the first (top) or last (bottom) node per column from the same BFS+col_map setup. If you know vertical order, you know all three.</p></div></div>
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Print nodes in column order</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Any problem asking to output nodes grouped by their vertical alignment — including diagonal traversal variants — reuses this (col, row) coordinate system.</p></div></div>
+        <div class="interview-item" style="border:none;"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Demonstrating BFS mastery</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Solving this cleanly shows you can extend BFS beyond simple level-order traversal — attaching metadata to queue entries, managing grouped results, and post-processing with sorting.</p></div></div>
+      </div>
+    </div>
+
+  </div><!-- end deep-mode -->
+
+  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Ready to see it in action?</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">Step through the visualizer to watch col_map fill column by column at each BFS step.</p>
+    </div>
+    <button style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);cursor:pointer;">Open visualizer ↗</button>
+  </div>
+
+</div>
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep  = document.getElementById('deep-mode');
+  const btnQ  = document.getElementById('btn-quick');
+  const btnD  = document.getElementById('btn-deep');
+  const desc  = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display  = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display  = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>

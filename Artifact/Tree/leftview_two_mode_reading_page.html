@@ -1,0 +1,404 @@
+
+<style>
+  * { box-sizing: border-box; }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; font-family: var(--font-sans); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber { background: #FAEEDA; color: #854F0B; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+  .rule-box { background: #E6F1FB; padding: 1rem 1.25rem; border-left: 3px solid #378ADD; border-radius: 0; }
+  .rule-text { font-size: 20px; font-weight: 500; color: #0C447C; }
+  .step-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13.5px; line-height: 2; }
+  .c-kw { color: #cba6f7; } .c-fn { color: #89b4fa; } .c-cm { color: #6c7086; font-style:italic; } .c-plain { color: #cdd6f4; }
+  .dry-run-row { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .dry-run-row:last-child { border-bottom: none; }
+  .dry-cell { padding: 10px 14px; font-size: 13.5px; color: var(--color-text-primary); line-height: 1.5; }
+  .dry-head { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); padding: 8px 14px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .complexity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why { font-size: 13px; margin-top: 6px; }
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot { width: 8px; height: 8px; border-radius: 50%; background: #378ADD; flex-shrink: 0; margin-top: 7px; }
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+  .analogy-box { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+  .highlight-row { background: var(--color-background-secondary); }
+
+  /* toggle */
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+
+  /* deep mode specifics */
+  .deep-section { margin-bottom: 3rem; }
+  .callout { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+  .trace-step { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge { min-width: 68px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; }
+  .trace-going { background: #E6F1FB; color: #185FA5; }
+  .trace-record { background: #E1F5EE; color: #0F6E56; }
+  .trace-skip { background: #EEEDFE; color: #534AB7; }
+  .trace-back { background: #FAEEDA; color: #854F0B; }
+  .trace-content { flex: 1; }
+  .trace-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+  .stack-visual { font-family: var(--font-mono); font-size: 13px; background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .stack-frame { padding: 5px 10px; border-radius: 4px; margin-bottom: 4px; color: #cdd6f4; }
+  .stack-top { background: #313244; border-left: 2px solid #89b4fa; }
+  .stack-mid { background: #1e1e2e; border-left: 2px solid #45475a; color: #6c7086; }
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .mistake-check { width: 20px; height: 20px; border-radius: 50%; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+</style>
+
+<div class="page">
+
+  <div class="section">
+    <p class="section-label">Binary Tree · Views</p>
+    <h1 class="hero-title">Left View of Binary Tree</h1>
+    <p class="hero-sub">The first node visible at each level when the tree is seen from the left side.</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-teal">BFS / DFS</span>
+      <span class="badge badge-purple">Level Order</span>
+      <span class="badge badge-amber">Interview Essential</span>
+    </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn" id="btn-deep" onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ═══════════════ QUICK MODE ═══════════════ -->
+  <div id="quick-mode">
+    <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);margin-bottom:2rem;">
+
+    <div class="section">
+      <p class="section-label">01 · The rule</p>
+      <div class="rule-box" style="margin-bottom:0.75rem;">
+        <p class="rule-text">First node seen at each level from the left</p>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">Equivalently: the first node you encounter per depth in a level-order (BFS) traversal.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">02 · How to think</p>
+      <div class="card">
+        <div class="step-row"><div class="step-num">1</div><div><div class="step-text">Process the tree level by level (BFS with a queue)</div><div class="step-sub">Each queue iteration handles exactly one full level.</div></div></div>
+        <div class="step-row"><div class="step-num">2</div><div><div class="step-text">Record the very first node dequeued at each level</div><div class="step-sub">That first node is the leftmost visible node at that depth.</div></div></div>
+        <div class="step-row" style="margin-bottom:0;"><div class="step-num">3</div><div><div class="step-text">Add left child first, then right child, to the queue</div><div class="step-sub">Ensures left nodes always precede right nodes in the queue.</div></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">03 · Code</p>
+      <div class="code-block">
+        <div><span class="c-kw">from</span> <span class="c-plain">collections </span><span class="c-kw">import</span><span class="c-plain"> deque</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-kw">def</span> <span class="c-fn">left_view</span><span class="c-plain">(root):</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if not</span><span class="c-plain"> root: </span><span class="c-kw">return</span><span class="c-plain"> []</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;result, queue = [], deque([root])</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">while</span><span class="c-plain"> queue:</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;level_size = </span><span class="c-fn">len</span><span class="c-plain">(queue) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># nodes on this level</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">for</span><span class="c-plain"> i </span><span class="c-kw">in</span><span class="c-plain"> </span><span class="c-fn">range</span><span class="c-plain">(level_size):</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node = queue.</span><span class="c-fn">popleft</span><span class="c-plain">()</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> i == 0: result.</span><span class="c-fn">append</span><span class="c-plain">(node.val)</span><span class="c-cm"> # first = left view</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> node.left: &nbsp;queue.</span><span class="c-fn">append</span><span class="c-plain">(node.left)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> node.right: queue.</span><span class="c-fn">append</span><span class="c-plain">(node.right)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-plain"> result</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">04 · Example</p>
+      <div style="display:flex;justify-content:center;margin-bottom:1rem;">
+        <svg viewBox="0 0 320 200" width="300" height="180" xmlns="http://www.w3.org/2000/svg">
+          <line x1="160" y1="36" x2="96" y2="90" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="160" y1="36" x2="224" y2="90" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="96" y1="90" x2="60" y2="152" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="96" y1="90" x2="132" y2="152" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="224" y1="90" x2="260" y2="152" stroke="#B5D4F4" stroke-width="1.5"/>
+          <!-- Left-view nodes highlighted in blue -->
+          <circle cx="160" cy="36" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="160" y="41" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">1</text>
+          <!-- Level 2: 2 is leftmost (left view) -->
+          <circle cx="96" cy="90" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="96" y="95" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">2</text>
+          <!-- Level 2: 3 is NOT left view -->
+          <circle cx="224" cy="90" r="22" fill="var(--color-background-secondary)" stroke="var(--color-border-tertiary)" stroke-width="1.5"/>
+          <text x="224" y="95" text-anchor="middle" font-size="13" font-weight="500" fill="var(--color-text-secondary)">3</text>
+          <!-- Level 3: 4 is leftmost (left view) -->
+          <circle cx="60" cy="152" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="60" y="157" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">4</text>
+          <!-- Level 3: 5 not left view -->
+          <circle cx="132" cy="152" r="22" fill="var(--color-background-secondary)" stroke="var(--color-border-tertiary)" stroke-width="1.5"/>
+          <text x="132" y="157" text-anchor="middle" font-size="13" font-weight="500" fill="var(--color-text-secondary)">5</text>
+          <!-- Level 3: 7 not left view -->
+          <circle cx="260" cy="152" r="22" fill="var(--color-background-secondary)" stroke="var(--color-border-tertiary)" stroke-width="1.5"/>
+          <text x="260" y="157" text-anchor="middle" font-size="13" font-weight="500" fill="var(--color-text-secondary)">7</text>
+          <!-- Labels -->
+          <text x="160" y="17" text-anchor="middle" font-size="10" fill="#378ADD">L0 ✓</text>
+          <text x="96" y="71" text-anchor="middle" font-size="10" fill="#378ADD">L1 ✓</text>
+          <text x="60" y="133" text-anchor="middle" font-size="10" fill="#378ADD">L2 ✓</text>
+        </svg>
+      </div>
+      <p style="font-size:13px;color:var(--color-text-secondary);text-align:center;margin:0 0 1rem;">Blue nodes are the left view: <strong style="font-weight:500;color:var(--color-text-primary);">[1, 2, 4]</strong></p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">04 · Complexity</p>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E6F1FB;"><div class="complexity-label" style="color:#185FA5;">Time</div><div class="complexity-value" style="color:#0C447C;">O(n)</div><div class="complexity-why" style="color:#185FA5;">Every node is enqueued and dequeued exactly once.</div></div>
+        <div class="complexity-card" style="background:#EEEDFE;"><div class="complexity-label" style="color:#534AB7;">Space</div><div class="complexity-value" style="color:#3C3489;">O(w)</div><div class="complexity-why" style="color:#534AB7;">Queue holds at most the width of the widest level.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">05 · Interview uses</p>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Right View of Binary Tree</strong> — same pattern, record the last node per level instead of the first.</p></div>
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Level order traversal</strong> — foundational BFS pattern that left view builds on.</p></div>
+        <div class="interview-item"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Maximum width of a tree</strong> — same BFS loop, just track max queue size per level.</p></div>
+        <div class="interview-item" style="border:none;"><div class="interview-dot"></div><p style="font-size:14px;color:var(--color-text-primary);margin:0;line-height:1.6;"><strong style="font-weight:500;">Vertical order traversal</strong> — another view-based problem sharing similar BFS structure.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DEEP MODE ═══════════════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);margin-bottom:2rem;">
+
+    <div class="deep-section">
+      <p class="section-label">01 · Start here — what is a "view" of a tree?</p>
+      <h2 class="section-title">Seeing the tree from the side</h2>
+      <p class="deep-para">Imagine standing far to the left of a binary tree and looking directly at it. Some nodes will be hidden behind others. The nodes you can actually <em>see</em> — one per level — are called the <strong style="font-weight:500;">Left View</strong>. Equivalently, the left view is the set of nodes that are first encountered at each depth when you sweep through the tree level by level.</p>
+      <div style="display:flex;justify-content:center;margin:1.5rem 0;">
+        <svg viewBox="0 0 340 220" width="320" height="200" xmlns="http://www.w3.org/2000/svg">
+          <!-- edges -->
+          <line x1="170" y1="36" x2="100" y2="95" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="170" y1="36" x2="240" y2="95" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="100" y1="95" x2="60" y2="160" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="100" y1="95" x2="140" y2="160" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="240" y1="95" x2="210" y2="160" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="240" y1="95" x2="275" y2="160" stroke="#B5D4F4" stroke-width="1.5"/>
+          <!-- eye / viewer arrow -->
+          <text x="4" y="42" font-size="14">👁️</text>
+          <line x1="26" y1="36" x2="144" y2="36" stroke="#378ADD" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="26" y1="95" x2="74" y2="95" stroke="#378ADD" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="26" y1="160" x2="34" y2="160" stroke="#378ADD" stroke-width="1" stroke-dasharray="4 3"/>
+          <!-- left view nodes (blue) -->
+          <circle cx="170" cy="36" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="170" y="41" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">1</text>
+          <circle cx="100" cy="95" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="100" y="100" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">2</text>
+          <circle cx="60" cy="160" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="60" y="165" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">4</text>
+          <!-- non-left-view nodes (muted) -->
+          <circle cx="240" cy="95" r="22" fill="var(--color-background-secondary)" stroke="var(--color-border-tertiary)" stroke-width="1.5"/>
+          <text x="240" y="100" text-anchor="middle" font-size="13" fill="var(--color-text-tertiary)">3</text>
+          <circle cx="140" cy="160" r="22" fill="var(--color-background-secondary)" stroke="var(--color-border-tertiary)" stroke-width="1.5"/>
+          <text x="140" y="165" text-anchor="middle" font-size="13" fill="var(--color-text-tertiary)">5</text>
+          <circle cx="210" cy="160" r="22" fill="var(--color-background-secondary)" stroke="var(--color-border-tertiary)" stroke-width="1.5"/>
+          <text x="210" y="165" text-anchor="middle" font-size="13" fill="var(--color-text-tertiary)">6</text>
+          <circle cx="275" cy="160" r="22" fill="var(--color-background-secondary)" stroke="var(--color-border-tertiary)" stroke-width="1.5"/>
+          <text x="275" y="165" text-anchor="middle" font-size="13" fill="var(--color-text-tertiary)">7</text>
+          <!-- level labels -->
+          <text x="310" y="41" font-size="10" fill="var(--color-text-tertiary)">L0</text>
+          <text x="310" y="100" font-size="10" fill="var(--color-text-tertiary)">L1</text>
+          <text x="310" y="165" font-size="10" fill="var(--color-text-tertiary)">L2</text>
+          <!-- result -->
+          <text x="170" y="205" text-anchor="middle" font-size="12" fill="#185FA5" font-weight="500">Left View → [1, 2, 4]</text>
+        </svg>
+      </div>
+      <div class="callout callout-info"><p>Blue nodes are <strong style="font-weight:500;">visible</strong> from the left. Grey nodes are hidden behind a blue node at the same level — they share the same depth but are further right.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">02 · Why BFS? Why not DFS?</p>
+      <h2 class="section-title">The problem is fundamentally level-based</h2>
+      <p class="deep-para">The left view asks "which node is first at each level?" — that's exactly what BFS (Breadth-First Search) is designed to answer. BFS processes the tree level by level, so finding the first node per level is trivial. DFS can also solve it (using recursion and a max-depth trick), but BFS maps to the problem more naturally.</p>
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="text-align:center;padding:12px 8px;background:#E6F1FB;border-radius:var(--border-radius-md);border:2px solid #378ADD;">
+            <p style="font-size:12px;font-weight:500;color:#185FA5;margin:0 0 4px;">BFS ← natural fit</p>
+            <p style="font-size:13px;color:#0C447C;margin:0;">Process level by level. First dequeued node = left view.</p>
+          </div>
+          <div style="text-align:center;padding:12px 8px;background:#EEEDFE;border-radius:var(--border-radius-md);">
+            <p style="font-size:12px;font-weight:500;color:#534AB7;margin:0 0 4px;">DFS (recursive)</p>
+            <p style="font-size:13px;color:#3C3489;margin:0;">Track max depth seen. Record node only if its depth is new.</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-warn"><p><strong style="font-weight:500;">Interview tip:</strong> If the interviewer says "can you do it without a queue?", they want the DFS approach. Be ready to explain both. The DFS approach uses a max-depth variable instead of a queue.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">03 · The real-world analogy</p>
+      <h2 class="section-title">Think of it like a theatre seating chart</h2>
+      <div class="analogy-box" style="margin-bottom:1rem;">
+        <p class="analogy-text">Imagine a theatre where rows of seats fan out from a central aisle. Every row is a level of the tree. You're standing at the far left entrance, looking down the rows. In each row, you see only the leftmost occupied seat — the rest are blocked. The Left View of a tree is exactly those leftmost seats, one per row.</p>
+      </div>
+      <div class="callout callout-success"><p><strong style="font-weight:500;">Key insight:</strong> The left view has exactly as many nodes as the height of the tree — one node per level. A tree with height <em>h</em> has exactly <em>h+1</em> nodes in its left view.</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">04 · Understanding the BFS approach line by line</p>
+      <h2 class="section-title">What the code is actually doing</h2>
+      <p class="deep-para">The core trick is: at the start of each BFS iteration, we know exactly how many nodes are in the current level — it's <code style="font-size:13px;background:var(--color-background-secondary);padding:2px 5px;border-radius:4px;">len(queue)</code>. So we loop that many times, and the very first node dequeued (index 0) is the leftmost node at that level.</p>
+      <div class="code-block" style="margin-bottom:1.25rem;">
+        <div><span class="c-kw">from</span> <span class="c-plain">collections </span><span class="c-kw">import</span><span class="c-plain"> deque</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-kw">def</span> <span class="c-fn">left_view</span><span class="c-plain">(root):</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if not</span><span class="c-plain"> root: </span><span class="c-kw">return</span><span class="c-plain"> []</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;result, queue = [], deque([root])</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">while</span><span class="c-plain"> queue:</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;level_size = </span><span class="c-fn">len</span><span class="c-plain">(queue)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">for</span><span class="c-plain"> i </span><span class="c-kw">in</span><span class="c-plain"> </span><span class="c-fn">range</span><span class="c-plain">(level_size):</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;node = queue.</span><span class="c-fn">popleft</span><span class="c-plain">()</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> i == 0:</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result.</span><span class="c-fn">append</span><span class="c-plain">(node.val) </span><span class="c-cm"># leftmost at this level</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> node.left: &nbsp;queue.</span><span class="c-fn">append</span><span class="c-plain">(node.left)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if</span><span class="c-plain"> node.right: queue.</span><span class="c-fn">append</span><span class="c-plain">(node.right)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return</span><span class="c-plain"> result</span></div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why do we snapshot <code style="font-size:13px;">level_size = len(queue)</code> before the loop?</div>
+        <div class="qa-a">Because the queue grows as we add children during the loop. If we checked <code style="font-size:13px;">len(queue)</code> dynamically, we'd process nodes from the next level too, mixing levels together. By snapshotting the count before, we know exactly how many nodes belong to the current level.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why add the left child before the right child?</div>
+        <div class="qa-a">Order in the queue determines which node is dequeued first. If we added the right child first, the right child would appear before the left child at the next level — and our "first dequeued" would give us the right view, not the left view. Left first → left view. Right first → right view.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What does the queue look like during execution?</div>
+        <div class="qa-a">
+          Using the example tree (root=1, left=2, right=3, 2's children=4,5, 3's right=7):
+          <div class="stack-visual" style="margin-top:10px;">
+            <div class="stack-frame stack-top">Start of L0: &nbsp;[1] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← dequeue 1, record it</div>
+            <div class="stack-frame stack-mid">Start of L1: &nbsp;[2, 3] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← dequeue 2 first, record it</div>
+            <div class="stack-frame stack-mid">Start of L2: &nbsp;[4, 5, 7] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← dequeue 4 first, record it</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">05 · Full trace — every step explained</p>
+      <h2 class="section-title">Walking through the example tree</h2>
+      <p class="deep-para" style="margin-bottom:1.5rem;">Tree: root=1, left child=2 (children: 4, 5), right child=3 (right child: 7). Let's trace every BFS action.</p>
+
+      <div class="trace-step"><span class="trace-badge trace-going">L0 Start</span><div class="trace-content"><p class="trace-title">Queue = [1], level_size = 1</p><p class="trace-desc">Only the root is in the queue. We're about to process level 0.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Record</span><div class="trace-content"><p class="trace-title">Dequeue 1 (i=0) → result = [1]</p><p class="trace-desc">First node at level 0 — record it. Add its children: left=2, right=3. Queue is now [2, 3].</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-going">L1 Start</span><div class="trace-content"><p class="trace-title">Queue = [2, 3], level_size = 2</p><p class="trace-desc">Two nodes at this level. We'll dequeue 2 first (it was added first — left child before right child).</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Record</span><div class="trace-content"><p class="trace-title">Dequeue 2 (i=0) → result = [1, 2]</p><p class="trace-desc">First node at level 1 — record it. Add children: 4 and 5. Queue is now [3, 4, 5].</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-skip">Skip</span><div class="trace-content"><p class="trace-title">Dequeue 3 (i=1) → not recorded</p><p class="trace-desc">Not the first node at level 1, so we skip recording it. Add its right child 7. Queue is now [4, 5, 7].</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-going">L2 Start</span><div class="trace-content"><p class="trace-title">Queue = [4, 5, 7], level_size = 3</p><p class="trace-desc">Three nodes at this level. Node 4 (leftmost) will be dequeued first.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-record">Record</span><div class="trace-content"><p class="trace-title">Dequeue 4 (i=0) → result = [1, 2, 4]</p><p class="trace-desc">First node at level 2 — record it. Node 4 is a leaf, nothing added to queue.</p></div></div>
+      <div class="trace-step"><span class="trace-badge trace-skip">Skip</span><div class="trace-content"><p class="trace-title">Dequeue 5 (i=1) → not recorded</p><p class="trace-desc">Not the first at this level. Leaf node, nothing enqueued.</p></div></div>
+      <div class="trace-step" style="margin-bottom:0;"><span class="trace-badge trace-skip">Skip</span><div class="trace-content"><p class="trace-title">Dequeue 7 (i=2) → not recorded. Queue empty. Done ✓</p><p class="trace-desc">Final left view: <strong style="font-weight:500;">[1, 2, 4]</strong> — one node per level, always the leftmost visible one.</p></div></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">06 · Common beginner mistakes</p>
+      <h2 class="section-title">What trips people up</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Not snapshotting level_size before the loop</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">If you write <code style="font-size:12px;">for i in range(len(queue))</code> directly, the queue grows mid-loop as you add children, causing you to mix up levels — the next level's nodes bleed into the current iteration.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Adding right child before left child</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The order of enqueuing determines which node appears first. Enqueue left before right — otherwise your "first dequeued" gives you the rightmost node, not the leftmost.</p></div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting to handle the empty tree</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">If root is <code style="font-size:12px;">None</code>, calling <code style="font-size:12px;">deque([None])</code> and then accessing <code style="font-size:12px;">node.left</code> will crash. Always guard with <code style="font-size:12px;">if not root: return []</code>.</p></div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Using a regular list instead of deque</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;"><code style="font-size:12px;">list.pop(0)</code> is O(n) because it shifts every element. <code style="font-size:12px;">deque.popleft()</code> is O(1). For large trees this difference matters — always use <code style="font-size:12px;">collections.deque</code>.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">07 · Complexity — the full explanation</p>
+      <h2 class="section-title">Why O(n) time and O(w) space?</h2>
+      <div class="complexity-grid" style="margin-bottom:1rem;">
+        <div class="complexity-card" style="background:#E6F1FB;"><div class="complexity-label" style="color:#185FA5;">Time</div><div class="complexity-value" style="color:#0C447C;">O(n)</div><div class="complexity-why" style="color:#185FA5;">Every node is enqueued once and dequeued once. Recording the first node per level is an O(1) check. Total: O(n).</div></div>
+        <div class="complexity-card" style="background:#EEEDFE;"><div class="complexity-label" style="color:#534AB7;">Space</div><div class="complexity-value" style="color:#3C3489;">O(w)</div><div class="complexity-why" style="color:#534AB7;">The queue holds at most the nodes of the widest level. w = 1 for a skewed tree, w = n/2 for a perfect binary tree — so worst case O(n).</div></div>
+      </div>
+      <div class="callout callout-warn"><p><strong style="font-weight:500;">Interview tip:</strong> When asked about space complexity, clarify: "O(w) where w is the maximum width of the tree. In the worst case of a perfect binary tree the last level holds n/2 nodes, so it's O(n). For a skewed tree it degenerates to O(1) queue space."</p></div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">08 · Interview context</p>
+      <h2 class="section-title">Where you'll actually use this</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Right View of Binary Tree (LeetCode 199)</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Identical pattern — just record the last node per level instead of the first. One character change.</p></div></div>
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Maximum width of binary tree</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Same BFS loop — track the maximum value of level_size seen across all iterations.</p></div></div>
+        <div class="interview-item"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Average of levels in binary tree</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Sum up node values in the inner loop, divide by level_size at the end of each level.</p></div></div>
+        <div class="interview-item" style="border:none;"><div class="interview-dot"></div><div><p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Zigzag level order traversal</p><p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Collect each level's nodes in a list, then reverse every other level. Directly extends this BFS pattern.</p></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Ready to see it in action?</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">Step through the visualizer to watch the BFS queue change live at each level.</p>
+    </div>
+    <button style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);cursor:pointer;">Open visualizer ↗</button>
+  </div>
+
+</div>
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep = document.getElementById('deep-mode');
+  const btnQ = document.getElementById('btn-quick');
+  const btnD = document.getElementById('btn-deep');
+  const desc = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>

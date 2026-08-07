@@ -1,440 +1,55 @@
 "use client";
 
 import Link from "next/link";
-import { type ReactNode, useMemo, useState } from "react";
+import { useMemo, useState, useCallback, useEffect, useRef } from "react";
 import {
-  BarChart3,
-  ChevronRight,
-  Database,
-  Gauge,
-  GitBranch,
-  Link2,
-  Network,
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  ChevronDown,
+  Clock,
+  Command,
+  Filter,
+  Layers,
+  ListChecks,
+  Play,
   Search,
-  Sigma,
   Sparkles,
-  Target,
-  Trees,
+  Zap,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  ArrayIcon,
+  LinkedListIcon,
+  BinaryTreeIcon,
+  BSTIcon,
+  GraphIcon,
+  DPIcon,
+  RecursionIcon,
+  LeetCodeIcon,
+  GFGIcon,
+} from "@/components/dsa-icons";
+import {
+  sections,
+  getProblemHref,
+  getGuideHref,
+  getPlatformLink,
+  topicConfigurations,
+  topicAccents,
+  defaultAccent,
+  type Accent,
+} from "@/data/problems-data";
 
-const stats = {
-  totalSolved: 0,
-  easySolved: 0,
-  easyTotal: 25,
-  mediumSolved: 0,
-  mediumTotal: 93,
-  hardSolved: 0,
-  hardTotal: 73,
+export {
+  sections,
+  getProblemHref,
+  getGuideHref,
+  getPlatformLink,
+  topicConfigurations,
+  topicAccents,
+  defaultAccent,
+  type Accent,
 };
-
-export const sections = [
-  {
-    name: "Arrays",
-    solved: 0,
-    problems: [
-      "Set Matrix Zeros",
-      "Pascal's Triangle",
-      "Next Permutation",
-      "Kadane's Algorithm",
-      "Sort an array of 0's, 1's, and 2's",
-      "Stock Buy and Sell",
-    ],
-  },
-  {
-    name: "Arrays Part-II",
-    solved: 0,
-    problems: [
-      "Rotate Matrix",
-      "Merge Overlapping Subintervals",
-      "Merge two sorted Arrays without extra space",
-      "Find the duplicate in an array of N+1 integers",
-      "Repeat and Missing Number",
-      "Inversion of Array",
-    ],
-  },
-  {
-    name: "Arrays Part-III",
-    solved: 0,
-    problems: [
-      "Search in a 2D Matrix",
-      "Pow(x, n)",
-      "Majority Element (>N/2 times)",
-      "Majority Element (>N/3 times)",
-      "Grid Unique Paths",
-      "Reverse Pairs",
-    ],
-  },
-  {
-    name: "Arrays Part-IV",
-    solved: 0,
-    problems: [
-      "2-Sum Problem",
-      "4-Sum Problem",
-      "Longest Consecutive Sequence",
-      "Largest Subarray with 0 sum",
-      "Count number of subarrays with given XOR",
-      "Longest Substring without repeat",
-    ],
-  },
-  {
-    name: "Linked List",
-    solved: 0,
-    problems: [
-      "Reverse a LinkedList",
-      "Find the middle of LinkedList",
-      "Merge two sorted Linked Lists",
-      "Remove N-th node from back of LinkedList",
-      "Add two numbers as LinkedList",
-      "Delete a given Node when a node is given",
-    ],
-  },
-  {
-    name: "Linked List Part-II",
-    solved: 0,
-    problems: [
-      "Find intersection point of Y LinkedList",
-      "Detect a cycle in Linked List",
-      "Reverse a LinkedList in groups of size k",
-      "Check if a LinkedList is palindrome or not",
-      "Find the starting point of the Loop of LinkedList",
-      "Flattening of a LinkedList",
-    ],
-  },
-  {
-    name: "Linked List and Arrays",
-    solved: 0,
-    problems: [
-      "Rotate a LinkedList",
-      "Clone a Linked List with random and next pointer",
-      "3-Sum",
-      "Trapping Rain Water",
-      "Remove Duplicate from Sorted array",
-      "Max consecutive ones",
-    ],
-  },
-  {
-    name: "Greedy Algorithm",
-    solved: 0,
-    problems: [
-      "N meetings in one room",
-      "Minimum number of platforms required for a railway",
-      "Job sequencing Problem",
-      "Fractional Knapsack Problem",
-      "Greedy algorithm to find minimum number of coins",
-      "Activity Selection",
-    ],
-  },
-  {
-    name: "Recursion",
-    solved: 0,
-    problems: [
-      "Subset Sums",
-      "Subset-II",
-      "Combination sum-1",
-      "Combination sum-2",
-      "Palindrome Partitioning",
-      "K-th permutation Sequence",
-    ],
-  },
-  {
-    name: "Recursion and Backtracking",
-    solved: 0,
-    problems: [
-      "Print all permutations of a string/array",
-      "N queens Problem",
-      "Sudoku Solver",
-      "M coloring Problem",
-      "Rat in a Maze",
-      "Word Break (print all ways)",
-    ],
-  },
-  {
-    name: "Binary Search",
-    solved: 0,
-    problems: [
-      "The N-th root of an integer",
-      "Matrix Median",
-      "Find the element that appears once in a sorted array, and the rest element appears twice",
-      "Search element in a sorted and rotated array",
-      "Median of 2 sorted arrays",
-      "K-th element of two sorted arrays",
-      "Allocate Minimum Number of Pages",
-      "Aggressive Cows",
-    ],
-  },
-  {
-    name: "Heaps",
-    solved: 0,
-    problems: [
-      "Max heap, Min Heap Implementation",
-      "Kth Largest Element",
-      "Maximum Sum Combination",
-      "Find Median from Data Stream",
-      "Merge K sorted arrays",
-      "K most frequent elements",
-    ],
-  },
-  {
-    name: "Stack and Queue",
-    solved: 0,
-    problems: [
-      "Implement Stack Using Arrays",
-      "Implement Queue Using Arrays",
-      "Implement Stack using Queue (using single queue)",
-      "Implement Queue using Stack (0(1) amortized method)",
-      "Check for balanced parentheses",
-      "Next Greater Element",
-      "Sort a Stack",
-    ],
-  },
-  {
-    name: "Stack and Queue Part-II",
-    solved: 0,
-    problems: [
-      "Next Smaller Element",
-      "LRU cache",
-      "LFU Cache",
-      "Largest rectangle in a histogram",
-      "Sliding Window maximum",
-      "Implement Min Stack",
-      "Rotten Orange (Using BFS)",
-      "Stock Span Problem",
-      "Find the maximum of minimums of every window size",
-      "The Celebrity Problem",
-    ],
-  },
-  {
-    name: "String",
-    solved: 0,
-    problems: [
-      "Reverse Words in a String",
-      "Longest Palindrome in a string",
-      "Roman Number to Integer and vice versa",
-      "Implement ATOI/STRSTR",
-      "Longest Common Prefix",
-      "Rabin Karp",
-    ],
-  },
-  {
-    name: "String Part-II",
-    solved: 0,
-    problems: [
-      "Z-Function",
-      "KMP algo / LPS(pi) array",
-      "Minimum characters needed to be inserted in the beginning to make it palindromic",
-      "Check for Anagrams",
-      "Count and Say",
-      "Compare version numbers",
-    ],
-  },
-  {
-    name: "Binary Tree",
-    solved: 0,
-    problems: [
-      "Inorder Traversal",
-      "Preorder Traversal",
-      "Postorder Traversal",
-      "LeftView Of Binary Tree",
-      "Bottom View of Binary Tree",
-      "Top View of Binary Tree",
-      "Preorder Inorder Postorder in a single traversal",
-      "Vertical order traversal",
-      "Root to node path in a Binary Tree",
-      "Max width of a Binary Tree",
-      "Level order Traversal",
-      "Height of a Binary Tree",
-    ],
-  },
-  {
-    name: "Binary Tree Part-II",
-    solved: 0,
-    problems: [
-      "Diameter of Binary Tree",
-      "Check if the Binary tree is height-balanced or not",
-      "LCA in Binary Tree",
-      "Check if two trees are identical or not",
-      "Zig Zag Traversal of Binary Tree",
-      "Boundary Traversal of Binary Tree",
-      "Symmetric Binary Tree",
-      "Construct Binary Tree from inorder and preorder",
-    ],
-  },
-  {
-    name: "Binary Tree Part-III",
-    solved: 0,
-    problems: [
-      "Construct Binary Tree from Inorder and Postorder",
-      "Symmetric Binary Tree",
-      "Flatten Binary Tree to LinkedList",
-      "Check if Binary Tree is the mirror of itself",
-      "Check for Children Sum Property",
-    ],
-  },
-  {
-    name: "Binary Search Tree",
-    solved: 0,
-    problems: [
-      "Populate Next Right pointers of Tree",
-      "Search given Key in BST",
-      "Construct BST from given keys",
-      "Construct BST from preorder traversal",
-      "Check is a BT is BST or not",
-      "Find LCA of two nodes in BST",
-      "Find the inorder predecessor/successor of a given Key in BST",
-    ],
-  },
-  {
-    name: "Binary Search Tree Part-II",
-    solved: 0,
-    problems: [
-      "Floor in a BST",
-      "Ceil in a BST",
-      "Find K-th smallest element in BST",
-      "Find K-th largest element in BST",
-      "Find a pair with a given sum in BST",
-      "BST iterator",
-      "Size of largest BST in a Binary Tree",
-      "Serialize and deserialize Binary Tree",
-    ],
-  },
-  {
-    name: "Binary Trees [Miscellaneous]",
-    solved: 0,
-    problems: [
-      "Binary Tree to Double Linked List",
-      "Find median in a stream of running integers",
-      "K-th largest element in a stream",
-      "Distinct numbers in Window",
-      "K-th largest element in an unsorted array",
-      "Flood-fill Algorithm",
-    ],
-  },
-  {
-    name: "Graph",
-    solved: 0,
-    problems: [
-      "Clone a graph",
-      "DFS",
-      "BFS",
-      "Detect A cycle in Undirected Graph using BFS",
-      "Detect A cycle in Undirected Graph using DFS",
-      "Detect A cycle in a Directed Graph using DFS",
-      "Detect A cycle in a Directed Graph using BFS",
-      "Topological Sort BFS",
-      "Topological Sort DFS",
-      "Number of islands (Do in Grid and Graph Both)",
-      "Bipartite Check using BFS",
-      "Bipartite Check using DFS",
-    ],
-  },
-  {
-    name: "Graph Part-II",
-    solved: 0,
-    problems: [
-      "Strongly Connected Component (Kosaraju's Algo)",
-      "Dijkstra's Algorithm",
-      "Bellman-Ford Algo",
-      "Floyd Warshall Algorithm",
-      "MST using Prim's Algo",
-      "MST using Kruskal's Algo",
-    ],
-  },
-  {
-    name: "Dynamic Programming",
-    solved: 0,
-    problems: [
-      "Max Product Subarray",
-      "Longest Increasing Subsequence",
-      "Longest Common Subsequence",
-      "0-1 Knapsack",
-      "Edit Distance",
-      "Maximum sum increasing subsequence",
-      "Matrix Chain Multiplication",
-    ],
-  },
-  {
-    name: "Dynamic Programming Part-II",
-    solved: 0,
-    problems: [
-      "Minimum sum path in the matrix (up to down)",
-      "Coin change",
-      "Subset Sum",
-      "Rod Cutting",
-      "Egg Dropping",
-      "Word Break",
-      "Palindrome Partitioning (MCM Variation)",
-      "Maximum profit in Job scheduling",
-    ],
-  },
-  {
-    name: "Trie",
-    solved: 0,
-    problems: [
-      "Implement Trie (Prefix Tree)",
-      "Implement Trie II",
-      "Longest String with All Prefixes",
-      "Number of Distinct Substrings in a String",
-      "Power Set",
-      "Maximum XOR of two numbers in an array",
-      "Maximum XOR With an Element From Array",
-    ],
-  },
-];
-
-export const topicConfigurations = [
-  {
-    key: "arrays",
-    title: "Arrays",
-    description: "Patterns on arrays, matrix operations, and prefix tricks.",
-    icon: Database,
-    matches: (sectionName: string) => sectionName.startsWith("Arrays"),
-  },
-  {
-    key: "linked-list",
-    title: "Linked List",
-    description: "Pointer manipulation, reversal, merge, and cycle detection.",
-    icon: Link2,
-    matches: (sectionName: string) =>
-      sectionName.startsWith("Linked List") ||
-      sectionName === "Linked List and Arrays",
-  },
-  {
-    key: "trees",
-    title: "Trees",
-    description: "Traversals, views, BSTs, and reconstruction techniques.",
-    icon: Trees,
-    matches: (sectionName: string) => sectionName.includes("Binary Tree"),
-  },
-  {
-    key: "bst",
-    title: "Binary Search Tree",
-    description: "Ordered tree logic, floor/ceil, iterators, and Kth queries.",
-    icon: Search,
-    matches: (sectionName: string) => sectionName.includes("Binary Search Tree"),
-  },
-  {
-    key: "graph",
-    title: "Graph",
-    description: "Traversal, cycle checks, shortest paths, and MST.",
-    icon: Network,
-    matches: (sectionName: string) => sectionName.startsWith("Graph"),
-  },
-  {
-    key: "dp",
-    title: "Dynamic Programming",
-    description: "State transitions, optimization, and memoization patterns.",
-    icon: Sigma,
-    matches: (sectionName: string) => sectionName.startsWith("Dynamic Programming"),
-  },
-  {
-    key: "recursion",
-    title: "Recursion",
-    description: "Subsets, combinations, backtracking, and search trees.",
-    icon: GitBranch,
-    matches: (sectionName: string) =>
-      sectionName.startsWith("Recursion") || sectionName === "Trie",
-  },
-];
 
 type ViewMode = "topics" | "sheet";
 
@@ -444,71 +59,61 @@ const toSlug = (value: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-export const getProblemHref = (sectionName: string, problemName: string) => {
-  if (sectionName === "Binary Tree" && problemName === "Inorder Traversal") {
-    return "/problems/binary-tree/inorder-traversal";
-  }
-
-  if (sectionName === "Binary Tree" && problemName === "Preorder Traversal") {
-    return "/problems/binary-tree/preorder-traversal";
-  }
-
-  if (sectionName === "Binary Tree" && problemName === "Postorder Traversal") {
-    return "/problems/binary-tree/postorder-traversal";
-  }
-
-  if (sectionName === "Binary Tree") {
-    return `/problems/binary-tree/${toSlug(problemName)}`;
-  }
-
-  return null;
-};
-
 export default function ProblemsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("topics");
+  const [searchQuery, setSearchQuery] = useState("");
   const [openSections, setOpenSections] = useState<string[]>([sections[0].name]);
+  const searchRef = useRef<HTMLInputElement>(null);
 
-  const totalProblemsFromList = useMemo(
-    () => sections.reduce((sum, section) => sum + section.problems.length, 0),
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const totalProblems = useMemo(
+    () => sections.reduce((sum, s) => sum + s.problems.length, 0),
+    [],
+  );
+  const totalSolved = useMemo(
+    () => sections.reduce((sum, s) => sum + s.solved, 0),
+    [],
+  );
+  const totalLive = useMemo(
+    () =>
+      sections.reduce(
+        (sum, s) =>
+          sum + s.problems.filter((p) => getProblemHref(s.name, p) !== null).length,
+        0,
+      ),
     [],
   );
 
-  const overallProgress =
-    totalProblemsFromList === 0
-      ? 0
-      : Math.round((stats.totalSolved / totalProblemsFromList) * 100);
-
-  const toggleSection = (sectionName: string) => {
-    setOpenSections((previous) =>
-      previous.includes(sectionName)
-        ? previous.filter((name) => name !== sectionName)
-        : [...previous, sectionName],
+  const toggleSection = useCallback((name: string) => {
+    setOpenSections((prev) =>
+      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name],
     );
-  };
-
-  const expandAll = () => {
-    setOpenSections(sections.map((section) => section.name));
-  };
-
-  const collapseAll = () => {
-    setOpenSections([]);
-  };
+  }, []);
 
   const topicCollections = useMemo(
     () =>
       topicConfigurations.map((topic) => {
-        const sectionItems = sections.filter((section) => topic.matches(section.name));
-        const problems = sectionItems.flatMap((section) =>
-          section.problems.map((problem) => ({
-            sectionName: section.name,
-            problem,
-            href: getProblemHref(section.name, problem),
+        const sectionItems = sections.filter((s) => topic.matches(s.name));
+        const problems = sectionItems.flatMap((s) =>
+          s.problems.map((p) => ({
+            sectionName: s.name,
+            problem: p,
+            href: getProblemHref(s.name, p),
           })),
         );
-        const liveCount = problems.filter((item) => Boolean(item.href)).length;
-        const solved = sectionItems.reduce((sum, section) => sum + section.solved, 0);
+        const liveCount = problems.filter((i) => Boolean(i.href)).length;
+        const solved = sectionItems.reduce((sum, s) => sum + s.solved, 0);
         const total = problems.length;
-
         return {
           ...topic,
           sectionsCount: sectionItems.length,
@@ -522,326 +127,472 @@ export default function ProblemsPage() {
     [],
   );
 
+  const filteredSections = useMemo(() => {
+    if (!searchQuery.trim()) return sections;
+    const q = searchQuery.toLowerCase();
+    return sections
+      .map((s) => ({
+        ...s,
+        problems: s.problems.filter((p) => p.toLowerCase().includes(q)),
+      }))
+      .filter((s) => s.problems.length > 0);
+  }, [searchQuery]);
+
+  const featured = topicCollections.reduce((best, t) =>
+    t.liveCount > best.liveCount ? t : best,
+  );
+
   return (
-    <section className="space-y-4">
-      <header className="traversal-panel space-y-3 p-5">
+    <div className="space-y-8">
+      {/* ═══ HERO HEADER ═══ */}
+      <header className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-1.5">
+            <h1 className="font-[var(--font-space-grotesk)] text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              Data Structure & Algorithm Problems
+            </h1>
+            <p className="font-[var(--font-outfit)] text-sm leading-relaxed text-slate-500 max-w-xl">
+              Explore <span className="font-semibold text-slate-700">{totalProblems}</span> curated problems across{" "}
+              <span className="font-semibold text-slate-700">{topicConfigurations.length}</span> core topics with interactive step-by-step visualizers.
+            </p>
+          </div>
 
-        <h1 className="max-w-5xl text-[clamp(28px,2.5vw,40px)] font-extrabold leading-[1.06] tracking-[-0.03em] text-slate-900">
-          Top Coding Interview Problems
-        </h1>
+          {/* Stat blocks */}
+          <div className="flex shrink-0 items-center gap-2.5 rounded-xl border border-slate-200/80 bg-slate-50 p-2 sm:p-2.5">
+            <StatBlock label="Total" value={totalProblems} sub="problems" />
+            <div className="h-8 w-px bg-slate-200" />
+            <StatBlock label="Solved" value={totalSolved} sub={`of ${totalProblems}`} accent="emerald" />
+            <div className="h-8 w-px bg-slate-200" />
+            <StatBlock label="Live" value={totalLive} sub="visualizers" accent="sky" />
+          </div>
+        </div>
 
-        <p className="max-w-4xl text-sm leading-6 text-slate-600">
-          A structured collection of high-signal DSA problems for interview prep.
-          Explore by topic, track progress, and jump into interactive
-          visualizers where available.
-        </p>
+        {/* Search + View Mode Toolbar */}
+        <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <label className="relative block w-full max-w-md">
+            <Search
+              size={15}
+              strokeWidth={2}
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+              aria-hidden="true"
+            />
+            <input
+              ref={searchRef}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search problems by name..."
+              className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-20 text-xs font-medium text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100"
+            />
+            <kbd className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded-md border border-slate-200 bg-white px-1.5 py-0.5 font-[var(--font-jetbrains)] text-[10px] font-semibold text-slate-400 sm:inline-flex">
+              <Command size={10} strokeWidth={2} aria-hidden="true" />K
+            </kbd>
+          </label>
+
+          <div className="inline-flex items-center self-start rounded-xl border border-slate-200 bg-slate-50 p-1">
+            {(
+              [
+                { key: "topics" as const, label: "Topics", icon: Layers },
+                { key: "sheet" as const, label: "All Sections", icon: ListChecks },
+              ] as const
+            ).map((tab) => {
+              const TabIcon = tab.icon;
+              const active = viewMode === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setViewMode(tab.key)}
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all",
+                    active
+                      ? "bg-white text-slate-900 shadow-sm border border-slate-200"
+                      : "text-slate-500 hover:text-slate-900",
+                  )}
+                >
+                  <TabIcon size={13} strokeWidth={2} aria-hidden="true" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </header>
 
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          label="Overall Progress"
-          value={`${overallProgress}%`}
-          icon={<Gauge size={15} strokeWidth={2.2} aria-hidden="true" />}
-          tone="sky"
-        />
-        <StatCard
-          label="All Problems"
-          value={`${stats.totalSolved}/${totalProblemsFromList}`}
-          icon={<BarChart3 size={15} strokeWidth={2.2} aria-hidden="true" />}
-          tone="slate"
-        />
-        <StatCard
-          label="Easy"
-          value={`${stats.easySolved}/${stats.easyTotal}`}
-          icon={<Target size={15} strokeWidth={2.2} aria-hidden="true" />}
-          tone="emerald"
-        />
-        <StatCard
-          label="Medium"
-          value={`${stats.mediumSolved}/${stats.mediumTotal}`}
-          icon={<Target size={15} strokeWidth={2.2} aria-hidden="true" />}
-          tone="amber"
-        />
-      </div>
+      {/* ═══ FEATURED TOPIC ═══ */}
+      {viewMode === "topics" && !searchQuery.trim() && (
+        <FeaturedTopicCard topic={featured} accent={topicAccents[featured.key] ?? defaultAccent} />
+      )}
 
-      <div className="traversal-panel p-4">
-        <div className="traversal-panel-header">
-          <h2 className="traversal-panel-title text-rose-700">Hard</h2>
-          <button
-            type="button"
-            className="traversal-pill inline-flex items-center gap-1.5 border-rose-200 bg-rose-50 text-rose-700 transition hover:bg-rose-100"
-          >
-            <Sparkles size={12} strokeWidth={2} aria-hidden="true" />
-            Random Problem
-          </button>
-        </div>
-        <p className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 tabular-nums">
-          {stats.hardSolved}/{stats.hardTotal}
-        </p>
-      </div>
-
-      <div className="sticky top-4 z-10 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white/95 px-3 py-2 shadow-sm backdrop-blur">
-        <div className="inline-flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1">
-          <button
-            type="button"
-            onClick={() => setViewMode("topics")}
-            className={`rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-[0.04em] transition ${
-              viewMode === "topics"
-                ? "bg-white text-slate-900 shadow-sm"
-                : "text-slate-500 hover:text-slate-700"
-            }`}
-          >
-            Topic Cards
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode("sheet")}
-            className={`rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-[0.04em] transition ${
-              viewMode === "sheet"
-                ? "bg-white text-slate-900 shadow-sm"
-                : "text-slate-500 hover:text-slate-700"
-            }`}
-          >
-            Section View
-          </button>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={expandAll}
-            className="traversal-pill transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={viewMode !== "sheet"}
-          >
-            Expand All
-          </button>
-          <button
-            type="button"
-            onClick={collapseAll}
-            className="traversal-pill transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={viewMode !== "sheet"}
-          >
-            Collapse All
-          </button>
-        </div>
-      </div>
-
+      {/* ═══ TOPIC CARDS / SECTION VIEW ═══ */}
       {viewMode === "topics" ? (
-        <>
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {topicCollections.map((topic) => {
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {topicCollections
+            .filter((t) => {
+              if (searchQuery.trim()) {
+                return t.problems.some((p) =>
+                  p.problem.toLowerCase().includes(searchQuery.toLowerCase()),
+                );
+              }
+              return t.key !== featured.key;
+            })
+            .map((topic) => {
               const Icon = topic.icon;
-
+              const accent = topicAccents[topic.key] ?? defaultAccent;
               return (
                 <Link
                   key={topic.key}
                   href={`/problems/topics/${topic.key}`}
-                  className="traversal-panel group relative overflow-hidden p-4 text-left transition hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
+                  className={cn(
+                    "group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-900/5",
+                    accent.hoverBorder,
+                  )}
                 >
-                  <div className="pointer-events-none absolute right-0 top-0 h-20 w-24 bg-gradient-to-bl from-sky-100/80 to-transparent" />
-                  <div className="relative">
-                    <div className="mb-3 flex items-center justify-between gap-3">
-                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-sky-200 bg-sky-50 text-sky-700">
-                        <Icon size={16} strokeWidth={2.2} aria-hidden="true" />
-                      </span>
-                      <span className="traversal-pill border-slate-200 bg-slate-50 text-slate-600">
-                        {topic.sectionsCount} sections
+
+                  <div className="relative flex flex-1 flex-col p-6">
+                    <div className="flex items-center justify-end gap-2">
+                      {topic.liveCount > 0 && (
+                        <span className="font-[var(--font-jetbrains)] text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60">
+                          {topic.liveCount} live
+                        </span>
+                      )}
+                      <span className="font-[var(--font-jetbrains)] text-[11px] font-medium text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200/60">
+                        {topic.sectionsCount} {topic.sectionsCount === 1 ? "section" : "sections"}
                       </span>
                     </div>
 
-                    <h3 className="text-lg font-extrabold tracking-tight text-slate-900">
-                      {topic.title}
-                    </h3>
-                    <p className="mt-1 line-clamp-2 text-sm text-slate-600">
-                      {topic.description}
-                    </p>
+                    <div className="mt-4">
+                      <h3 className="font-[var(--font-space-grotesk)] text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                        {topic.title}
+                      </h3>
+                      <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-slate-500 font-[var(--font-outfit)]">
+                        {topic.description}
+                      </p>
+                    </div>
 
-                    <div className="mt-3 space-y-2">
-                      <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
-                        <span>Progress</span>
-                        <span className="tabular-nums">{topic.solved}/{topic.total}</span>
+                    <div className="mt-auto pt-5">
+                      <div className="flex items-center justify-between font-[var(--font-jetbrains)] text-[11px] font-semibold text-slate-400">
+                        <span className="tabular-nums">{topic.solved}/{topic.total} solved</span>
+                        <span className="tabular-nums">{topic.progress}%</span>
                       </div>
-                      <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
+                      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-sky-500 to-emerald-500"
-                          style={{ width: `${topic.progress}%` }}
+                          className="h-full rounded-full bg-slate-900 transition-all duration-500 ease-out"
+                          style={{ width: `${Math.max(topic.progress, 2)}%` }}
                         />
                       </div>
-                      <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
-                        <span>{topic.liveCount} live visualizers</span>
-                        <span>{topic.progress}% complete</span>
-                      </div>
+                    </div>
+
+                    <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-semibold text-slate-400 transition-colors group-hover:text-slate-900">
+                      <span>Explore topic</span>
+                      <ArrowRight size={14} strokeWidth={2} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
                     </div>
                   </div>
                 </Link>
               );
             })}
-          </div>
-        </>
+        </div>
       ) : (
-        <div className="traversal-panel overflow-hidden">
-          <div className="divide-y">
-            {sections.map((section, index) => {
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-[0.06em] text-slate-400">
+              {filteredSections.length} {filteredSections.length === 1 ? "section" : "sections"}
+            </p>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setOpenSections(filteredSections.map((s) => s.name))}
+                className="rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+              >
+                Expand all
+              </button>
+              <span className="text-slate-300">&middot;</span>
+              <button
+                type="button"
+                onClick={() => setOpenSections([])}
+                className="rounded-lg px-2.5 py-1.5 text-[11px] font-semibold text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+              >
+                Collapse all
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            {filteredSections.map((section, sIdx) => {
               const isOpen = openSections.includes(section.name);
-              const panelId = `section-${index}-${section.name
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, "-")
-                .replace(/(^-|-$)/g, "")}`;
-              const sectionProgress =
+              const panelId = `section-panel-${sIdx}`;
+              const progress =
                 section.problems.length === 0
                   ? 0
-                  : (section.solved / section.problems.length) * 100;
+                  : Math.round((section.solved / section.problems.length) * 100);
+              const liveCt = section.problems.filter(
+                (p) => getProblemHref(section.name, p) !== null,
+              ).length;
 
               return (
-                <article key={section.name} className="overflow-hidden">
+                <article
+                  key={section.name}
+                  className={cn(
+                    "overflow-hidden rounded-xl border bg-white transition-shadow",
+                    isOpen ? "border-slate-200 shadow-sm" : "border-slate-200/60",
+                  )}
+                >
                   <button
                     type="button"
                     onClick={() => toggleSection(section.name)}
-                    className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition hover:bg-slate-50 sm:px-5"
+                    className="group flex w-full items-center gap-4 px-5 py-4 text-left transition hover:bg-slate-50/60"
                     aria-expanded={isOpen}
                     aria-controls={panelId}
                   >
-                    <ChevronRight
-                      size={14}
-                      strokeWidth={2}
-                      className={`text-slate-500 transition-transform ${isOpen ? "rotate-90" : "rotate-0"}`}
-                      aria-hidden="true"
-                    />
+                    <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-xs font-bold tabular-nums text-slate-500 transition group-hover:bg-slate-200/80">
+                      {sIdx + 1}
+                    </span>
 
-                    <h2 className="text-[1rem] font-semibold leading-tight tracking-normal text-slate-900 sm:text-[1.08rem]">
-                      {section.name}
-                    </h2>
+                    <div className="min-w-0 flex-1">
+                      <h2 className="truncate text-[15px] font-semibold text-slate-800">
+                        {section.name}
+                      </h2>
+                    </div>
 
-                    <div className="ml-auto flex items-center gap-3">
-                      <div className="h-1.5 w-24 overflow-hidden rounded-full bg-slate-200 sm:w-36 md:w-40">
+                    <div className="flex shrink-0 items-center gap-3">
+                      {liveCt > 0 && (
+                        <span className="hidden items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white sm:inline-flex">
+                          {liveCt} live
+                        </span>
+                      )}
+                      <div className="hidden h-1.5 w-20 overflow-hidden rounded-full bg-slate-100 sm:block md:w-28">
                         <div
-                          className="h-full rounded-full bg-gradient-to-r from-sky-500 to-emerald-500"
-                          style={{ width: `${sectionProgress}%` }}
+                          className="h-full rounded-full bg-gradient-to-r from-slate-300 to-slate-400 transition-all"
+                          style={{ width: `${progress}%` }}
                         />
                       </div>
-                      <span className="w-[64px] whitespace-nowrap text-right text-sm font-semibold tabular-nums text-slate-500 sm:w-[72px] sm:text-base">
-                        {section.solved} / {section.problems.length}
+                      <span className="w-[52px] text-right text-xs font-semibold tabular-nums text-slate-400">
+                        {section.solved}/{section.problems.length}
                       </span>
+                      <ChevronDown
+                        size={14}
+                        strokeWidth={2.2}
+                        className={cn(
+                          "shrink-0 text-slate-400 transition-transform duration-200",
+                          isOpen ? "rotate-0" : "-rotate-90",
+                        )}
+                        aria-hidden="true"
+                      />
                     </div>
                   </button>
 
-                  {isOpen ? (
+                  {isOpen && (
                     <div
                       id={panelId}
-                      className="border-t bg-slate-50/70 px-5 py-4 sm:px-6"
+                      className="border-t border-slate-100 bg-slate-50/40 px-5 py-4"
                     >
-                      <div className="mb-3 flex items-center justify-between">
-                        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                          Problem List
-                        </p>
-                        <p className="text-xs font-semibold text-slate-500">
-                          {section.problems.length} total
-                        </p>
-                      </div>
-
-                      <div className="grid gap-2 lg:grid-cols-2">
-                        {section.problems.map((problem, problemIndex) => {
+                      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                        {section.problems.map((problem, pIdx) => {
                           const href = getProblemHref(section.name, problem);
+                          const isLive = href !== null;
+                          const guideHref = getGuideHref(problem);
+                          const platform = getPlatformLink(problem);
 
-                          if (href) {
+                          if (isLive) {
                             return (
-                              <Link
+                              <div
                                 key={problem}
-                                href={href}
-                                className="group flex w-full items-start gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-left transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]"
+                                className="group/card flex items-center gap-2.5 rounded-lg border border-slate-200/80 bg-white px-3 py-2.5 transition-all hover:border-emerald-300 hover:shadow-md hover:shadow-emerald-100/50"
                               >
-                                <span className="mt-0.5 inline-flex h-6 min-w-6 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-1 text-xs font-semibold tabular-nums text-slate-500">
-                                  {problemIndex + 1}
+                                <span className="inline-flex h-6 min-w-[24px] items-center justify-center rounded-md border border-emerald-200 bg-emerald-50 px-1 text-[11px] font-bold tabular-nums text-emerald-600">
+                                  {pIdx + 1}
                                 </span>
-                                <div className="flex min-w-0 flex-1 items-start justify-between gap-2">
-                                  <span className="line-clamp-2 text-sm font-semibold leading-5 text-slate-800 transition group-hover:text-slate-900">
-                                    {problem}
-                                  </span>
-                                  <span className="traversal-pill border-emerald-200 bg-emerald-50 text-[9px] text-emerald-700">
-                                    Live
-                                  </span>
+                                <span className="flex-1 truncate text-[13px] font-medium text-slate-700">
+                                  {problem}
+                                </span>
+                                <div className="flex shrink-0 items-center gap-1">
+                                  <Link href={href} title="Visualizer" className="inline-flex h-6 w-6 items-center justify-center rounded border border-emerald-200 bg-emerald-50 text-emerald-600 transition hover:bg-emerald-100">
+                                    <Play size={11} strokeWidth={2.5} aria-hidden="true" />
+                                  </Link>
+                                  {guideHref && (
+                                    <Link href={guideHref} title="Learn" className="inline-flex h-6 w-6 items-center justify-center rounded border border-sky-200 bg-sky-50 text-sky-600 transition hover:bg-sky-100">
+                                      <BookOpen size={11} strokeWidth={2.5} aria-hidden="true" />
+                                    </Link>
+                                  )}
+                                  {platform && (
+                                    <a href={platform.url} target="_blank" rel="noopener noreferrer" title={platform.platform === "leetcode" ? "LeetCode" : "GeeksforGeeks"} className="inline-flex h-6 w-6 items-center justify-center rounded border border-slate-200 bg-slate-50 transition hover:bg-slate-100">
+                                      {platform.platform === "leetcode" ? <LeetCodeIcon size={12} aria-hidden="true" /> : <GFGIcon size={12} aria-hidden="true" />}
+                                    </a>
+                                  )}
                                 </div>
-                              </Link>
+                              </div>
                             );
                           }
 
                           return (
-                            <button
+                            <div
                               key={problem}
-                              type="button"
-                              className="group flex w-full items-start gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-left transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]"
+                              className="flex items-center gap-2.5 rounded-lg border border-dashed border-slate-200/80 bg-white/50 px-3 py-2.5"
                             >
-                              <span className="mt-0.5 inline-flex h-6 min-w-6 items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-1 text-xs font-semibold tabular-nums text-slate-500">
-                                {problemIndex + 1}
+                              <span className="inline-flex h-6 min-w-[24px] items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-1 text-[11px] font-bold tabular-nums text-slate-400">
+                                {pIdx + 1}
                               </span>
-                              <div className="flex min-w-0 flex-1 items-start justify-between gap-2">
-                                <span className="line-clamp-2 text-sm font-semibold leading-5 text-slate-800 transition group-hover:text-slate-900">
-                                  {problem}
-                                </span>
-                                <span className="traversal-pill border-slate-200 bg-slate-100 text-[9px] text-slate-600">
-                                  Planned
-                                </span>
+                              <span className="flex-1 truncate text-[13px] font-medium text-slate-500">
+                                {problem}
+                              </span>
+                              <div className="flex shrink-0 items-center gap-1">
+                                {platform && (
+                                  <a href={platform.url} target="_blank" rel="noopener noreferrer" title={platform.platform === "leetcode" ? "LeetCode" : "GeeksforGeeks"} className="inline-flex h-6 w-6 items-center justify-center rounded border border-slate-200 bg-slate-50 transition hover:bg-slate-100">
+                                    {platform.platform === "leetcode" ? <LeetCodeIcon size={12} aria-hidden="true" /> : <GFGIcon size={12} aria-hidden="true" />}
+                                  </a>
+                                )}
+                                <Clock size={11} strokeWidth={2} className="shrink-0 text-slate-300" aria-hidden="true" />
                               </div>
-                            </button>
+                            </div>
                           );
                         })}
                       </div>
                     </div>
-                  ) : null}
+                  )}
                 </article>
               );
             })}
           </div>
+
+          {filteredSections.length === 0 && (
+            <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-white py-20 text-center">
+              <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                <Filter size={20} strokeWidth={1.5} className="text-slate-400" aria-hidden="true" />
+              </div>
+              <p className="mt-4 text-sm font-semibold text-slate-700">No matching sections</p>
+              <p className="mt-1 text-xs text-slate-400">
+                Try a different search term or clear the filter.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-slate-800"
+              >
+                Clear search
+              </button>
+            </div>
+          )}
         </div>
       )}
-    </section>
+    </div>
   );
 }
 
-function StatCard({
-  label,
-  value,
-  icon,
-  tone,
-}: {
-  label: string;
-  value: string;
-  icon: ReactNode;
-  tone: "sky" | "slate" | "emerald" | "amber";
+/* ═══ FEATURED TOPIC — wide highlighted card ═══ */
+function FeaturedTopicCard({ topic, accent }: {
+  topic: {
+    key: string; title: string; description: string;
+    icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>;
+    liveCount: number; solved: number; total: number; progress: number; sectionsCount: number;
+    problems: { sectionName: string; problem: string; href: string | null }[];
+  };
+  accent: Accent;
 }) {
-  const toneClasses = {
-    sky: {
-      card: "from-sky-50 to-white",
-      badge: "border-sky-200 bg-sky-100 text-sky-700",
-    },
-    slate: {
-      card: "from-slate-50 to-white",
-      badge: "border-slate-200 bg-slate-100 text-slate-700",
-    },
-    emerald: {
-      card: "from-emerald-50 to-white",
-      badge: "border-emerald-200 bg-emerald-100 text-emerald-700",
-    },
-    amber: {
-      card: "from-amber-50 to-white",
-      badge: "border-amber-200 bg-amber-100 text-amber-700",
-    },
-  }[tone];
+  const Icon = topic.icon;
+  const topProblems = topic.problems.filter((p) => p.href).slice(0, 5);
 
   return (
-    <div
-      className={`traversal-panel bg-gradient-to-br px-4 py-3 ${toneClasses.card}`}
+    <Link
+      href={`/problems/topics/${topic.key}`}
+      className={cn(
+        "group relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-200 hover:shadow-xl hover:shadow-slate-900/5 sm:p-8 lg:flex-row lg:items-center lg:gap-10",
+        accent.hoverBorder,
+      )}
     >
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-semibold text-slate-600">{label}</p>
-        <span
-          className={`inline-flex h-7 w-7 items-center justify-center rounded-full border ${toneClasses.badge}`}
-        >
-          {icon}
-        </span>
+
+      <div className="relative flex-1 space-y-4">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1 font-[var(--font-jetbrains)] text-[11px] font-semibold uppercase tracking-wider text-white shadow-sm">
+            <Sparkles size={11} strokeWidth={2} className="text-amber-400" aria-hidden="true" />
+            Featured Topic
+          </span>
+        </div>
+
+        <div>
+          <h2 className="font-[var(--font-space-grotesk)] text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+            {topic.title}
+          </h2>
+          <p className="mt-2 max-w-md text-sm leading-relaxed text-slate-500 font-[var(--font-outfit)]">
+            {topic.description} — {topic.liveCount} interactive visualizers ready to explore.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-5">
+          <div>
+            <p className="text-2xl font-extrabold tabular-nums text-slate-900">{topic.total}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-slate-400">Problems</p>
+          </div>
+          <div className="h-8 w-px bg-slate-200" />
+          <div>
+            <p className="text-2xl font-extrabold tabular-nums text-emerald-600">{topic.liveCount}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-slate-400">Live</p>
+          </div>
+          <div className="h-8 w-px bg-slate-200" />
+          <div>
+            <p className="text-2xl font-extrabold tabular-nums text-slate-900">{topic.sectionsCount}</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-slate-400">Sections</p>
+          </div>
+        </div>
       </div>
-      <p className="mt-2 text-4xl font-extrabold tracking-tight text-slate-900 tabular-nums">
+
+      {topProblems.length > 0 && (
+        <div className="relative w-full shrink-0 lg:w-72">
+          <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.06em] text-slate-400">
+            Top problems
+          </p>
+          <div className="space-y-1.5">
+            {topProblems.map((p, i) => (
+              <div
+                key={p.problem}
+                className="flex items-center gap-2.5 rounded-lg border border-slate-100 bg-slate-50/60 px-3 py-2 transition group-hover:border-slate-200 group-hover:bg-white"
+              >
+                <span className={cn(
+                  "inline-flex h-5 min-w-[20px] items-center justify-center rounded text-[10px] font-bold tabular-nums",
+                  accent.bg, accent.text,
+                )}>
+                  {i + 1}
+                </span>
+                <span className="flex-1 truncate text-[12px] font-medium text-slate-600">
+                  {p.problem}
+                </span>
+                <ArrowUpRight size={11} strokeWidth={2} className="shrink-0 text-slate-400" aria-hidden="true" />
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-slate-400 transition group-hover:text-slate-700">
+            View all {topic.total} problems
+            <ArrowRight size={12} strokeWidth={2} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
+          </div>
+        </div>
+      )}
+    </Link>
+  );
+}
+
+/* ─── Stat block for hero ─── */
+function StatBlock({
+  label,
+  value,
+  sub,
+  accent,
+}: {
+  label: string;
+  value: number;
+  sub: string;
+  accent?: "emerald" | "sky";
+}) {
+  const valueColor = accent === "emerald"
+    ? "text-emerald-600"
+    : accent === "sky"
+      ? "text-sky-600"
+      : "text-slate-900";
+
+  return (
+    <div className="flex flex-col items-center justify-center px-3.5 py-1 text-center">
+      <p className={cn("font-[var(--font-jetbrains)] text-xl font-bold tabular-nums tracking-tight", valueColor)}>
         {value}
+      </p>
+      <p className="font-[var(--font-jetbrains)] text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+        {label}
       </p>
     </div>
   );

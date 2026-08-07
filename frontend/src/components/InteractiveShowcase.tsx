@@ -1,25 +1,25 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./InteractiveShowcase.module.css";
+import styles from "./InteractiveShowcaseView.module.css";
 
 const slides = [
   {
     number: "01",
     eyebrow: "Code Synchronization",
-    title: "Every line of code,\nvisualized live.",
+    titleLines: ["Every line of code,", "visualized live."],
     desc: "Watch call stacks, pointers, and variables update in perfect sync with each executing line. Connect every concept to a concrete, visual state.",
   },
   {
     number: "02",
     eyebrow: "Interactive Sandbox",
-    title: "Build any tree.\nTest any edge case.",
+    titleLines: ["Build any tree.", "Test any edge case."],
     desc: "Don't just watch standard examples. Open the sandbox and construct custom trees and graphs to probe exactly how the algorithm behaves on your input.",
   },
   {
     number: "03",
     eyebrow: "Recursion Engine",
-    title: "Recursion made\ntangible.",
+    titleLines: ["Recursion made", "tangible."],
     desc: "See precisely how functions pause, stack up, and return. We turn abstract recursion depth into a literal, animated stack you can trace one frame at a time.",
   },
 ];
@@ -27,9 +27,11 @@ const slides = [
 export default function InteractiveShowcase() {
   const [activeSlide, setActiveSlide] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const rafIdRef = useRef<number | null>(null);
+  const lastActiveRef = useRef(0);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const updateActiveSlide = () => {
       if (!sectionRef.current) return;
       const rect = sectionRef.current.getBoundingClientRect();
       const sectionHeight = sectionRef.current.offsetHeight;
@@ -38,14 +40,33 @@ export default function InteractiveShowcase() {
       const scrolled = -rect.top;
       const total = sectionHeight - viewportH;
       const progress = Math.max(0, Math.min(1, scrolled / total));
-      if (progress < 0.33) setActiveSlide(0);
-      else if (progress < 0.66) setActiveSlide(1);
-      else setActiveSlide(2);
+
+      let nextActive = 2;
+      if (progress < 0.33) nextActive = 0;
+      else if (progress < 0.66) nextActive = 1;
+
+      if (nextActive !== lastActiveRef.current) {
+        lastActiveRef.current = nextActive;
+        setActiveSlide(nextActive);
+      }
+    };
+
+    const handleScroll = () => {
+      if (rafIdRef.current !== null) return;
+      rafIdRef.current = window.requestAnimationFrame(() => {
+        rafIdRef.current = null;
+        updateActiveSlide();
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    updateActiveSlide();
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafIdRef.current !== null) {
+        window.cancelAnimationFrame(rafIdRef.current);
+      }
+    };
   }, []);
 
   return (
@@ -94,7 +115,7 @@ export default function InteractiveShowcase() {
               <div className={styles.slideText}>
                 <span className={styles.slideNumber}>{slide.number}</span>
                 <h3 className={styles.slideTitle}>
-                  {slide.title.split("\n").map((line, li) => (
+                  {slide.titleLines.map((line, li) => (
                     <span key={li}>{line}<br /></span>
                   ))}
                 </h3>
@@ -129,7 +150,7 @@ function Slide1Visual({ active }: { active: boolean }) {
         <span className={styles.dot} style={{ background: "#ef4444" }} />
         <span className={styles.dot} style={{ background: "#eab308" }} />
         <span className={styles.dot} style={{ background: "#22c55e" }} />
-        <span className={styles.mockWindowTitle}>inorder.ts — CodeArena</span>
+        <span className={styles.mockWindowTitle}>inorder.ts — ThinkDSA</span>
       </div>
       <div className={styles.slide1Body}>
         {/* Code editor half */}
@@ -201,7 +222,7 @@ function Slide2Visual({ active }: { active: boolean }) {
         <span className={styles.dot} style={{ background: "#ef4444" }} />
         <span className={styles.dot} style={{ background: "#eab308" }} />
         <span className={styles.dot} style={{ background: "#22c55e" }} />
-        <span className={styles.mockWindowTitle}>Tree Builder — CodeArena</span>
+        <span className={styles.mockWindowTitle}>Tree Builder — ThinkDSA</span>
       </div>
       <div className={styles.slide2Body}>
         <div className={styles.builderTopBar}>
@@ -249,7 +270,7 @@ function Slide3Visual({ active }: { active: boolean }) {
         <span className={styles.dot} style={{ background: "#ef4444" }} />
         <span className={styles.dot} style={{ background: "#eab308" }} />
         <span className={styles.dot} style={{ background: "#22c55e" }} />
-        <span className={styles.mockWindowTitle}>Call Stack — CodeArena</span>
+        <span className={styles.mockWindowTitle}>Call Stack — ThinkDSA</span>
       </div>
       <div className={styles.slide3Body}>
         <div className={styles.stackLabel}>Execution Stack</div>

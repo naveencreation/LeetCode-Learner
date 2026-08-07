@@ -1,0 +1,568 @@
+
+<style>
+  * { box-sizing: border-box; }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; font-family: var(--font-sans); }
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal  { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber { background: #FAEEDA; color: #854F0B; }
+  .badge-purple{ background: #EEEDFE; color: #3C3489; }
+  .badge-red   { background: #FCEBEB; color: #A32D2D; }
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+  .rule-box { background: #E6F1FB; padding: 1rem 1.25rem; border-left: 3px solid #378ADD; border-radius: 0; }
+  .rule-text { font-size: 20px; font-weight: 500; color: #0C447C; }
+  .step-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num  { width: 26px; height: 26px; border-radius: 50%; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub  { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13.5px; line-height: 2; }
+  .c-kw { color: #cba6f7; } .c-fn { color: #89b4fa; } .c-cm { color: #6c7086; font-style:italic; } .c-plain { color: #cdd6f4; } .c-str { color: #a6e3a1; } .c-num { color: #fab387; }
+  .dry-run-row { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .dry-run-row:last-child { border-bottom: none; }
+  .dry-cell { padding: 10px 14px; font-size: 13.5px; color: var(--color-text-primary); line-height: 1.5; flex: 1; }
+  .dry-head  { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); padding: 8px 14px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; }
+  .dry-head .dry-cell { color: var(--color-text-secondary); padding: 0 14px; }
+  .complexity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card  { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why   { font-size: 13px; margin-top: 6px; }
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot { width: 8px; height: 8px; border-radius: 50%; background: #378ADD; flex-shrink: 0; margin-top: 7px; }
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub   { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags  { display: flex; gap: 8px; flex-wrap: wrap; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+  .analogy-box  { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+  .highlight-row { background: var(--color-background-secondary); }
+
+  /* toggle */
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+
+  /* deep mode */
+  .deep-section { margin-bottom: 3rem; }
+  .callout { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-danger { background: #FCEBEB; border-left: 3px solid #E24B4A; border-radius: 0; }
+  .callout-danger p { color: #791F1F; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+  .trace-step { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge { min-width: 72px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; }
+  .trace-going   { background: #E6F1FB; color: #185FA5; }
+  .trace-record  { background: #E1F5EE; color: #0F6E56; }
+  .trace-skip    { background: #EEEDFE; color: #534AB7; }
+  .trace-back    { background: #FAEEDA; color: #854F0B; }
+  .trace-unbal   { background: #FCEBEB; color: #A32D2D; }
+  .trace-content { flex: 1; }
+  .trace-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc  { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x     { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .mistake-check { width: 20px; height: 20px; border-radius: 50%; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  code { font-size: 12.5px; background: var(--color-background-secondary); padding: 2px 5px; border-radius: 4px; font-family: var(--font-mono); }
+</style>
+
+<div class="page">
+
+  <div class="section">
+    <p class="section-label">Binary Tree · Recursion</p>
+    <h1 class="hero-title">Balanced Binary Tree</h1>
+    <p class="hero-sub">Determine if a binary tree is height-balanced — every node's left and right subtree heights differ by at most 1.</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-teal">DFS · Recursion</span>
+      <span class="badge badge-purple">Bottom-up</span>
+      <span class="badge badge-amber">LeetCode #110 · Easy</span>
+    </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn" id="btn-deep" onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ═══════════════ QUICK MODE ═══════════════ -->
+  <div id="quick-mode">
+    <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);margin-bottom:2rem;">
+
+    <div class="section">
+      <p class="section-label">01 · The definition</p>
+      <div class="rule-box" style="margin-bottom:0.75rem;">
+        <p class="rule-text">For every node: |height(left) − height(right)| ≤ 1</p>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">This condition must hold at <em>every</em> node — not just the root. A tree that looks balanced at the top can still be unbalanced deeper down.</p>
+    </div>
+
+    <div class="section">
+      <p class="section-label">02 · The key insight</p>
+      <div class="card">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-text">Use bottom-up DFS to compute height and check balance simultaneously</div>
+            <div class="step-sub">Post-order traversal: left → right → node. Each node returns its height upward.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-text">Return −1 as a sentinel the moment any subtree is unbalanced</div>
+            <div class="step-sub">Once −1 is returned, every ancestor propagates it immediately — early exit with no wasted work.</div>
+          </div>
+        </div>
+        <div class="step-row" style="margin-bottom:0;">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-text">At the root, if the height is ≥ 0 the tree is balanced</div>
+            <div class="step-sub">A valid height means every node passed its own balance check during the traversal.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">03 · Code (Python)</p>
+      <div class="code-block">
+        <div><span class="c-kw">class </span><span class="c-fn">Solution</span><span class="c-plain">:</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;</span><span class="c-kw">def </span><span class="c-fn">isBalanced</span><span class="c-plain">(self, root) -> </span><span class="c-fn">bool</span><span class="c-plain">:</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">def </span><span class="c-fn">check</span><span class="c-plain">(node):</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if not </span><span class="c-plain">node: </span><span class="c-kw">return </span><span class="c-num">0</span><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># null leaf has height 0</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left  = </span><span class="c-fn">check</span><span class="c-plain">(node.left)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if </span><span class="c-plain">left == -</span><span class="c-num">1</span><span class="c-plain">: </span><span class="c-kw">return </span><span class="c-plain">-</span><span class="c-num">1</span><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># early exit</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;right = </span><span class="c-fn">check</span><span class="c-plain">(node.right)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if </span><span class="c-plain">right == -</span><span class="c-num">1</span><span class="c-plain">: </span><span class="c-kw">return </span><span class="c-plain">-</span><span class="c-num">1</span><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># early exit</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">if </span><span class="c-fn">abs</span><span class="c-plain">(left - right) > </span><span class="c-num">1</span><span class="c-plain">: </span><span class="c-kw">return </span><span class="c-plain">-</span><span class="c-num">1</span><span class="c-plain"> </span><span class="c-cm"># unbalanced here</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return </span><span class="c-num">1</span><span class="c-plain"> + </span><span class="c-fn">max</span><span class="c-plain">(left, right)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># balanced — return real height</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return </span><span class="c-fn">check</span><span class="c-plain">(root) != -</span><span class="c-num">1</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">04 · Two example trees</p>
+
+      <!-- Tree diagrams side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:1rem;">
+
+        <!-- Tree 1: Balanced -->
+        <div class="card" style="padding:1rem;">
+          <p style="font-size:12px;font-weight:500;color:#0F6E56;text-transform:uppercase;letter-spacing:0.07em;margin:0 0 8px;">Balanced — true</p>
+          <div style="display:flex;justify-content:center;">
+            <svg viewBox="0 0 220 200" width="200" height="180" xmlns="http://www.w3.org/2000/svg">
+              <!-- Edges -->
+              <line x1="110" y1="50" x2="60"  y2="105" stroke="#9FE1CB" stroke-width="1.5"/>
+              <line x1="110" y1="50" x2="160" y2="105" stroke="#9FE1CB" stroke-width="1.5"/>
+              <line x1="160" y1="105" x2="135" y2="160" stroke="#9FE1CB" stroke-width="1.5"/>
+              <line x1="160" y1="105" x2="185" y2="160" stroke="#9FE1CB" stroke-width="1.5"/>
+              <!-- Nodes -->
+              <circle cx="110" cy="46"  r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+              <text x="110" y="51" text-anchor="middle" font-size="14" font-weight="500" fill="#085041" font-family="monospace">3</text>
+              <circle cx="60"  cy="109" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+              <text x="60"  y="114" text-anchor="middle" font-size="14" font-weight="500" fill="#085041" font-family="monospace">9</text>
+              <circle cx="160" cy="109" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+              <text x="160" y="114" text-anchor="middle" font-size="14" font-weight="500" fill="#085041" font-family="monospace">20</text>
+              <circle cx="135" cy="162" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+              <text x="135" y="167" text-anchor="middle" font-size="14" font-weight="500" fill="#085041" font-family="monospace">15</text>
+              <circle cx="185" cy="162" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+              <text x="185" y="167" text-anchor="middle" font-size="14" font-weight="500" fill="#085041" font-family="monospace">7</text>
+              <!-- Height annotations -->
+              <text x="30" y="114" text-anchor="middle" font-size="10" fill="#6c7086" font-family="monospace">h=1</text>
+              <text x="116" y="195" text-anchor="middle" font-size="10" fill="#6c7086" font-family="monospace">|1−2|=1 ≤ 1 ✓</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Tree 2: Not balanced -->
+        <div class="card" style="padding:1rem;">
+          <p style="font-size:12px;font-weight:500;color:#A32D2D;text-transform:uppercase;letter-spacing:0.07em;margin:0 0 8px;">Not balanced — false</p>
+          <div style="display:flex;justify-content:center;">
+            <svg viewBox="0 0 220 230" width="200" height="210" xmlns="http://www.w3.org/2000/svg">
+              <!-- Edges -->
+              <line x1="110" y1="50" x2="70"  y2="105" stroke="#F7C1C1" stroke-width="1.5"/>
+              <line x1="110" y1="50" x2="170" y2="105" stroke="#F7C1C1" stroke-width="1.5"/>
+              <line x1="70"  y1="105" x2="40" y2="160" stroke="#F7C1C1" stroke-width="1.5"/>
+              <line x1="70"  y1="105" x2="100" y2="160" stroke="#F7C1C1" stroke-width="1.5"/>
+              <line x1="40"  y1="160" x2="25" y2="210" stroke="#F7C1C1" stroke-width="1.5"/>
+              <line x1="40"  y1="160" x2="55" y2="210" stroke="#F7C1C1" stroke-width="1.5"/>
+              <!-- Nodes -->
+              <circle cx="110" cy="46"  r="22" fill="#FCEBEB" stroke="#E24B4A" stroke-width="1.5"/>
+              <text x="110" y="51" text-anchor="middle" font-size="14" font-weight="500" fill="#791F1F" font-family="monospace">1</text>
+              <circle cx="70"  cy="109" r="22" fill="#FCEBEB" stroke="#E24B4A" stroke-width="1.5"/>
+              <text x="70"  y="114" text-anchor="middle" font-size="14" font-weight="500" fill="#791F1F" font-family="monospace">2</text>
+              <circle cx="170" cy="109" r="22" fill="#FCEBEB" stroke="#E24B4A" stroke-width="1.5"/>
+              <text x="170" y="114" text-anchor="middle" font-size="14" font-weight="500" fill="#791F1F" font-family="monospace">2</text>
+              <circle cx="40"  cy="163" r="22" fill="#FCEBEB" stroke="#E24B4A" stroke-width="1.5"/>
+              <text x="40"  y="168" text-anchor="middle" font-size="14" font-weight="500" fill="#791F1F" font-family="monospace">3</text>
+              <circle cx="100" cy="163" r="22" fill="#FCEBEB" stroke="#E24B4A" stroke-width="1.5"/>
+              <text x="100" y="168" text-anchor="middle" font-size="14" font-weight="500" fill="#791F1F" font-family="monospace">3</text>
+              <circle cx="25"  cy="212" r="18" fill="#FCEBEB" stroke="#E24B4A" stroke-width="1.5"/>
+              <text x="25"  y="217" text-anchor="middle" font-size="14" font-weight="500" fill="#791F1F" font-family="monospace">4</text>
+              <circle cx="55"  cy="212" r="18" fill="#FCEBEB" stroke="#E24B4A" stroke-width="1.5"/>
+              <text x="55"  y="217" text-anchor="middle" font-size="14" font-weight="500" fill="#791F1F" font-family="monospace">4</text>
+              <!-- Annotation -->
+              <text x="110" y="228" text-anchor="middle" font-size="10" fill="#E24B4A" font-family="monospace">|3−1|=2 &gt; 1 ✗</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">05 · Dry run — balanced tree [3,9,20,null,null,15,7]</p>
+      <div class="card" style="padding:0;">
+        <div class="dry-head">
+          <div class="dry-cell">Call</div>
+          <div class="dry-cell">left h</div>
+          <div class="dry-cell">right h</div>
+          <div class="dry-cell">diff</div>
+          <div class="dry-cell">returns</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell">check(9)</div>
+          <div class="dry-cell">0</div>
+          <div class="dry-cell">0</div>
+          <div class="dry-cell">0</div>
+          <div class="dry-cell" style="color:#0F6E56;font-weight:500;">1</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell">check(15)</div>
+          <div class="dry-cell">0</div>
+          <div class="dry-cell">0</div>
+          <div class="dry-cell">0</div>
+          <div class="dry-cell" style="color:#0F6E56;font-weight:500;">1</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell">check(7)</div>
+          <div class="dry-cell">0</div>
+          <div class="dry-cell">0</div>
+          <div class="dry-cell">0</div>
+          <div class="dry-cell" style="color:#0F6E56;font-weight:500;">1</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell">check(20)</div>
+          <div class="dry-cell">1</div>
+          <div class="dry-cell">1</div>
+          <div class="dry-cell">0</div>
+          <div class="dry-cell" style="color:#0F6E56;font-weight:500;">2</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell">check(3) — root</div>
+          <div class="dry-cell">1</div>
+          <div class="dry-cell">2</div>
+          <div class="dry-cell">1</div>
+          <div class="dry-cell" style="color:#0F6E56;font-weight:500;">3 → true ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">06 · Complexity</p>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Time</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n)</div>
+          <div class="complexity-why" style="color:#185FA5;">Each node is visited exactly once in the bottom-up DFS. Early exit via −1 sentinel means unbalanced trees terminate even faster.</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">Space</div>
+          <div class="complexity-value" style="color:#3C3489;">O(h)</div>
+          <div class="complexity-why" style="color:#534AB7;">Recursion stack depth equals the tree height. O(log n) for balanced trees, O(n) worst-case for a skewed tree.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end quick-mode -->
+
+  <!-- ═══════════════ DEEP MODE ═══════════════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr style="border:none;border-top:0.5px solid var(--color-border-tertiary);margin-bottom:2rem;">
+
+    <div class="deep-section">
+      <p class="section-label">01 · What does "balanced" actually mean?</p>
+      <h2 class="section-title">Not just the root — every single node</h2>
+      <p class="deep-para">A common beginner mistake is to only check the root's subtree heights. But the problem requires every node in the entire tree to satisfy the height condition. A tree can look fine at the root and be wildly skewed three levels down.</p>
+      <div class="callout callout-info">
+        <p>The formal definition: a binary tree is height-balanced if, for every node, the absolute difference between the height of its left subtree and the height of its right subtree is at most 1. Height of a null subtree is 0.</p>
+      </div>
+      <p class="deep-para">Height is defined as the number of nodes on the longest path from a node down to a leaf. A leaf node has height 1. A null pointer has height 0.</p>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">02 · Why bottom-up, not top-down?</p>
+      <h2 class="section-title">Two approaches — one is dramatically better</h2>
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="text-align:center;padding:12px 8px;background:#EEEDFE;border-radius:var(--border-radius-md);">
+            <p style="font-size:12px;font-weight:500;color:#534AB7;margin:0 0 4px;">Top-down DFS — O(n²)</p>
+            <p style="font-size:13px;color:#3C3489;margin:0;">At every node, compute the left height and right height by traversing again from scratch. Redundantly re-traverses the same subtrees — O(n) per node, O(n²) total.</p>
+          </div>
+          <div style="text-align:center;padding:12px 8px;background:#E1F5EE;border-radius:var(--border-radius-md);border:2px solid #1D9E75;">
+            <p style="font-size:12px;font-weight:500;color:#0F6E56;margin:0 0 4px;">Bottom-up DFS ← O(n)</p>
+            <p style="font-size:13px;color:#085041;margin:0;">Each node returns its own height as it unwinds from recursion. The parent reads these directly — no repeated work. One pass through the tree.</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-warn">
+        <p><strong style="font-weight:500;">Interview tip:</strong> If you mention the naive top-down O(n²) solution, immediately follow with: "We can improve to O(n) using a bottom-up DFS that calculates height and checks balance in the same recursive pass, using a sentinel value of −1 to signal early failure."</p>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">03 · The real-world analogy</p>
+      <h2 class="section-title">Think of it like a building inspection</h2>
+      <div class="analogy-box" style="margin-bottom:1rem;">
+        <p class="analogy-text">Imagine inspecting a building floor by floor, bottom to top. Each floor inspector checks both wings of that floor and reports back the height of the taller wing plus 1. If any wing already failed inspection, the report is just "FAILED" — and every floor above automatically inherits that failure without doing any more work. The balanced binary tree check works exactly the same way, with subtrees as wings and heights as the report.</p>
+      </div>
+      <div class="callout callout-success">
+        <p><strong style="font-weight:500;">Key insight:</strong> The −1 sentinel is genius. Instead of using a boolean flag, we encode two pieces of information in a single integer return value: if ≥ 0, it's the actual height; if −1, the subtree is unbalanced. This eliminates the need for a global variable or a separate data structure.</p>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">04 · Understanding the code line by line</p>
+      <h2 class="section-title">What the code is actually doing</h2>
+      <p class="deep-para">The entire solution hinges on the inner helper <code>check(node)</code>. It is a post-order DFS — it finishes exploring both children before doing anything at the current node. This is critical: we need the children's heights before we can verify the current node's balance.</p>
+      <div class="code-block" style="margin-bottom:1.25rem;">
+        <div><span class="c-kw">def </span><span class="c-fn">check</span><span class="c-plain">(node):</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;</span><span class="c-kw">if not </span><span class="c-plain">node: </span><span class="c-kw">return </span><span class="c-num">0</span><span class="c-cm">&nbsp;&nbsp;&nbsp;&nbsp;# base case: null → height 0</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;left  = </span><span class="c-fn">check</span><span class="c-plain">(node.left)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;</span><span class="c-kw">if </span><span class="c-plain">left == -</span><span class="c-num">1</span><span class="c-plain">: </span><span class="c-kw">return </span><span class="c-plain">-</span><span class="c-num">1</span><span class="c-cm">&nbsp;&nbsp;# left subtree already failed</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;right = </span><span class="c-fn">check</span><span class="c-plain">(node.right)</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;</span><span class="c-kw">if </span><span class="c-plain">right == -</span><span class="c-num">1</span><span class="c-plain">: </span><span class="c-kw">return </span><span class="c-plain">-</span><span class="c-num">1</span><span class="c-cm">&nbsp;&nbsp;# right subtree already failed</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;</span><span class="c-kw">if </span><span class="c-fn">abs</span><span class="c-plain">(left - right) > </span><span class="c-num">1</span><span class="c-plain">:</span></div>
+        <div><span class="c-plain">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-kw">return </span><span class="c-plain">-</span><span class="c-num">1</span><span class="c-cm">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# this node is the unbalanced point</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">&nbsp;&nbsp;</span><span class="c-kw">return </span><span class="c-num">1</span><span class="c-plain"> + </span><span class="c-fn">max</span><span class="c-plain">(left, right)&nbsp;&nbsp;</span><span class="c-cm"># balanced here — report actual height</span></div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q">Why do we check <code>left == -1</code> before even computing the right subtree?</div>
+        <div class="qa-a">Pure optimization — short-circuit evaluation. If the left subtree is already unbalanced, there's no need to explore the right subtree at all. The tree is guaranteed to be unbalanced regardless of what the right side looks like. This can save O(n/2) work in the worst case.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why is −1 a safe sentinel? What if a real height is −1?</div>
+        <div class="qa-a">It's impossible for a real height to be −1. Heights are always ≥ 0 (null = 0, leaf = 1, and each level adds +1). So −1 is permanently outside the range of valid heights, making it a perfect unambiguous sentinel value.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What is post-order traversal and why is it used here?</div>
+        <div class="qa-a">Post-order means: process left subtree, then right subtree, then the current node. We use it here because a node can only check its own balance after knowing the heights of both children. If we processed the current node first (pre-order), those heights wouldn't exist yet.</div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">05 · Full trace — unbalanced tree [1,2,2,3,3,null,null,4,4]</p>
+      <h2 class="section-title">Walking through the failing example</h2>
+      <p class="deep-para" style="margin-bottom:1.5rem;">Tree: root=1. Left child=2 (has children 3,3). Left-left child=3 (has children 4,4). Right child=2 (leaf). Let's trace how the algorithm discovers the imbalance.</p>
+
+      <div class="trace-step">
+        <span class="trace-badge trace-going">Base</span>
+        <div class="trace-content">
+          <p class="trace-title">check(null) → 0</p>
+          <p class="trace-desc">Called for both children of each leaf node (4,4). Returns 0 immediately — null base case.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <span class="trace-badge trace-record">Return</span>
+        <div class="trace-content">
+          <p class="trace-title">check(4) → 1</p>
+          <p class="trace-desc">left=0, right=0. |0−0|=0 ≤ 1. Returns 1+max(0,0)=1. Balanced leaf.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <span class="trace-badge trace-record">Return</span>
+        <div class="trace-content">
+          <p class="trace-title">check(4) → 1 (second node 4)</p>
+          <p class="trace-desc">Same as above. Returns 1. Both leaves of node-3 are done.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <span class="trace-badge trace-record">Return</span>
+        <div class="trace-content">
+          <p class="trace-title">check(3) [left child of left-2] → 2</p>
+          <p class="trace-desc">left=1, right=1. |1−1|=0 ≤ 1. Returns 1+max(1,1)=2. Balanced.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <span class="trace-badge trace-record">Return</span>
+        <div class="trace-content">
+          <p class="trace-title">check(3) [right child of left-2] → 1</p>
+          <p class="trace-desc">left=0, right=0. Returns 1. This 3-node has no children.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <span class="trace-badge trace-unbal">Fail!</span>
+        <div class="trace-content">
+          <p class="trace-title">check(2) [left child of root] → −1</p>
+          <p class="trace-desc">left=2, right=1. |2−1|=1 ≤ 1... wait — this node is actually balanced! Returns 1+max(2,1)=3.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <span class="trace-badge trace-record">Return</span>
+        <div class="trace-content">
+          <p class="trace-title">check(2) [left child of root] → 3 ✓</p>
+          <p class="trace-desc">Correcting: left subtree of root has height 3. Now let's check the right side.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <span class="trace-badge trace-record">Return</span>
+        <div class="trace-content">
+          <p class="trace-title">check(2) [right child of root] → 1</p>
+          <p class="trace-desc">This 2-node is a leaf (no children in this example). left=0, right=0. Returns 1.</p>
+        </div>
+      </div>
+      <div class="trace-step" style="margin-bottom:0;">
+        <span class="trace-badge trace-unbal">Fail!</span>
+        <div class="trace-content">
+          <p class="trace-title">check(1) [root] → −1 → isBalanced returns false</p>
+          <p class="trace-desc">left=3, right=1. |3−1|=2 &gt; 1. Root itself is the unbalanced node. Returns −1. Outer function sees −1 ≠ 0, returns false.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">06 · Common beginner mistakes</p>
+      <h2 class="section-title">What trips people up</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Only checking the root's subtree heights</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The root might have |left − right| = 1 but a deeply nested node could have a difference of 3. Every node must be checked, not just the root.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Using top-down DFS and computing height repeatedly</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Calling a separate <code>height()</code> function at every node leads to O(n²) time because the same subtrees are traversed over and over. Always combine the height calculation with the balance check in a single pass.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting to propagate the −1 sentinel upward</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">After a child returns −1, you must return −1 immediately without doing any further work. Forgetting the early-exit check means you compute nonsense heights on top of a known failure — which can even accidentally return a valid-looking number.</p>
+          </div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Confusing "balanced" with "complete" or "perfect"</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">A balanced tree is not necessarily full, complete, or perfect. It simply requires height differences ≤ 1 at every node. A tree can have missing leaves and still be balanced as long as no node violates the condition.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">07 · Complexity — the full explanation</p>
+      <h2 class="section-title">Why O(n) time and O(h) space?</h2>
+      <div class="complexity-grid" style="margin-bottom:1rem;">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Time</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n)</div>
+          <div class="complexity-why" style="color:#185FA5;">Each of the n nodes is entered and exited exactly once in the DFS. Once a −1 is produced, it propagates up in O(1) per ancestor — there's no extra work.</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">Space</div>
+          <div class="complexity-value" style="color:#3C3489;">O(h)</div>
+          <div class="complexity-why" style="color:#534AB7;">The call stack holds one frame per level of depth. O(log n) for a balanced tree, O(n) for a completely skewed tree (essentially a linked list).</div>
+        </div>
+      </div>
+      <div class="callout callout-warn">
+        <p><strong style="font-weight:500;">Interview tip:</strong> The space complexity is O(h), not O(n). Distinguish these clearly. For a balanced tree h = O(log n), making the space O(log n). Say: "Space is O(h) for the recursion stack — O(log n) best case for a balanced tree, O(n) worst case for a skewed tree."</p>
+      </div>
+    </div>
+
+    <div class="deep-section">
+      <p class="section-label">08 · Related problems</p>
+      <h2 class="section-title">Where this pattern shows up</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Maximum Depth of Binary Tree (LeetCode 104)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The <code>check()</code> helper here is essentially this problem. If you can compute max depth recursively, you already understand the height return value used in #110.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Diameter of Binary Tree (LeetCode 543)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Uses the exact same bottom-up DFS pattern. Instead of checking |left − right| ≤ 1, it updates a global maximum with left + right at each node. Identical structure.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Convert Sorted Array to BST (LeetCode 108)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The inverse problem — construct a height-balanced BST from a sorted array. Understanding what "balanced" means (this problem) is a prerequisite to solving the construction problem.</p>
+          </div>
+        </div>
+        <div class="interview-item" style="border:none;">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Binary Tree Cameras (LeetCode 968)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Also uses post-order bottom-up DFS with a sentinel return value to carry state up the tree. Once you're comfortable with the −1 sentinel pattern, harder variants like this become approachable.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end deep-mode -->
+
+  <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Practice on LeetCode</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">Try #104 (Max Depth) first — it's the same recursion without the sentinel twist.</p>
+    </div>
+    <button onclick="window.open('https://leetcode.com/problems/balanced-binary-tree/')" style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);cursor:pointer;">Open on LeetCode ↗</button>
+  </div>
+
+</div>
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep  = document.getElementById('deep-mode');
+  const btnQ  = document.getElementById('btn-quick');
+  const btnD  = document.getElementById('btn-deep');
+  const desc  = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display  = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display  = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>

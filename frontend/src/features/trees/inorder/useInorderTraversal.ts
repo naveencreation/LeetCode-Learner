@@ -1,0 +1,119 @@
+"use client";
+
+import { useMemo } from "react";
+import { INORDER_TREE_PRESETS, cloneTree, createSampleTree } from "./constants";
+import { generateInorderExecutionSteps } from "./engine";
+import { getCodeLineForStep, getOperationBadge, getPhaseLabel } from "./selectors";
+import { useGenericTraversal } from "../shared/useGenericTraversal";
+import type {
+  ExecutionStep,
+  NodeVisualState,
+  TreeNode,
+  TreePresetKey,
+} from "./types";
+import type { StepProjection } from "../shared/useGenericTraversal";
+import type { CallStackFrame } from "../shared/types";
+
+// Problem-specific state projection logic
+function projectStateForStep(
+  currentStep: number,
+  executionSteps: ExecutionStep[],
+  initialNodeStates: Record<number, NodeVisualState>,
+): StepProjection {
+  if (currentStep <= 0) {
+    return {
+      result: [],
+      visitedNodes: new Set<number>(),
+      currentNode: null,
+      nodeStates: { ...initialNodeStates },
+    };
+  }
+
+  const result: number[] = [];
+  const visitedNodes = new Set<number>();
+
+  for (let index = 0; index < currentStep; index += 1) {
+    const step = executionSteps[index];
+    if (step.type === "visit" && typeof step.value === "number") {
+      result.push(step.value);
+      visitedNodes.add(step.value);
+    }
+  }
+
+  const previousStep = executionSteps[currentStep - 1];
+  // currentNode: use the active (current) step's node value so it stays
+  // in sync with what the code panel and explanation panel are showing.
+  // For base_case steps node is null (no tree node = None child), so we
+  // explicitly return null — the Phase box will show "-" which is correct.
+  const activeStepForNode = executionSteps[currentStep];
+  const currentNode =
+    activeStepForNode?.type === "base_case"
+      ? null
+      : (activeStepForNode?.node?.val ?? previousStep?.node?.val) ?? null;
+  const nodeStates = previousStep?.nodeStates ?? { ...initialNodeStates };
+
+  return {
+    result,
+    visitedNodes,
+    currentNode,
+    nodeStates,
+  };
+}
+
+// Thin wrapper around generic hook
+// Return type for inorder traversal
+interface InorderTraversalReturn {
+  root: TreeNode | null;
+  selectedPreset: TreePresetKey;
+  presets: Record<TreePresetKey, { label: string; create: () => TreeNode }>;
+  customNodePositions: Record<number, { x: number; y: number }>;
+  executionSteps: ExecutionStep[];
+  totalSteps: number;
+  currentStep: number;
+  result: number[];
+  visitedNodes: Set<number>;
+  currentNode: number | null;
+  nodeStates: Record<number, NodeVisualState>;
+  currentOperation: string;
+  currentOperationFull: string;
+  currentPhase: string;
+  currentCodeLine: number;
+  operationBadge: string;
+  activeStep: ExecutionStep | undefined;
+  executedStep: ExecutionStep | undefined;
+  activeCallStack: CallStackFrame[];
+  isAtStart: boolean;
+  isAtEnd: boolean;
+  controlMode: "manual" | "auto";
+  setControlMode: (mode: "manual" | "auto") => void;
+  isPlaying: boolean;
+  autoPlaySpeedMs: number;
+  setAutoPlaySpeedMs: (speedMs: number) => void;
+  playTraversal: () => void;
+  pauseTraversal: () => void;
+  nextStep: () => void;
+  previousStep: () => void;
+  resetTraversal: () => void;
+  goToFirst: () => void;
+  goToLast: () => void;
+  applyTreeConfiguration: (nextRoot: TreeNode, nextPositions: Record<number, any>, preset: TreePresetKey, runImmediately?: boolean) => void;
+}
+
+export function useInorderTraversal(): InorderTraversalReturn {
+  // Memoize config to avoid unnecessary recalculations
+  const config = useMemo(
+    () => ({
+      generateSteps: generateInorderExecutionSteps,
+      presets: INORDER_TREE_PRESETS,
+      cloneTree,
+      createSampleTree,
+      getCodeLineForStep,
+      getOperationBadge,
+      getPhaseLabel,
+      projectStateForStep,
+    }),
+    [],
+  );
+
+  return useGenericTraversal(config) as InorderTraversalReturn;
+}

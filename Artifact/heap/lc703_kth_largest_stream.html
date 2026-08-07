@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kth Largest Element in a Stream · LC 703</title>
+<style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "SF Mono", "Fira Code", "Consolas", monospace;
+    --color-text-primary: #1a1a2e;
+    --color-text-secondary: #4a4a6a;
+    --color-text-tertiary: #8888a8;
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f5fa;
+    --color-border-tertiary: #e0e0ee;
+    --border-radius-lg: 12px;
+    --border-radius-md: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--color-background-secondary); font-family: var(--font-sans); }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal   { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber  { background: #FAEEDA; color: #854F0B; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .badge-blue   { background: #E6F1FB; color: #185FA5; }
+  .badge-rose   { background: #FDECEA; color: #9B1B1B; }
+
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+
+  .rule-box  { background: #E6F1FB; padding: 1rem 1.25rem; border-left: 3px solid #378ADD; }
+  .rule-text { font-size: 19px; font-weight: 500; color: #0C447C; line-height: 1.5; }
+
+  .step-row  { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num  { width: 26px; height: 26px; border-radius: 50%; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub  { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13px; line-height: 2; overflow-x: auto; }
+  .c-kw { color: #cba6f7; } .c-fn { color: #89b4fa; } .c-cm { color: #6c7086; font-style: italic; }
+  .c-plain { color: #cdd6f4; } .c-str { color: #a6e3a1; } .c-num { color: #fab387; } .c-cls { color: #f38ba8; }
+
+  .dry-run-row  { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .dry-run-row:last-child { border-bottom: none; }
+  .dry-cell       { padding: 10px 14px; font-size: 13px; color: var(--color-text-primary); line-height: 1.5; font-family: var(--font-mono); flex: 1; }
+  .dry-cell-plain { padding: 10px 14px; font-size: 13px; color: var(--color-text-primary); line-height: 1.5; flex: 1; }
+  .dry-head       { background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; }
+  .dry-head .dry-cell, .dry-head .dry-cell-plain { color: var(--color-text-secondary); font-size: 12px; font-weight: 500; font-family: var(--font-sans); }
+  .highlight-row  { background: var(--color-background-secondary); }
+
+  .complexity-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card  { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why   { font-size: 13px; margin-top: 6px; }
+
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot  { width: 8px; height: 8px; border-radius: 50%; background: #378ADD; flex-shrink: 0; margin-top: 7px; }
+
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub   { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags  { display: flex; gap: 8px; flex-wrap: wrap; }
+  .divider    { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+
+  .analogy-box  { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn    { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+
+  .deep-section { margin-bottom: 3rem; }
+  .callout         { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info    { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p  { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn    { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p  { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+
+  .trace-step    { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge   { min-width: 80px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; white-space: nowrap; flex-shrink: 0; }
+  .trace-going   { background: #E6F1FB; color: #185FA5; }
+  .trace-record  { background: #E1F5EE; color: #0F6E56; }
+  .trace-split   { background: #EEEDFE; color: #534AB7; }
+  .trace-back    { background: #FAEEDA; color: #854F0B; }
+  .trace-base    { background: #FDECEA; color: #9B1B1B; }
+  .trace-content { flex: 1; }
+  .trace-title   { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc    { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+  /* heap slot visualizer */
+  .heap-row   { display: flex; align-items: center; gap: 0; flex-wrap: nowrap; overflow-x: auto; padding: 4px 0; }
+  .heap-slot  { width: 52px; height: 38px; border: 1.5px solid #378ADD; background: #E6F1FB; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: #0C447C; flex-shrink: 0; }
+  .heap-slot-root { width: 52px; height: 38px; border: 2px solid #1D9E75; background: #E1F5EE; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: #085041; flex-shrink: 0; }
+  .heap-sep   { font-size: 16px; color: #8888a8; padding: 0 5px; flex-shrink: 0; }
+  .heap-label { font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px; text-align: center; font-family: var(--font-sans); }
+
+  code { font-size: 12.5px; background: var(--color-background-secondary); padding: 2px 5px; border-radius: 4px; font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <div class="section">
+    <p class="section-label">Heap · Design · Data Stream · LC 703</p>
+    <h1 class="hero-title">Kth Largest Element in a Stream</h1>
+    <p class="hero-sub">Design a class that continuously tracks the kth largest element as new values are added to a live data stream — without re-sorting the entire collection each time.</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-teal">Min-Heap of size k</span>
+      <span class="badge badge-purple">Priority Queue</span>
+      <span class="badge badge-blue">Data Stream Design</span>
+      <span class="badge badge-rose">Easy</span>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn"        id="btn-deep"  onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ══════════════════════════════════
+       QUICK MODE
+  ══════════════════════════════════ -->
+  <div id="quick-mode">
+    <hr class="divider" style="margin-top:0;">
+
+    <!-- 01 · Core insight -->
+    <div class="section">
+      <p class="section-label">01 · The core insight</p>
+      <div class="rule-box" style="margin-bottom:0.75rem;">
+        <p class="rule-text">Keep a min-heap of exactly k elements. The heap root is always the kth largest — every element in the heap is larger than every element not in the heap.</p>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">When a new value arrives: push it onto the heap. If heap size exceeds k, pop the minimum. The root is then your answer — O(log k) per call, forever.</p>
+    </div>
+
+    <!-- 02 · How to think -->
+    <div class="section">
+      <p class="section-label">02 · How to think (3 steps)</p>
+      <div class="card">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-text">On init: push all elements from <code>nums</code> into a min-heap, then trim it to size k</div>
+            <div class="step-sub">Use <code>heapq.heapify()</code> then pop extras. After trimming, heap[0] is already the kth largest of the initial data.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-text">On every <code>add(val)</code>: push val, then pop if heap size exceeds k</div>
+            <div class="step-sub">If val is smaller than all k current elements it gets pushed and immediately popped — it never displaces a top-k element.</div>
+          </div>
+        </div>
+        <div class="step-row" style="margin-bottom:0;">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-text">Return <code>self.heap[0]</code> — the heap root is always the answer</div>
+            <div class="step-sub">The min of the top-k elements is by definition the kth largest across all elements seen so far.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 · Code -->
+    <div class="section">
+      <p class="section-label">03 · Code (Python)</p>
+      <div class="code-block">
+        <div><span class="c-kw">import </span><span class="c-plain">heapq</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-kw">class </span><span class="c-fn">KthLargest</span><span class="c-plain">:</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">  </span><span class="c-kw">def </span><span class="c-fn">__init__</span><span class="c-plain">(self, k: </span><span class="c-fn">int</span><span class="c-plain">, nums: </span><span class="c-fn">list</span><span class="c-plain">[</span><span class="c-fn">int</span><span class="c-plain">]):</span></div>
+        <div><span class="c-plain">    self.k    = k</span></div>
+        <div><span class="c-plain">    self.heap = nums</span></div>
+        <div><span class="c-plain">    heapq.</span><span class="c-fn">heapify</span><span class="c-plain">(self.heap)          </span><span class="c-cm"># O(n) — build min-heap in-place</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">while </span><span class="c-fn">len</span><span class="c-plain">(self.heap) > k:       </span><span class="c-cm"># trim to exactly k elements</span></div>
+        <div><span class="c-plain">      heapq.</span><span class="c-fn">heappop</span><span class="c-plain">(self.heap)</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">  </span><span class="c-kw">def </span><span class="c-fn">add</span><span class="c-plain">(self, val: </span><span class="c-fn">int</span><span class="c-plain">) -> </span><span class="c-fn">int</span><span class="c-plain">:</span></div>
+        <div><span class="c-plain">    heapq.</span><span class="c-fn">heappush</span><span class="c-plain">(self.heap, val)   </span><span class="c-cm"># always push first</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">if </span><span class="c-fn">len</span><span class="c-plain">(self.heap) > self.k:    </span><span class="c-cm"># overflowed k → pop smallest</span></div>
+        <div><span class="c-plain">      heapq.</span><span class="c-fn">heappop</span><span class="c-plain">(self.heap)</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">return </span><span class="c-plain">self.heap[</span><span class="c-num">0</span><span class="c-plain">]             </span><span class="c-cm"># root = kth largest</span></div>
+      </div>
+    </div>
+
+    <!-- 04 · Example + Heap diagram -->
+    <div class="section">
+      <p class="section-label">04 · Example &amp; heap state diagram</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:1rem;">
+        <strong style="font-weight:500;">k = 3</strong>, initial nums = <code>[4, 5, 8, 2]</code>.
+        After init, heap holds the 3 largest: <code>[4, 5, 8]</code>, root = <strong style="font-weight:500;">4</strong>.
+      </p>
+
+      <!-- Heap evolution SVG -->
+      <div class="card" style="padding:1.25rem 1.5rem;overflow-x:auto;margin-bottom:1rem;">
+        <svg viewBox="0 0 720 350" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,sans-serif" style="display:block;">
+
+          <!-- ── COLUMN HEADERS ── -->
+          <text x="12"  y="22" font-size="11" font-weight="500" fill="#8888a8">Event</text>
+          <text x="180" y="22" font-size="11" font-weight="500" fill="#8888a8">Heap contents (min at root)</text>
+          <text x="530" y="22" font-size="11" font-weight="500" fill="#8888a8">Answer (heap[0])</text>
+          <line x1="0" y1="30" x2="720" y2="30" stroke="#e0e0ee" stroke-width="0.5"/>
+
+          <!-- ── ROW 1: after init ── -->
+          <text x="12" y="72" font-size="12" fill="#4a4a6a">After init</text>
+          <text x="12" y="88" font-size="11" fill="#8888a8">nums=[4,5,8,2]</text>
+
+          <!-- heap tree: root=4, children 5,8 -->
+          <!-- edges -->
+          <line x1="285" y1="75" x2="245" y2="110" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="285" y1="75" x2="325" y2="110" stroke="#B5D4F4" stroke-width="1.5"/>
+          <!-- nodes -->
+          <circle cx="285" cy="60"  r="20" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text   x="285" y="65"  text-anchor="middle" font-size="14" font-weight="600" fill="#085041">4</text>
+          <circle cx="245" cy="120" r="20" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text   x="245" y="125" text-anchor="middle" font-size="14" font-weight="600" fill="#0C447C">5</text>
+          <circle cx="325" cy="120" r="20" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text   x="325" y="125" text-anchor="middle" font-size="14" font-weight="600" fill="#0C447C">8</text>
+          <!-- root label -->
+          <text x="285" y="38" text-anchor="middle" font-size="10" fill="#0F6E56">root = kth largest</text>
+          <!-- answer -->
+          <rect x="510" y="45" width="56" height="36" rx="7" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.8"/>
+          <text x="538" y="68" text-anchor="middle" font-size="18" font-weight="600" fill="#085041">4</text>
+          <line x1="0" y1="152" x2="720" y2="152" stroke="#e0e0ee" stroke-width="0.5"/>
+
+          <!-- ── ROW 2: add(3) → 3 < 4 (root), discarded ── -->
+          <text x="12" y="176" font-size="12" fill="#4a4a6a">add(3)</text>
+          <text x="12" y="192" font-size="11" fill="#8888a8">3 &lt; heap[0]=4</text>
+          <text x="12" y="206" font-size="11" fill="#8888a8">popped immediately</text>
+          <!-- same heap shape -->
+          <line x1="285" y1="225" x2="245" y2="258" stroke="#B5D4F4" stroke-width="1.5"/>
+          <line x1="285" y1="225" x2="325" y2="258" stroke="#B5D4F4" stroke-width="1.5"/>
+          <circle cx="285" cy="210" r="20" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text   x="285" y="215" text-anchor="middle" font-size="14" font-weight="600" fill="#085041">4</text>
+          <circle cx="245" cy="268" r="20" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text   x="245" y="273" text-anchor="middle" font-size="14" font-weight="600" fill="#0C447C">5</text>
+          <circle cx="325" cy="268" r="20" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text   x="325" y="273" text-anchor="middle" font-size="14" font-weight="600" fill="#0C447C">8</text>
+          <!-- crossed-out 3 incoming -->
+          <circle cx="180" cy="210" r="17" fill="#FCEBEB" stroke="#E24B4A" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text   x="180" y="215" text-anchor="middle" font-size="13" font-weight="600" fill="#A32D2D">3</text>
+          <line x1="167" y1="197" x2="193" y2="223" stroke="#A32D2D" stroke-width="1.5"/>
+          <text x="180" y="240" text-anchor="middle" font-size="9" fill="#A32D2D">dropped</text>
+          <!-- answer -->
+          <rect x="510" y="195" width="56" height="36" rx="7" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.8"/>
+          <text x="538" y="218" text-anchor="middle" font-size="18" font-weight="600" fill="#085041">4</text>
+          <line x1="0" y1="300" x2="720" y2="300" stroke="#e0e0ee" stroke-width="0.5"/>
+
+          <!-- ── ROW 3: add(5) → 5 > 4, replaces ── -->
+          <text x="12" y="322" font-size="12" fill="#4a4a6a">add(5)</text>
+          <text x="12" y="338" font-size="11" fill="#8888a8">5 &gt; heap[0]=4 → push,</text>
+          <text x="12" y="352" font-size="11" fill="#8888a8">pop min (4) → root=5</text>
+          <!-- answer -->
+          <rect x="510" y="315" width="56" height="36" rx="7" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.8"/>
+          <text x="538" y="338" text-anchor="middle" font-size="18" font-weight="600" fill="#633806">5</text>
+          <!-- hint arrow -->
+          <text x="180" y="322" font-size="11" fill="#4a4a6a">heap: </text>
+          <text x="220" y="322" font-size="11" font-weight="500" fill="#0C447C" font-family="monospace">[5, 8, 5]</text>
+          <text x="220" y="338" font-size="11" fill="#8888a8" font-family="monospace">root = 5 (3rd largest)</text>
+        </svg>
+      </div>
+
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">A value smaller than the heap root is pushed then immediately popped — it never displaces a top-k element. A value larger than the root evicts the current minimum and takes its place.</p>
+    </div>
+
+    <!-- 05 · Dry run table -->
+    <div class="section">
+      <p class="section-label">05 · Dry run — k=3, nums=[4,5,8,2]</p>
+      <div class="card" style="padding:0;overflow-x:auto;">
+        <div class="dry-head">
+          <div class="dry-cell-plain" style="min-width:110px;">Call</div>
+          <div class="dry-cell"       style="min-width:90px;">val</div>
+          <div class="dry-cell-plain" style="min-width:220px;">Heap after call (sorted display)</div>
+          <div class="dry-cell-plain" style="min-width:100px;">Return</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell-plain" style="min-width:110px;">__init__</div>
+          <div class="dry-cell"       style="min-width:90px;">—</div>
+          <div class="dry-cell-plain" style="min-width:220px;">[4, 5, 8] (2 dropped)</div>
+          <div class="dry-cell-plain" style="min-width:100px;">—</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell-plain" style="min-width:110px;">add(3)</div>
+          <div class="dry-cell"       style="min-width:90px;">3</div>
+          <div class="dry-cell-plain" style="min-width:220px;">[4, 5, 8] (3 pushed &amp; popped)</div>
+          <div class="dry-cell-plain" style="min-width:100px;font-weight:500;color:#0F6E56;">4</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell-plain" style="min-width:110px;">add(5)</div>
+          <div class="dry-cell"       style="min-width:90px;">5</div>
+          <div class="dry-cell-plain" style="min-width:220px;">[5, 5, 8] (4 evicted)</div>
+          <div class="dry-cell-plain" style="min-width:100px;font-weight:500;color:#0F6E56;">5</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell-plain" style="min-width:110px;">add(10)</div>
+          <div class="dry-cell"       style="min-width:90px;">10</div>
+          <div class="dry-cell-plain" style="min-width:220px;">[5, 8, 10] (5 evicted)</div>
+          <div class="dry-cell-plain" style="min-width:100px;font-weight:500;color:#0F6E56;">5</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell-plain" style="min-width:110px;">add(9)</div>
+          <div class="dry-cell"       style="min-width:90px;">9</div>
+          <div class="dry-cell-plain" style="min-width:220px;">[8, 9, 10] (5 evicted)</div>
+          <div class="dry-cell-plain" style="min-width:100px;font-weight:500;color:#0F6E56;">8</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell-plain" style="min-width:110px;">add(4)</div>
+          <div class="dry-cell"       style="min-width:90px;">4</div>
+          <div class="dry-cell-plain" style="min-width:220px;">[8, 9, 10] (4 dropped)</div>
+          <div class="dry-cell-plain" style="min-width:100px;font-weight:500;color:#0F6E56;">8</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 · Complexity quick -->
+    <div class="section" style="margin-bottom:0;">
+      <p class="section-label">06 · Complexity</p>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Init time</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n log k)</div>
+          <div class="complexity-why"  style="color:#185FA5;">heapify is O(n), then trimming up to n−k pops, each O(log n). Dominated by O(n log k).</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">add() time</div>
+          <div class="complexity-value" style="color:#3C3489;">O(log k)</div>
+          <div class="complexity-why"  style="color:#534AB7;">One heappush + at most one heappop, both O(log k) since heap size stays ≤ k+1. Space is O(k).</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end quick-mode -->
+
+
+  <!-- ════════════════════════════════════
+       DEEP MODE
+  ════════════════════════════════════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr class="divider" style="margin-top:0;">
+
+    <!-- 01 · What the problem is really asking -->
+    <div class="deep-section">
+      <p class="section-label">01 · What the problem is really asking</p>
+      <h2 class="section-title">Streaming data, not a static array</h2>
+      <p class="deep-para">The word "stream" is key. You don't receive all the data up front — elements arrive one at a time, and after each one you must immediately report the kth largest element across everything seen so far. Sorting the entire collection after each addition would work but costs O(n log n) per call, making it totally impractical for high-frequency streams.</p>
+      <div class="callout callout-info">
+        <p>The kth largest element is the element that would sit at index <code>k−1</code> from the right if all elements seen so far were sorted in descending order. Equivalently, it's the smallest element among the top-k largest elements. This equivalence is the key to the heap solution.</p>
+      </div>
+      <p class="deep-para">Note: kth largest is in sorted order, not kth distinct. Duplicates count — the 2nd largest of [3, 3, 3] is 3, not "no second distinct value."</p>
+    </div>
+
+    <!-- 02 · Why min-heap not max-heap -->
+    <div class="deep-section">
+      <p class="section-label">02 · Why a min-heap, not a max-heap?</p>
+      <h2 class="section-title">The counterintuitive choice explained</h2>
+      <p class="deep-para">When asked "find the kth largest", beginners reach for a max-heap. The logic seems obvious: "I want large elements, so use a max structure." But that's backwards. Here's why a min-heap of size k is the correct choice:</p>
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="background:#FDECEA;border-radius:var(--border-radius-md);padding:14px;">
+            <p style="font-size:12px;font-weight:500;color:#9B1B1B;margin:0 0 6px;">Max-heap — wrong tool here</p>
+            <p style="font-size:13px;color:#791F1F;margin:0;line-height:1.6;">The max-heap root is the largest element. To find the kth largest you'd need to pop k times — O(k log n) per query, and you'd need to rebuild after each pop. Doesn't help with a stream.</p>
+          </div>
+          <div style="background:#E1F5EE;border-radius:var(--border-radius-md);padding:14px;border:1.5px solid #1D9E75;">
+            <p style="font-size:12px;font-weight:500;color:#0F6E56;margin:0 0 6px;">Min-heap of size k ← correct</p>
+            <p style="font-size:13px;color:#085041;margin:0;line-height:1.6;">Keep only the top-k elements. The min of those k is the kth largest. The min-heap gives instant O(1) access to that minimum at the root. Each update is O(log k).</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-success">
+        <p><strong>Mental model:</strong> Think of the heap as a bouncer at a VIP room with exactly k seats. New arrivals only get in if they're "larger" than the current minimum VIP (the root). When they enter, the smallest VIP is ejected to make room. The person just barely inside (the root) is always the kth largest overall.</p>
+      </div>
+    </div>
+
+    <!-- 03 · The heap state diagram — full -->
+    <div class="deep-section">
+      <p class="section-label">03 · Heap structure visualised step by step</p>
+      <h2 class="section-title">Seeing the heap evolve for each add() call</h2>
+      <p class="deep-para" style="margin-bottom:1rem;">k=3, nums=[4,5,8,2]. After <code>__init__</code>: heapify gives [2,4,5,8], then trim to k=3 by popping 2 → heap = [4,5,8]. Now add calls:</p>
+
+      <div class="card" style="padding:1.5rem;overflow-x:auto;margin-bottom:1rem;">
+        <svg viewBox="0 0 700 540" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,sans-serif" style="display:block;">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="#8888a8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+          </defs>
+
+          <!-- ── INIT state ── -->
+          <text x="10" y="22" font-size="11" font-weight="500" fill="#8888a8" letter-spacing="0.05em">AFTER INIT — heap=[4,5,8], k=3</text>
+          <!-- heap tree -->
+          <line x1="130" y1="66" x2="95"  y2="108" stroke="#B5D4F4" stroke-width="1.8"/>
+          <line x1="130" y1="66" x2="165" y2="108" stroke="#B5D4F4" stroke-width="1.8"/>
+          <circle cx="130" cy="50"  r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2.5"/>
+          <text   x="130" y="55"  text-anchor="middle" font-size="15" font-weight="600" fill="#085041">4</text>
+          <circle cx="95"  cy="122" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text   x="95"  y="127" text-anchor="middle" font-size="15" font-weight="600" fill="#0C447C">5</text>
+          <circle cx="165" cy="122" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text   x="165" y="127" text-anchor="middle" font-size="15" font-weight="600" fill="#0C447C">8</text>
+          <text x="130"  y="28"  text-anchor="middle" font-size="9" fill="#0F6E56">root (kth largest = 4)</text>
+          <!-- answer badge -->
+          <rect x="250" y="34" width="180" height="34" rx="7" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="340" y="56" text-anchor="middle" font-size="13" fill="#0F6E56">heap[0] = <tspan font-weight="600">4</tspan> ← 3rd largest</text>
+
+          <line x1="0" y1="158" x2="700" y2="158" stroke="#e0e0ee" stroke-width="0.5"/>
+
+          <!-- ── add(3) ── -->
+          <text x="10" y="178" font-size="11" font-weight="500" fill="#8888a8">add(3)  — 3 &lt; root(4) → pushed then popped. Heap unchanged.</text>
+          <line x1="130" y1="218" x2="95"  y2="258" stroke="#B5D4F4" stroke-width="1.8"/>
+          <line x1="130" y1="218" x2="165" y2="258" stroke="#B5D4F4" stroke-width="1.8"/>
+          <circle cx="130" cy="202" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2.5"/>
+          <text   x="130" y="207" text-anchor="middle" font-size="15" font-weight="600" fill="#085041">4</text>
+          <circle cx="95"  cy="272" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text   x="95"  y="277" text-anchor="middle" font-size="15" font-weight="600" fill="#0C447C">5</text>
+          <circle cx="165" cy="272" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text   x="165" y="277" text-anchor="middle" font-size="15" font-weight="600" fill="#0C447C">8</text>
+          <!-- 3 incoming (strikethrough) -->
+          <circle cx="52" cy="202" r="20" fill="#FCEBEB" stroke="#E24B4A" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <text   x="52" y="207" text-anchor="middle" font-size="13" font-weight="600" fill="#A32D2D">3</text>
+          <line x1="38" y1="188" x2="66" y2="216" stroke="#A32D2D" stroke-width="1.5"/>
+          <text x="52" y="230" text-anchor="middle" font-size="9" fill="#A32D2D">popped</text>
+          <!-- result -->
+          <rect x="250" y="186" width="180" height="34" rx="7" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="340" y="208" text-anchor="middle" font-size="13" fill="#0F6E56">returns <tspan font-weight="600">4</tspan></text>
+
+          <line x1="0" y1="305" x2="700" y2="305" stroke="#e0e0ee" stroke-width="0.5"/>
+
+          <!-- ── add(5) ── -->
+          <text x="10" y="325" font-size="11" font-weight="500" fill="#8888a8">add(5)  — 5 &gt; root(4) → push 5, pop min(4). New root = 5.</text>
+          <line x1="130" y1="365" x2="95"  y2="405" stroke="#B5D4F4" stroke-width="1.8"/>
+          <line x1="130" y1="365" x2="165" y2="405" stroke="#B5D4F4" stroke-width="1.8"/>
+          <circle cx="130" cy="349" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2.5"/>
+          <text   x="130" y="354" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">5</text>
+          <circle cx="95"  cy="419" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text   x="95"  y="424" text-anchor="middle" font-size="15" font-weight="600" fill="#0C447C">8</text>
+          <circle cx="165" cy="419" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text   x="165" y="424" text-anchor="middle" font-size="15" font-weight="600" fill="#0C447C">5</text>
+          <text x="130"  y="327" text-anchor="middle" font-size="9" fill="#854F0B">root changed → 5</text>
+          <!-- result -->
+          <rect x="250" y="333" width="180" height="34" rx="7" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+          <text x="340" y="355" text-anchor="middle" font-size="13" fill="#854F0B">returns <tspan font-weight="600">5</tspan></text>
+
+          <line x1="0" y1="453" x2="700" y2="453" stroke="#e0e0ee" stroke-width="0.5"/>
+
+          <!-- ── add(10) ── -->
+          <text x="10" y="473" font-size="11" font-weight="500" fill="#8888a8">add(10) — 10 &gt; root(5) → push 10, pop min(5). New root = 5.</text>
+          <line x1="130" y1="510" x2="95"  y2="540" stroke="#B5D4F4" stroke-width="1.8"/>
+          <line x1="130" y1="510" x2="165" y2="540" stroke="#B5D4F4" stroke-width="1.8"/>
+          <circle cx="130" cy="497" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2.5"/>
+          <text   x="130" y="502" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">5</text>
+          <circle cx="95"  cy="540" r="16" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.2"/>
+          <text   x="95"  y="545" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">8</text>
+          <circle cx="165" cy="540" r="16" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.2"/>
+          <text   x="165" y="545" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">10</text>
+          <!-- result -->
+          <rect x="250" y="481" width="180" height="34" rx="7" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+          <text x="340" y="503" text-anchor="middle" font-size="13" fill="#854F0B">returns <tspan font-weight="600">5</tspan></text>
+        </svg>
+      </div>
+
+      <div class="callout callout-info">
+        <p><strong>Key invariant:</strong> After every <code>add()</code> call, the heap contains exactly k elements — the k largest values seen so far. The root (minimum of those k) is always the kth largest overall. This invariant is maintained by the push-then-trim pattern.</p>
+      </div>
+    </div>
+
+    <!-- 04 · Why the init trim matters -->
+    <div class="deep-section">
+      <p class="section-label">04 · Why the initialisation trim matters</p>
+      <h2 class="section-title">What happens when nums has more than k elements</h2>
+      <p class="deep-para">The constructor receives an initial array <code>nums</code> which can have any length. The heap must be trimmed to exactly k elements before the first <code>add()</code> is called. Here's the full initialisation flow:</p>
+      <div class="code-block" style="margin-bottom:1.25rem;">
+        <div><span class="c-kw">def </span><span class="c-fn">__init__</span><span class="c-plain">(self, k, nums):</span></div>
+        <div><span class="c-plain">  self.k    = k</span></div>
+        <div><span class="c-plain">  self.heap = nums&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># reuse the list in-place</span></div>
+        <div><span class="c-plain">  heapq.</span><span class="c-fn">heapify</span><span class="c-plain">(self.heap)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># O(n): rearrange into min-heap order</span></div>
+        <div><span class="c-plain">  </span><span class="c-kw">while </span><span class="c-fn">len</span><span class="c-plain">(self.heap) > k:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># pop smallest until size = k</span></div>
+        <div><span class="c-plain">    heapq.</span><span class="c-fn">heappop</span><span class="c-plain">(self.heap)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># each pop: O(log n), done n-k times</span></div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why use <code>heapify</code> then trim, rather than pushing elements one by one?</div>
+        <div class="qa-a"><code>heapify</code> converts a list into a valid min-heap in O(n) time using a clever bottom-up sifting algorithm. Pushing n elements individually onto an empty heap costs O(n log n). For large initial arrays, the heapify-then-trim approach is meaningfully faster.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What if <code>nums</code> has fewer than k elements?</div>
+        <div class="qa-a">The trim loop condition <code>len(heap) > k</code> simply never executes — no trimming happens. The heap starts with fewer than k elements and grows toward k as <code>add()</code> is called. The problem guarantees there will always be at least k elements in the stream when you query for the kth, so <code>heap[0]</code> is safe to return once the heap reaches size k.</div>
+      </div>
+    </div>
+
+    <!-- 05 · Two approaches comparison -->
+    <div class="deep-section">
+      <p class="section-label">05 · Three approaches — and why heap wins</p>
+      <h2 class="section-title">Brute force vs sorting vs min-heap</h2>
+
+      <div style="margin-bottom:1.25rem;">
+        <p style="font-size:13px;font-weight:600;color:#9B1B1B;margin:0 0 6px;">① Brute force sort — O(n log n) per add()</p>
+        <div class="code-block" style="margin:0;">
+          <div><span class="c-kw">def </span><span class="c-fn">add</span><span class="c-plain">(self, val):</span></div>
+          <div><span class="c-plain">  self.data.</span><span class="c-fn">append</span><span class="c-plain">(val)</span></div>
+          <div><span class="c-plain">  self.data.</span><span class="c-fn">sort</span><span class="c-plain">(reverse=</span><span class="c-kw">True</span><span class="c-plain">)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># O(n log n) every single call</span></div>
+          <div><span class="c-plain">  </span><span class="c-kw">return </span><span class="c-plain">self.data[self.k - </span><span class="c-num">1</span><span class="c-plain">]</span></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.25rem;">
+        <p style="font-size:13px;font-weight:600;color:#534AB7;margin:0 0 6px;">② Sorted insert — O(n) per add() using bisect</p>
+        <div class="code-block" style="margin:0;">
+          <div><span class="c-kw">import </span><span class="c-plain">bisect</span></div>
+          <div><span class="c-kw">def </span><span class="c-fn">add</span><span class="c-plain">(self, val):</span></div>
+          <div><span class="c-plain">  bisect.</span><span class="c-fn">insort</span><span class="c-plain">(self.data, val)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># O(n) shift cost despite O(log n) search</span></div>
+          <div><span class="c-plain">  </span><span class="c-kw">return </span><span class="c-plain">self.data[-(self.k)]</span></div>
+        </div>
+      </div>
+
+      <div>
+        <p style="font-size:13px;font-weight:600;color:#0F6E56;margin:0 0 6px;">③ Min-heap of size k — O(log k) per add() ← preferred</p>
+        <div class="code-block" style="margin:0;">
+          <div><span class="c-kw">def </span><span class="c-fn">add</span><span class="c-plain">(self, val):</span></div>
+          <div><span class="c-plain">  heapq.</span><span class="c-fn">heappush</span><span class="c-plain">(self.heap, val)</span></div>
+          <div><span class="c-plain">  </span><span class="c-kw">if </span><span class="c-fn">len</span><span class="c-plain">(self.heap) > self.k:</span></div>
+          <div><span class="c-plain">    heapq.</span><span class="c-fn">heappop</span><span class="c-plain">(self.heap)</span></div>
+          <div><span class="c-plain">  </span><span class="c-kw">return </span><span class="c-plain">self.heap[</span><span class="c-num">0</span><span class="c-plain">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># O(log k), heap stays fixed size k</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 · Full trace -->
+    <div class="deep-section">
+      <p class="section-label">06 · Full step-by-step trace</p>
+      <h2 class="section-title">Walking through every call for k=3, nums=[4,5,8,2]</h2>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-going">Init</div>
+        <div class="trace-content">
+          <p class="trace-title">KthLargest(k=3, nums=[4,5,8,2])</p>
+          <p class="trace-desc">heapify([4,5,8,2]) → [2,4,8,5] (internal heap order). Then pop 2 (smallest). Heap = [4,5,8]. Size is k=3. Invariant established.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-base">add(3)</div>
+        <div class="trace-content">
+          <p class="trace-title">Push 3 → heap = [3,5,8,4] (size 4). Size &gt; k → pop min = 3. Heap = [4,5,8].</p>
+          <p class="trace-desc">3 is smaller than every element in the top-3, so it gets immediately evicted. Heap unchanged in terms of top-3 membership. Returns heap[0] = <strong style="font-weight:500;">4</strong>.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-record">add(5)</div>
+        <div class="trace-content">
+          <p class="trace-title">Push 5 → heap = [4,5,8,5] (size 4). Size &gt; k → pop min = 4. Heap = [5,5,8].</p>
+          <p class="trace-desc">5 beats the current minimum (4) and earns a spot. 4 is evicted. The 3rd largest is now 5. Returns heap[0] = <strong style="font-weight:500;">5</strong>.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-split">add(10)</div>
+        <div class="trace-content">
+          <p class="trace-title">Push 10 → heap = [5,5,8,10] (size 4). Pop min = 5. Heap = [5,8,10].</p>
+          <p class="trace-desc">10 is new top-1. Min 5 stays because heap still has 3 elements after pop. Returns heap[0] = <strong style="font-weight:500;">5</strong>.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-back">add(9)</div>
+        <div class="trace-content">
+          <p class="trace-title">Push 9 → heap = [5,8,10,9] (size 4). Pop min = 5. Heap = [8,9,10].</p>
+          <p class="trace-desc">9 displaces 5. Top-3 is now {8,9,10}. Returns heap[0] = <strong style="font-weight:500;">8</strong>.</p>
+        </div>
+      </div>
+      <div class="trace-step" style="margin-bottom:0;">
+        <div class="trace-badge trace-base">add(4)</div>
+        <div class="trace-content">
+          <p class="trace-title">Push 4 → heap = [4,9,10,8] (size 4). Pop min = 4. Heap = [8,9,10].</p>
+          <p class="trace-desc">4 is smaller than root (8) so it enters and immediately exits. Heap unchanged. Returns heap[0] = <strong style="font-weight:500;">8</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 · Common mistakes -->
+    <div class="deep-section">
+      <p class="section-label">07 · Common mistakes</p>
+      <h2 class="section-title">Where people go wrong</h2>
+      <div class="card" style="padding:0.5rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Using a max-heap instead of a min-heap</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">A max-heap of all n elements would require popping k times to get the kth largest — O(k log n) per query, and the heap can't stay at fixed size for a stream. The min-heap of size k approach is the correct design.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Checking <code>val &gt; heap[0]</code> before pushing</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">This skips the push for smaller values but also skips the push when the heap has fewer than k elements — causing it to never reach size k. Always push unconditionally, then pop if size exceeds k.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting that Python's <code>heapq</code> is a min-heap by default</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">In Python, <code>heapq</code> always produces a min-heap. You don't need to negate values or pass custom comparators for this problem. In Java, use <code>PriorityQueue&lt;Integer&gt;</code> (default min-heap).</p>
+          </div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Off-by-one on k vs k−1</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The heap holds exactly k elements. <code>heap[0]</code> is the minimum of those k — which is the kth largest. Returning <code>heap[k-1]</code> or keeping k−1 elements are common off-by-one mistakes that produce the (k−1)th or (k+1)th largest.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 · Complexity deep -->
+    <div class="deep-section">
+      <p class="section-label">08 · Complexity — the full breakdown</p>
+      <h2 class="section-title">Time and space — detailed</h2>
+      <div class="complexity-grid" style="margin-bottom:1rem;">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Init time</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n log k)</div>
+          <div class="complexity-why"  style="color:#185FA5;">heapify is O(n). Trimming n−k elements costs O((n−k) log n) ≈ O(n log k). Overall initialisation is O(n log k).</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">add() time</div>
+          <div class="complexity-value" style="color:#3C3489;">O(log k)</div>
+          <div class="complexity-why"  style="color:#534AB7;">Heap stays at size ≤ k+1. Both heappush and heappop on a heap of size k are O(log k). One O(1) root read at the end.</div>
+        </div>
+      </div>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E1F5EE;">
+          <div class="complexity-label" style="color:#0F6E56;">Space</div>
+          <div class="complexity-value" style="color:#085041;">O(k)</div>
+          <div class="complexity-why"  style="color:#085041;">The heap stores exactly k elements at all times after init. No auxiliary data structure. Total space is O(k) regardless of how many elements have been added.</div>
+        </div>
+        <div class="complexity-card" style="background:#FAEEDA;">
+          <div class="complexity-label" style="color:#854F0B;">m add() calls</div>
+          <div class="complexity-value" style="color:#633806;">O(m log k)</div>
+          <div class="complexity-why"  style="color:#854F0B;">If add() is called m times, total cost is O(m log k). This is the dominant cost for long-running streams where m ≫ n.</div>
+        </div>
+      </div>
+      <div class="callout callout-warn" style="margin-top:1rem;">
+        <p><strong>Interview tip:</strong> State time complexity separately for init and add(). Say: "Initialisation is O(n log k) where n is the length of nums. Each subsequent add() is O(log k) since the heap stays bounded at size k. Space is O(k)." This level of precision shows you understand the design, not just the code.</p>
+      </div>
+    </div>
+
+    <!-- 09 · Q&A -->
+    <div class="deep-section">
+      <p class="section-label">09 · Interview Q&amp;A</p>
+      <h2 class="section-title">Questions you'll actually get asked</h2>
+
+      <div class="qa-block">
+        <div class="qa-q">Why is heap[0] the kth largest, not the kth smallest?</div>
+        <div class="qa-a">The heap contains the k largest elements seen so far. Among those k, heap[0] is the smallest (it's a min-heap). The smallest among the top-k is by definition the kth largest overall. Anything smaller than heap[0] is not in the top-k and would be popped if added.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What if k=1? What does the heap track?</div>
+        <div class="qa-a">The heap holds exactly 1 element — the global maximum seen so far. Every time a new maximum arrives it displaces the current one. <code>heap[0]</code> always returns the 1st largest (i.e., the maximum). The algorithm handles k=1 naturally without any special casing.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Can the stream contain duplicates?</div>
+        <div class="qa-a">Yes — and the heap handles them transparently. Duplicates are stored as separate entries. If the 3rd largest is 5 and the stream sends another 5, both copies can coexist in the heap. Python's heapq compares values numerically and doesn't distinguish between duplicates.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">How would you solve this if k could change between calls?</div>
+        <div class="qa-a">If k is dynamic, you'd need to rebuild the heap each time k changes — O(n log k) to re-trim. Alternatively, maintain a sorted structure (like a balanced BST or a sorted list via <code>sortedcontainers.SortedList</code> in Python) that supports O(log n) insert and O(1) index access. That gives O(log n) per add regardless of k.</div>
+      </div>
+    </div>
+
+    <!-- 10 · Related problems -->
+    <div class="deep-section">
+      <p class="section-label">10 · Related problems</p>
+      <h2 class="section-title">Where this pattern shows up again</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Kth Largest Element in an Array (LC 215)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The static version of this problem. Solvable with the same min-heap approach in O(n log k), or with Quickselect in expected O(n). Practice both — LC 703 is the streaming version of LC 215.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Find Median from Data Stream (LC 295)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The natural next step — uses two heaps (a max-heap for the lower half, a min-heap for the upper half) to maintain the median in O(log n) per add. Same streaming design pattern, more complex balancing.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Top K Frequent Elements (LC 347)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Uses a min-heap of size k to maintain the k most frequent elements. Same "keep a heap of size k, evict the minimum when full" pattern — just with frequencies as keys instead of raw values.</p>
+          </div>
+        </div>
+        <div class="interview-item" style="border:none;">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">K Closest Points to Origin (LC 973)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Keeps a max-heap of size k (inverted for min-heap in Python via negation) to track the k closest points. The same fixed-size heap trick, applied with a distance comparator instead of raw values.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end deep-mode -->
+
+  <!-- Footer CTA -->
+  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Try it yourself</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">LeetCode 703 · Easy · Tags: Tree, Design, Binary Search Tree, Heap (Priority Queue), Binary Tree, Data Stream</p>
+    </div>
+    <a href="https://leetcode.com/problems/kth-largest-element-in-a-stream/" target="_blank" style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);background:#E6F1FB;color:#185FA5;font-weight:500;text-decoration:none;border:0.5px solid #B5D4F4;">Open on LeetCode ↗</a>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep  = document.getElementById('deep-mode');
+  const btnQ  = document.getElementById('btn-quick');
+  const btnD  = document.getElementById('btn-deep');
+  const desc  = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display  = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display  = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>
+</body>
+</html>

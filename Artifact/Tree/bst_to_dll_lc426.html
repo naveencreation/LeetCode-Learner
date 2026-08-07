@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BST to Sorted Doubly Linked List · LC 426</title>
+<style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "SF Mono", "Fira Code", "Consolas", monospace;
+    --color-text-primary:      #1a1a2e;
+    --color-text-secondary:    #4a4a6a;
+    --color-text-tertiary:     #8888a8;
+    --color-background-primary:   #ffffff;
+    --color-background-secondary: #f5f5fa;
+    --color-border-tertiary:  #e0e0ee;
+    --border-radius-lg: 12px;
+    --border-radius-md:  8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--color-background-secondary); font-family: var(--font-sans); }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal   { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber  { background: #FAEEDA; color: #854F0B; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .badge-rose   { background: #FDECEA; color: #9B1B1B; }
+
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+
+  .rule-box  { background: #E6F1FB; padding: 1rem 1.25rem; border-left: 3px solid #378ADD; }
+  .rule-text { font-size: 20px; font-weight: 500; color: #0C447C; }
+
+  .step-row  { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num  { width: 26px; height: 26px; border-radius: 50%; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub  { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13.5px; line-height: 2; overflow-x: auto; }
+  .c-kw { color: #cba6f7; } .c-fn { color: #89b4fa; } .c-cm { color: #6c7086; font-style: italic; }
+  .c-plain { color: #cdd6f4; } .c-str { color: #a6e3a1; } .c-num { color: #fab387; }
+
+  .dry-run-row { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .dry-run-row:last-child { border-bottom: none; }
+  .dry-cell       { padding: 10px 14px; font-size: 13px; color: var(--color-text-primary); line-height: 1.5; font-family: var(--font-mono); flex: 1; }
+  .dry-cell-plain { padding: 10px 14px; font-size: 13px; color: var(--color-text-primary); line-height: 1.5; flex: 1; }
+  .dry-head       { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); padding: 8px 14px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); flex: 1; }
+  .highlight-row  { background: var(--color-background-secondary); }
+
+  .complexity-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card  { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why   { font-size: 13px; margin-top: 6px; }
+
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot  { width: 8px; height: 8px; border-radius: 50%; background: #378ADD; flex-shrink: 0; margin-top: 7px; }
+
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub   { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags  { display: flex; gap: 8px; flex-wrap: wrap; }
+  .divider    { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+
+  .analogy-box  { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn    { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+
+  .deep-section { margin-bottom: 3rem; }
+  .callout      { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+
+  .trace-step    { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge   { min-width: 80px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; white-space: nowrap; }
+  .trace-going   { background: #E6F1FB; color: #185FA5; }
+  .trace-record  { background: #E1F5EE; color: #0F6E56; }
+  .trace-flip    { background: #EEEDFE; color: #534AB7; }
+  .trace-back    { background: #FAEEDA; color: #854F0B; }
+  .trace-fail    { background: #FDECEA; color: #9B1B1B; }
+  .trace-content { flex: 1; }
+  .trace-title   { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc    { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x     { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .mistake-check { width: 20px; height: 20px; border-radius: 50%; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+  code { font-size: 12.5px; background: var(--color-background-secondary); padding: 2px 5px; border-radius: 4px; font-family: var(--font-mono); }
+  .svg-wrap { display: flex; justify-content: center; overflow-x: auto; margin-bottom: 1rem; }
+
+  /* DLL node visual */
+  .dll-row { display: flex; align-items: center; justify-content: center; flex-wrap: nowrap; gap: 0; margin: 1.25rem 0; overflow-x: auto; padding: 0.5rem 0; }
+  .dll-node { background: #E6F1FB; border: 2px solid #378ADD; border-radius: 8px; padding: 8px 14px; font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: #0C447C; white-space: nowrap; }
+  .dll-arr  { font-size: 18px; color: #378ADD; margin: 0 4px; user-select: none; }
+  .dll-node-highlight { background: #E1F5EE; border: 2px solid #1D9E75; color: #085041; }
+  .dll-node-prev  { background: #FAEEDA; border: 2px solid #EF9F27; color: #633806; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <div class="section">
+    <p class="section-label">BST · In-order DFS · LC 426</p>
+    <h1 class="hero-title">Convert BST to Sorted Doubly Linked List</h1>
+    <p class="hero-sub">In-place convert a BST into a circular doubly linked list sorted in ascending order — reusing the existing left/right pointers as prev/next.</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-teal">In-order DFS</span>
+      <span class="badge badge-purple">Two Pointers</span>
+      <span class="badge badge-amber">In-place</span>
+      <span class="badge badge-rose">Medium</span>
+    </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn"        id="btn-deep"  onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       QUICK MODE
+  ════════════════════════════════════════════ -->
+  <div id="quick-mode">
+    <hr class="divider" style="margin-top:0;">
+
+    <!-- 01 · The rule -->
+    <div class="section">
+      <p class="section-label">01 · The rule</p>
+      <div class="rule-box" style="margin-bottom:0.75rem;">
+        <p class="rule-text">In-order traversal of a BST visits nodes in sorted order — reuse left/right as prev/next</p>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">
+        Do an in-order DFS, tracking the previously visited node. At each node, set <code>prev.right = curr</code> and <code>curr.left = prev</code>. After the traversal, connect the head and tail to form the circular link.
+      </p>
+    </div>
+
+    <!-- 02 · How to think -->
+    <div class="section">
+      <p class="section-label">02 · How to think</p>
+      <div class="card">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-text">Run in-order DFS (left → node → right)</div>
+            <div class="step-sub">This visits nodes in ascending order, which is exactly the sorted order we need for the DLL.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-text">Maintain two pointers: <code>head</code> and <code>prev</code></div>
+            <div class="step-sub"><code>head</code> = the very first node visited (smallest). <code>prev</code> = the last node linked so far.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-text">Link <code>prev</code> → <code>curr</code> and <code>curr</code> → <code>prev</code> in-place</div>
+            <div class="step-sub">Set <code>prev.right = curr</code> (next pointer) and <code>curr.left = prev</code> (prev pointer). Reuse existing pointers — no new nodes.</div>
+          </div>
+        </div>
+        <div class="step-row" style="margin-bottom:0;">
+          <div class="step-num">4</div>
+          <div>
+            <div class="step-text">After traversal, connect head ↔ tail to close the circle</div>
+            <div class="step-sub">Set <code>head.left = prev</code> (tail) and <code>prev.right = head</code>. Return <code>head</code>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 · Code -->
+    <div class="section">
+      <p class="section-label">03 · Code (Python)</p>
+      <div class="code-block">
+        <div><span class="c-kw">def</span> <span class="c-fn">treeToDoublyList</span><span class="c-plain">(root):</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">if not</span><span class="c-plain"> root: </span><span class="c-kw">return None</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    head = prev = </span><span class="c-kw">None</span>            <span class="c-cm"># head = smallest, prev = last linked</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    </span><span class="c-kw">def</span> <span class="c-fn">inorder</span><span class="c-plain">(node):</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">nonlocal</span><span class="c-plain"> head, prev</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">if not</span><span class="c-plain"> node: </span><span class="c-kw">return</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">        </span><span class="c-fn">inorder</span><span class="c-plain">(node.left)              </span><span class="c-cm"># 1. recurse left subtree</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">        </span><span class="c-kw">if</span><span class="c-plain"> prev:                       </span><span class="c-cm"># 2. link prev ↔ curr</span></div>
+        <div><span class="c-plain">            prev.right = node</span></div>
+        <div><span class="c-plain">            node.left  = prev</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">else</span><span class="c-plain">:                        </span><span class="c-cm"># first node visited = head</span></div>
+        <div><span class="c-plain">            head = node</span></div>
+        <div><span class="c-plain">        prev = node                  </span><span class="c-cm"># advance prev</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">        </span><span class="c-fn">inorder</span><span class="c-plain">(node.right)             </span><span class="c-cm"># 3. recurse right subtree</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    </span><span class="c-fn">inorder</span><span class="c-plain">(root)</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    </span><span class="c-cm"># 4. close the circle: head ↔ tail</span></div>
+        <div><span class="c-plain">    head.left  = prev</span></div>
+        <div><span class="c-plain">    prev.right = head</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">return</span><span class="c-plain"> head</span></div>
+      </div>
+    </div>
+
+    <!-- 04 · BST Diagram -->
+    <div class="section">
+      <p class="section-label">04 · Input BST and output DLL</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 0.75rem;">BST with root 4. In-order traversal visits: 1 → 2 → 3 → 4 → 5.</p>
+
+      <!-- BST diagram -->
+      <div class="svg-wrap">
+        <svg viewBox="0 0 460 240" width="440" height="228" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+          <!-- Title -->
+          <text x="230" y="18" text-anchor="middle" font-size="11" font-weight="600" fill="#8888a8" letter-spacing="0.06em">INPUT BST</text>
+
+          <!-- In-order visit order labels -->
+          <text x="60"  y="194" text-anchor="middle" font-size="10" fill="#1D9E75" font-weight="600">① 1st</text>
+          <text x="160" y="194" text-anchor="middle" font-size="10" fill="#1D9E75" font-weight="600">② 2nd</text>
+          <text x="230" y="105" text-anchor="middle" font-size="10" fill="#1D9E75" font-weight="600">③ 3rd</text>
+          <text x="300" y="194" text-anchor="middle" font-size="10" fill="#1D9E75" font-weight="600">④ 4th</text>
+          <text x="400" y="194" text-anchor="middle" font-size="10" fill="#1D9E75" font-weight="600">⑤ 5th</text>
+
+          <!-- Edges -->
+          <line x1="230" y1="68" x2="160" y2="138" stroke="#B5D4F4" stroke-width="2"/>
+          <line x1="230" y1="68" x2="300" y2="138" stroke="#B5D4F4" stroke-width="2"/>
+          <line x1="160" y1="138" x2="60"  y2="175" stroke="#B5D4F4" stroke-width="2"/>
+          <line x1="160" y1="138" x2="230" y2="138" stroke="none"/>
+          <!-- node 2 has no right child in this diagram — left child only shown -->
+          <line x1="300" y1="138" x2="400" y2="175" stroke="#B5D4F4" stroke-width="2"/>
+
+          <!-- Root: 4 -->
+          <circle cx="230" cy="52" r="24" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="230" y="58" text-anchor="middle" font-size="16" font-weight="700" fill="#0C447C">4</text>
+          <text x="206" y="36" font-size="10" fill="#8888a8">root</text>
+
+          <!-- Level 1: 2 (left), 5 (right) -->
+          <circle cx="160" cy="122" r="24" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2"/>
+          <text x="160" y="128" text-anchor="middle" font-size="16" font-weight="700" fill="#633806">2</text>
+
+          <circle cx="300" cy="122" r="24" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2"/>
+          <text x="300" y="128" text-anchor="middle" font-size="16" font-weight="700" fill="#633806">5</text>
+
+          <!-- Level 2: 1 (left of 2), 3 (right of 2) -->
+          <circle cx="60"  cy="162" r="24" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text x="60"  y="168" text-anchor="middle" font-size="16" font-weight="700" fill="#085041">1</text>
+
+          <!-- right child of 2 = 3 -->
+          <line x1="160" y1="146" x2="230" y2="162" stroke="#B5D4F4" stroke-width="2"/>
+          <circle cx="230" cy="175" r="24" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text x="230" y="181" text-anchor="middle" font-size="16" font-weight="700" fill="#085041">3</text>
+
+          <!-- right of 5 = nothing, left of 5 = nothing -->
+          <circle cx="400" cy="162" r="24" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text x="400" y="168" text-anchor="middle" font-size="16" font-weight="700" fill="#085041">5</text>
+
+          <!-- BST property labels -->
+          <text x="120" y="228" font-size="10" fill="#8888a8">left &lt; parent</text>
+          <text x="282" y="228" font-size="10" fill="#8888a8">parent &lt; right</text>
+        </svg>
+      </div>
+
+      <!-- Arrow pointing down to DLL -->
+      <div style="display:flex;justify-content:center;margin:0.5rem 0;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span style="font-size:11px;color:var(--color-text-tertiary);font-weight:500;letter-spacing:0.06em;">IN-ORDER DFS → SORTED DLL</span>
+          <span style="font-size:22px;color:#378ADD;line-height:1;">↓</span>
+        </div>
+      </div>
+
+      <!-- OUTPUT DLL row -->
+      <div class="dll-row">
+        <span style="font-size:11px;color:#085041;font-weight:600;margin-right:6px;">head→</span>
+        <div class="dll-node dll-node-highlight">1</div>
+        <span class="dll-arr">⇄</span>
+        <div class="dll-node">2</div>
+        <span class="dll-arr">⇄</span>
+        <div class="dll-node">3</div>
+        <span class="dll-arr">⇄</span>
+        <div class="dll-node">4</div>
+        <span class="dll-arr">⇄</span>
+        <div class="dll-node dll-node-prev">5</div>
+        <span style="font-size:11px;color:#633806;font-weight:600;margin-left:6px;">←tail</span>
+      </div>
+      <!-- circular wrap arrows -->
+      <div style="display:flex;justify-content:center;align-items:center;gap:6px;margin-top:4px;">
+        <span style="font-size:11px;color:var(--color-text-tertiary);">tail.right → head</span>
+        <span style="font-size:14px;color:#8B87E3;">↻</span>
+        <span style="font-size:11px;color:var(--color-text-tertiary);">head.left → tail</span>
+      </div>
+
+      <div class="card" style="padding:0.75rem 1.5rem;margin-top:0.75rem;">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+          <span style="font-size:13px;color:var(--color-text-secondary);">Output (head value):</span>
+          <span style="font-family:var(--font-mono);font-size:14px;font-weight:500;color:#085041;background:#E1F5EE;padding:3px 12px;border-radius:6px;">1 ⇄ 2 ⇄ 3 ⇄ 4 ⇄ 5 ↻</span>
+          <span style="font-size:12px;color:var(--color-text-tertiary);">circular, sorted</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 · Dry run table -->
+    <div class="section">
+      <p class="section-label">05 · Dry run — in-order linking trace</p>
+      <div class="card" style="padding:0;">
+        <div style="display:flex;">
+          <div class="dry-head" style="flex:0.8;">Visit order</div>
+          <div class="dry-head" style="flex:0.7;">curr node</div>
+          <div class="dry-head" style="flex:0.7;">prev</div>
+          <div class="dry-head" style="flex:1.8;">Action</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell-plain" style="flex:0.8;">1st</div>
+          <div class="dry-cell" style="flex:0.7;">1</div>
+          <div class="dry-cell" style="flex:0.7;">None</div>
+          <div class="dry-cell-plain" style="flex:1.8;">prev is None → <strong>head = node(1)</strong>. prev = node(1)</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell-plain" style="flex:0.8;">2nd</div>
+          <div class="dry-cell" style="flex:0.7;">2</div>
+          <div class="dry-cell" style="flex:0.7;">node(1)</div>
+          <div class="dry-cell-plain" style="flex:1.8;">1.right=2, 2.left=1. prev = node(2)</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell-plain" style="flex:0.8;">3rd</div>
+          <div class="dry-cell" style="flex:0.7;">3</div>
+          <div class="dry-cell" style="flex:0.7;">node(2)</div>
+          <div class="dry-cell-plain" style="flex:1.8;">2.right=3, 3.left=2. prev = node(3)</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell-plain" style="flex:0.8;">4th</div>
+          <div class="dry-cell" style="flex:0.7;">4</div>
+          <div class="dry-cell" style="flex:0.7;">node(3)</div>
+          <div class="dry-cell-plain" style="flex:1.8;">3.right=4, 4.left=3. prev = node(4)</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell-plain" style="flex:0.8;">5th</div>
+          <div class="dry-cell" style="flex:0.7;">5</div>
+          <div class="dry-cell" style="flex:0.7;">node(4)</div>
+          <div class="dry-cell-plain" style="flex:1.8;">4.right=5, 5.left=4. prev = node(5)</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell-plain" style="flex:0.8;">Close</div>
+          <div class="dry-cell" style="flex:0.7;">—</div>
+          <div class="dry-cell" style="flex:0.7;">node(5)</div>
+          <div class="dry-cell-plain" style="flex:1.8;"><strong>head.left=tail(5)</strong>, <strong>tail.right=head(1)</strong> ↻</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 · Complexity -->
+    <div class="section" style="margin-bottom:0;">
+      <p class="section-label">06 · Complexity</p>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Time</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n)</div>
+          <div class="complexity-why" style="color:#185FA5;">Every node is visited exactly once in the in-order traversal. The final circular link is O(1). Total: O(n).</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">Space</div>
+          <div class="complexity-value" style="color:#3C3489;">O(h)</div>
+          <div class="complexity-why" style="color:#534AB7;">Recursion stack depth equals tree height h. O(log n) balanced, O(n) skewed. No extra nodes are allocated — conversion is in-place.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end quick-mode -->
+
+
+  <!-- ═══════════════════════════════════════════
+       DEEP MODE
+  ════════════════════════════════════════════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr class="divider" style="margin-top:0;">
+
+    <!-- 01 · What the problem is really asking -->
+    <div class="deep-section">
+      <p class="section-label">01 · What is the problem really asking?</p>
+      <h2 class="section-title">Three requirements packed into one sentence</h2>
+      <p class="deep-para">The problem asks you to convert a BST into a circular doubly linked list, in-place, with nodes in ascending sorted order. Each requirement has implications:</p>
+      <div class="callout callout-info">
+        <p><strong>In-place:</strong> you cannot allocate a new list or new nodes. You must reuse the existing tree nodes — the left pointer becomes the "prev" pointer and the right pointer becomes the "next" pointer.<br><br>
+        <strong>Sorted:</strong> the DLL must be in ascending order. A BST's in-order traversal (left → node → right) visits nodes in sorted ascending order — that's the key insight.<br><br>
+        <strong>Circular:</strong> the tail's next must point back to the head, and the head's prev must point to the tail. This is done in a single O(1) step after the full traversal.</p>
+      </div>
+      <p class="deep-para">The entire algorithm reduces to: run in-order DFS, stitch nodes together as you visit them, then close the circle at the end.</p>
+    </div>
+
+    <!-- 02 · Why in-order DFS -->
+    <div class="deep-section">
+      <p class="section-label">02 · Why in-order DFS?</p>
+      <h2 class="section-title">The traversal order that gives you sorted output for free</h2>
+      <p class="deep-para">In a BST, for every node: all values in its left subtree are smaller, and all values in its right subtree are larger. In-order DFS (recurse left → visit current → recurse right) naturally visits nodes from smallest to largest.</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 500 195" width="480" height="186" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+          <!-- Title -->
+          <text x="250" y="14" text-anchor="middle" font-size="11" font-weight="600" fill="#8888a8" letter-spacing="0.05em">IN-ORDER TRAVERSAL VISITS NODES SMALLEST → LARGEST</text>
+
+          <!-- BST -->
+          <!-- edges -->
+          <line x1="140" y1="52"  x2="75"  y2="110" stroke="#B5D4F4" stroke-width="1.8"/>
+          <line x1="140" y1="52"  x2="205" y2="110" stroke="#B5D4F4" stroke-width="1.8"/>
+          <line x1="75"  y1="110" x2="42"  y2="155" stroke="#B5D4F4" stroke-width="1.8"/>
+          <line x1="75"  y1="110" x2="108" y2="155" stroke="#B5D4F4" stroke-width="1.8"/>
+          <line x1="205" y1="110" x2="238" y2="155" stroke="#B5D4F4" stroke-width="1.8"/>
+
+          <!-- nodes -->
+          <circle cx="140" cy="40"  r="20" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="140" y="46"  text-anchor="middle" font-size="14" font-weight="700" fill="#0C447C">4</text>
+          <circle cx="75"  cy="98"  r="20" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2"/>
+          <text x="75"  y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#633806">2</text>
+          <circle cx="205" cy="98"  r="20" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2"/>
+          <text x="205" y="104" text-anchor="middle" font-size="14" font-weight="700" fill="#633806">5</text>
+          <circle cx="42"  cy="143" r="20" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text x="42"  y="149" text-anchor="middle" font-size="14" font-weight="700" fill="#085041">1</text>
+          <circle cx="108" cy="143" r="20" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text x="108" y="149" text-anchor="middle" font-size="14" font-weight="700" fill="#085041">3</text>
+          <circle cx="238" cy="143" r="0" fill="none"/>
+
+          <!-- visit order sequence on the right -->
+          <text x="310" y="22" font-size="11" fill="#8888a8" font-weight="600" letter-spacing="0.05em">VISIT SEQUENCE</text>
+          <!-- step rows -->
+          <rect x="305" y="30" width="175" height="28" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+          <text x="318" y="49" font-size="12" fill="#085041" font-weight="500">① node(1) — leftmost leaf</text>
+          <rect x="305" y="63" width="175" height="28" rx="6" fill="#E6F1FB" stroke="#378ADD" stroke-width="1"/>
+          <text x="318" y="82" font-size="12" fill="#0C447C" font-weight="500">② node(2) — left subtree root</text>
+          <rect x="305" y="96" width="175" height="28" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+          <text x="318" y="115" font-size="12" fill="#085041" font-weight="500">③ node(3) — right child of 2</text>
+          <rect x="305" y="129" width="175" height="28" rx="6" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1"/>
+          <text x="318" y="148" font-size="12" fill="#633806" font-weight="500">④ node(4) — root (visited 3rd!)</text>
+          <rect x="305" y="162" width="175" height="28" rx="6" fill="#EEEDFE" stroke="#8B87E3" stroke-width="1"/>
+          <text x="318" y="181" font-size="12" fill="#3C3489" font-weight="500">⑤ node(5) — rightmost leaf</text>
+        </svg>
+      </div>
+
+      <div class="callout callout-success">
+        <p><strong>Key insight:</strong> The root (4) is visited <em>third</em> — not first. In-order traversal goes all the way down the left before visiting the current node. This is why pre-order or post-order won't work here — only in-order produces the globally sorted sequence.</p>
+      </div>
+    </div>
+
+    <!-- 03 · The pointer reuse diagram -->
+    <div class="deep-section">
+      <p class="section-label">03 · How pointers are reused in-place</p>
+      <h2 class="section-title">Left = prev, Right = next — during and after conversion</h2>
+      <p class="deep-para">Each tree node has a <code>left</code> and <code>right</code> pointer. The problem tells us to reuse them: <code>left</code> becomes the "previous" pointer in the DLL, and <code>right</code> becomes the "next" pointer. No new memory is allocated.</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 520 230" width="500" height="220" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+
+          <!-- BEFORE label -->
+          <text x="110" y="16" text-anchor="middle" font-size="11" font-weight="600" fill="#8888a8" letter-spacing="0.05em">BEFORE (BST node)</text>
+          <!-- AFTER label -->
+          <text x="390" y="16" text-anchor="middle" font-size="11" font-weight="600" fill="#8888a8" letter-spacing="0.05em">AFTER (DLL node)</text>
+
+          <!-- BEFORE: node box -->
+          <rect x="50"  y="28" width="120" height="52" rx="8" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="110" y="60" text-anchor="middle" font-size="18" font-weight="700" fill="#0C447C">node(X)</text>
+
+          <!-- BEFORE: left/right child lines -->
+          <line x1="75"  y1="80" x2="40"  y2="120" stroke="#B5D4F4" stroke-width="1.8" stroke-dasharray="4,3"/>
+          <line x1="145" y1="80" x2="180" y2="120" stroke="#B5D4F4" stroke-width="1.8" stroke-dasharray="4,3"/>
+          <rect x="18"  y="120" width="44" height="28" rx="6" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="1"/>
+          <text x="40"  y="139" text-anchor="middle" font-size="11" fill="#8888a8">left child</text>
+          <rect x="158" y="120" width="44" height="28" rx="6" fill="#f5f5fa" stroke="#e0e0ee" stroke-width="1"/>
+          <text x="180" y="139" text-anchor="middle" font-size="11" fill="#8888a8">right child</text>
+
+          <!-- labels below BEFORE -->
+          <text x="40"  y="163" text-anchor="middle" font-size="10" fill="#854F0B">.left = smaller subtree</text>
+          <text x="180" y="163" text-anchor="middle" font-size="10" fill="#854F0B">.right = larger subtree</text>
+
+          <!-- Arrow between BEFORE and AFTER -->
+          <text x="260" y="68" text-anchor="middle" font-size="22" fill="#1D9E75">→</text>
+          <text x="260" y="85" text-anchor="middle" font-size="10" fill="#1D9E75" font-weight="600">in-order DFS</text>
+
+          <!-- AFTER: node box -->
+          <rect x="330" y="28" width="120" height="52" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text x="390" y="60" text-anchor="middle" font-size="18" font-weight="700" fill="#085041">node(X)</text>
+
+          <!-- AFTER: prev/next arrows -->
+          <!-- prev arrow pointing left -->
+          <line x1="355" y1="80" x2="315" y2="120" stroke="#1D9E75" stroke-width="2"/>
+          <polygon points="315,120 325,112 322,122" fill="#1D9E75"/>
+          <rect x="288" y="120" width="56" height="28" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="316" y="139" text-anchor="middle" font-size="11" fill="#085041" font-weight="600">prev node</text>
+
+          <!-- next arrow pointing right -->
+          <line x1="425" y1="80" x2="465" y2="120" stroke="#1D9E75" stroke-width="2"/>
+          <polygon points="465,120 455,112 458,122" fill="#1D9E75"/>
+          <rect x="438" y="120" width="56" height="28" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="466" y="139" text-anchor="middle" font-size="11" fill="#085041" font-weight="600">next node</text>
+
+          <!-- labels below AFTER -->
+          <text x="316" y="163" text-anchor="middle" font-size="10" fill="#085041">.left = prev (smaller)</text>
+          <text x="466" y="163" text-anchor="middle" font-size="10" fill="#085041">.right = next (larger)</text>
+
+          <!-- Circular wrap annotation -->
+          <path d="M 340,28 Q 390,5 440,28" fill="none" stroke="#8B87E3" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="390" y="8" text-anchor="middle" font-size="10" fill="#534AB7" font-weight="500">head.left = tail   ·   tail.right = head</text>
+        </svg>
+      </div>
+
+      <div class="callout callout-info">
+        <p>During the traversal, we only write to <code>node.left</code> and <code>node.right</code> — we never read the original child pointers at the "linking" step. By the time we need to link node X, we've already finished recursing into X's subtrees, so there's no conflict in overwriting its pointers.</p>
+      </div>
+    </div>
+
+    <!-- 04 · Analogy -->
+    <div class="deep-section">
+      <p class="section-label">04 · Real-world analogy</p>
+      <h2 class="section-title">Threading a necklace bead by bead</h2>
+      <div class="analogy-box" style="margin-bottom:1rem;">
+        <p class="analogy-text">Think of the BST nodes as unstrung beads. In-order traversal hands them to you one at a time, in ascending order. You have two hands: one holds the previous bead (prev), the other reaches for the new one (curr). You connect the two beads with a double-ended clasp — that's the two pointer assignments. At the end, you close the necklace by clipping the last bead back to the first.</p>
+      </div>
+      <div class="callout callout-success">
+        <p><strong>Key insight:</strong> You don't need to know where the "next" bead is before connecting the "current" one. You only ever look backward (at <code>prev</code>) and set two pointers. The in-order traversal guarantees the beads arrive in the right order — you just string them as they come.</p>
+      </div>
+    </div>
+
+    <!-- 05 · Code line-by-line -->
+    <div class="deep-section">
+      <p class="section-label">05 · Understanding the code line by line</p>
+      <h2 class="section-title">What every line is actually doing</h2>
+      <p class="deep-para">The algorithm has four distinct phases. Understanding each phase separately makes the full solution obvious.</p>
+      <div class="code-block" style="margin-bottom:1.25rem;">
+        <div><span class="c-kw">def</span> <span class="c-fn">treeToDoublyList</span><span class="c-plain">(root):</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">if not</span><span class="c-plain"> root: </span><span class="c-kw">return None</span>   <span class="c-cm"># PHASE 0: edge case — empty tree</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    head = prev = </span><span class="c-kw">None</span></div>
+        <div><span class="c-plain">    </span><span class="c-cm"># head: anchors the start of the DLL (set once, at leftmost node)</span></div>
+        <div><span class="c-plain">    </span><span class="c-cm"># prev: the last node we have fully linked — slides forward each step</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    </span><span class="c-kw">def</span> <span class="c-fn">inorder</span><span class="c-plain">(node):</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">nonlocal</span><span class="c-plain"> head, prev</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">if not</span><span class="c-plain"> node: </span><span class="c-kw">return</span>    <span class="c-cm"># base case: null leaf</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">        </span><span class="c-cm"># PHASE 1: go all the way left first</span></div>
+        <div><span class="c-plain">        </span><span class="c-fn">inorder</span><span class="c-plain">(node.left)</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">        </span><span class="c-cm"># PHASE 2: process current node (the "visit" step)</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">if</span><span class="c-plain"> prev:</span></div>
+        <div><span class="c-plain">            prev.right = node    </span><span class="c-cm"># prev's "next" → current node</span></div>
+        <div><span class="c-plain">            node.left  = prev    </span><span class="c-cm"># current's "prev" → previous node</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">else</span><span class="c-plain">:</span></div>
+        <div><span class="c-plain">            head = node          </span><span class="c-cm"># first visit ever → this is the head</span></div>
+        <div><span class="c-plain">        prev = node              </span><span class="c-cm"># slide the prev pointer forward</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">        </span><span class="c-cm"># PHASE 3: go right (larger values)</span></div>
+        <div><span class="c-plain">        </span><span class="c-fn">inorder</span><span class="c-plain">(node.right)</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    </span><span class="c-fn">inorder</span><span class="c-plain">(root)</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    </span><span class="c-cm"># PHASE 4: close the circle — O(1) regardless of tree size</span></div>
+        <div><span class="c-plain">    head.left  = prev    </span><span class="c-cm"># head's "prev" → tail (the last node visited)</span></div>
+        <div><span class="c-plain">    prev.right = head    </span><span class="c-cm"># tail's "next" → head</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">return</span><span class="c-plain"> head</span></div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q">Why use <code>nonlocal head, prev</code>?</div>
+        <div class="qa-a">Python nested functions can read outer variables but cannot rebind them without <code>nonlocal</code>. Since both <code>head</code> and <code>prev</code> need to be reassigned (not just mutated), we need <code>nonlocal</code>. An alternative is to use a single-element list like <code>prev = [None]</code> and mutate <code>prev[0]</code> — this avoids <code>nonlocal</code> but is less readable.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why is it safe to overwrite <code>node.left</code> during the visit step?</div>
+        <div class="qa-a">By the time we reach the "visit" step for any node, we have already fully finished recursing into its left subtree. <code>inorder(node.left)</code> has returned. We no longer need <code>node.left</code> as a tree pointer — every node in the left subtree has already been processed and linked. Overwriting it with the prev pointer is safe.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why is it safe to overwrite <code>node.right</code> on the previous node?</div>
+        <div class="qa-a">When we set <code>prev.right = node</code>, we are overwriting the right child pointer of <code>prev</code>. But <code>prev</code> has already been visited — we finished its right subtree recursion, returned, and are now at a higher node. <code>prev.right</code> was the link that led us up to the current context, but since recursion has already unwound from it, we no longer need it as a tree pointer.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Can this be solved iteratively?</div>
+        <div class="qa-a">Yes. Use an explicit stack to simulate in-order traversal. Push nodes onto the stack going left, then pop, link, and go right. The same two-pointer logic (<code>head</code> and <code>prev</code>) applies. This avoids Python's recursion limit on deep trees and achieves the same O(n) time with O(h) stack space.</div>
+      </div>
+    </div>
+
+    <!-- 06 · Full step-by-step trace with evolving DLL state -->
+    <div class="deep-section">
+      <p class="section-label">06 · Full recursive trace with DLL state</p>
+      <h2 class="section-title">Walking through BST [4, 2, 5, 1, 3] step by step</h2>
+      <p class="deep-para" style="margin-bottom:1.5rem;">We trace every call and show the DLL state after each linking action. Only the "visit" events that do linking are shown — null returns are omitted for brevity.</p>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-going">Start</div>
+        <div class="trace-content">
+          <p class="trace-title">inorder(4) → inorder(2) → inorder(1) → inorder(None)</p>
+          <p class="trace-desc">Recursion plunges all the way left to node 1's left child (None). Returns immediately. Now we visit node 1 for the first time.</p>
+        </div>
+      </div>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-record">Visit 1</div>
+        <div class="trace-content">
+          <p class="trace-title">curr = node(1), prev = None → head = node(1), prev = node(1)</p>
+          <p class="trace-desc">First visit ever. prev is None so we set head = node(1). Advance prev to node(1).</p>
+        </div>
+      </div>
+      <!-- DLL state after step 1 -->
+      <div style="margin:-0.5rem 0 1.25rem 94px;">
+        <div class="dll-row" style="justify-content:flex-start;">
+          <span style="font-size:10px;color:#085041;font-weight:600;margin-right:6px;">DLL:</span>
+          <div class="dll-node dll-node-highlight" style="font-size:13px;padding:5px 10px;">1</div>
+          <span style="font-size:10px;color:var(--color-text-tertiary);margin-left:6px;">(head, prev)</span>
+        </div>
+      </div>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-back">Visit 2</div>
+        <div class="trace-content">
+          <p class="trace-title">curr = node(2), prev = node(1) → 1.right=2, 2.left=1. prev = node(2)</p>
+          <p class="trace-desc">prev exists. Link forward: 1→2. Link back: 2←1. Advance prev to node(2). Then recurse into node(2)'s right child (node 3).</p>
+        </div>
+      </div>
+      <div style="margin:-0.5rem 0 1.25rem 94px;">
+        <div class="dll-row" style="justify-content:flex-start;">
+          <span style="font-size:10px;color:#085041;font-weight:600;margin-right:6px;">DLL:</span>
+          <div class="dll-node dll-node-highlight" style="font-size:13px;padding:5px 10px;">1</div>
+          <span class="dll-arr" style="font-size:14px;">⇄</span>
+          <div class="dll-node" style="font-size:13px;padding:5px 10px;">2</div>
+          <span style="font-size:10px;color:var(--color-text-tertiary);margin-left:6px;">(prev)</span>
+        </div>
+      </div>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-flip">Visit 3</div>
+        <div class="trace-content">
+          <p class="trace-title">curr = node(3), prev = node(2) → 2.right=3, 3.left=2. prev = node(3)</p>
+          <p class="trace-desc">node(3) is the right child of node(2). Link 2→3 and 3←2. Advance prev. node(3) has no children — returns up to node(2), then up to node(4).</p>
+        </div>
+      </div>
+      <div style="margin:-0.5rem 0 1.25rem 94px;">
+        <div class="dll-row" style="justify-content:flex-start;">
+          <span style="font-size:10px;color:#085041;font-weight:600;margin-right:6px;">DLL:</span>
+          <div class="dll-node dll-node-highlight" style="font-size:13px;padding:5px 10px;">1</div>
+          <span class="dll-arr" style="font-size:14px;">⇄</span>
+          <div class="dll-node" style="font-size:13px;padding:5px 10px;">2</div>
+          <span class="dll-arr" style="font-size:14px;">⇄</span>
+          <div class="dll-node" style="font-size:13px;padding:5px 10px;">3</div>
+          <span style="font-size:10px;color:var(--color-text-tertiary);margin-left:6px;">(prev)</span>
+        </div>
+      </div>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-going">Visit 4</div>
+        <div class="trace-content">
+          <p class="trace-title">curr = node(4) [root], prev = node(3) → 3.right=4, 4.left=3. prev = node(4)</p>
+          <p class="trace-desc">Back up at the root now. Left subtree fully done. Link 3→4 and 4←3. Then recurse right into node(5).</p>
+        </div>
+      </div>
+      <div style="margin:-0.5rem 0 1.25rem 94px;">
+        <div class="dll-row" style="justify-content:flex-start;">
+          <span style="font-size:10px;color:#085041;font-weight:600;margin-right:6px;">DLL:</span>
+          <div class="dll-node dll-node-highlight" style="font-size:13px;padding:5px 10px;">1</div>
+          <span class="dll-arr" style="font-size:14px;">⇄</span>
+          <div class="dll-node" style="font-size:13px;padding:5px 10px;">2</div>
+          <span class="dll-arr" style="font-size:14px;">⇄</span>
+          <div class="dll-node" style="font-size:13px;padding:5px 10px;">3</div>
+          <span class="dll-arr" style="font-size:14px;">⇄</span>
+          <div class="dll-node" style="font-size:13px;padding:5px 10px;">4</div>
+          <span style="font-size:10px;color:var(--color-text-tertiary);margin-left:6px;">(prev)</span>
+        </div>
+      </div>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-record">Visit 5</div>
+        <div class="trace-content">
+          <p class="trace-title">curr = node(5), prev = node(4) → 4.right=5, 5.left=4. prev = node(5)</p>
+          <p class="trace-desc">node(5) is the rightmost node. Link 4→5 and 5←4. Advance prev to node(5). Both children of 5 are None — returns. Traversal complete.</p>
+        </div>
+      </div>
+      <div style="margin:-0.5rem 0 1.25rem 94px;">
+        <div class="dll-row" style="justify-content:flex-start;">
+          <span style="font-size:10px;color:#085041;font-weight:600;margin-right:6px;">DLL:</span>
+          <div class="dll-node dll-node-highlight" style="font-size:13px;padding:5px 10px;">1</div>
+          <span class="dll-arr" style="font-size:14px;">⇄</span>
+          <div class="dll-node" style="font-size:13px;padding:5px 10px;">2</div>
+          <span class="dll-arr" style="font-size:14px;">⇄</span>
+          <div class="dll-node" style="font-size:13px;padding:5px 10px;">3</div>
+          <span class="dll-arr" style="font-size:14px;">⇄</span>
+          <div class="dll-node" style="font-size:13px;padding:5px 10px;">4</div>
+          <span class="dll-arr" style="font-size:14px;">⇄</span>
+          <div class="dll-node dll-node-prev" style="font-size:13px;padding:5px 10px;">5</div>
+          <span style="font-size:10px;color:#633806;font-weight:600;margin-left:6px;">(tail/prev)</span>
+        </div>
+      </div>
+
+      <div class="trace-step" style="margin-bottom:0;">
+        <div class="trace-badge trace-record">Close ↻</div>
+        <div class="trace-content">
+          <p class="trace-title">head.left = prev(5), prev.right = head(1) → circular!</p>
+          <p class="trace-desc">Two pointer assignments close the circle. head(1).left now points to tail(5). tail(5).right now points back to head(1). Return head. Done in O(1).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 · The circular close diagram -->
+    <div class="deep-section">
+      <p class="section-label">07 · Closing the circle — final state</p>
+      <h2 class="section-title">The two pointer assignments that make it circular</h2>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 500 130" width="480" height="124" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+          <defs>
+            <marker id="arr-fwd" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#1D9E75"/></marker>
+            <marker id="arr-back" markerWidth="7" markerHeight="7" refX="2" refY="3.5" orient="auto-start-reverse"><polygon points="0 0,7 3.5,0 7" fill="#378ADD"/></marker>
+            <marker id="arr-circ" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#8B87E3"/></marker>
+          </defs>
+
+          <!-- Nodes -->
+          <rect x="20"  y="42" width="52" height="36" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text x="46"  y="65" text-anchor="middle" font-size="15" font-weight="700" fill="#085041">1</text>
+          <text x="46"  y="30" text-anchor="middle" font-size="10" fill="#1D9E75" font-weight="600">head</text>
+
+          <rect x="108" y="42" width="52" height="36" rx="8" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="134" y="65" text-anchor="middle" font-size="15" font-weight="700" fill="#0C447C">2</text>
+
+          <rect x="196" y="42" width="52" height="36" rx="8" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="222" y="65" text-anchor="middle" font-size="15" font-weight="700" fill="#0C447C">3</text>
+
+          <rect x="284" y="42" width="52" height="36" rx="8" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="310" y="65" text-anchor="middle" font-size="15" font-weight="700" fill="#0C447C">4</text>
+
+          <rect x="372" y="42" width="52" height="36" rx="8" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2"/>
+          <text x="398" y="65" text-anchor="middle" font-size="15" font-weight="700" fill="#633806">5</text>
+          <text x="398" y="30" text-anchor="middle" font-size="10" fill="#633806" font-weight="600">tail</text>
+
+          <!-- Forward arrows (right = next) -->
+          <line x1="72"  y1="60" x2="108" y2="60" stroke="#1D9E75" stroke-width="2" marker-end="url(#arr-fwd)"/>
+          <line x1="160" y1="60" x2="196" y2="60" stroke="#1D9E75" stroke-width="2" marker-end="url(#arr-fwd)"/>
+          <line x1="248" y1="60" x2="284" y2="60" stroke="#1D9E75" stroke-width="2" marker-end="url(#arr-fwd)"/>
+          <line x1="336" y1="60" x2="372" y2="60" stroke="#1D9E75" stroke-width="2" marker-end="url(#arr-fwd)"/>
+
+          <!-- Backward arrows (left = prev) -->
+          <line x1="108" y1="68" x2="72"  y2="68" stroke="#378ADD" stroke-width="1.5" marker-end="url(#arr-back)"/>
+          <line x1="196" y1="68" x2="160" y2="68" stroke="#378ADD" stroke-width="1.5" marker-end="url(#arr-back)"/>
+          <line x1="284" y1="68" x2="248" y2="68" stroke="#378ADD" stroke-width="1.5" marker-end="url(#arr-back)"/>
+          <line x1="372" y1="68" x2="336" y2="68" stroke="#378ADD" stroke-width="1.5" marker-end="url(#arr-back)"/>
+
+          <!-- Circular wrap — tail → head (top arc) -->
+          <path d="M 424,42 Q 248,5 46,42" fill="none" stroke="#8B87E3" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr-circ)"/>
+          <text x="235" y="12" text-anchor="middle" font-size="10" fill="#534AB7" font-weight="500">tail.right → head  (closing next pointer)</text>
+
+          <!-- Circular wrap — head → tail (bottom arc) -->
+          <path d="M 46,78 Q 248,116 424,78" fill="none" stroke="#EF9F27" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr-circ)"/>
+          <text x="235" y="120" text-anchor="middle" font-size="10" fill="#854F0B" font-weight="500">head.left → tail  (closing prev pointer)</text>
+        </svg>
+      </div>
+
+      <div class="callout callout-warn">
+        <p><strong>Don't forget the circular step!</strong> Forgetting <code>head.left = prev</code> and <code>prev.right = head</code> at the end is the most common bug. The traversal only builds a linear DLL — you must manually close the circle after the DFS returns.</p>
+      </div>
+    </div>
+
+    <!-- 08 · Common mistakes -->
+    <div class="deep-section">
+      <p class="section-label">08 · Common mistakes</p>
+      <h2 class="section-title">Errors to avoid in interviews</h2>
+      <div class="card" style="padding:1rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting to close the circle at the end</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The traversal builds a linear DLL from head to tail. Without <code>head.left = prev</code> and <code>prev.right = head</code>, the list is not circular. This is the single most common error on this problem.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Using pre-order or post-order instead of in-order</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Only in-order traversal visits BST nodes in sorted ascending order. Pre-order visits the root first (unsorted). Post-order visits it last (also unsorted). Replacing <code>inorder(left)</code> / visit / <code>inorder(right)</code> with any other arrangement breaks the sorted property.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Overwriting <code>node.right</code> before recursing right</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">If you set <code>prev.right = node</code> and then immediately try to recurse <code>inorder(node.right)</code>, you are recursing into what is now the linked DLL node — not the BST's right child. Always recurse <code>inorder(node.right)</code> <em>after</em> the linking step, on the originally stored right child. In the code above, the local variable <code>node</code> still holds the original right child reference, so <code>inorder(node.right)</code> at the end is safe — but be careful if you refactor.</p>
+          </div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Not handling the single-node edge case</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">For a single-node BST, <code>inorder</code> sets head = prev = that node. Then <code>head.left = prev</code> and <code>prev.right = head</code> both point the node to itself — a valid circular DLL of size 1. The code handles this correctly without a special case, but verify it mentally before your interview.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 09 · Complexity full -->
+    <div class="deep-section">
+      <p class="section-label">09 · Complexity — the full explanation</p>
+      <h2 class="section-title">Why O(n) time and O(h) space?</h2>
+      <div class="complexity-grid" style="margin-bottom:1rem;">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Time</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n)</div>
+          <div class="complexity-why" style="color:#185FA5;">Every node is visited exactly once in the in-order traversal. At each visit, exactly two pointer assignments are made (O(1)). The final circle-closing step is O(1). Total: O(n).</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">Space</div>
+          <div class="complexity-value" style="color:#3C3489;">O(h)</div>
+          <div class="complexity-why" style="color:#534AB7;">Only the recursion call stack is used — no extra data structures. Stack depth equals tree height h: O(log n) balanced, O(n) worst case (skewed tree). The conversion itself is in-place: O(1) extra for the two pointers <code>head</code> and <code>prev</code>.</div>
+        </div>
+      </div>
+      <div class="callout callout-warn">
+        <p><strong>Interview tip:</strong> Emphasise "in-place" — no new nodes, O(1) extra space beyond the call stack. If asked about the iterative approach: same O(n) time, same O(h) space using an explicit stack, but avoids Python's recursion limit on trees with depth &gt; ~1000.</p>
+      </div>
+    </div>
+
+    <!-- 10 · Q&A -->
+    <div class="deep-section">
+      <p class="section-label">10 · Interview Q&amp;A</p>
+      <h2 class="section-title">Questions you'll actually get asked</h2>
+
+      <div class="qa-block">
+        <div class="qa-q">Why does in-order traversal produce sorted output for a BST?</div>
+        <div class="qa-a">By the BST property, for any node X: all values in X's left subtree are smaller than X, and all values in X's right subtree are larger. In-order DFS visits the left subtree entirely first (all smaller values), then X, then the right subtree (all larger values). This ordering is recursive — it applies at every subtree — so the full traversal produces values in globally sorted ascending order.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Can you solve this without recursion?</div>
+        <div class="qa-a">Yes. Use an explicit stack to simulate in-order traversal: push nodes going left until None, pop and visit (link), then go right. Same <code>head</code> and <code>prev</code> pointers. Same O(n) time, O(h) stack space. The iterative version is safer in production when tree depth is unknown and avoids Python's default ~1000 recursion limit.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What if the input has duplicate values?</div>
+        <div class="qa-a">Duplicates are handled transparently. In-order traversal will still visit all nodes in non-decreasing order. The linking logic does not depend on values being distinct — it only cares about visit order. The resulting DLL will correctly reflect the sorted (with duplicates) sequence.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">How would you verify the output is a valid circular DLL?</div>
+        <div class="qa-a">Starting from head, walk forward via <code>.right</code> until you loop back to head — the values should be in ascending order and you should visit exactly n nodes. Then walk backward via <code>.left</code> from head — you should reach the tail immediately (head.left == tail), and walking backward from tail should bring you back through all nodes in descending order. Also verify <code>tail.right == head</code>.</div>
+      </div>
+    </div>
+
+    <!-- 11 · Related problems -->
+    <div class="deep-section">
+      <p class="section-label">11 · Interview context</p>
+      <h2 class="section-title">Where you'll see this pattern again</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Flatten Binary Tree to Linked List (LC 114)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Also rewires tree pointers in-place to form a linked list. Uses pre-order traversal instead of in-order, and builds a singly linked list. Same "reuse existing pointers" constraint.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Validate Binary Search Tree (LC 98)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Uses the same in-order traversal insight: in-order output must be strictly increasing for a valid BST. Track the previously visited node value (like our <code>prev</code> pointer) to detect violations.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">BST Iterator (LC 173)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Implements <code>next()</code> and <code>hasNext()</code> on a BST using iterative in-order traversal with a stack. The same in-order DFS pattern — but lazily, one node at a time. A natural follow-up after this problem.</p>
+          </div>
+        </div>
+        <div class="interview-item" style="border:none;">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Recover Binary Search Tree (LC 99)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Two nodes are swapped in a BST — find and fix them. Uses in-order traversal to find where the sorted order is violated, with a <code>prev</code> pointer tracking the last visited node — the same two-pointer in-order pattern used here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end deep-mode -->
+
+  <!-- Footer CTA -->
+  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Try it yourself</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">LeetCode 426 · Medium · Tags: Linked List, Stack, Tree, DFS, BST</p>
+    </div>
+    <a href="https://leetcode.com/problems/convert-binary-search-tree-to-sorted-doubly-linked-list/" target="_blank" style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);background:#E6F1FB;color:#185FA5;font-weight:500;text-decoration:none;border:0.5px solid #B5D4F4;">Open on LeetCode ↗</a>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep  = document.getElementById('deep-mode');
+  const btnQ  = document.getElementById('btn-quick');
+  const btnD  = document.getElementById('btn-deep');
+  const desc  = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display  = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display  = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>
+</body>
+</html>

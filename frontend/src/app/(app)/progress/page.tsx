@@ -4,15 +4,16 @@ export default function ProgressPage() {
   return (
     <section className="flex min-h-[calc(100dvh-7.5rem)] items-center justify-center px-4 py-6 sm:px-6">
       <div className="w-full max-w-[980px] text-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/telecommuting.svg"
           alt="Under development illustration"
           className="mx-auto h-auto w-full max-w-[760px] object-contain"
         />
         <div className="mt-3 space-y-1">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">CodeArena Progress</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">ThinkDSA Progress</h1>
           <p className="text-base font-medium text-slate-600">
-            We are currently developing this page to deliver a polished CodeArena progress experience.
+            We are currently developing this page to deliver a polished ThinkDSA progress experience.
           </p>
           <div className="pt-3">
             <Link

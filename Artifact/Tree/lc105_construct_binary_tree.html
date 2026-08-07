@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Construct Binary Tree from Preorder and Inorder · LC 105</title>
+<style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "SF Mono", "Fira Code", "Consolas", monospace;
+    --color-text-primary: #1a1a2e;
+    --color-text-secondary: #4a4a6a;
+    --color-text-tertiary: #8888a8;
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f5fa;
+    --color-border-tertiary: #e0e0ee;
+    --border-radius-lg: 12px;
+    --border-radius-md: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--color-background-secondary); font-family: var(--font-sans); }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal   { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber  { background: #FAEEDA; color: #854F0B; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .badge-blue   { background: #E6F1FB; color: #185FA5; }
+
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+
+  .rule-box  { background: #E6F1FB; padding: 1rem 1.25rem; border-left: 3px solid #378ADD; }
+  .rule-text { font-size: 20px; font-weight: 500; color: #0C447C; }
+
+  .step-row  { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num  { width: 26px; height: 26px; border-radius: 50%; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub  { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13.5px; line-height: 2; overflow-x: auto; }
+  .c-kw { color: #cba6f7; } .c-fn { color: #89b4fa; } .c-cm { color: #6c7086; font-style: italic; } .c-plain { color: #cdd6f4; } .c-str { color: #a6e3a1; } .c-num { color: #fab387; }
+
+  .dry-run-row  { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .dry-run-row:last-child { border-bottom: none; }
+  .dry-cell       { padding: 10px 14px; font-size: 13px; color: var(--color-text-primary); line-height: 1.5; font-family: var(--font-mono); flex: 1; }
+  .dry-cell-plain { padding: 10px 14px; font-size: 13px; color: var(--color-text-primary); line-height: 1.5; flex: 1; }
+  .dry-head       { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; }
+  .dry-head .dry-cell, .dry-head .dry-cell-plain { color: var(--color-text-secondary); }
+  .highlight-row  { background: var(--color-background-secondary); }
+
+  .complexity-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card  { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why   { font-size: 13px; margin-top: 6px; }
+
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot  { width: 8px; height: 8px; border-radius: 50%; background: #378ADD; flex-shrink: 0; margin-top: 7px; }
+
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub   { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags  { display: flex; gap: 8px; flex-wrap: wrap; }
+  .divider    { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+
+  .analogy-box  { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn    { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+
+  .deep-section { margin-bottom: 3rem; }
+  .callout         { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info    { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p  { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn    { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p  { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+
+  .trace-step    { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge   { min-width: 80px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; white-space: nowrap; }
+  .trace-going   { background: #E6F1FB; color: #185FA5; }
+  .trace-record  { background: #E1F5EE; color: #0F6E56; }
+  .trace-split   { background: #EEEDFE; color: #534AB7; }
+  .trace-back    { background: #FAEEDA; color: #854F0B; }
+  .trace-content { flex: 1; }
+  .trace-title   { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc    { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x     { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .mistake-check { width: 20px; height: 20px; border-radius: 50%; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+  code { font-size: 12.5px; background: var(--color-background-secondary); padding: 2px 5px; border-radius: 4px; font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══ HERO ═══ -->
+  <div class="section">
+    <p class="section-label">Binary Tree · Divide &amp; Conquer · LC 105</p>
+    <h1 class="hero-title">Construct Binary Tree from Preorder and Inorder Traversal</h1>
+    <p class="hero-sub">Given the preorder and inorder traversal arrays of a binary tree, reconstruct and return the original tree.</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-teal">Recursive DFS</span>
+      <span class="badge badge-purple">Divide &amp; Conquer</span>
+      <span class="badge badge-blue">HashMap O(1) Lookup</span>
+      <span class="badge badge-amber">Medium</span>
+    </div>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn"        id="btn-deep"  onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ════════════════════════════════════
+       QUICK MODE
+  ════════════════════════════════════ -->
+  <div id="quick-mode">
+    <hr class="divider" style="margin-top:0;">
+
+    <!-- 01 · The two rules -->
+    <div class="section">
+      <p class="section-label">01 · The two key facts</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0.75rem;">
+        <div class="rule-box">
+          <p style="font-size:11px;font-weight:500;color:#185FA5;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;">Preorder</p>
+          <p class="rule-text" style="font-size:16px;">First element is always the root</p>
+        </div>
+        <div style="background:#E1F5EE;padding:1rem 1.25rem;border-left:3px solid #1D9E75;">
+          <p style="font-size:11px;font-weight:500;color:#0F6E56;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;">Inorder</p>
+          <p class="rule-text" style="font-size:16px;color:#085041;">Root splits left / right subtrees</p>
+        </div>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">Find the root in the inorder array → everything to its left belongs to the left subtree, everything to its right belongs to the right subtree. This split then applies recursively.</p>
+    </div>
+
+    <!-- 02 · How to think -->
+    <div class="section">
+      <p class="section-label">02 · How to think</p>
+      <div class="card">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-text">The root is always <code>preorder[0]</code></div>
+            <div class="step-sub">Preorder visits root first. So the very first element in the current preorder slice is the root of the current subtree.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-text">Find that root value in the inorder array</div>
+            <div class="step-sub">Use a HashMap for O(1) lookup. Its index <code>mid</code> tells us how many nodes are in the left subtree: <code>left_size = mid − inorder_start</code>.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-text">Slice both arrays and recurse</div>
+            <div class="step-sub">Left subtree uses the next <code>left_size</code> elements from preorder and everything left of <code>mid</code> in inorder. Right subtree gets the rest.</div>
+          </div>
+        </div>
+        <div class="step-row" style="margin-bottom:0;">
+          <div class="step-num">4</div>
+          <div>
+            <div class="step-text">Base case: empty slice → return <code>None</code></div>
+            <div class="step-sub">When the current subproblem has no elements, there's no node to create.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 · Code -->
+    <div class="section">
+      <p class="section-label">03 · Code (Python)</p>
+      <div class="code-block">
+        <div><span class="c-kw">class </span><span class="c-fn">Solution</span><span class="c-plain">:</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">def </span><span class="c-fn">buildTree</span><span class="c-plain">(self, preorder, inorder):</span></div>
+        <div><span class="c-plain">        idx_map = {val: i </span><span class="c-kw">for </span><span class="c-plain">i, val </span><span class="c-kw">in </span><span class="c-fn">enumerate</span><span class="c-plain">(inorder)}</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">        </span><span class="c-kw">def </span><span class="c-fn">build</span><span class="c-plain">(pre_l, pre_r, in_l, in_r):</span></div>
+        <div><span class="c-plain">            </span><span class="c-kw">if </span><span class="c-plain">pre_l &gt; pre_r: </span><span class="c-kw">return None  </span><span class="c-cm"># empty subproblem</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">            root_val  = preorder[pre_l]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># always the root</span></div>
+        <div><span class="c-plain">            mid       = idx_map[root_val]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># root's position in inorder</span></div>
+        <div><span class="c-plain">            left_size = mid - in_l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># nodes in left subtree</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">            root = TreeNode(root_val)</span></div>
+        <div><span class="c-plain">            root.left  = </span><span class="c-fn">build</span><span class="c-plain">(pre_l + </span><span class="c-num">1</span><span class="c-plain">, pre_l + left_size,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in_l,       mid - </span><span class="c-num">1</span><span class="c-plain">)</span></div>
+        <div><span class="c-plain">            root.right = </span><span class="c-fn">build</span><span class="c-plain">(pre_l + left_size + </span><span class="c-num">1</span><span class="c-plain">, pre_r, mid + </span><span class="c-num">1</span><span class="c-plain">,  in_r)</span></div>
+        <div><span class="c-plain">            </span><span class="c-kw">return </span><span class="c-plain">root</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">        </span><span class="c-kw">return </span><span class="c-fn">build</span><span class="c-plain">(</span><span class="c-num">0</span><span class="c-plain">, </span><span class="c-fn">len</span><span class="c-plain">(preorder) - </span><span class="c-num">1</span><span class="c-plain">, </span><span class="c-num">0</span><span class="c-plain">, </span><span class="c-fn">len</span><span class="c-plain">(inorder) - </span><span class="c-num">1</span><span class="c-plain">)</span></div>
+      </div>
+    </div>
+
+    <!-- 04 · Diagram -->
+    <div class="section">
+      <p class="section-label">04 · Example &amp; split diagram</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:1rem;">
+        Input: <code>preorder = [3,9,20,15,7]</code> &nbsp; <code>inorder = [9,3,15,20,7]</code>
+      </p>
+
+      <!-- Array split diagram -->
+      <div class="card" style="margin-bottom:1rem;overflow-x:auto;">
+        <svg viewBox="0 0 760 290" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="monospace" style="display:block;">
+          <!-- ── PREORDER row ── -->
+          <text x="16" y="52" font-size="11" font-weight="500" fill="#8888a8">PREORDER</text>
+
+          <!-- cells -->
+          <!-- [3] root cell -->
+          <rect x="120" y="30" width="56" height="36" rx="6" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.8"/>
+          <text x="148" y="53" text-anchor="middle" font-size="15" font-weight="600" fill="#0C447C">3</text>
+          <!-- [9] left subtree -->
+          <rect x="178" y="30" width="56" height="36" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="206" y="53" text-anchor="middle" font-size="15" font-weight="600" fill="#085041">9</text>
+          <!-- [20,15,7] right subtree -->
+          <rect x="236" y="30" width="56" height="36" rx="6" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+          <text x="264" y="53" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">20</text>
+          <rect x="294" y="30" width="56" height="36" rx="6" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+          <text x="322" y="53" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">15</text>
+          <rect x="352" y="30" width="56" height="36" rx="6" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+          <text x="380" y="53" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">7</text>
+
+          <!-- labels below preorder -->
+          <text x="148" y="80" text-anchor="middle" font-size="10" fill="#185FA5">root</text>
+          <text x="206" y="80" text-anchor="middle" font-size="10" fill="#0F6E56">left(1)</text>
+          <text x="322" y="80" text-anchor="middle" font-size="10" fill="#854F0B">right(3)</text>
+
+          <!-- bracket under left section -->
+          <path d="M 178,84 L 178,90 L 233,90 L 233,84" fill="none" stroke="#1D9E75" stroke-width="1.2"/>
+          <!-- bracket under right section -->
+          <path d="M 236,84 L 236,90 L 407,90 L 407,84" fill="none" stroke="#EF9F27" stroke-width="1.2"/>
+
+          <!-- ── INORDER row ── -->
+          <text x="16" y="142" font-size="11" font-weight="500" fill="#8888a8">INORDER</text>
+
+          <!-- [9] left subtree -->
+          <rect x="120" y="118" width="56" height="36" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="148" y="141" text-anchor="middle" font-size="15" font-weight="600" fill="#085041">9</text>
+          <!-- [3] root -->
+          <rect x="178" y="118" width="56" height="36" rx="6" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.8"/>
+          <text x="206" y="141" text-anchor="middle" font-size="15" font-weight="600" fill="#0C447C">3</text>
+          <!-- [15,20,7] right subtree -->
+          <rect x="236" y="118" width="56" height="36" rx="6" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+          <text x="264" y="141" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">15</text>
+          <rect x="294" y="118" width="56" height="36" rx="6" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+          <text x="322" y="141" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">20</text>
+          <rect x="352" y="118" width="56" height="36" rx="6" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+          <text x="380" y="141" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">7</text>
+
+          <!-- labels below inorder -->
+          <text x="148" y="168" text-anchor="middle" font-size="10" fill="#0F6E56">left(1)</text>
+          <text x="206" y="168" text-anchor="middle" font-size="10" fill="#185FA5">root→mid</text>
+          <text x="322" y="168" text-anchor="middle" font-size="10" fill="#854F0B">right(3)</text>
+
+          <!-- bracket under left -->
+          <path d="M 120,172 L 120,178 L 175,178 L 175,172" fill="none" stroke="#1D9E75" stroke-width="1.2"/>
+          <!-- bracket under right -->
+          <path d="M 236,172 L 236,178 L 407,178 L 407,172" fill="none" stroke="#EF9F27" stroke-width="1.2"/>
+
+          <!-- vertical split line on inorder at mid=1 -->
+          <line x1="236" y1="112" x2="236" y2="188" stroke="#378ADD" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <text x="236" y="108" text-anchor="middle" font-size="10" fill="#185FA5">split</text>
+
+          <!-- ── RESULT TREE ── -->
+          <text x="520" y="22" text-anchor="middle" font-size="11" font-weight="500" fill="#8888a8">RESULT TREE</text>
+
+          <!-- edges -->
+          <line x1="520" y1="62" x2="460" y2="128" stroke="#B5D4F4" stroke-width="1.8"/>
+          <line x1="520" y1="62" x2="590" y2="128" stroke="#B5D4F4" stroke-width="1.8"/>
+          <line x1="590" y1="152" x2="555" y2="218" stroke="#B5D4F4" stroke-width="1.8"/>
+          <line x1="590" y1="152" x2="625" y2="218" stroke="#B5D4F4" stroke-width="1.8"/>
+
+          <!-- root = 3 -->
+          <circle cx="520" cy="42" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.8"/>
+          <text x="520" y="47" text-anchor="middle" font-size="15" font-weight="600" fill="#0C447C">3</text>
+
+          <!-- left = 9 -->
+          <circle cx="460" cy="140" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+          <text x="460" y="145" text-anchor="middle" font-size="15" font-weight="600" fill="#085041">9</text>
+
+          <!-- right = 20 -->
+          <circle cx="590" cy="140" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+          <text x="590" y="145" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">20</text>
+
+          <!-- right.left = 15 -->
+          <circle cx="555" cy="228" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+          <text x="555" y="233" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">15</text>
+
+          <!-- right.right = 7 -->
+          <circle cx="625" cy="228" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.5"/>
+          <text x="625" y="233" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">7</text>
+
+          <!-- output label -->
+          <rect x="440" y="264" width="160" height="18" rx="5" fill="#1e1e2e"/>
+          <text x="520" y="277" text-anchor="middle" font-size="11" fill="#a6e3a1" font-family="monospace">Output: [3,9,20,15,7]</text>
+        </svg>
+      </div>
+
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">
+        Root = <code>3</code> (preorder[0]). Found at index 1 in inorder → <strong style="font-weight:500;">1 node in left subtree</strong>, <strong style="font-weight:500;">3 nodes in right subtree</strong>. Recurse on each portion.
+      </p>
+    </div>
+
+    <!-- 05 · Dry run table -->
+    <div class="section">
+      <p class="section-label">05 · Dry run — preorder [3,9,20,15,7], inorder [9,3,15,20,7]</p>
+      <div class="card" style="padding:0;overflow-x:auto;">
+        <div class="dry-head">
+          <div class="dry-cell-plain" style="min-width:130px;">Call</div>
+          <div class="dry-cell"       style="min-width:90px;">root_val</div>
+          <div class="dry-cell"       style="min-width:60px;">mid</div>
+          <div class="dry-cell"       style="min-width:80px;">left_sz</div>
+          <div class="dry-cell-plain" style="min-width:160px;">Creates node</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell-plain" style="min-width:130px;">build(0,4, 0,4)</div>
+          <div class="dry-cell"       style="min-width:90px;">3</div>
+          <div class="dry-cell"       style="min-width:60px;">1</div>
+          <div class="dry-cell"       style="min-width:80px;">1</div>
+          <div class="dry-cell-plain" style="min-width:160px;">Node(3) — root</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell-plain" style="min-width:130px;">build(1,1, 0,0)</div>
+          <div class="dry-cell"       style="min-width:90px;">9</div>
+          <div class="dry-cell"       style="min-width:60px;">0</div>
+          <div class="dry-cell"       style="min-width:80px;">0</div>
+          <div class="dry-cell-plain" style="min-width:160px;">Node(9) — left leaf</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell-plain" style="min-width:130px;">build(2,4, 2,4)</div>
+          <div class="dry-cell"       style="min-width:90px;">20</div>
+          <div class="dry-cell"       style="min-width:60px;">3</div>
+          <div class="dry-cell"       style="min-width:80px;">1</div>
+          <div class="dry-cell-plain" style="min-width:160px;">Node(20) — right child</div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell-plain" style="min-width:130px;">build(3,3, 2,2)</div>
+          <div class="dry-cell"       style="min-width:90px;">15</div>
+          <div class="dry-cell"       style="min-width:60px;">2</div>
+          <div class="dry-cell"       style="min-width:80px;">0</div>
+          <div class="dry-cell-plain" style="min-width:160px;">Node(15) — leaf</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell-plain" style="min-width:130px;">build(4,4, 4,4)</div>
+          <div class="dry-cell"       style="min-width:90px;">7</div>
+          <div class="dry-cell"       style="min-width:60px;">4</div>
+          <div class="dry-cell"       style="min-width:80px;">0</div>
+          <div class="dry-cell-plain" style="min-width:160px;">Node(7) — leaf ✓</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 · Complexity -->
+    <div class="section" style="margin-bottom:0;">
+      <p class="section-label">06 · Complexity</p>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Time</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n)</div>
+          <div class="complexity-why"  style="color:#185FA5;">Each of the n nodes is created exactly once. HashMap lookup for the inorder index is O(1), so total is O(n).</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">Space</div>
+          <div class="complexity-value" style="color:#3C3489;">O(n)</div>
+          <div class="complexity-why"  style="color:#534AB7;">O(n) for the HashMap and O(h) for the recursion stack. Worst case (skewed tree) h = O(n), so overall O(n).</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end quick-mode -->
+
+
+  <!-- ════════════════════════════════════
+       DEEP MODE
+  ════════════════════════════════════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr class="divider" style="margin-top:0;">
+
+    <!-- 01 · What preorder and inorder mean -->
+    <div class="deep-section">
+      <p class="section-label">01 · What do preorder and inorder actually mean?</p>
+      <h2 class="section-title">The traversal properties that make reconstruction possible</h2>
+      <p class="deep-para">Before solving the problem, you need to internalise what each traversal order encodes. These aren't arbitrary sequences — each one encodes structural information that the other alone cannot provide.</p>
+      <div class="callout callout-info">
+        <p><strong>Preorder (Root → Left → Right):</strong> The root of any subtree is always visited first. So <code>preorder[0]</code> is the root of the whole tree. After recursing into the left subtree (which comes next in preorder), the right subtree follows — in exactly the same pattern. This tells you <em>which node is the root</em> at each level.</p>
+      </div>
+      <div class="callout callout-success" style="margin-top:0.5rem;">
+        <p><strong>Inorder (Left → Root → Right):</strong> The root is visited after the entire left subtree and before the entire right subtree. This means every value to the left of the root in the inorder array belongs to the left subtree, and every value to the right belongs to the right subtree. This tells you <em>how many nodes are on each side</em>.</p>
+      </div>
+      <p class="deep-para">Together these two facts completely determine the tree. Neither alone is sufficient: preorder alone doesn't tell you where the left subtree ends, and inorder alone doesn't tell you which node is the root.</p>
+    </div>
+
+    <!-- 02 · The core diagram: how the split works -->
+    <div class="deep-section">
+      <p class="section-label">02 · The split visualised — level by level</p>
+      <h2 class="section-title">How each recursive call carves out its portion</h2>
+      <p class="deep-para">The key to understanding this problem is seeing how the two array windows shrink with each recursive call. At every level you identify the root, measure the left subtree size, then pass the correct slices to each child.</p>
+
+      <div class="card" style="padding:0;overflow-x:auto;margin-bottom:1rem;">
+        <svg viewBox="0 0 720 400" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="monospace" style="display:block;">
+
+          <!-- ── LEGEND ── -->
+          <rect x="490" y="20" width="14" height="14" rx="3" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.2"/>
+          <text x="508" y="31" font-size="10" fill="#4a4a6a">root</text>
+          <rect x="540" y="20" width="14" height="14" rx="3" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.2"/>
+          <text x="558" y="31" font-size="10" fill="#4a4a6a">left</text>
+          <rect x="585" y="20" width="14" height="14" rx="3" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.2"/>
+          <text x="603" y="31" font-size="10" fill="#4a4a6a">right</text>
+
+          <!-- ══ LEVEL 0: full arrays ══ -->
+          <text x="16" y="74" font-size="11" font-weight="500" fill="#8888a8">Level 0</text>
+          <text x="16" y="58" font-size="10" fill="#8888a8">pre</text>
+          <!-- pre: 3 9 20 15 7 -->
+          <rect x="60"  y="44" width="44" height="32" rx="5" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="82"  y="65" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">3</text>
+          <rect x="106" y="44" width="44" height="32" rx="5" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.2"/>
+          <text x="128" y="65" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">9</text>
+          <rect x="152" y="44" width="44" height="32" rx="5" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.2"/>
+          <text x="174" y="65" text-anchor="middle" font-size="13" font-weight="600" fill="#633806">20</text>
+          <rect x="198" y="44" width="44" height="32" rx="5" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.2"/>
+          <text x="220" y="65" text-anchor="middle" font-size="13" font-weight="600" fill="#633806">15</text>
+          <rect x="244" y="44" width="44" height="32" rx="5" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.2"/>
+          <text x="266" y="65" text-anchor="middle" font-size="13" font-weight="600" fill="#633806">7</text>
+
+          <text x="16" y="108" font-size="10" fill="#8888a8">in</text>
+          <!-- in: 9 3 15 20 7 -->
+          <rect x="60"  y="84" width="44" height="32" rx="5" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.2"/>
+          <text x="82"  y="105" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">9</text>
+          <rect x="106" y="84" width="44" height="32" rx="5" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.8"/>
+          <text x="128" y="105" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">3</text>
+          <rect x="152" y="84" width="44" height="32" rx="5" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.2"/>
+          <text x="174" y="105" text-anchor="middle" font-size="13" font-weight="600" fill="#633806">15</text>
+          <rect x="198" y="84" width="44" height="32" rx="5" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.2"/>
+          <text x="220" y="105" text-anchor="middle" font-size="13" font-weight="600" fill="#633806">20</text>
+          <rect x="244" y="84" width="44" height="32" rx="5" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.2"/>
+          <text x="266" y="105" text-anchor="middle" font-size="13" font-weight="600" fill="#633806">7</text>
+
+          <text x="320" y="80" font-size="11" fill="#185FA5">→ root=3, left_size=1, right_size=3</text>
+          <!-- split line on inorder -->
+          <line x1="152" y1="80" x2="152" y2="120" stroke="#378ADD" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <line x1="106" y1="120" x2="150" y2="120" stroke="#1D9E75" stroke-width="1.2"/>
+          <line x1="152" y1="120" x2="290" y2="120" stroke="#EF9F27" stroke-width="1.2"/>
+
+          <!-- ══ LEVEL 1 left: pre[1..1] in[0..0] ══ -->
+          <text x="16" y="172" font-size="11" font-weight="500" fill="#8888a8">Level 1L</text>
+          <text x="16" y="157" font-size="10" fill="#8888a8">pre</text>
+          <rect x="60" y="143" width="44" height="32" rx="5" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="82" y="164" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">9</text>
+
+          <text x="16" y="207" font-size="10" fill="#8888a8">in</text>
+          <rect x="60" y="183" width="44" height="32" rx="5" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="82" y="204" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">9</text>
+
+          <text x="120" y="202" font-size="11" fill="#0F6E56">→ root=9, leaf (no children)</text>
+          <line x1="82" y1="220" x2="82" y2="228" stroke="#1D9E75" stroke-width="1" stroke-dasharray="3,2"/>
+          <text x="82" y="238" text-anchor="middle" font-size="10" fill="#0F6E56">Node(9)</text>
+
+          <!-- ══ LEVEL 1 right: pre[2..4] in[2..4] ══ -->
+          <text x="360" y="157" font-size="10" fill="#8888a8">pre</text>
+          <rect x="390" y="143" width="44" height="32" rx="5" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="412" y="164" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">20</text>
+          <rect x="436" y="143" width="44" height="32" rx="5" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.2"/>
+          <text x="458" y="164" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">15</text>
+          <rect x="482" y="143" width="44" height="32" rx="5" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.2"/>
+          <text x="504" y="164" text-anchor="middle" font-size="13" font-weight="600" fill="#633806">7</text>
+
+          <text x="360" y="207" font-size="10" fill="#8888a8">in</text>
+          <rect x="390" y="183" width="44" height="32" rx="5" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.2"/>
+          <text x="412" y="204" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">15</text>
+          <rect x="436" y="183" width="44" height="32" rx="5" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.8"/>
+          <text x="458" y="204" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">20</text>
+          <rect x="482" y="183" width="44" height="32" rx="5" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.2"/>
+          <text x="504" y="204" text-anchor="middle" font-size="13" font-weight="600" fill="#633806">7</text>
+
+          <text x="540" y="172" font-size="11" fill="#185FA5">→ root=20, left_size=1</text>
+          <!-- split line -->
+          <line x1="436" y1="179" x2="436" y2="219" stroke="#378ADD" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <line x1="390" y1="219" x2="434" y2="219" stroke="#1D9E75" stroke-width="1.2"/>
+          <line x1="436" y1="219" x2="527" y2="219" stroke="#EF9F27" stroke-width="1.2"/>
+
+          <!-- ══ LEVEL 2 ══ -->
+          <text x="360" y="266" font-size="10" fill="#8888a8">pre</text>
+          <rect x="390" y="252" width="44" height="32" rx="5" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="412" y="273" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">15</text>
+          <text x="360" y="315" font-size="10" fill="#8888a8">in</text>
+          <rect x="390" y="300" width="44" height="32" rx="5" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="412" y="321" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">15</text>
+          <text x="445" y="316" font-size="11" fill="#0F6E56">→ Node(15), leaf</text>
+
+          <text x="530" y="266" font-size="10" fill="#8888a8">pre</text>
+          <rect x="555" y="252" width="44" height="32" rx="5" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="577" y="273" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">7</text>
+          <text x="530" y="315" font-size="10" fill="#8888a8">in</text>
+          <rect x="555" y="300" width="44" height="32" rx="5" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.5"/>
+          <text x="577" y="321" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">7</text>
+          <text x="610" y="316" font-size="11" fill="#0F6E56">→ Node(7), leaf</text>
+
+          <!-- connecting arrows level 0 → level 1 -->
+          <line x1="128" y1="78" x2="82"  y2="143" stroke="#B5D4F4" stroke-width="1.2"/>
+          <line x1="174" y1="78" x2="412" y2="143" stroke="#B5D4F4" stroke-width="1.2"/>
+          <!-- level 1 right → level 2 -->
+          <line x1="412" y1="177" x2="412" y2="252" stroke="#B5D4F4" stroke-width="1.2"/>
+          <line x1="504" y1="177" x2="577" y2="252" stroke="#B5D4F4" stroke-width="1.2"/>
+
+          <!-- output nodes -->
+          <text x="82"  y="370" text-anchor="middle" font-size="10" fill="#0F6E56">✓ Node(9)</text>
+          <text x="412" y="370" text-anchor="middle" font-size="10" fill="#854F0B">✓ Node(20)</text>
+          <text x="577" y="370" text-anchor="middle" font-size="10" fill="#0F6E56">✓ Node(7)</text>
+        </svg>
+      </div>
+
+      <div class="callout callout-info">
+        <p><strong>Pattern:</strong> At every call, <code>preorder[pre_l]</code> is the root. Its position <code>mid</code> in inorder gives <code>left_size = mid − in_l</code>. The left child gets preorder slice <code>[pre_l+1 .. pre_l+left_size]</code>; the right child gets <code>[pre_l+left_size+1 .. pre_r]</code>. Inorder slices around <code>mid</code> the same way.</p>
+      </div>
+    </div>
+
+    <!-- 03 · Why HashMap? -->
+    <div class="deep-section">
+      <p class="section-label">03 · Why the HashMap matters</p>
+      <h2 class="section-title">The difference between O(n²) and O(n)</h2>
+      <p class="deep-para">Every recursive call needs to find the root's position in the inorder array. Without a HashMap, you'd scan the inorder array each time — O(n) per call, O(n) calls → O(n²) total. With a HashMap built once upfront, each lookup is O(1).</p>
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="text-align:center;padding:12px 8px;background:#FCEBEB;border-radius:var(--border-radius-md);">
+            <p style="font-size:12px;font-weight:500;color:#A32D2D;margin:0 0 4px;">Without HashMap — O(n²)</p>
+            <p style="font-size:13px;color:#791F1F;margin:0;">Linear scan of inorder at each level. For a skewed tree with n levels, that's 1+2+…+n = O(n²) total comparisons.</p>
+          </div>
+          <div style="text-align:center;padding:12px 8px;background:#E1F5EE;border-radius:var(--border-radius-md);border:2px solid #1D9E75;">
+            <p style="font-size:12px;font-weight:500;color:#0F6E56;margin:0 0 4px;">With HashMap ← O(n)</p>
+            <p style="font-size:13px;color:#085041;margin:0;">Build <code>{value: index}</code> once in O(n). Every subsequent lookup is O(1). Total: O(n) for the HashMap + O(n) recursive calls = O(n).</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-warn">
+        <p><strong>Interview tip:</strong> Always mention the HashMap optimisation. If you present the naive slicing version first, immediately follow with: "This is O(n²) due to repeated index scans. I can improve it to O(n) by pre-building a value-to-index map for the inorder array and passing index boundaries instead of slicing."</p>
+      </div>
+    </div>
+
+    <!-- 04 · Understanding the index math -->
+    <div class="deep-section">
+      <p class="section-label">04 · Understanding the index arithmetic</p>
+      <h2 class="section-title">How to compute the four boundaries correctly</h2>
+      <p class="deep-para">This is where most people get confused. The four parameters — <code>pre_l, pre_r, in_l, in_r</code> — represent the current window of each array. At every call you carve two smaller windows from these and pass them to the left and right children.</p>
+      <div class="code-block" style="margin-bottom:1.25rem;">
+        <div><span class="c-cm"># Given: pre_l, pre_r, in_l, in_r for the current call</span></div>
+        <div><span class="c-plain">root_val  = preorder[pre_l]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># always the first in pre-window</span></div>
+        <div><span class="c-plain">mid       = idx_map[root_val]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># root's position in in-window</span></div>
+        <div><span class="c-plain">left_size = mid - in_l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># how many nodes in left subtree</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-cm"># Left child windows:</span></div>
+        <div><span class="c-plain">  pre: [pre_l+1  ..  pre_l+left_size]&nbsp;&nbsp;</span><span class="c-cm"># skip root, take left_size</span></div>
+        <div><span class="c-plain">  in:  [in_l     ..  mid-1]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># everything left of mid</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-cm"># Right child windows:</span></div>
+        <div><span class="c-plain">  pre: [pre_l+left_size+1  ..  pre_r]&nbsp;&nbsp;</span><span class="c-cm"># skip root + left_size</span></div>
+        <div><span class="c-plain">  in:  [mid+1  ..  in_r]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c-cm"># everything right of mid</span></div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why is the left preorder window <code>[pre_l+1 .. pre_l+left_size]</code> and not just until <code>mid</code>?</div>
+        <div class="qa-a">Because <code>mid</code> is an index in the inorder array, not the preorder array. The preorder and inorder windows are tracking different things. We know the left subtree has exactly <code>left_size = mid − in_l</code> nodes, so the left preorder window starts right after the root (<code>pre_l+1</code>) and spans <code>left_size</code> elements.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What guarantees the preorder window sizes match the inorder window sizes?</div>
+        <div class="qa-a">Both traversals visit exactly the same set of nodes — the problem guarantees this. So any subtree always has the same number of nodes in its preorder slice and its inorder slice. If the left subtree has 2 nodes in the inorder window, it also occupies exactly 2 slots in the preorder window (immediately after the root).</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why use index boundaries instead of actually slicing the arrays?</div>
+        <div class="qa-a">Array slicing in Python creates new lists — that's O(k) time and O(k) space per call, where k is the slice length. With index boundaries, each call is O(1) additional work (just arithmetic and one HashMap lookup), and the original arrays are never copied. This is what makes the full solution genuinely O(n) time and O(n) space (dominated by the HashMap and output tree, not recursive copying).</div>
+      </div>
+    </div>
+
+    <!-- 05 · Full trace -->
+    <div class="deep-section">
+      <p class="section-label">05 · Full recursive trace</p>
+      <h2 class="section-title">Walking through [3,9,20,15,7] step by step</h2>
+      <p class="deep-para" style="margin-bottom:1.5rem;">preorder=[3,9,20,15,7], inorder=[9,3,15,20,7]. idx_map = {9:0, 3:1, 15:2, 20:3, 7:4}.</p>
+
+      <div class="trace-step">
+        <div class="trace-badge trace-going">Call 1</div>
+        <div class="trace-content">
+          <p class="trace-title">build(pre_l=0, pre_r=4, in_l=0, in_r=4)</p>
+          <p class="trace-desc">root_val=preorder[0]=3. mid=idx_map[3]=1. left_size=1−0=1. Creates Node(3). Recurse left and right.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-record">Call 2</div>
+        <div class="trace-content">
+          <p class="trace-title">build(pre_l=1, pre_r=1, in_l=0, in_r=0) — left child of 3</p>
+          <p class="trace-desc">root_val=preorder[1]=9. mid=idx_map[9]=0. left_size=0−0=0. No left or right children (both calls get pre_l &gt; pre_r → None). Creates Node(9) — leaf.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-split">Call 3</div>
+        <div class="trace-content">
+          <p class="trace-title">build(pre_l=2, pre_r=4, in_l=2, in_r=4) — right child of 3</p>
+          <p class="trace-desc">root_val=preorder[2]=20. mid=idx_map[20]=3. left_size=3−2=1. Creates Node(20). Recurse left and right.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-record">Call 4</div>
+        <div class="trace-content">
+          <p class="trace-title">build(pre_l=3, pre_r=3, in_l=2, in_r=2) — left child of 20</p>
+          <p class="trace-desc">root_val=preorder[3]=15. mid=2, left_size=0. No children. Creates Node(15) — leaf.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <div class="trace-badge trace-record">Call 5</div>
+        <div class="trace-content">
+          <p class="trace-title">build(pre_l=4, pre_r=4, in_l=4, in_r=4) — right child of 20</p>
+          <p class="trace-desc">root_val=preorder[4]=7. mid=4, left_size=0. No children. Creates Node(7) — leaf.</p>
+        </div>
+      </div>
+      <div class="trace-step" style="margin-bottom:0;">
+        <div class="trace-badge trace-back">Unwind</div>
+        <div class="trace-content">
+          <p class="trace-title">Result: 3 → [9, 20 → [15, 7]]</p>
+          <p class="trace-desc">As each call returns its node, the parent attaches it. Node(20).left = Node(15), Node(20).right = Node(7). Node(3).left = Node(9), Node(3).right = Node(20). Final root is Node(3).</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 · Real-world analogy -->
+    <div class="deep-section">
+      <p class="section-label">06 · Real-world analogy</p>
+      <h2 class="section-title">Think of it like reconstructing a chapter from two indexes</h2>
+      <div class="analogy-box" style="margin-bottom:1rem;">
+        <p class="analogy-text">Imagine a book's table of contents lists chapters in the order they appear (preorder), always starting with the current section heading. A separate alphabetical index lists every topic and tells you what's to the left and right of each main heading in reading order (inorder). To reconstruct the book's hierarchy: the first entry in the table of contents is always the top-level heading. Find it in the alphabetical index — everything before it belongs to the left branch, everything after belongs to the right branch. Repeat this for each sub-section.</p>
+      </div>
+    </div>
+
+    <!-- 07 · Common mistakes -->
+    <div class="deep-section">
+      <p class="section-label">07 · Common mistakes</p>
+      <h2 class="section-title">Errors to avoid in interviews</h2>
+      <div class="card" style="padding:1rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Slicing arrays instead of passing index boundaries</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Using <code>buildTree(preorder[1:mid+1], inorder[:mid])</code> creates new arrays at every call — O(n) per call, O(n²) total. Always work with <code>pre_l, pre_r, in_l, in_r</code> index pointers.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Using the inorder <code>mid</code> directly as the preorder boundary</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;"><code>mid</code> is a position in the inorder array. The preorder left boundary is <code>pre_l + left_size</code>, where <code>left_size = mid − in_l</code>. Confusing the two gives wrong boundaries and a corrupted tree.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting the base case <code>pre_l &gt; pre_r</code></div>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Without this, the recursion continues into invalid ranges, causing index errors or infinite loops. The base case is the most critical line in the function.</p>
+          </div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Skipping the HashMap and scanning inorder linearly</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Using <code>inorder.index(root_val)</code> inside the recursive function is O(n) per call. With n recursive calls, this is O(n²). Build the <code>idx_map</code> once before recursion begins.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 · Complexity full explanation -->
+    <div class="deep-section">
+      <p class="section-label">08 · Complexity — the full explanation</p>
+      <h2 class="section-title">Why O(n) time and O(n) space?</h2>
+      <div class="complexity-grid" style="margin-bottom:1rem;">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Time</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n)</div>
+          <div class="complexity-why"  style="color:#185FA5;">n recursive calls, one per node. Each call does O(1) work — one preorder access and one O(1) HashMap lookup. Total: O(n).</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">Space</div>
+          <div class="complexity-value" style="color:#3C3489;">O(n)</div>
+          <div class="complexity-why"  style="color:#534AB7;">O(n) for the HashMap. O(h) for the recursion stack (h = height). O(n) for the output tree. Dominated by the HashMap and output: O(n) overall.</div>
+        </div>
+      </div>
+      <div class="callout callout-warn">
+        <p><strong>Interview tip:</strong> Break down space as: "O(n) for the HashMap built upfront, plus O(h) for the recursion stack (O(log n) balanced, O(n) skewed), plus O(n) for the constructed tree itself — dominated by O(n) overall." This level of precision impresses interviewers.</p>
+      </div>
+    </div>
+
+    <!-- 09 · Q&A -->
+    <div class="deep-section">
+      <p class="section-label">09 · Interview Q&amp;A</p>
+      <h2 class="section-title">Questions you'll actually get asked</h2>
+      <div class="qa-block">
+        <div class="qa-q">Can you reconstruct a binary tree from just preorder, or just inorder alone?</div>
+        <div class="qa-a">No — you need both. Preorder alone tells you the root at each level but not how many nodes are in each subtree. Inorder alone tells you the relative left/right positions but not which node is the root. Together they uniquely determine the tree (given unique node values).</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What if the tree has duplicate values?</div>
+        <div class="qa-a">This algorithm requires unique values. The HashMap maps each value to exactly one inorder index. With duplicates, the same value could appear at multiple inorder positions, making the root-finding ambiguous. LeetCode 105 guarantees unique values in its constraints.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">What's the equivalent problem with postorder instead of preorder?</div>
+        <div class="qa-a">LeetCode 106 — Construct Binary Tree from Inorder and Postorder Traversal. The logic is symmetric: in postorder the root is always the last element (instead of first), so you read from the end of the postorder array and construct the right subtree before the left.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Is there an iterative solution?</div>
+        <div class="qa-a">Yes, using an explicit stack to simulate the recursion. You push nodes and track whether you've set their left child yet. It's significantly more complex to implement correctly than the recursive version and provides no asymptotic improvement. In interviews, the recursive solution with index boundaries is preferred.</div>
+      </div>
+    </div>
+
+    <!-- 10 · Related problems -->
+    <div class="deep-section">
+      <p class="section-label">10 · Interview context</p>
+      <h2 class="section-title">Where you'll see this pattern again</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Construct from Inorder and Postorder (LC 106)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Identical divide-and-conquer structure. The only change: the root is now <code>postorder[post_r]</code> (last element), and you build the right subtree before the left.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Serialize and Deserialize Binary Tree (LC 297)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Deserializing a preorder serialized tree uses the same "first element is root, recurse on children" pattern. Understanding LC 105 is a strong prerequisite.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Convert Sorted Array to BST (LC 108)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Same divide-and-conquer recursive pattern — pick a root (the midpoint), recurse on left and right subarrays. Builds intuition for how index arithmetic shapes the recursive tree structure.</p>
+          </div>
+        </div>
+        <div class="interview-item" style="border:none;">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Maximum Binary Tree (LC 654)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Also builds a tree from an array by recursively picking a root (the max element) and splitting into left/right subarrays. The same index-boundary technique directly applies.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end deep-mode -->
+
+  <!-- Footer CTA -->
+  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Try it yourself</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">LeetCode 105 · Medium · Tags: Array, Hash Table, Divide and Conquer, Tree, Binary Tree</p>
+    </div>
+    <a href="https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/" target="_blank" style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);background:#E6F1FB;color:#185FA5;font-weight:500;text-decoration:none;border:0.5px solid #B5D4F4;">Open on LeetCode ↗</a>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep  = document.getElementById('deep-mode');
+  const btnQ  = document.getElementById('btn-quick');
+  const btnD  = document.getElementById('btn-deep');
+  const desc  = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display  = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display  = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>
+</body>
+</html>

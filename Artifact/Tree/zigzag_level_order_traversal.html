@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Binary Tree Zigzag Level Order Traversal · LC 103</title>
+<style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "SF Mono", "Fira Code", "Consolas", monospace;
+    --color-text-primary: #1a1a2e;
+    --color-text-secondary: #4a4a6a;
+    --color-text-tertiary: #8888a8;
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f5fa;
+    --color-border-tertiary: #e0e0ee;
+    --border-radius-lg: 12px;
+    --border-radius-md: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--color-background-secondary); font-family: var(--font-sans); }
+  .page { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+  .badge-teal   { background: #E1F5EE; color: #0F6E56; }
+  .badge-amber  { background: #FAEEDA; color: #854F0B; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .badge-rose   { background: #FDECEA; color: #9B1B1B; }
+
+  .section { margin-bottom: 2.5rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 0.5rem; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; }
+
+  .rule-box  { background: #E6F1FB; padding: 1rem 1.25rem; border-left: 3px solid #378ADD; }
+  .rule-text { font-size: 20px; font-weight: 500; color: #0C447C; }
+
+  .step-row  { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 0.85rem; }
+  .step-num  { width: 26px; height: 26px; border-radius: 50%; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-text { font-size: 15px; color: var(--color-text-primary); line-height: 1.6; padding-top: 3px; }
+  .step-sub  { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+
+  .code-block { background: #1e1e2e; border-radius: var(--border-radius-md); padding: 1.25rem 1.5rem; font-family: var(--font-mono); font-size: 13.5px; line-height: 2; overflow-x: auto; }
+  .c-kw { color: #cba6f7; } .c-fn { color: #89b4fa; } .c-cm { color: #6c7086; font-style: italic; } .c-plain { color: #cdd6f4; } .c-str { color: #a6e3a1; } .c-num { color: #fab387; }
+
+  .dry-run-row  { display: flex; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .dry-run-row:last-child { border-bottom: none; }
+  .dry-cell { padding: 10px 14px; font-size: 13.5px; color: var(--color-text-primary); line-height: 1.5; font-family: var(--font-mono); }
+  .dry-cell-plain { padding: 10px 14px; font-size: 13.5px; color: var(--color-text-primary); line-height: 1.5; }
+  .dry-head { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); padding: 8px 14px; background: var(--color-background-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .highlight-row { background: var(--color-background-secondary); }
+
+  .complexity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .complexity-card  { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .complexity-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .complexity-value { font-size: 28px; font-weight: 500; font-family: var(--font-mono); }
+  .complexity-why   { font-size: 13px; margin-top: 6px; }
+
+  .interview-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .interview-item:last-child { border-bottom: none; }
+  .interview-dot { width: 8px; height: 8px; border-radius: 50%; background: #378ADD; flex-shrink: 0; margin-top: 7px; }
+
+  .hero-title { font-size: 28px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .hero-sub   { font-size: 15px; color: var(--color-text-secondary); margin: 0 0 1.5rem; }
+  .hero-tags  { display: flex; gap: 8px; flex-wrap: wrap; }
+  .divider    { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 2rem 0; }
+
+  .analogy-box  { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 1rem 1.25rem; }
+  .analogy-text { font-size: 15px; color: #633806; line-height: 1.7; margin: 0; }
+
+  /* toggle */
+  .mode-toggle { display: flex; background: var(--color-background-secondary); border-radius: 10px; padding: 4px; gap: 4px; width: fit-content; margin-bottom: 2rem; border: 0.5px solid var(--color-border-tertiary); }
+  .mode-btn    { padding: 7px 20px; border-radius: 8px; border: none; background: transparent; font-size: 13px; font-weight: 500; color: var(--color-text-secondary); cursor: pointer; transition: all 0.18s ease; }
+  .mode-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); }
+  .mode-desc { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 2rem; }
+
+  /* deep mode */
+  .deep-section { margin-bottom: 3rem; }
+  .callout      { border-radius: var(--border-radius-md); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .callout-info { background: #E6F1FB; border-left: 3px solid #378ADD; border-radius: 0; }
+  .callout-info p { color: #0C447C; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-warn { background: #FAEEDA; border-left: 3px solid #EF9F27; border-radius: 0; }
+  .callout-warn p { color: #633806; font-size: 14px; line-height: 1.7; margin: 0; }
+  .callout-success { background: #E1F5EE; border-left: 3px solid #1D9E75; border-radius: 0; }
+  .callout-success p { color: #085041; font-size: 14px; line-height: 1.7; margin: 0; }
+  .deep-para { font-size: 15px; color: var(--color-text-primary); line-height: 1.8; margin: 0 0 1rem; }
+
+  .qa-block { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .qa-q { background: var(--color-background-secondary); padding: 0.9rem 1.25rem; font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .qa-a { padding: 0.9rem 1.25rem; font-size: 14px; color: var(--color-text-primary); line-height: 1.7; border-top: 0.5px solid var(--color-border-tertiary); }
+
+  .trace-step    { display: flex; gap: 14px; margin-bottom: 1.25rem; align-items: flex-start; }
+  .trace-badge   { min-width: 72px; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-align: center; white-space: nowrap; }
+  .trace-going   { background: #E6F1FB; color: #185FA5; }
+  .trace-record  { background: #E1F5EE; color: #0F6E56; }
+  .trace-flip    { background: #EEEDFE; color: #534AB7; }
+  .trace-back    { background: #FAEEDA; color: #854F0B; }
+  .trace-content { flex: 1; }
+  .trace-title   { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .trace-desc    { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+
+  .mistake-row { display: flex; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--color-border-tertiary); align-items: flex-start; }
+  .mistake-row:last-child { border-bottom: none; }
+  .mistake-x     { width: 20px; height: 20px; border-radius: 50%; background: #FCEBEB; color: #A32D2D; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .mistake-check { width: 20px; height: 20px; border-radius: 50%; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+
+  code { font-size: 12.5px; background: var(--color-background-secondary); padding: 2px 5px; border-radius: 4px; font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <div class="section">
+    <p class="section-label">Binary Tree · BFS · LC 103</p>
+    <h1 class="hero-title">Binary Tree Zigzag Level Order Traversal</h1>
+    <p class="hero-sub">Level-order traversal where each level alternates direction — left→right, then right→left, then left→right…</p>
+    <div class="hero-tags" style="margin-bottom:1.5rem;">
+      <span class="badge badge-teal">BFS + Deque</span>
+      <span class="badge badge-purple">Level-by-Level</span>
+      <span class="badge badge-amber">Direction Flag</span>
+      <span class="badge badge-rose">Medium</span>
+    </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btn-quick" onclick="switchMode('quick')">Quick Recap</button>
+      <button class="mode-btn"        id="btn-deep"  onclick="switchMode('deep')">Deep Explain</button>
+    </div>
+    <p class="mode-desc" id="mode-desc">Key concepts at a glance — for those who already know the basics.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       QUICK MODE
+  ════════════════════════════════════════ -->
+  <div id="quick-mode">
+    <hr class="divider" style="margin-top:0;">
+
+    <!-- 01 · The rule -->
+    <div class="section">
+      <p class="section-label">01 · The rule</p>
+      <div class="rule-box" style="margin-bottom:0.75rem;">
+        <p class="rule-text">BFS level-by-level, but flip the collection direction each level</p>
+      </div>
+      <p style="font-size:14px;color:var(--color-text-secondary);margin:0;">
+        Use a standard BFS queue. After collecting each level's nodes, check a boolean flag:
+        if <code>left_to_right</code> is True, keep the level as-is; otherwise reverse it before appending to results.
+        Toggle the flag after every level.
+      </p>
+    </div>
+
+    <!-- 02 · How to think -->
+    <div class="section">
+      <p class="section-label">02 · How to think</p>
+      <div class="card">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div>
+            <div class="step-text">BFS level by level — collect all nodes at each depth</div>
+            <div class="step-sub">Use <code>len(queue)</code> at the start of each iteration to know exactly how many nodes belong to the current level.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div>
+            <div class="step-text">Reverse the level list when going right→left</div>
+            <div class="step-sub">Level 0 (root): left→right. Level 1: right→left. Level 2: left→right. Toggle <code>left_to_right</code> after every level.</div>
+          </div>
+        </div>
+        <div class="step-row" style="margin-bottom:0;">
+          <div class="step-num">3</div>
+          <div>
+            <div class="step-text">Append (possibly reversed) level to result</div>
+            <div class="step-sub">Children are always enqueued left-then-right — only the output list is reversed. The queue order never changes.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 · Code -->
+    <div class="section">
+      <p class="section-label">03 · Code (Python)</p>
+      <div class="code-block">
+        <div><span class="c-kw">from</span><span class="c-plain"> collections </span><span class="c-kw">import</span><span class="c-plain"> deque</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-kw">def</span> <span class="c-fn">zigzagLevelOrder</span><span class="c-plain">(root):</span></div>
+        <div><span class="c-plain">    </span><span class="c-kw">if not</span><span class="c-plain"> root: </span><span class="c-kw">return</span><span class="c-plain"> []</span></div>
+        <div><span class="c-plain">    result        = []</span></div>
+        <div><span class="c-plain">    queue         = deque([root])          </span><span class="c-cm"># standard BFS queue</span></div>
+        <div><span class="c-plain">    left_to_right = </span><span class="c-kw">True</span><span class="c-plain">                   </span><span class="c-cm"># direction flag</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    </span><span class="c-kw">while</span><span class="c-plain"> queue:</span></div>
+        <div><span class="c-plain">        level_size = </span><span class="c-fn">len</span><span class="c-plain">(queue)           </span><span class="c-cm"># freeze current level count</span></div>
+        <div><span class="c-plain">        level      = []</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">        </span><span class="c-kw">for</span><span class="c-plain"> _ </span><span class="c-kw">in</span><span class="c-plain"> </span><span class="c-fn">range</span><span class="c-plain">(level_size):</span></div>
+        <div><span class="c-plain">            node = queue.</span><span class="c-fn">popleft</span><span class="c-plain">()</span></div>
+        <div><span class="c-plain">            level.</span><span class="c-fn">append</span><span class="c-plain">(node.val)</span></div>
+        <div><span class="c-plain">            </span><span class="c-kw">if</span><span class="c-plain"> node.left:  queue.</span><span class="c-fn">append</span><span class="c-plain">(node.left)</span></div>
+        <div><span class="c-plain">            </span><span class="c-kw">if</span><span class="c-plain"> node.right: queue.</span><span class="c-fn">append</span><span class="c-plain">(node.right)</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">        </span><span class="c-kw">if not</span><span class="c-plain"> left_to_right:   </span><span class="c-cm"># flip if right-to-left level</span></div>
+        <div><span class="c-plain">            level.</span><span class="c-fn">reverse</span><span class="c-plain">()</span></div>
+        <div><span class="c-plain">        result.</span><span class="c-fn">append</span><span class="c-plain">(level)</span></div>
+        <div><span class="c-plain">        left_to_right = </span><span class="c-kw">not</span><span class="c-plain"> left_to_right  </span><span class="c-cm"># toggle for next level</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    </span><span class="c-kw">return</span><span class="c-plain"> result</span></div>
+      </div>
+    </div>
+
+    <!-- 04 · Example with Diagram -->
+    <div class="section">
+      <p class="section-label">04 · Example tree &amp; zigzag output</p>
+
+      <!-- SVG Tree Diagram -->
+      <div style="display:flex;justify-content:center;margin-bottom:1.25rem;">
+        <svg viewBox="0 0 480 300" width="460" height="290" xmlns="http://www.w3.org/2000/svg" font-family="monospace">
+
+          <!-- Level labels -->
+          <text x="14" y="70" font-size="10" fill="#8888a8" font-weight="500">L0</text>
+          <text x="14" y="152" font-size="10" fill="#8888a8" font-weight="500">L1</text>
+          <text x="14" y="234" font-size="10" fill="#8888a8" font-weight="500">L2</text>
+
+          <!-- Direction arrows per level -->
+          <!-- L0: → -->
+          <text x="38" y="70" font-size="11" fill="#185FA5">L→R</text>
+          <!-- L1: ← -->
+          <text x="38" y="152" font-size="11" fill="#854F0B">R→L</text>
+          <!-- L2: → -->
+          <text x="38" y="234" font-size="11" fill="#185FA5">L→R</text>
+
+          <!-- Edges -->
+          <line x1="240" y1="80"  x2="170" y2="162" stroke="#B5D4F4" stroke-width="2"/>
+          <line x1="240" y1="80"  x2="330" y2="162" stroke="#B5D4F4" stroke-width="2"/>
+          <line x1="330" y1="162" x2="285" y2="244" stroke="#B5D4F4" stroke-width="2"/>
+          <line x1="330" y1="162" x2="375" y2="244" stroke="#B5D4F4" stroke-width="2"/>
+
+          <!-- ── Node 3 (root, Level 0) ── -->
+          <circle cx="240" cy="62" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="1.8"/>
+          <text x="240" y="67" text-anchor="middle" font-size="15" font-weight="600" fill="#0C447C">3</text>
+
+          <!-- ── Node 9 (Level 1 left) ── -->
+          <circle cx="170" cy="144" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.8"/>
+          <text x="170" y="149" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">9</text>
+
+          <!-- ── Node 20 (Level 1 right) ── -->
+          <circle cx="330" cy="144" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="1.8"/>
+          <text x="330" y="149" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">20</text>
+
+          <!-- ── Node 15 (Level 2 left) ── -->
+          <circle cx="285" cy="226" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.8"/>
+          <text x="285" y="231" text-anchor="middle" font-size="14" font-weight="600" fill="#085041">15</text>
+
+          <!-- ── Node 7 (Level 2 right) ── -->
+          <circle cx="375" cy="226" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.8"/>
+          <text x="375" y="231" text-anchor="middle" font-size="15" font-weight="600" fill="#085041">7</text>
+
+          <!-- Zigzag traversal arrows overlaid -->
+          <!-- L0: 3  (single node, just a circle highlight — already styled) -->
+
+          <!-- L1 arrow: 20 ← 9  (right-to-left) -->
+          <defs>
+            <marker id="arr-amber" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <polygon points="0 0, 7 3.5, 0 7" fill="#EF9F27"/>
+            </marker>
+            <marker id="arr-blue" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <polygon points="0 0, 7 3.5, 0 7" fill="#378ADD"/>
+            </marker>
+          </defs>
+          <!-- L1: right→left so arrow goes 20 → 9 visually (shows reading order) -->
+          <path d="M 315,136 Q 250,120 188,136" fill="none" stroke="#EF9F27" stroke-width="1.6" stroke-dasharray="5,3" marker-end="url(#arr-amber)"/>
+          <text x="252" y="118" font-size="10" fill="#EF9F27" text-anchor="middle">right → left</text>
+
+          <!-- L2: left→right so arrow goes 15 → 7 -->
+          <path d="M 308,222 Q 340,205 357,222" fill="none" stroke="#1D9E75" stroke-width="1.6" stroke-dasharray="5,3" marker-end="url(#arr-blue)" style="marker-end:url(#arr-green)"/>
+          <defs>
+            <marker id="arr-green" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+              <polygon points="0 0, 7 3.5, 0 7" fill="#1D9E75"/>
+            </marker>
+          </defs>
+          <path d="M 308,222 Q 340,205 357,222" fill="none" stroke="#1D9E75" stroke-width="1.6" stroke-dasharray="5,3" marker-end="url(#arr-green)"/>
+          <text x="333" y="205" font-size="10" fill="#1D9E75" text-anchor="middle">left → right</text>
+
+          <!-- Output label -->
+          <rect x="100" y="272" width="280" height="22" rx="6" fill="#1e1e2e"/>
+          <text x="240" y="287" text-anchor="middle" font-size="12" fill="#cdd6f4" font-family="monospace">Output: [[3],  [20, 9],  [15, 7]]</text>
+        </svg>
+      </div>
+
+      <!-- Dry run table -->
+      <div class="card" style="padding:0;">
+        <div style="display:grid;grid-template-columns:90px 70px 160px 1fr;">
+          <div class="dry-head">Level</div>
+          <div class="dry-head">Direction</div>
+          <div class="dry-head">Nodes collected</div>
+          <div class="dry-head">After flip?</div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell">0</div>
+          <div class="dry-cell-plain" style="color:#185FA5;">L → R</div>
+          <div class="dry-cell">[3]</div>
+          <div class="dry-cell-plain">No flip → <strong>[3]</strong></div>
+        </div>
+        <div class="dry-run-row highlight-row">
+          <div class="dry-cell">1</div>
+          <div class="dry-cell-plain" style="color:#854F0B;">R → L</div>
+          <div class="dry-cell">[9, 20]</div>
+          <div class="dry-cell-plain">Reversed → <strong>[20, 9]</strong></div>
+        </div>
+        <div class="dry-run-row">
+          <div class="dry-cell">2</div>
+          <div class="dry-cell-plain" style="color:#185FA5;">L → R</div>
+          <div class="dry-cell">[15, 7]</div>
+          <div class="dry-cell-plain">No flip → <strong>[15, 7]</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 · Complexity -->
+    <div class="section" style="margin-bottom:0;">
+      <p class="section-label">05 · Complexity</p>
+      <div class="complexity-grid">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Time</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n)</div>
+          <div class="complexity-why"  style="color:#185FA5;">Every node is enqueued and dequeued exactly once. Reversing a level costs O(w) where w is the level width — summing across all levels gives O(n) total.</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">Space</div>
+          <div class="complexity-value" style="color:#3C3489;">O(n)</div>
+          <div class="complexity-why"  style="color:#534AB7;">Queue holds at most O(w) nodes (widest level). Result list stores all n values. Both bounded by O(n).</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end quick-mode -->
+
+
+  <!-- ═══════════════════════════════════════
+       DEEP MODE
+  ════════════════════════════════════════ -->
+  <div id="deep-mode" style="display:none;">
+    <hr class="divider" style="margin-top:0;">
+
+    <!-- 01 · What is zigzag? -->
+    <div class="deep-section">
+      <p class="section-label">01 · What is zigzag traversal?</p>
+      <h2 class="section-title">The concept from scratch</h2>
+      <p class="deep-para">Normal level-order traversal reads each level of a binary tree from left to right, top to bottom. Zigzag (or spiral) traversal does almost the same thing — but it <em>flips the reading direction every other level</em>. Level 0 goes left→right, level 1 goes right→left, level 2 goes left→right again, and so on.</p>
+      <div class="callout callout-info">
+        <p>The crucial insight: <strong>the queue order never changes</strong>. Children are always enqueued left-then-right regardless of the current zigzag direction. Only the <em>output list</em> for right-to-left levels gets reversed after collection. The traversal itself is pure BFS.</p>
+      </div>
+    </div>
+
+    <!-- 02 · Why BFS? -->
+    <div class="deep-section">
+      <p class="section-label">02 · Why BFS is the natural fit</p>
+      <h2 class="section-title">BFS gives you levels for free</h2>
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="text-align:center;padding:12px 8px;background:#E6F1FB;border-radius:var(--border-radius-md);border:2px solid #378ADD;">
+            <p style="font-size:12px;font-weight:500;color:#185FA5;margin:0 0 4px;">BFS ← natural fit</p>
+            <p style="font-size:13px;color:#0C447C;margin:0;">Processes nodes level-by-level naturally. Snapshot <code>len(queue)</code> at the start of each iteration to isolate exactly one level. Then reverse if needed. Clean and simple.</p>
+          </div>
+          <div style="text-align:center;padding:12px 8px;background:#EEEDFE;border-radius:var(--border-radius-md);">
+            <p style="font-size:12px;font-weight:500;color:#534AB7;margin:0 0 4px;">DFS (recursive)</p>
+            <p style="font-size:13px;color:#3C3489;margin:0;">Must pass the depth down through recursion and determine direction from <code>depth % 2</code>. Requires a pre-allocated result list indexed by depth. More ceremony, same result.</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout-warn">
+        <p><strong>Interview tip:</strong> Always lead with BFS. If the interviewer asks for DFS, say "I'd use depth % 2 to decide direction and insert into a result list pre-indexed by depth — but BFS is cleaner because level isolation is natural."</p>
+      </div>
+    </div>
+
+    <!-- 03 · Analogy -->
+    <div class="deep-section">
+      <p class="section-label">03 · The real-world analogy</p>
+      <h2 class="section-title">Think of reading a bookshelf with alternating spines</h2>
+      <div class="analogy-box" style="margin-bottom:1rem;">
+        <p class="analogy-text">Imagine a library where each shelf holds books from one tree level. On odd shelves you read left-to-right; on even shelves the librarian has flipped all the books — you read their titles right-to-left. The books themselves didn't move: you just read them in the opposite order. That's exactly what the <code>level.reverse()</code> call does — it doesn't change how nodes are stored in the queue, it just changes how you report that level's values.</p>
+      </div>
+      <div class="callout callout-success">
+        <p><strong>Key insight:</strong> Because only the output list is reversed (not the queue), children are always enqueued in the correct left-then-right order for the next level. There's no "undo the flip" logic needed — the queue is direction-agnostic.</p>
+      </div>
+    </div>
+
+    <!-- 04 · Full Diagram with Level Details -->
+    <div class="deep-section">
+      <p class="section-label">04 · Detailed diagram — every node annotated</p>
+      <h2 class="section-title">Larger example: 7-node tree</h2>
+      <p class="deep-para">Let's use a fuller tree to really see the zigzag in action.</p>
+      <div style="display:flex;justify-content:center;margin-bottom:1.25rem;">
+        <svg viewBox="0 0 520 330" width="500" height="315" xmlns="http://www.w3.org/2000/svg" font-family="monospace">
+
+          <!-- Level labels -->
+          <text x="8" y="68"  font-size="10" fill="#8888a8">L0</text>
+          <text x="8" y="152" font-size="10" fill="#8888a8">L1</text>
+          <text x="8" y="236" font-size="10" fill="#8888a8">L2</text>
+
+          <!-- direction banners -->
+          <rect x="32" y="52" width="54" height="18" rx="9" fill="#E6F1FB"/>
+          <text x="59" y="64" text-anchor="middle" font-size="10" fill="#185FA5" font-weight="500">L → R</text>
+          <rect x="32" y="136" width="54" height="18" rx="9" fill="#FAEEDA"/>
+          <text x="59" y="148" text-anchor="middle" font-size="10" fill="#854F0B" font-weight="500">R → L</text>
+          <rect x="32" y="220" width="54" height="18" rx="9" fill="#E1F5EE"/>
+          <text x="59" y="232" text-anchor="middle" font-size="10" fill="#0F6E56" font-weight="500">L → R</text>
+
+          <!-- Edges L0→L1 -->
+          <line x1="260" y1="80" x2="160" y2="162" stroke="#B5D4F4" stroke-width="2"/>
+          <line x1="260" y1="80" x2="360" y2="162" stroke="#B5D4F4" stroke-width="2"/>
+          <!-- Edges L1→L2 -->
+          <line x1="160" y1="162" x2="110" y2="246" stroke="#B5D4F4" stroke-width="2"/>
+          <line x1="160" y1="162" x2="210" y2="246" stroke="#B5D4F4" stroke-width="2"/>
+          <line x1="360" y1="162" x2="310" y2="246" stroke="#B5D4F4" stroke-width="2"/>
+          <line x1="360" y1="162" x2="410" y2="246" stroke="#B5D4F4" stroke-width="2"/>
+
+          <!-- Level 0: node 1 -->
+          <circle cx="260" cy="62" r="22" fill="#E6F1FB" stroke="#378ADD" stroke-width="2"/>
+          <text x="260" y="67" text-anchor="middle" font-size="15" font-weight="700" fill="#0C447C">1</text>
+
+          <!-- Level 1: nodes 2, 3 -->
+          <circle cx="160" cy="144" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2"/>
+          <text x="160" y="149" text-anchor="middle" font-size="15" font-weight="700" fill="#633806">2</text>
+          <circle cx="360" cy="144" r="22" fill="#FAEEDA" stroke="#EF9F27" stroke-width="2"/>
+          <text x="360" y="149" text-anchor="middle" font-size="15" font-weight="700" fill="#633806">3</text>
+
+          <!-- Level 2: nodes 4, 5, 6, 7 -->
+          <circle cx="110" cy="228" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text x="110" y="233" text-anchor="middle" font-size="15" font-weight="700" fill="#085041">4</text>
+          <circle cx="210" cy="228" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text x="210" y="233" text-anchor="middle" font-size="15" font-weight="700" fill="#085041">5</text>
+          <circle cx="310" cy="228" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text x="310" y="233" text-anchor="middle" font-size="15" font-weight="700" fill="#085041">6</text>
+          <circle cx="410" cy="228" r="22" fill="#E1F5EE" stroke="#1D9E75" stroke-width="2"/>
+          <text x="410" y="233" text-anchor="middle" font-size="15" font-weight="700" fill="#085041">7</text>
+
+          <!-- BFS collection order labels under nodes -->
+          <text x="260" y="92" text-anchor="middle" font-size="9" fill="#6c7086">collect:1st</text>
+          <text x="160" y="174" text-anchor="middle" font-size="9" fill="#6c7086">collect:1st</text>
+          <text x="360" y="174" text-anchor="middle" font-size="9" fill="#6c7086">collect:2nd</text>
+          <text x="110" y="258" text-anchor="middle" font-size="9" fill="#6c7086">collect:1st</text>
+          <text x="210" y="258" text-anchor="middle" font-size="9" fill="#6c7086">collect:2nd</text>
+          <text x="310" y="258" text-anchor="middle" font-size="9" fill="#6c7086">collect:3rd</text>
+          <text x="410" y="258" text-anchor="middle" font-size="9" fill="#6c7086">collect:4th</text>
+
+          <!-- L1 zigzag arrow  3 ← 2 (right-to-left output, so read 3 first) -->
+          <defs>
+            <marker id="ma" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#EF9F27"/></marker>
+            <marker id="mg" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><polygon points="0 0,7 3.5,0 7" fill="#1D9E75"/></marker>
+          </defs>
+          <path d="M 342,136 Q 260,116 180,136" fill="none" stroke="#EF9F27" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#ma)"/>
+          <text x="260" y="112" text-anchor="middle" font-size="10" fill="#EF9F27">output: [3, 2]</text>
+
+          <!-- L2 zigzag arrow  4 → 5 → 6 → 7 -->
+          <path d="M 133,222 Q 210,200 290,222" fill="none" stroke="#1D9E75" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#mg)"/>
+          <path d="M 233,222 Q 310,200 390,222" fill="none" stroke="#1D9E75" stroke-width="1.8" stroke-dasharray="5,3" marker-end="url(#mg)"/>
+          <text x="260" y="198" text-anchor="middle" font-size="10" fill="#1D9E75">output: [4, 5, 6, 7]</text>
+
+          <!-- Output box -->
+          <rect x="95" y="285" width="330" height="22" rx="6" fill="#1e1e2e"/>
+          <text x="260" y="300" text-anchor="middle" font-size="11.5" fill="#cdd6f4" font-family="monospace">[[1],  [3, 2],  [4, 5, 6, 7]]</text>
+        </svg>
+      </div>
+      <div class="callout callout-info">
+        <p>Notice how BFS collects Level 1 as <strong>[2, 3]</strong> (left→right from the queue) but the output for that level is <strong>[3, 2]</strong> (reversed). Level 2 is collected as <strong>[4, 5, 6, 7]</strong> and kept as-is since it's a left→right level. The queue is untouched — only <code>level.reverse()</code> runs on odd levels.</p>
+      </div>
+    </div>
+
+    <!-- 05 · Code walkthrough -->
+    <div class="deep-section">
+      <p class="section-label">05 · Understanding the code line by line</p>
+      <h2 class="section-title">What each part actually does</h2>
+      <p class="deep-para">The trick is using <code>len(queue)</code> at the top of each loop iteration to "freeze" the current level's size before any children get enqueued. Without this snapshot, the loop would consume children from the next level too.</p>
+      <div class="code-block" style="margin-bottom:1.25rem;">
+        <div><span class="c-plain">queue = deque([root])         </span><span class="c-cm"># seed with root only</span></div>
+        <div><span class="c-plain">left_to_right = </span><span class="c-kw">True</span><span class="c-cm">         # Level 0 reads L→R</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-kw">while</span><span class="c-plain"> queue:</span></div>
+        <div><span class="c-plain">    level_size = </span><span class="c-fn">len</span><span class="c-plain">(queue) </span><span class="c-cm"># ← KEY: snapshot before children are added</span></div>
+        <div><span class="c-plain">    level = []</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    </span><span class="c-kw">for</span><span class="c-plain"> _ </span><span class="c-kw">in</span><span class="c-plain"> </span><span class="c-fn">range</span><span class="c-plain">(level_size):  </span><span class="c-cm"># process exactly this level</span></div>
+        <div><span class="c-plain">        node = queue.</span><span class="c-fn">popleft</span><span class="c-plain">()</span></div>
+        <div><span class="c-plain">        level.</span><span class="c-fn">append</span><span class="c-plain">(node.val)</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">if</span><span class="c-plain"> node.left:  queue.</span><span class="c-fn">append</span><span class="c-plain">(node.left)   </span><span class="c-cm"># children go to NEXT level</span></div>
+        <div><span class="c-plain">        </span><span class="c-kw">if</span><span class="c-plain"> node.right: queue.</span><span class="c-fn">append</span><span class="c-plain">(node.right)</span></div>
+        <div>&nbsp;</div>
+        <div><span class="c-plain">    </span><span class="c-kw">if not</span><span class="c-plain"> left_to_right:</span></div>
+        <div><span class="c-plain">        level.</span><span class="c-fn">reverse</span><span class="c-plain">()          </span><span class="c-cm"># flip output only — queue unchanged</span></div>
+        <div><span class="c-plain">    result.</span><span class="c-fn">append</span><span class="c-plain">(level)</span></div>
+        <div><span class="c-plain">    left_to_right = </span><span class="c-kw">not</span><span class="c-plain"> left_to_right  </span><span class="c-cm"># toggle for next level</span></div>
+      </div>
+
+      <div class="qa-block">
+        <div class="qa-q">Why snapshot <code>len(queue)</code> before the inner loop?</div>
+        <div class="qa-a">When we dequeue a node, we immediately enqueue its children. If we looped on <code>while queue</code> inside the same iteration, we'd accidentally process the next level's nodes too. Snapshotting <code>level_size = len(queue)</code> at the top tells us exactly how many nodes to pull before we've added any new children — giving us a clean per-level boundary.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Why does reversing the output list work correctly? Doesn't it mess up child order?</div>
+        <div class="qa-a">No — by the time we call <code>level.reverse()</code>, all children from this level are already enqueued in the correct left-then-right order. The reversal happens on the <em>local output list</em> only, not on the queue. So the queue always contains children in the proper left-to-right BFS order, ready for the next level.</div>
+      </div>
+      <div class="qa-block">
+        <div class="qa-q">Could you use a <code>collections.deque</code> with <code>appendleft</code> instead of reversing?</div>
+        <div class="qa-a">Yes — an alternative is to build each level into a deque and use <code>appendleft</code> for right-to-left levels and <code>append</code> for left-to-right. This avoids the final <code>reverse()</code> call and is O(1) per insert. It's a valid micro-optimisation but adds code complexity. Both approaches are O(n) overall.</div>
+      </div>
+    </div>
+
+    <!-- 06 · Full BFS Trace -->
+    <div class="deep-section">
+      <p class="section-label">06 · Full trace — every BFS step</p>
+      <h2 class="section-title">Walking through the 5-node example</h2>
+      <p class="deep-para" style="margin-bottom:1.5rem;">Tree: root=3. Left=9 (no children). Right=20 with children 15 and 7. We trace every queue state and flag value.</p>
+
+      <div class="trace-step">
+        <span class="trace-badge trace-going">Init</span>
+        <div class="trace-content">
+          <p class="trace-title">queue = [3] &nbsp;|&nbsp; left_to_right = True</p>
+          <p class="trace-desc">Seed the queue with the root. Direction flag starts True (Level 0 is left→right).</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <span class="trace-badge trace-record">Level 0</span>
+        <div class="trace-content">
+          <p class="trace-title">level_size = 1 &nbsp;|&nbsp; Dequeue 3 → level = [3]</p>
+          <p class="trace-desc">Enqueue 3's children: left=9, right=20. Queue is now [9, 20]. <code>left_to_right=True</code> → no reverse. Append [3] to result. Toggle flag → False.</p>
+        </div>
+      </div>
+      <div class="trace-step">
+        <span class="trace-badge trace-flip">Level 1</span>
+        <div class="trace-content">
+          <p class="trace-title">level_size = 2 &nbsp;|&nbsp; Dequeue 9, 20 → level = [9, 20]</p>
+          <p class="trace-desc">9 has no children. 20's children (15, 7) are enqueued. Queue is [15, 7]. <code>left_to_right=False</code> → <strong>reverse</strong> level → [20, 9]. Append [20, 9] to result. Toggle flag → True.</p>
+        </div>
+      </div>
+      <div class="trace-step" style="margin-bottom:0;">
+        <span class="trace-badge trace-record">Level 2</span>
+        <div class="trace-content">
+          <p class="trace-title">level_size = 2 &nbsp;|&nbsp; Dequeue 15, 7 → level = [15, 7]</p>
+          <p class="trace-desc">Both are leaves — nothing enqueued. Queue is empty. <code>left_to_right=True</code> → no reverse. Append [15, 7] to result. Queue empty → loop ends.</p>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem;" class="callout callout-success">
+        <p><strong>Final result:</strong> [[3], [20, 9], [15, 7]] ✓</p>
+      </div>
+    </div>
+
+    <!-- 07 · Common mistakes -->
+    <div class="deep-section">
+      <p class="section-label">07 · Common beginner mistakes</p>
+      <h2 class="section-title">What trips people up</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Reversing the queue instead of the output list</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">If you reverse the queue or enqueue right-then-left for "reverse" levels, children of those nodes get enqueued in wrong order — corrupting the direction logic for the next level. Only the output list for that level should be reversed.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Forgetting to snapshot <code>len(queue)</code> before the inner loop</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Without the snapshot, your inner loop runs on a growing queue and mixes two levels together. Always capture <code>level_size = len(queue)</code> at the top of each outer-loop iteration, before any children are enqueued.</p>
+          </div>
+        </div>
+        <div class="mistake-row">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Using a list's <code>.pop(0)</code> instead of <code>deque.popleft()</code></p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;"><code>list.pop(0)</code> is O(n) because it shifts all elements. Over n nodes this makes BFS O(n²). Always use <code>collections.deque</code> which gives O(1) <code>popleft()</code>.</p>
+          </div>
+        </div>
+        <div class="mistake-row" style="border:none;">
+          <div class="mistake-x">✕</div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Off-by-one on the direction — starting with right→left</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The problem defines Level 0 (root) as left→right. Initialise <code>left_to_right = True</code>. Setting it to False initially swaps every level's direction and produces wrong output.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 08 · Complexity full -->
+    <div class="deep-section">
+      <p class="section-label">08 · Complexity — the full explanation</p>
+      <h2 class="section-title">Why O(n) time and O(n) space?</h2>
+      <div class="complexity-grid" style="margin-bottom:1rem;">
+        <div class="complexity-card" style="background:#E6F1FB;">
+          <div class="complexity-label" style="color:#185FA5;">Time</div>
+          <div class="complexity-value" style="color:#0C447C;">O(n)</div>
+          <div class="complexity-why" style="color:#185FA5;">Each node is enqueued once and dequeued once — O(n). Reversing a level costs O(w) where w is the width. Summing all widths across all levels equals n. Total: O(n).</div>
+        </div>
+        <div class="complexity-card" style="background:#EEEDFE;">
+          <div class="complexity-label" style="color:#534AB7;">Space</div>
+          <div class="complexity-value" style="color:#3C3489;">O(n)</div>
+          <div class="complexity-why" style="color:#534AB7;">Queue holds at most the widest level — O(n) in the worst case (complete binary tree's last level has n/2 nodes). Result list stores all n values. Both O(n).</div>
+        </div>
+      </div>
+      <div class="callout callout-warn">
+        <p><strong>Interview tip:</strong> Distinguish between queue space (O(width)) and result space (O(n)). For a skewed tree, the queue is O(1) at any moment but total work is still O(n). For a perfect binary tree the last level has ⌈n/2⌉ nodes — that's the queue's worst-case size.</p>
+      </div>
+    </div>
+
+    <!-- 09 · Related problems -->
+    <div class="deep-section">
+      <p class="section-label">09 · Interview context</p>
+      <h2 class="section-title">Where you'll actually use this</h2>
+      <div class="card" style="padding:0.75rem 1.5rem;">
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Binary Tree Level Order Traversal (LC 102)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The direct predecessor problem — identical BFS structure, no direction flag. If you can do zigzag, you can do normal level-order in your sleep.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Binary Tree Level Order Traversal II (LC 107)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Same BFS, but you reverse the final result list to return levels bottom-up. One extra line of code on top of LC 102.</p>
+          </div>
+        </div>
+        <div class="interview-item">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Average of Levels in Binary Tree (LC 637)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">Same level-isolation pattern — replace the output append with a sum ÷ count per level. Core BFS skeleton is identical.</p>
+          </div>
+        </div>
+        <div class="interview-item" style="border:none;">
+          <div class="interview-dot"></div>
+          <div>
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Spiral Matrix (LC 54)</p>
+            <p style="font-size:13px;color:var(--color-text-secondary);margin:0;line-height:1.6;">The 2-D matrix analogue of zigzag — traverse rows alternating left→right and right→left. The direction-flag mental model from this problem applies directly.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end deep-mode -->
+
+  <!-- Footer CTA -->
+  <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <p style="font-size:14px;font-weight:500;color:var(--color-text-primary);margin:0 0 3px;">Try it yourself</p>
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">LeetCode 103 · Medium · Tags: Tree, BFS, Binary Tree</p>
+    </div>
+    <a href="https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/" target="_blank" style="font-size:13px;padding:8px 18px;border-radius:var(--border-radius-md);background:#E6F1FB;color:#185FA5;font-weight:500;text-decoration:none;border:0.5px solid #B5D4F4;">Open on LeetCode ↗</a>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+function switchMode(mode) {
+  const quick = document.getElementById('quick-mode');
+  const deep  = document.getElementById('deep-mode');
+  const btnQ  = document.getElementById('btn-quick');
+  const btnD  = document.getElementById('btn-deep');
+  const desc  = document.getElementById('mode-desc');
+  if (mode === 'quick') {
+    quick.style.display = 'block';
+    deep.style.display  = 'none';
+    btnQ.classList.add('active');
+    btnD.classList.remove('active');
+    desc.textContent = 'Key concepts at a glance — for those who already know the basics.';
+  } else {
+    quick.style.display = 'none';
+    deep.style.display  = 'block';
+    btnQ.classList.remove('active');
+    btnD.classList.add('active');
+    desc.textContent = 'A full beginner-friendly walkthrough — understand it from scratch.';
+  }
+}
+</script>
+</body>
+</html>

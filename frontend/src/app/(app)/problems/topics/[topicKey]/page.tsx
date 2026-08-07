@@ -2,14 +2,17 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, BookOpen, Play, Search } from "lucide-react";
 import { useParams } from "next/navigation";
 
 import {
+  getGuideHref,
+  getPlatformLink,
   getProblemHref,
   sections,
   topicConfigurations,
 } from "../../page";
+import { GFGIcon, LeetCodeIcon } from "@/components/dsa-icons";
 
 export default function TopicProblemsPage() {
   const params = useParams<{ topicKey: string }>();
@@ -72,15 +75,13 @@ export default function TopicProblemsPage() {
     );
   }
 
-  const Icon = topicData.icon;
-
   const filteredProblems = topicData.problems.filter((item) =>
     `${item.problem} ${item.sectionName}`.toLowerCase().includes(query.toLowerCase()),
   );
 
   return (
-    <section className="flex min-h-0 flex-col gap-4 xl:h-[calc(100dvh-7.5rem)]">
-      <div className="flex items-center justify-between gap-2">
+    <section className="flex min-h-0 flex-col gap-4 xl:h-[calc(100dvh-5.5rem)]">
+      <div className="flex items-center justify-end gap-2">
         <Link
           href="/problems"
           className="traversal-pill inline-flex items-center gap-1.5 transition hover:bg-slate-50"
@@ -91,48 +92,77 @@ export default function TopicProblemsPage() {
       </div>
 
       <div className="grid min-h-0 flex-1 gap-4 xl:grid-cols-[340px,1fr]">
-        <aside className="traversal-panel h-fit p-5 xl:sticky xl:top-0">
-          <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-sky-200 bg-sky-50 text-sky-700">
-            <Icon size={22} strokeWidth={2.2} aria-hidden="true" />
+        <aside className="traversal-panel h-fit space-y-5 p-5 xl:sticky xl:top-0">
+          {/* ── Title ── */}
+          <div>
+            <h1 className="font-[var(--font-space-grotesk)] text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+              {topicData.title}
+            </h1>
           </div>
 
-          <h1 className="text-[30px] font-extrabold tracking-[-0.03em] text-slate-900">
-            {topicData.title}
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-slate-600">{topicData.description}</p>
+          <p className="text-sm leading-relaxed text-slate-500">{topicData.description}</p>
 
-          <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50/80 p-4">
-            <p className="text-xs font-bold uppercase tracking-[0.04em] text-slate-500">
-              Progress
-            </p>
-            <p className="mt-2 text-3xl font-extrabold tabular-nums text-slate-900">
-              {topicData.solved}/{topicData.total}
-            </p>
-            <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-sky-500 to-emerald-500"
-                style={{ width: `${topicData.progress}%` }}
-              />
+          {/* ── Progress ring + bar ── */}
+          <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4">
+            <div className="flex items-center gap-4">
+              {/* SVG circular ring */}
+              <div className="relative h-14 w-14 shrink-0">
+                <svg className="h-14 w-14 -rotate-90" viewBox="0 0 56 56" aria-hidden="true">
+                  <circle cx="28" cy="28" r="24" fill="none" stroke="#e2e8f0" strokeWidth="4" />
+                  <circle
+                    cx="28"
+                    cy="28"
+                    r="24"
+                    fill="none"
+                    stroke="url(#progress-gradient)"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeDasharray={`${2 * Math.PI * 24}`}
+                    strokeDashoffset={`${2 * Math.PI * 24 * (1 - topicData.progress / 100)}`}
+                    className="transition-all duration-700 ease-out"
+                  />
+                  <defs>
+                    <linearGradient id="progress-gradient" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#0ea5e9" />
+                      <stop offset="100%" stopColor="#10b981" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold tabular-nums text-slate-700">
+                  {topicData.progress}%
+                </span>
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <p className="text-xl font-extrabold tabular-nums text-slate-900">
+                  {topicData.solved}
+                  <span className="text-slate-300">/</span>
+                  <span className="text-slate-400">{topicData.total}</span>
+                </p>
+                <p className="mt-0.5 text-xs font-medium text-slate-400">problems solved</p>
+              </div>
             </div>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.04em] text-slate-500">
-              {topicData.progress}% complete
-            </p>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <div className="rounded-xl border border-slate-200 bg-white p-3">
-              <p className="text-xs font-semibold text-slate-500">Sections</p>
-              <p className="mt-1 text-2xl font-extrabold tabular-nums text-slate-900">
-                {topicData.sectionsCount}
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-3">
-              <p className="text-xs font-semibold text-slate-500">Live</p>
-              <p className="mt-1 text-2xl font-extrabold tabular-nums text-emerald-600">
-                {topicData.liveCount}
-              </p>
-            </div>
+          {/* ── Inline stats ── */}
+          <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
+            <span className="tabular-nums">{topicData.sectionsCount} sections</span>
+            <span className="text-slate-200">·</span>
+            <span className="tabular-nums text-emerald-600">{topicData.liveCount} live</span>
+            <span className="text-slate-200">·</span>
+            <span className="tabular-nums">{topicData.total - topicData.liveCount} planned</span>
           </div>
+
+          {/* ── CTA button ── */}
+          {topicData.problems.find((p) => p.href) && (
+            <Link
+              href={topicData.problems.find((p) => p.href)!.href!}
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+            >
+              <Play size={14} strokeWidth={2.5} aria-hidden="true" />
+              Start Practicing
+            </Link>
+          )}
         </aside>
 
         <div id="problem-list" className="traversal-panel flex min-h-0 flex-col overflow-hidden">
@@ -161,11 +191,13 @@ export default function TopicProblemsPage() {
 
           <div className="ui-scrollbar min-h-0 flex-1 space-y-2 overflow-y-auto p-3 sm:p-4">
             {filteredProblems.map((item, index) => {
+              const guideHref = getGuideHref(item.problem);
+              const platform = getPlatformLink(item.problem);
+
               if (item.href) {
                 return (
-                  <Link
+                  <div
                     key={`${item.sectionName}-${item.problem}`}
-                    href={item.href}
                     className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]"
                   >
                     <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-md border border-emerald-200 bg-emerald-50 px-1 text-xs font-bold tabular-nums text-emerald-700">
@@ -179,10 +211,42 @@ export default function TopicProblemsPage() {
                         {item.sectionName}
                       </p>
                     </div>
-                    <span className="traversal-pill border-emerald-200 bg-emerald-50 text-emerald-700">
-                      Live
-                    </span>
-                  </Link>
+                    <div className="flex items-center gap-1.5">
+                      <Link
+                        href={item.href}
+                        title="Open Visualizer"
+                        className="inline-flex h-7 items-center gap-1 rounded-md border border-emerald-200 bg-emerald-50 px-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"
+                      >
+                        <Play size={12} strokeWidth={2.5} aria-hidden="true" />
+                        <span className="hidden sm:inline">Visualize</span>
+                      </Link>
+                      {guideHref && (
+                        <Link
+                          href={guideHref}
+                          title="Read Guide"
+                          className="inline-flex h-7 items-center gap-1 rounded-md border border-sky-200 bg-sky-50 px-2 text-xs font-semibold text-sky-700 transition hover:bg-sky-100"
+                        >
+                          <BookOpen size={12} strokeWidth={2.5} aria-hidden="true" />
+                          <span className="hidden sm:inline">Learn</span>
+                        </Link>
+                      )}
+                      {platform && (
+                        <a
+                          href={platform.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={`Solve on ${platform.platform === "leetcode" ? "LeetCode" : "GeeksforGeeks"}`}
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-slate-50 transition hover:bg-slate-100"
+                        >
+                          {platform.platform === "leetcode" ? (
+                            <LeetCodeIcon size={14} aria-hidden="true" />
+                          ) : (
+                            <GFGIcon size={14} aria-hidden="true" />
+                          )}
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 );
               }
 
@@ -202,9 +266,26 @@ export default function TopicProblemsPage() {
                       {item.sectionName}
                     </p>
                   </div>
-                  <span className="traversal-pill border-slate-200 bg-slate-100 text-slate-600">
-                    Planned
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="traversal-pill border-slate-200 bg-slate-100 text-slate-600">
+                      Planned
+                    </span>
+                    {platform && (
+                      <a
+                        href={platform.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={`Solve on ${platform.platform === "leetcode" ? "LeetCode" : "GeeksforGeeks"}`}
+                        className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-slate-50 transition hover:bg-slate-100"
+                      >
+                        {platform.platform === "leetcode" ? (
+                          <LeetCodeIcon size={14} aria-hidden="true" />
+                        ) : (
+                          <GFGIcon size={14} aria-hidden="true" />
+                        )}
+                      </a>
+                    )}
+                  </div>
                 </div>
               );
             })}
