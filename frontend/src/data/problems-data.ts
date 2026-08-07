@@ -266,6 +266,15 @@ const toSlug = (text: string): string =>
 
 export const getProblemHref = (sectionName: string, problemName: string): string | null => {
   // ── Binary Tree problems ──
+  if (sectionName === "Binary Tree" && problemName === "Binary Tree Inorder Traversal") {
+    return "/problems/binary-tree/inorder-traversal";
+  }
+  if (sectionName === "Binary Tree" && problemName === "Binary Tree Preorder Traversal") {
+    return "/problems/binary-tree/preorder-traversal";
+  }
+  if (sectionName === "Binary Tree" && problemName === "Binary Tree Postorder Traversal") {
+    return "/problems/binary-tree/postorder-traversal";
+  }
   if (sectionName === "Binary Tree" && problemName === "Left View of Binary Tree") {
     return "/problems/binary-tree/leftview-of-binary-tree";
   }

@@ -144,101 +144,76 @@ export default function ProblemsPage() {
 
   return (
     <div className="space-y-8">
-      {/* ═══ HERO ═══ */}
-      <header className="relative isolate overflow-hidden rounded-2xl border border-slate-200/50 bg-white">
-        {/* Dot grid */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.35]"
-          style={{
-            backgroundImage: "radial-gradient(circle, #94a3b8 0.8px, transparent 0.8px)",
-            backgroundSize: "20px 20px",
-          }}
-        />
-        {/* Gradient blobs */}
-        <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-gradient-to-br from-sky-300/25 via-indigo-300/15 to-transparent blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-16 -left-16 h-60 w-60 rounded-full bg-gradient-to-tr from-emerald-300/20 via-teal-200/10 to-transparent blur-3xl" />
-        <div className="pointer-events-none absolute left-1/2 top-0 h-40 w-96 -translate-x-1/2 bg-gradient-to-b from-violet-200/10 to-transparent blur-2xl" />
-        {/* Top accent stripe */}
-        <div className="absolute left-0 right-0 top-0 h-[3px] bg-gradient-to-r from-blue-500 via-violet-500 to-emerald-500 opacity-80" />
-
-        <div className="relative px-6 pb-7 pt-10 sm:px-8 sm:pt-12">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-xl space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-white shadow-lg shadow-slate-900/20">
-                <Zap size={10} strokeWidth={2.5} aria-hidden="true" className="text-amber-400" />
-                Interview Prep
-              </div>
-
-              <h1 className="text-[clamp(28px,3vw,42px)] font-extrabold leading-[1.08] tracking-[-0.035em] text-slate-900">
-                Problem<br />
-                <span className="bg-gradient-to-r from-slate-900 via-slate-700 to-slate-500 bg-clip-text text-transparent">
-                  Collection
-                </span>
-              </h1>
-
-              <p className="text-[15px] leading-relaxed text-slate-500">
-                <span className="font-semibold text-slate-700">{totalProblems}</span> problems across{" "}
-                <span className="font-semibold text-slate-700">{topicConfigurations.length}</span> topics.
-                Dive into interactive visualizers and structured learning paths.
-              </p>
-            </div>
-
-            {/* Stat blocks */}
-            <div className="flex shrink-0 items-stretch gap-3">
-              <StatBlock label="Total" value={totalProblems} sub="problems" />
-              <StatBlock label="Solved" value={totalSolved} sub={`of ${totalProblems}`} accent="emerald" />
-              <StatBlock label="Live" value={totalLive} sub="visualizers" accent="sky" />
-            </div>
+      {/* ═══ HERO HEADER ═══ */}
+      <header className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="space-y-1.5">
+            <h1 className="font-[var(--font-space-grotesk)] text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+              Data Structure & Algorithm Problems
+            </h1>
+            <p className="font-[var(--font-outfit)] text-sm leading-relaxed text-slate-500 max-w-xl">
+              Explore <span className="font-semibold text-slate-700">{totalProblems}</span> curated problems across{" "}
+              <span className="font-semibold text-slate-700">{topicConfigurations.length}</span> core topics with interactive step-by-step visualizers.
+            </p>
           </div>
 
-          {/* Search + view toggle */}
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <label className="relative block w-full max-w-lg">
-              <Search
-                size={16}
-                strokeWidth={2}
-                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                aria-hidden="true"
-              />
-              <input
-                ref={searchRef}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search problems..."
-                className="h-11 w-full rounded-xl border border-slate-200/80 bg-white pl-11 pr-20 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
-              />
-              <kbd className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded-md border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 sm:inline-flex">
-                <Command size={10} strokeWidth={2} aria-hidden="true" />K
-              </kbd>
-            </label>
+          {/* Stat blocks */}
+          <div className="flex shrink-0 items-center gap-2.5 rounded-xl border border-slate-200/80 bg-slate-50 p-2 sm:p-2.5">
+            <StatBlock label="Total" value={totalProblems} sub="problems" />
+            <div className="h-8 w-px bg-slate-200" />
+            <StatBlock label="Solved" value={totalSolved} sub={`of ${totalProblems}`} accent="emerald" />
+            <div className="h-8 w-px bg-slate-200" />
+            <StatBlock label="Live" value={totalLive} sub="visualizers" accent="sky" />
+          </div>
+        </div>
 
-            <div className="inline-flex items-center self-start rounded-xl border border-slate-200/80 bg-white p-1 shadow-sm">
-              {(
-                [
-                  { key: "topics" as const, label: "Topics", icon: Layers },
-                  { key: "sheet" as const, label: "All Sections", icon: ListChecks },
-                ] as const
-              ).map((tab) => {
-                const TabIcon = tab.icon;
-                const active = viewMode === tab.key;
-                return (
-                  <button
-                    key={tab.key}
-                    type="button"
-                    onClick={() => setViewMode(tab.key)}
-                    className={cn(
-                      "inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all",
-                      active
-                        ? "bg-slate-900 text-white shadow-lg shadow-slate-900/15"
-                        : "text-slate-500 hover:bg-slate-50 hover:text-slate-700",
-                    )}
-                  >
-                    <TabIcon size={13} strokeWidth={2} aria-hidden="true" />
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </div>
+        {/* Search + View Mode Toolbar */}
+        <div className="mt-8 flex flex-col gap-3 border-t border-slate-100 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <label className="relative block w-full max-w-md">
+            <Search
+              size={15}
+              strokeWidth={2}
+              className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+              aria-hidden="true"
+            />
+            <input
+              ref={searchRef}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search problems by name..."
+              className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-20 text-xs font-medium text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100"
+            />
+            <kbd className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 items-center gap-0.5 rounded-md border border-slate-200 bg-white px-1.5 py-0.5 font-[var(--font-jetbrains)] text-[10px] font-semibold text-slate-400 sm:inline-flex">
+              <Command size={10} strokeWidth={2} aria-hidden="true" />K
+            </kbd>
+          </label>
+
+          <div className="inline-flex items-center self-start rounded-xl border border-slate-200 bg-slate-50 p-1">
+            {(
+              [
+                { key: "topics" as const, label: "Topics", icon: Layers },
+                { key: "sheet" as const, label: "All Sections", icon: ListChecks },
+              ] as const
+            ).map((tab) => {
+              const TabIcon = tab.icon;
+              const active = viewMode === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setViewMode(tab.key)}
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all",
+                    active
+                      ? "bg-white text-slate-900 shadow-sm border border-slate-200"
+                      : "text-slate-500 hover:text-slate-900",
+                  )}
+                >
+                  <TabIcon size={13} strokeWidth={2} aria-hidden="true" />
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
         </div>
       </header>
@@ -268,70 +243,48 @@ export default function ProblemsPage() {
                   key={topic.key}
                   href={`/problems/topics/${topic.key}`}
                   className={cn(
-                    "group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200/60 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)]",
+                    "group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-900/5",
                     accent.hoverBorder,
                   )}
                 >
-                  {/* Left accent stripe */}
-                  <div className={cn("absolute bottom-0 left-0 top-0 w-[3px] rounded-l-2xl opacity-0 transition-opacity duration-200 group-hover:opacity-100", accent.stripe)} />
-                  {/* Background glow */}
-                  <div className={cn("pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-gradient-to-br to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100", accent.glow)} />
 
-                  <div className="relative flex flex-1 flex-col p-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <span
-                        className={cn(
-                          "inline-flex h-11 w-11 items-center justify-center rounded-xl border transition-all duration-200 group-hover:shadow-lg group-hover:ring-4",
-                          accent.bg, accent.border, accent.icon, accent.ring,
-                        )}
-                      >
-                        <Icon size={20} strokeWidth={1.8} aria-hidden="true" />
-                      </span>
-                      <div className="flex items-center gap-2">
-                        {topic.liveCount > 0 && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white shadow-sm">
-                            <Zap size={8} strokeWidth={2.5} aria-hidden="true" />
-                            {topic.liveCount}
-                          </span>
-                        )}
-                        <span className="rounded-full border border-slate-200/80 bg-slate-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.05em] text-slate-500">
-                          {topic.sectionsCount}s
+                  <div className="relative flex flex-1 flex-col p-6">
+                    <div className="flex items-center justify-end gap-2">
+                      {topic.liveCount > 0 && (
+                        <span className="font-[var(--font-jetbrains)] text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60">
+                          {topic.liveCount} live
                         </span>
-                      </div>
+                      )}
+                      <span className="font-[var(--font-jetbrains)] text-[11px] font-medium text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200/60">
+                        {topic.sectionsCount} {topic.sectionsCount === 1 ? "section" : "sections"}
+                      </span>
                     </div>
 
                     <div className="mt-4">
-                      <h3 className="text-[17px] font-bold tracking-tight text-slate-900">
+                      <h3 className="font-[var(--font-space-grotesk)] text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
                         {topic.title}
                       </h3>
-                      <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-slate-500">
+                      <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-slate-500 font-[var(--font-outfit)]">
                         {topic.description}
                       </p>
                     </div>
 
                     <div className="mt-auto pt-5">
-                      <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400">
-                        <span className="tabular-nums">{topic.solved}/{topic.total}</span>
+                      <div className="flex items-center justify-between font-[var(--font-jetbrains)] text-[11px] font-semibold text-slate-400">
+                        <span className="tabular-nums">{topic.solved}/{topic.total} solved</span>
                         <span className="tabular-nums">{topic.progress}%</span>
                       </div>
                       <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
                         <div
-                          className={cn("h-full rounded-full bg-gradient-to-r transition-all duration-700 ease-out", accent.bar)}
+                          className="h-full rounded-full bg-slate-900 transition-all duration-500 ease-out"
                           style={{ width: `${Math.max(topic.progress, 2)}%` }}
                         />
                       </div>
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
-                      <span className="text-xs font-semibold text-slate-400 transition-colors group-hover:text-slate-600">
-                        Explore topic
-                      </span>
-                      <span className={cn(
-                        "inline-flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200",
-                        "bg-slate-100 text-slate-400 group-hover:bg-slate-900 group-hover:text-white group-hover:shadow-lg",
-                      )}>
-                        <ArrowRight size={13} strokeWidth={2} aria-hidden="true" />
-                      </span>
+                    <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-semibold text-slate-400 transition-colors group-hover:text-slate-900">
+                      <span>Explore topic</span>
+                      <ArrowRight size={14} strokeWidth={2} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
                     </div>
                   </div>
                 </Link>
@@ -541,32 +494,24 @@ function FeaturedTopicCard({ topic, accent }: {
     <Link
       href={`/problems/topics/${topic.key}`}
       className={cn(
-        "group relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-slate-200/50 bg-white p-6 transition-all duration-200 hover:shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-8 lg:flex-row lg:items-center lg:gap-10",
+        "group relative flex flex-col gap-6 overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-200 hover:shadow-xl hover:shadow-slate-900/5 sm:p-8 lg:flex-row lg:items-center lg:gap-10",
         accent.hoverBorder,
       )}
     >
-      <div className={cn("pointer-events-none absolute -right-20 -top-20 h-60 w-60 rounded-full bg-gradient-to-br to-transparent blur-3xl", accent.glow)} />
-      <div className={cn("pointer-events-none absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-gradient-to-tr to-transparent opacity-50 blur-2xl", accent.glow)} />
 
       <div className="relative flex-1 space-y-4">
         <div className="flex items-center gap-3">
-          <span className={cn(
-            "inline-flex h-12 w-12 items-center justify-center rounded-2xl border transition-all group-hover:shadow-lg group-hover:ring-4",
-            accent.bg, accent.border, accent.icon, accent.ring,
-          )}>
-            <Icon size={24} strokeWidth={1.6} aria-hidden="true" />
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em] text-amber-900 shadow-sm">
-            <Sparkles size={9} strokeWidth={2.5} aria-hidden="true" />
-            Featured
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1 font-[var(--font-jetbrains)] text-[11px] font-semibold uppercase tracking-wider text-white shadow-sm">
+            <Sparkles size={11} strokeWidth={2} className="text-amber-400" aria-hidden="true" />
+            Featured Topic
           </span>
         </div>
 
         <div>
-          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-[28px]">
+          <h2 className="font-[var(--font-space-grotesk)] text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
             {topic.title}
           </h2>
-          <p className="mt-2 max-w-md text-[14px] leading-relaxed text-slate-500">
+          <p className="mt-2 max-w-md text-sm leading-relaxed text-slate-500 font-[var(--font-outfit)]">
             {topic.description} — {topic.liveCount} interactive visualizers ready to explore.
           </p>
         </div>
@@ -642,15 +587,12 @@ function StatBlock({
       : "text-slate-900";
 
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200/60 bg-white/80 px-5 py-3.5 backdrop-blur-sm">
-      <p className={cn("text-2xl font-extrabold tabular-nums tracking-tight", valueColor)}>
+    <div className="flex flex-col items-center justify-center px-3.5 py-1 text-center">
+      <p className={cn("font-[var(--font-jetbrains)] text-xl font-bold tabular-nums tracking-tight", valueColor)}>
         {value}
       </p>
-      <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-slate-400">
+      <p className="font-[var(--font-jetbrains)] text-[10px] font-semibold uppercase tracking-wider text-slate-400">
         {label}
-      </p>
-      <p className="text-[9px] font-medium text-slate-300">
-        {sub}
       </p>
     </div>
   );

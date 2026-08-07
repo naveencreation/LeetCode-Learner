@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { ReactNode } from "react";
 
 interface ErrorStateProps {
@@ -30,11 +29,10 @@ export function ErrorState({
   return (
     <section className="box-border flex h-[100dvh] overflow-hidden items-center justify-center px-4 py-4">
       <div className="flex h-full w-full max-w-[980px] flex-col items-center justify-center text-center">
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={imageSrc}
           alt={imageAlt}
-          width={760}
-          height={520}
           className="mx-auto h-auto max-h-[58dvh] w-full max-w-[760px] object-contain"
         />
 
