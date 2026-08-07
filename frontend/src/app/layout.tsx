@@ -23,7 +23,7 @@ export default function RootLayout({
   const isLanding = pathname === "/" || pathname === "/landing";
 
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} data-landing={isLanding ? "true" : undefined}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable}`} data-landing={isLanding ? "true" : undefined}>
       <body
         suppressHydrationWarning
         className="theme min-h-screen bg-background text-foreground antialiased"
