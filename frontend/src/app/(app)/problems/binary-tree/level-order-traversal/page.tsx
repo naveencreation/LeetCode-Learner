@@ -1,4 +1,4 @@
-import { LevelOrderLayout } from "@/features/levelorder/components/LevelOrderLayout";
+import { LevelOrderLayout } from "@/features/trees/levelorder/components/LevelOrderLayout";
 
 export default function LevelOrderBinaryTreePage() {
   return <LevelOrderLayout />;

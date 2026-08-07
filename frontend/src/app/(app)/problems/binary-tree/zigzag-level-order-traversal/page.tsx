@@ -1,4 +1,4 @@
-import { ZigzagLayout } from "@/features/zigzag/components/ZigzagLayout";
+import { ZigzagLayout } from "@/features/trees/zigzag/components/ZigzagLayout";
 
 export default function ZigzagTraversalPage() {
   return <ZigzagLayout />;

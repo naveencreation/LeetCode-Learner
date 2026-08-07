@@ -1,4 +1,4 @@
-import { Lc105Layout } from "@/features/lc105/Lc105Layout";
+import { Lc105Layout } from "@/features/trees/lc105/Lc105Layout";
 
 export default function ConstructTreeFromInorderPreorderPage() {
   return <Lc105Layout />;

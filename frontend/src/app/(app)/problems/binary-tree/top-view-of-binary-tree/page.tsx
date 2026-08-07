@@ -1,4 +1,4 @@
-import { TopViewLayout } from "@/features/topview/components/TopViewLayout";
+import { TopViewLayout } from "@/features/trees/topview/components/TopViewLayout";
 
 export default function TopViewOfBinaryTreePage() {
   return <TopViewLayout />;

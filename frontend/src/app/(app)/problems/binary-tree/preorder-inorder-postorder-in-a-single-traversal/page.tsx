@@ -1,4 +1,4 @@
-import { PreInPostLayout } from "@/features/preinpostsingle/components/PreInPostLayout";
+import { PreInPostLayout } from "@/features/trees/preinpostsingle/components/PreInPostLayout";
 
 export default function PreInPostSingleTraversalPage() {
   return <PreInPostLayout />;

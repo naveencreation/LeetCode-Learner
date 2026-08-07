@@ -1,4 +1,4 @@
-import { SymmetricTreeLayout } from "@/features/symmetrictree/components/SymmetricTreeLayout";
+import { SymmetricTreeLayout } from "@/features/trees/symmetrictree/components/SymmetricTreeLayout";
 
 export default function SymmetricTreePage() {
   return <SymmetricTreeLayout />;

@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { ProblemFocusHeader } from "@/components/problem-focus-header";
-import { binaryTreeProblemData } from "@/features/binary-tree/problemData";
+import { binaryTreeProblemData } from "@/features/trees/binary-tree/problemData";
 
 interface BinaryTreeProblemPageProps {
   params: Promise<{

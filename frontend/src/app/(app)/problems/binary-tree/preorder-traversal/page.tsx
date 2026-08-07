@@ -1,4 +1,4 @@
-import { PreorderLayout } from "@/features/preorder/components/PreorderLayout";
+import { PreorderLayout } from "@/features/trees/preorder/components/PreorderLayout";
 
 export default function PreorderTraversalPage() {
   return <PreorderLayout />;

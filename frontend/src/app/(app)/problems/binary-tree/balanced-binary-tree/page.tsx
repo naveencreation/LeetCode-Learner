@@ -1,4 +1,4 @@
-import { BalancedTreeLayout } from "@/features/balancedtree/components/BalancedTreeLayout";
+import { BalancedTreeLayout } from "@/features/trees/balancedtree/components/BalancedTreeLayout";
 
 export default function BalancedBinaryTreePage() {
   return <BalancedTreeLayout />;

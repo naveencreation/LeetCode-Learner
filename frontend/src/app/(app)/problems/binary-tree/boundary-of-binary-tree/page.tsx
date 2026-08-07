@@ -1,4 +1,4 @@
-import { BoundaryTreeLayout } from "@/features/boundarytree/components/BoundaryTreeLayout";
+import { BoundaryTreeLayout } from "@/features/trees/boundarytree/components/BoundaryTreeLayout";
 
 export default function BoundaryOfBinaryTreePage() {
   return <BoundaryTreeLayout />;
