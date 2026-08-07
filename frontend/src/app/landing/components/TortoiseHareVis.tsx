@@ -14,13 +14,16 @@ interface Step {
 }
 
 const steps: Step[] = [
+  { line: 2, slow: 0, fast: 0, both: true, condFast: true, condNext: true, badges: { slow: "Node(1)", fast: "Node(1)" } },
   { line: 3, slow: 0, fast: 0, both: true, condFast: true, condNext: true, badges: { slow: "Node(1)", fast: "Node(1)" } },
-  { line: 4, slow: 1, fast: 2, both: false, condFast: true, condNext: true, badges: { slow: "Node(2)", fast: "Node(3)" } },
-  { line: 3, slow: 1, fast: 2, both: false, condFast: true, condNext: true, badges: { slow: "Node(2)", fast: "Node(3)" } },
-  { line: 4, slow: 2, fast: 4, both: false, condFast: true, condNext: true, badges: { slow: "Node(3)", fast: "Node(5)" } },
-  { line: 5, slow: 2, fast: 4, both: false, condFast: true, condNext: false, badges: { slow: "Node(3)", fast: "Node(5)" } },
-  { line: 3, slow: 2, fast: 4, both: false, condFast: true, condNext: false, badges: { slow: "Node(3)", fast: "Node(5)" } },
-  { line: 6, slow: 2, fast: 4, both: false, condFast: false, condNext: false, done: true, badges: { slow: "Node(3)", fast: "null" } },
+  { line: 6, slow: 0, fast: 0, both: true, condFast: true, condNext: true, badges: { slow: "Node(1)", fast: "Node(1)" } },
+  { line: 7, slow: 1, fast: 2, both: false, condFast: true, condNext: true, badges: { slow: "Node(2)", fast: "Node(3)" } },
+  { line: 8, slow: 1, fast: 2, both: false, condFast: true, condNext: true, badges: { slow: "Node(2)", fast: "Node(3)" } },
+  { line: 6, slow: 1, fast: 2, both: false, condFast: true, condNext: true, badges: { slow: "Node(2)", fast: "Node(3)" } },
+  { line: 7, slow: 2, fast: 4, both: false, condFast: true, condNext: false, badges: { slow: "Node(3)", fast: "Node(5)" } },
+  { line: 8, slow: 2, fast: 4, both: false, condFast: true, condNext: false, badges: { slow: "Node(3)", fast: "Node(5)" } },
+  { line: 6, slow: 2, fast: 4, both: false, condFast: false, condNext: false, badges: { slow: "Node(3)", fast: "null" } },
+  { line: 11, slow: 2, fast: 4, both: false, condFast: false, condNext: false, done: true, badges: { slow: "Node(3)", fast: "null" } },
 ];
 
 const codeLines = [
@@ -132,25 +135,21 @@ export function TortoiseHareVis() {
           </span>
           <div className="flex items-center gap-3">
             {/* Slow Badge */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[oklch(78%_0.18_85_/_0.15)] border border-[oklch(78%_0.18_85_/_0.3)]">
-              <span className="w-2 h-2 rounded-full bg-[oklch(85%_0.18_85)]" />
-              <span className="font-[var(--font-jetbrains)] text-xs text-[var(--l-text)]">
-                slow = {step.badges.slow}
-              </span>
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-xs">
+              <span className="w-2 h-2 rounded-full bg-amber-400" />
+              <span>slow = {step.badges.slow}</span>
             </div>
             {/* Fast Badge */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[oklch(65%_0.22_280_/_0.15)] border border-[oklch(65%_0.22_280_/_0.3)]">
-              <span className="w-2 h-2 rounded-full bg-[var(--l-primary)]" />
-              <span className="font-[var(--font-jetbrains)] text-xs text-[var(--l-text)]">
-                fast = {step.badges.fast}
-              </span>
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 font-mono text-xs">
+              <span className="w-2 h-2 rounded-full bg-indigo-400" />
+              <span>fast = {step.badges.fast}</span>
             </div>
           </div>
         </div>
 
         {/* Linked List Visualization */}
-        <div className="p-8">
-          <div className="flex items-center justify-center gap-4">
+        <div className="px-6 pb-6 pt-12 md:px-8 md:pb-8 md:pt-14 overflow-x-auto max-w-full">
+          <div className="flex items-center justify-center gap-4 min-w-max">
             {nodes.map((value, i) => {
               const isSlow = step.slow === i;
               const isFast = step.fast === i;
@@ -160,20 +159,25 @@ export function TortoiseHareVis() {
                 <div key={i} className="relative">
                   {/* Pointer Labels */}
                   {(isSlow || isFast) && (
-                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex gap-1 whitespace-nowrap">
+                    <div className="absolute -top-9 left-1/2 -translate-x-1/2 flex gap-1.5 whitespace-nowrap z-10">
                       {isBoth ? (
-                        <span className="px-2 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-[oklch(85%_0.18_85)] to-[var(--l-primary)] text-[var(--l-bg)] whitespace-nowrap">
-                          slow & fast
-                        </span>
+                        <>
+                          <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                            slow
+                          </span>
+                          <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
+                            fast
+                          </span>
+                        </>
                       ) : (
                         <>
                           {isSlow && (
-                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-[oklch(85%_0.18_85)] text-[var(--l-bg)] whitespace-nowrap">
+                            <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40">
                               slow
                             </span>
                           )}
                           {isFast && (
-                            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-[var(--l-primary)] text-[var(--l-bg)] whitespace-nowrap">
+                            <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
                               fast
                             </span>
                           )}
@@ -185,12 +189,14 @@ export function TortoiseHareVis() {
                   {/* Node */}
                   <div
                     className={`w-16 h-16 rounded-xl flex items-center justify-center font-[var(--font-jetbrains)] text-lg font-bold transition-all duration-300 ${
-                      isBoth
-                        ? "bg-gradient-to-br from-[oklch(85%_0.18_85)] to-[var(--l-primary)] text-[var(--l-bg)] shadow-[0_0_20px_oklch(65%_0.22_280_/_0.5)]"
+                      step.done && isSlow
+                        ? "bg-emerald-500/25 border-2 border-emerald-400 text-emerald-200 shadow-[0_0_20px_rgba(16,185,129,0.35)] scale-105"
+                        : isBoth
+                        ? "bg-indigo-600/30 border-2 border-indigo-400 text-indigo-100 shadow-[0_0_15px_rgba(99,102,241,0.3)]"
                         : isSlow
-                        ? "bg-[oklch(85%_0.18_85_/_0.2)] border-2 border-[oklch(85%_0.18_85)] text-[var(--l-text)]"
+                        ? "bg-amber-500/20 border-2 border-amber-400 text-amber-100 shadow-[0_0_15px_rgba(245,158,11,0.2)]"
                         : isFast
-                        ? "bg-[oklch(65%_0.22_280_/_0.2)] border-2 border-[var(--l-primary)] text-[var(--l-text)]"
+                        ? "bg-indigo-500/20 border-2 border-indigo-400 text-indigo-100 shadow-[0_0_15px_rgba(99,102,241,0.2)]"
                         : "bg-[var(--l-surface-2)] border border-[var(--l-border)] text-[var(--l-text-2)]"
                     }`}
                   >
@@ -225,33 +231,42 @@ export function TortoiseHareVis() {
             </div>
           </div>
 
-          {/* Conditions */}
-          <div className="mt-8 flex items-center justify-center gap-6">
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--l-surface-2)] border border-[var(--l-border)]">
-              <span className="text-sm text-[var(--l-text-2)]">fast exists:</span>
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                  step.condFast
-                    ? "bg-[var(--l-success)] text-[var(--l-bg)]"
-                    : "bg-[var(--l-error)] text-[var(--l-bg)]"
-                }`}
-              >
-                {step.condFast ? "TRUE" : "FALSE"}
-              </span>
+          {/* Conditions or Result Banner */}
+          {step.done ? (
+            <div className="mt-8 flex items-center justify-center">
+              <div className="inline-flex items-center gap-3 px-5 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-mono text-sm font-semibold shadow-[0_0_20px_rgba(16,185,129,0.15)]">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>✓ Result: Node(3) returned — Middle of the Linked List found!</span>
+              </div>
             </div>
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--l-surface-2)] border border-[var(--l-border)]">
-              <span className="text-sm text-[var(--l-text-2)]">fast.next exists:</span>
-              <span
-                className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                  step.condNext
-                    ? "bg-[var(--l-success)] text-[var(--l-bg)]"
-                    : "bg-[var(--l-error)] text-[var(--l-bg)]"
-                }`}
-              >
-                {step.condNext ? "TRUE" : "FALSE"}
-              </span>
+          ) : (
+            <div className="mt-8 flex items-center justify-center gap-6">
+              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--l-surface-2)] border border-[var(--l-border)]">
+                <span className="text-sm text-[var(--l-text-2)]">fast exists:</span>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    step.condFast
+                      ? "bg-[var(--l-success)] text-[var(--l-bg)]"
+                      : "bg-[var(--l-error)] text-[var(--l-bg)]"
+                  }`}
+                >
+                  {step.condFast ? "TRUE" : "FALSE"}
+                </span>
+              </div>
+              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--l-surface-2)] border border-[var(--l-border)]">
+                <span className="text-sm text-[var(--l-text-2)]">fast.next exists:</span>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                    step.condNext
+                      ? "bg-[var(--l-success)] text-[var(--l-bg)]"
+                      : "bg-[var(--l-error)] text-[var(--l-bg)]"
+                  }`}
+                >
+                  {step.condNext ? "TRUE" : "FALSE"}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Controls */}

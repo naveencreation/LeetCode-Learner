@@ -76,26 +76,41 @@ function Navbar() {
         </Link>
 
         <ul className="hidden md:flex items-center gap-6 list-none">
-          {["How It Works", "Features", "Compare", "FAQ"].map((item, i) => (
-            <li key={item}>
+          {[
+            { label: "How It Works", href: "#how-it-works" },
+            { label: "Features", href: "#features" },
+            { label: "Compare", href: "#compare" },
+            { label: "Problem", href: "#problem" },
+          ].map((item) => (
+            <li key={item.label}>
               <a
-                href={`#${["how-it-works", "features", "compare", "faq"][i]}`}
-                className="text-sm font-medium text-[var(--l-text-3)] no-underline relative transition-colors duration-200 py-2 group"
+                href={item.href}
+                className="text-sm font-medium text-[var(--l-text-3)] hover:text-[var(--l-text)] no-underline relative transition-colors duration-200 py-2 group"
               >
-                {item}
+                {item.label}
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[var(--l-primary)] to-[var(--l-accent)] scale-x-0 origin-right transition-transform duration-300 group-hover:scale-x-100 group-hover:origin-left" />
               </a>
             </li>
           ))}
         </ul>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="flex md:hidden items-center gap-2">
           <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-1 bg-[var(--l-primary)] text-[var(--l-bg)] rounded-full px-4 py-2 text-xs font-semibold"
+          >
+            Try Free
+          </Link>
+        </div>
+
+        <div className="hidden md:flex items-center gap-3">
+          {/* Hidden until backend authentication is integrated */}
+          {/* <Link
             href="/login"
             className="inline-flex items-center gap-2 bg-transparent text-[var(--l-text-2)] border border-[var(--l-border-2)] rounded-full px-5 py-2.5 font-medium transition-all duration-300 hover:text-[var(--l-text)] hover:border-[var(--l-primary)] hover:bg-[oklch(65%_0.22_280_/_0.1)] hover:shadow-[0_8px_24px_oklch(65%_0.22_280_/_0.15)]"
           >
             Log in
-          </Link>
+          </Link> */}
           <Link
             href="/dashboard"
             className="inline-flex items-center gap-2 bg-[var(--l-primary)] text-[var(--l-bg)] rounded-full px-5 py-2.5 font-semibold transition-all duration-300 hover:translate-y-[-3px] hover:scale-[1.02] hover:shadow-[0_16px_48px_oklch(65%_0.22_280_/_0.5),0_0_0_1px_oklch(65%_0.22_280_/_0.3)_inset] hover:bg-[var(--l-primary-bright)]"
@@ -111,7 +126,7 @@ function Navbar() {
 // Hero Section
 function HeroSection() {
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden py-24">
+    <section className="min-h-[78vh] flex flex-col items-center justify-center relative overflow-hidden py-16 md:py-24">
       {/* Subtle Background Accent */}
       <div
         className="absolute w-[1000px] h-[800px] top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none -z-10 opacity-30"
@@ -121,18 +136,15 @@ function HeroSection() {
       />
 
       <div className="max-w-[1200px] mx-auto px-6 relative z-10 text-center">
-        <div className="lp-reveal mb-6">
-          <span className="inline-flex items-center gap-2 border border-[var(--l-border-2)] bg-[var(--l-surface)] text-[var(--l-primary)] rounded-full px-4 py-2 text-xs font-semibold tracking-wider uppercase">
-            <span className="w-2 h-2 rounded-full bg-[var(--l-primary)]" />
-            Interactive Algorithm Visualizer
-          </span>
-        </div>
-
-        <h1 className="lp-reveal lp-delay-2 mb-6 font-[var(--font-space-grotesk)] text-[clamp(3rem,8vw,5.5rem)] font-semibold leading-[0.98] tracking-[-0.04em] text-[var(--l-text)]">
+        <h1 className="lp-reveal mb-6 font-[var(--font-space-grotesk)] text-[clamp(3.5rem,8.5vw,6.5rem)] font-bold leading-[0.98] tracking-[-0.04em] text-[var(--l-text)]">
           Master algorithms through
           <br />
           <span className="text-[var(--l-primary)] font-bold">visual execution.</span>
         </h1>
+
+        <p className="lp-reveal lp-delay-3 text-lg md:text-xl text-[var(--l-text-2)] max-w-[58ch] mx-auto mb-10 leading-relaxed font-[var(--font-outfit)]">
+          Step-by-step interactive execution for binary trees, linked lists, and core LeetCode problems. Watch pointers, call stacks, and memory state live.
+        </p>
 
         <div className="lp-reveal lp-delay-4 flex items-center justify-center gap-4 flex-wrap mb-4">
           <Link
@@ -218,29 +230,18 @@ function MarqueeSection() {
 // Problem Section
 function ProblemSection() {
   return (
-    <section id="problem" className="py-32">
+    <section id="problem" className="scroll-mt-28 py-24 md:py-32">
       <div className="max-w-[1200px] mx-auto px-6">
-        <div className="text-center mb-20">
-          <span className="lp-reveal inline-flex items-center gap-3 font-[var(--font-outfit)] text-xs font-semibold tracking-[0.2em] uppercase text-[var(--l-primary)]">
-            <span className="w-6 h-0.5 bg-gradient-to-r from-[var(--l-primary)] to-transparent" />
-            The Problem
+        <div className="text-center mb-16">
+          <span className="lp-reveal inline-flex items-center gap-2 font-[var(--font-jetbrains)] text-xs font-semibold tracking-widest uppercase text-[var(--l-primary)]">
+            // The Problem
           </span>
-          <h2 className="lp-reveal lp-delay-2 mt-5 font-[var(--font-space-grotesk)] text-[clamp(2.5rem,5vw,4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[var(--l-text)]">
-            You&apos;ve watched every video.
+          <h2 className="lp-reveal lp-delay-2 mt-4 font-[var(--font-space-grotesk)] text-[clamp(2.2rem,5vw,3.5rem)] font-bold leading-[1.08] tracking-[-0.03em] text-[var(--l-text)]">
+            You&apos;ve watched every video tutorial.
             <br />
-            <span
-              className="font-bold"
-              style={{
-                background: "linear-gradient(135deg, var(--l-text) 0%, var(--l-primary) 50%, var(--l-accent) 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              You still can&apos;t write it.
-            </span>
+            <span className="text-[var(--l-primary)]">You still can&apos;t write it.</span>
           </h2>
-          <p className="lp-reveal lp-delay-3 text-lg text-[var(--l-text-2)] leading-relaxed max-w-[60ch] mx-auto mt-5">
+          <p className="lp-reveal lp-delay-3 text-lg text-[var(--l-text-2)] leading-relaxed max-w-[58ch] mx-auto mt-4 font-[var(--font-outfit)]">
             That&apos;s not a knowledge problem. That&apos;s a visualization problem.
           </p>
         </div>
@@ -248,73 +249,36 @@ function ProblemSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             {
-              num: "01",
+              tag: "01 / PASSIVE LEARNING",
               title: "The Passive Trap",
-              desc: "You watch a 12-minute video, nod along, feel confident — then open a blank file and realize you can't reproduce a single step without rewatching it.",
-              accent: "var(--l-error)",
-              glow: "oklch(72% 0.2 25 / 0.3)",
-              icon: (
-                <path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0L20.74 6.5A2 2 0 0 1 22 8.35z M6 6l6-4 6 4 M12 4v16" />
-              ),
+              desc: "You watch a 12-minute video, nod along, feel confident — then open a blank file and realize you can't reproduce a single step without rewatching.",
             },
             {
-              num: "02",
+              tag: "02 / BLACK BOX OUTPUT",
               title: "The Silent Failure",
-              desc: 'LeetCode says "Output: Wrong". It doesn\'t tell you which pointer moved to the wrong node at step 3.',
-              accent: "var(--l-warning)",
-              glow: "oklch(85% 0.18 85 / 0.3)",
-              icon: (
-                <>
-                  <polyline points="4 17 10 11 4 5" />
-                  <line x1="12" y1="19" x2="20" y2="19" />
-                </>
-              ),
+              desc: 'LeetCode says "Output: Wrong". It doesn\'t show which pointer moved to the wrong node at step 3 or where state mutated incorrectly.',
             },
             {
-              num: "03",
+              tag: "03 / MENTAL LOAD",
               title: "The Loop Confusion",
-              desc: 'You understand the algorithm conceptually, but when pointers move simultaneously, you lose track of which variable holds what.',
-              accent: "var(--l-primary)",
-              glow: "oklch(65% 0.22 280 / 0.3)",
-              icon: (
-                <>
-                  <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                  <polyline points="2 17 12 22 22 17" />
-                  <polyline points="2 12 12 17 22 12" />
-                </>
-              ),
+              desc: "You understand the algorithm conceptually, but when 2+ pointers move simultaneously, you lose track of which variable holds what.",
             },
           ].map((card, i) => (
             <article
               key={i}
-              className={`lp-reveal lp-delay-${i + 1} relative bg-gradient-to-br from-[var(--l-surface)] to-[var(--l-surface-2)] border border-[var(--l-border)] rounded-2xl p-8 transition-all duration-400 hover:border-[oklch(65%_0.22_280_/_0.6)] hover:translate-y-[-8px] hover:scale-[1.01] hover:shadow-[0_32px_64px_rgba(0,0,0,0.4),0_0_40px_${card.glow},0_0_0_1px_${card.accent}_inset] group`}
-              style={{ ["--accent-color" as string]: card.accent, ["--accent-glow" as string]: card.glow }}
+              className={`lp-reveal lp-delay-${i + 1} relative bg-[var(--l-surface)] border border-[var(--l-border)] rounded-2xl p-8 transition-all duration-300 hover:border-[var(--l-border-2)] hover:bg-[var(--l-surface-2)] flex flex-col justify-between`}
             >
-              <div
-                className="absolute top-0 left-0 right-0 h-[3px] rounded-t-2xl"
-                style={{ background: `linear-gradient(90deg, ${card.accent} 0%, ${card.glow} 50%, transparent 100%)` }}
-              />
-              <div
-                className="font-[var(--font-space-grotesk)] text-7xl font-bold leading-none mb-4"
-                style={{ color: card.accent.replace("var(--l-", "oklch(").replace(")", "") === "oklch(--l-" ? card.accent : "oklch(65% 0.22 280 / 0.4)", opacity: 0.4 }}
-              >
-                {card.num}
+              <div>
+                <span className="font-[var(--font-jetbrains)] text-xs text-[var(--l-primary)] font-semibold tracking-wider block mb-6">
+                  {card.tag}
+                </span>
+                <h3 className="font-[var(--font-space-grotesk)] text-xl font-bold text-[var(--l-text)] mb-3">
+                  {card.title}
+                </h3>
+                <p className="text-[var(--l-text-2)] leading-relaxed text-sm font-[var(--font-outfit)]">
+                  {card.desc}
+                </p>
               </div>
-              <div
-                className="w-14 h-14 rounded-xl flex items-center justify-center border mb-4"
-                style={{
-                  background: `linear-gradient(135deg, ${card.glow.replace(" / 0.3", " / 0.2")} 0%, ${card.glow.replace(" / 0.3", " / 0.05")} 100%)`,
-                  borderColor: card.accent.replace("var(--l-", "oklch(").replace(")", " / 0.2)"),
-                }}
-              >
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke={card.accent} strokeWidth="1.5" strokeLinecap="round">
-                  {card.icon}
-                </svg>
-              </div>
-              <h3 className="font-[var(--font-space-grotesk)] text-xl font-semibold text-[var(--l-text)] mb-3">
-                {card.title}
-              </h3>
-              <p className="text-[var(--l-muted)] leading-relaxed">{card.desc}</p>
             </article>
           ))}
         </div>
@@ -326,7 +290,7 @@ function ProblemSection() {
 // Solution Section
 function SolutionSection() {
   return (
-    <section id="solution" className="py-32 bg-[var(--l-bg-2)]">
+    <section id="solution" className="scroll-mt-28 py-24 md:py-32 bg-[var(--l-bg-2)]">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="text-center mb-20">
           <span className="lp-reveal inline-flex items-center gap-3 font-[var(--font-outfit)] text-xs font-semibold tracking-[0.2em] uppercase text-[var(--l-primary)]">
@@ -364,7 +328,7 @@ function SolutionSection() {
 // Features Section
 function FeaturesSection() {
   return (
-    <section id="features" className="py-32 bg-[var(--l-bg)]">
+    <section id="features" className="scroll-mt-28 py-24 md:py-32 bg-[var(--l-bg)]">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="text-center mb-20">
           <span className="lp-reveal inline-flex items-center gap-3 font-[var(--font-outfit)] text-xs font-semibold tracking-[0.2em] uppercase text-[var(--l-primary)]">
@@ -536,7 +500,7 @@ function HowItWorksSection() {
   ];
 
   return (
-    <section id="how-it-works" className="py-32 bg-[var(--l-bg-2)]">
+    <section id="how-it-works" className="scroll-mt-28 py-24 md:py-32 bg-[var(--l-bg-2)]">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="text-center mb-20">
           <span className="lp-reveal inline-flex items-center gap-3 font-[var(--font-outfit)] text-xs font-semibold tracking-[0.2em] uppercase text-[var(--l-primary)]">
@@ -602,7 +566,7 @@ function CompareSection() {
   ];
 
   return (
-    <section id="compare" className="py-32 bg-[var(--l-bg-2)]">
+    <section id="compare" className="scroll-mt-28 py-24 md:py-32 bg-[var(--l-bg-2)]">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="text-center mb-20">
           <span className="lp-reveal inline-flex items-center gap-3 font-[var(--font-outfit)] text-xs font-semibold tracking-[0.2em] uppercase text-[var(--l-primary)]">
@@ -721,55 +685,110 @@ function CTASection() {
 // Footer
 function Footer() {
   return (
-    <footer className="bg-[var(--l-bg)] border-t border-[var(--l-border)] py-20">
+    <footer className="border-t border-[var(--l-border)] bg-[var(--l-bg)] py-16 text-sm">
       <div className="max-w-[1200px] mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr] gap-16 mb-16">
-          <div>
-            <Link href="/" className="flex items-center gap-3 no-underline mb-4 group">
-              <Logo 
-                size={36} 
-                color="oklch(65% 0.22 280)"
-                className="transition-all duration-300 group-hover:scale-105"
-              />
-              <span className="font-[var(--font-space-grotesk)] font-semibold text-2xl text-[var(--l-text)] tracking-tight">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+          {/* Brand */}
+          <div className="md:col-span-1">
+            <Link href="/" className="inline-flex items-center gap-3 no-underline mb-4">
+              <Logo size={24} color="oklch(65% 0.22 280)" />
+              <span className="font-[var(--font-space-grotesk)] font-bold text-xl text-[var(--l-text)] tracking-tight">
                 ThinkDSA
               </span>
             </Link>
-            <p className="text-sm text-[var(--l-ghost)] leading-relaxed max-w-[280px]">
-              Visual intuition for developers who want to actually understand algorithms, not just memorize them.
+            <p className="text-sm text-[var(--l-text-2)] leading-relaxed max-w-[280px] font-[var(--font-outfit)]">
+              Visual execution engine for developers who want to actually master data structures and algorithms.
             </p>
           </div>
 
+          {/* Navigation */}
           <div>
-            <div className="text-xs font-bold tracking-[0.15em] uppercase text-[var(--l-muted)] mb-4">Navigate</div>
-            <ul className="list-none flex flex-col gap-3">
-              {["How It Works", "Features", "Compare", "FAQ"].map((item, i) => (
-                <li key={item}>
+            <div className="font-[var(--font-jetbrains)] text-xs font-bold tracking-widest uppercase text-[var(--l-text)] mb-4">
+              Navigation
+            </div>
+            <ul className="list-none flex flex-col gap-2.5 p-0 m-0">
+              {[
+                { label: "How It Works", href: "#how-it-works" },
+                { label: "Features", href: "#features" },
+                { label: "Compare", href: "#compare" },
+                { label: "Problem", href: "#problem" },
+              ].map((item) => (
+                <li key={item.label}>
                   <a
-                    href={`#${["how-it-works", "features", "compare", "faq"][i]}`}
-                    className="text-sm text-[var(--l-ghost)] no-underline transition-colors duration-200 hover:text-[var(--l-text)]"
+                    href={item.href}
+                    className="text-sm text-[var(--l-text-2)] hover:text-[var(--l-text)] no-underline transition-colors duration-200"
                   >
-                    {item}
+                    {item.label}
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
+          {/* Topics */}
           <div>
-            <div className="text-xs font-bold tracking-[0.15em] uppercase text-[var(--l-muted)] mb-4">Connect</div>
-            <ul className="list-none flex flex-col gap-3">
+            <div className="font-[var(--font-jetbrains)] text-xs font-bold tracking-widest uppercase text-[var(--l-text)] mb-4">
+              DSA Topics
+            </div>
+            <ul className="list-none flex flex-col gap-2.5 p-0 m-0">
               {[
-                { name: "Twitter / X", icon: <path d="M4 4l11.733 16H20L8.267 4z M4 20l6.768-6.768m2.46-2.46L20 4" /> },
-                { name: "GitHub", icon: <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /> },
-                { name: "Email", icon: <><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></> },
+                { label: "Binary Trees", href: "/problems" },
+                { label: "Linked Lists", href: "/problems" },
+                { label: "Two Pointers", href: "/problems" },
+                { label: "Recursion & Backtracking", href: "/problems" },
+              ].map((item) => (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-[var(--l-text-2)] hover:text-[var(--l-text)] no-underline transition-colors duration-200"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Connect */}
+          <div>
+            <div className="font-[var(--font-jetbrains)] text-xs font-bold tracking-widest uppercase text-[var(--l-text)] mb-4">
+              Connect
+            </div>
+            <ul className="list-none flex flex-col gap-2.5 p-0 m-0">
+              {[
+                {
+                  name: "GitHub Profile",
+                  href: "https://github.com/naveencreation",
+                  icon: (
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                  ),
+                },
+                {
+                  name: "About Creator",
+                  href: "https://naveenselvan.me/",
+                  icon: (
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2 M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+                  ),
+                },
+                {
+                  name: "Contact Email",
+                  href: "mailto:naveenselvan0004@gmail.com",
+                  icon: (
+                    <>
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                      <polyline points="22,6 12,13 2,6" />
+                    </>
+                  ),
+                },
               ].map((item) => (
                 <li key={item.name}>
                   <a
-                    href="#"
-                    className="text-sm text-[var(--l-ghost)] no-underline flex items-center gap-3 transition-colors duration-200 hover:text-[var(--l-text)]"
+                    href={item.href}
+                    target={item.href.startsWith("http") ? "_blank" : undefined}
+                    rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className="text-sm text-[var(--l-text-2)] hover:text-[var(--l-text)] no-underline flex items-center gap-2.5 transition-colors duration-200"
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       {item.icon}
                     </svg>
                     {item.name}
@@ -780,10 +799,11 @@ function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-[var(--l-border)] pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[var(--l-ghost)]">
-          <span>© 2025 ThinkDSA</span>
+        {/* Bottom Bar */}
+        <div className="border-t border-[var(--l-border)] pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[var(--l-text-2)] font-[var(--font-outfit)]">
+          <span>© 2026 ThinkDSA. All rights reserved.</span>
           <span>
-            Built for the developer who asks <em className="text-[var(--l-primary)] not-italic">why</em>, not just if it works.
+            Built for developers who ask <span className="text-[var(--l-primary)] font-semibold">why</span>, not just if it works.
           </span>
         </div>
       </div>
