@@ -35,6 +35,7 @@ import { sections, getProblemHref, getGuideHref, getPlatformLink, getProblemDiff
 import { LeetCodeIcon, GFGIcon } from "@/components/dsa-icons";
 import { useTheme } from "@/components/theme-provider";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { Logo } from "@/components/Logo";
 
 export interface ProblemItem {
   title: string;
@@ -47,16 +48,18 @@ export interface TopicGroup {
   id: string;
   key: string;
   name: string;
+  description: string;
   icon: React.ElementType;
   route: string;
   problems: ProblemItem[];
 }
 
-const TOPIC_DEFINITIONS: { id: string; key: string; name: string; icon: React.ElementType; route: string; matches: (s: string) => boolean }[] = [
+const TOPIC_DEFINITIONS: { id: string; key: string; name: string; description: string; icon: React.ElementType; route: string; matches: (s: string) => boolean }[] = [
   {
     id: "array",
     key: "arrays",
     name: "Array",
+    description: "Arrays, 2D matrices, two pointers & prefix sums",
     icon: Braces,
     route: "/problems/topics/arrays",
     matches: (s) => s.startsWith("Arrays"),
@@ -65,6 +68,7 @@ const TOPIC_DEFINITIONS: { id: string; key: string; name: string; icon: React.El
     id: "list",
     key: "linked-list",
     name: "Linked List",
+    description: "Singly & doubly lists, fast/slow pointers & cycle detection",
     icon: Link2,
     route: "/problems/topics/linked-list",
     matches: (s) => s.startsWith("Linked List"),
@@ -73,6 +77,7 @@ const TOPIC_DEFINITIONS: { id: string; key: string; name: string; icon: React.El
     id: "string",
     key: "strings",
     name: "String",
+    description: "String manipulation, pattern matching & anagrams",
     icon: Quote,
     route: "/problems/topics/strings",
     matches: (s) => s.startsWith("String"),
@@ -81,6 +86,7 @@ const TOPIC_DEFINITIONS: { id: string; key: string; name: string; icon: React.El
     id: "stack-queue",
     key: "stack-queue",
     name: "Stack & Queue",
+    description: "LIFO & FIFO structures, monotonic stacks & sliding windows",
     icon: Layers,
     route: "/problems/topics/stack-queue",
     matches: (s) => s.startsWith("Stack"),
@@ -89,6 +95,7 @@ const TOPIC_DEFINITIONS: { id: string; key: string; name: string; icon: React.El
     id: "tree",
     key: "trees",
     name: "Tree",
+    description: "Binary trees, BSTs, traversals & common patterns",
     icon: GitBranch,
     route: "/problems/topics/trees",
     matches: (s) => s.includes("Tree") || s.includes("BST"),
@@ -97,6 +104,7 @@ const TOPIC_DEFINITIONS: { id: string; key: string; name: string; icon: React.El
     id: "graph",
     key: "graph",
     name: "Graph",
+    description: "BFS, DFS, shortest paths, DAGs & topological sort",
     icon: Network,
     route: "/problems/topics/graph",
     matches: (s) => s.startsWith("Graph"),
@@ -105,6 +113,7 @@ const TOPIC_DEFINITIONS: { id: string; key: string; name: string; icon: React.El
     id: "dp",
     key: "dp",
     name: "Dynamic Programming",
+    description: "Memoization, tabulation, knapsack & sub-problems",
     icon: Binary,
     route: "/problems/topics/dp",
     matches: (s) => s.startsWith("Dynamic Programming") || s.startsWith("DP"),
@@ -113,6 +122,7 @@ const TOPIC_DEFINITIONS: { id: string; key: string; name: string; icon: React.El
     id: "greedy",
     key: "greedy",
     name: "Greedy",
+    description: "Local optimal choices, interval scheduling & activity selection",
     icon: Puzzle,
     route: "/problems/topics/greedy",
     matches: (s) => s.startsWith("Greedy"),
@@ -121,6 +131,7 @@ const TOPIC_DEFINITIONS: { id: string; key: string; name: string; icon: React.El
     id: "sorting",
     key: "sorting",
     name: "Sorting & Searching",
+    description: "Binary search, merge sort, quicksort & heaps",
     icon: ArrowUpDown,
     route: "/problems/topics/sorting",
     matches: (s) => s.includes("Search") || s.includes("Sort") || s.includes("Heaps"),
@@ -129,6 +140,7 @@ const TOPIC_DEFINITIONS: { id: string; key: string; name: string; icon: React.El
     id: "recursion",
     key: "recursion",
     name: "Recursion & Backtracking",
+    description: "Subsets, combinations, permutations & N-Queens",
     icon: Repeat,
     route: "/problems/topics/recursion",
     matches: (s) => s.startsWith("Recursion"),
@@ -190,6 +202,7 @@ export default function DSASidebar({ initialTopicId }: DSASidebarProps = {}) {
         id: def.id,
         key: def.key,
         name: def.name,
+        description: def.description,
         icon: def.icon,
         route: def.route,
         problems,
@@ -241,14 +254,9 @@ export default function DSASidebar({ initialTopicId }: DSASidebarProps = {}) {
     <div className="flex h-screen w-full overflow-hidden font-sans bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 transition-colors duration-200">
       {/* Sidebar */}
       <aside className="flex w-64 shrink-0 flex-col border-r select-none border-slate-200 bg-white dark:border-zinc-800 dark:bg-zinc-900/60 transition-colors duration-200">
-        <div className="flex items-center gap-2.5 border-b px-5 py-4 border-slate-200 dark:border-zinc-800">
-          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-indigo-600 text-sm font-bold text-white shadow-sm">
-            {"</>"}
-          </div>
-          <span className="text-base font-semibold tracking-tight text-slate-900 dark:text-zinc-100">
-            DSA Learn
-          </span>
-        </div>
+        <Link href="/problems/topics/trees" className="flex items-center border-b px-5 py-3.5 border-slate-200 dark:border-zinc-800 hover:bg-slate-50/60 dark:hover:bg-zinc-900/40 transition-colors">
+          <Logo variant="horizontal" size={26} />
+        </Link>
 
         <nav className="flex-1 overflow-y-auto px-3 py-4 ui-scrollbar">
           <p className="px-2 pb-2 text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-zinc-400">
@@ -277,15 +285,6 @@ export default function DSASidebar({ initialTopicId }: DSASidebarProps = {}) {
                       }`}
                     />
                     <span className="flex-1 truncate">{topic.name}</span>
-                    <span
-                      className={`text-[11px] tabular-nums ${
-                        isActive
-                          ? "text-indigo-700 font-bold dark:text-indigo-400 dark:font-medium"
-                          : "text-slate-600 font-semibold dark:text-zinc-400"
-                      }`}
-                    >
-                      {topic.problems.length}
-                    </span>
                   </Link>
                 </li>
               );
@@ -622,14 +621,19 @@ export default function DSASidebar({ initialTopicId }: DSASidebarProps = {}) {
             <div className="shrink-0 pb-6 bg-slate-50 dark:bg-zinc-950">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h1 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-zinc-100">
+                  <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-zinc-100">
                     {activeTopic.name}
                   </h1>
-                  <p className="mt-1 text-sm font-semibold text-slate-600 dark:text-zinc-400">
-                    {filteredProblems.length === activeTopic.problems.length
-                      ? `${activeTopic.problems.length} practice problems`
-                      : `Showing ${filteredProblems.length} of ${activeTopic.problems.length} problems`}
+                  <p className="mt-1 text-sm font-medium text-slate-500 dark:text-zinc-400">
+                    {activeTopic.description}
                   </p>
+                  <div className="mt-2.5 flex items-center gap-2">
+                    <span className="inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold border-indigo-100 bg-indigo-50/70 text-indigo-700 dark:border-indigo-900/50 dark:bg-indigo-950/50 dark:text-indigo-300">
+                      {filteredProblems.length === activeTopic.problems.length
+                        ? `${activeTopic.problems.length} Problems`
+                        : `Showing ${filteredProblems.length} of ${activeTopic.problems.length} Problems`}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3">

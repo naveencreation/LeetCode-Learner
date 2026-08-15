@@ -33,6 +33,9 @@ export default function RootLayout({
       data-landing={isLanding ? "true" : undefined}
     >
       <head>
+        <title>Think DSA — Visual Algorithm Execution Engine</title>
+        <meta name="description" content="Master Data Structures and Algorithms with interactive step-by-step visual execution engines." />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

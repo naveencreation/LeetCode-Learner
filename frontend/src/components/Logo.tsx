@@ -1,156 +1,124 @@
 "use client";
 
+import React from "react";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
   size?: number;
   className?: string;
+  variant?: "horizontal" | "stacked" | "icon";
+  theme?: "auto" | "light" | "dark";
   color?: string;
-  showText?: boolean;
 }
 
-export function Logo({ size = 40, className, color, showText = false }: LogoProps) {
-  // Use stable IDs to prevent hydration mismatch
-  const gradientIdT = "gradT-main";
-  const gradientIdD = "gradD-main";
-  const strokeColor = color || "currentColor";
-
+/**
+ * Think DSA official brand logo icon component.
+ * Features the signature triangular arrow/tree mark.
+ */
+export function LogoIcon({
+  size = 32,
+  className,
+  color = "#4F46E5",
+}: {
+  size?: number;
+  className?: string;
+  color?: string;
+}) {
   return (
-    <div className={cn("flex items-center gap-3", className)} style={{ color: strokeColor }}>
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 100 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-label="ThinkDSA logo"
-        className="shrink-0"
-      >
-        <defs>
-          {/* T gradient - bright, energetic */}
-          <linearGradient id={gradientIdT} x1="20%" y1="0%" x2="80%" y2="100%">
-            <stop offset="0%" stopColor="#c084fc" />
-            <stop offset="50%" stopColor="#a855f7" />
-            <stop offset="100%" stopColor="#7c3aed" />
-          </linearGradient>
-
-          {/* D gradient - deeper, grounded */}
-          <linearGradient id={gradientIdD} x1="80%" y1="0%" x2="20%" y2="100%">
-            <stop offset="0%" stopColor="#7c3aed" />
-            <stop offset="50%" stopColor="#6d28d9" />
-            <stop offset="100%" stopColor="#5b21b6" />
-          </linearGradient>
-        </defs>
-
-        {/* Hexagon frame - clean rounded corners */}
-        <path
-          d="M50 5 L85 25 L85 75 L50 95 L15 75 L15 25 Z"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinejoin="round"
-          fill="none"
-          opacity="0.9"
-        />
-
-        {/* Letter D - smooth rounded rectangle */}
-        <path
-          d="M46 28 
-             L46 72
-             L54 72
-             C70 72 70 28 54 28
-             Z"
-          fill={`url(#${gradientIdD})`}
-          opacity="0.95"
-        />
-
-        {/* Letter T - positioned to overlap/interlock with D */}
-        <g>
-          {/* T top bar */}
-          <rect
-            x="22"
-            y="28"
-            width="32"
-            height="10"
-            rx="2"
-            fill={`url(#${gradientIdT})`}
-          />
-          {/* T vertical stem */}
-          <rect
-            x="33"
-            y="38"
-            width="10"
-            height="34"
-            rx="2"
-            fill={`url(#${gradientIdT})`}
-          />
-        </g>
-
-        {/* Subtle connecting line between T and D */}
-        <path
-          d="M46 50 L54 50"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          opacity="0.5"
-        />
-      </svg>
-
-      {showText && (
-        <span className="font-[var(--font-space-grotesk)] font-semibold text-2xl text-[var(--l-text)] tracking-tight">
-          ThinkDSA
-        </span>
-      )}
-    </div>
-  );
-}
-
-// Compact mark for sidebar/favicon
-export function LogoMark({ size = 28, className, color }: Omit<LogoProps, 'showText'>) {
-  // Use stable IDs to prevent hydration mismatch
-  const gradientIdT = "gradTM-mark";
-  const gradientIdD = "gradDM-mark";
-  const strokeColor = color || "currentColor";
-
-  return (
-    <div className={cn("shrink-0", className)} style={{ color: strokeColor, display: 'flex' }}>
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 100 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-label="ThinkDSA"
-      >
-      <defs>
-        <linearGradient id={gradientIdT} x1="20%" y1="0%" x2="80%" y2="100%">
-          <stop offset="0%" stopColor="#c084fc" />
-          <stop offset="100%" stopColor="#7c3aed" />
-        </linearGradient>
-        <linearGradient id={gradientIdD} x1="80%" y1="0%" x2="20%" y2="100%">
-          <stop offset="0%" stopColor="#7c3aed" />
-          <stop offset="100%" stopColor="#5b21b6" />
-        </linearGradient>
-      </defs>
-
-      {/* Hexagon */}
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Think DSA Logo Icon"
+      className={cn("shrink-0 transition-transform hover:scale-105", className)}
+    >
       <path
-        d="M50 5 L85 25 L85 75 L50 95 L15 75 L15 25 Z"
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinejoin="round"
-        fill="none"
+        d="M 50 8 
+           L 92 82 
+           L 64 82 
+           L 50 56 
+           L 36 82 
+           L 8 82 
+           Z 
+           M 50 32 
+           L 65 60 
+           L 35 60 
+           Z"
+        fill={color}
+        fillRule="evenodd"
       />
-
-      {/* D */}
-      <path
-        d="M46 28 L46 72 L54 72 C70 72 70 28 54 28 Z"
-        fill={`url(#${gradientIdD})`}
-      />
-
-      {/* T */}
-      <rect x="22" y="28" width="32" height="10" rx="2" fill={`url(#${gradientIdT})`} />
-      <rect x="33" y="38" width="10" height="34" rx="2" fill={`url(#${gradientIdT})`} />
     </svg>
+  );
+}
+
+/**
+ * Main Think DSA logo component with optional text layout variants and theme contrast modes.
+ */
+export function Logo({
+  size = 32,
+  className,
+  variant = "horizontal",
+  theme = "auto",
+  color,
+}: LogoProps) {
+  // Determine text color classes based on theme mode
+  const thinkTextClass =
+    theme === "dark"
+      ? "text-white"
+      : theme === "light"
+      ? "text-slate-900"
+      : "text-slate-900 dark:text-zinc-100";
+
+  const dsaTextClass =
+    theme === "dark"
+      ? "text-[#818CF8]"
+      : theme === "light"
+      ? "text-[#4F46E5]"
+      : "text-indigo-600 dark:text-indigo-400";
+
+  const iconColor =
+    color ||
+    (theme === "dark"
+      ? "#818CF8"
+      : theme === "light"
+      ? "#4F46E5"
+      : "#4F46E5");
+
+  if (variant === "icon") {
+    return <LogoIcon size={size} className={className} color={iconColor} />;
+  }
+
+  if (variant === "stacked") {
+    return (
+      <div className={cn("inline-flex items-center gap-3 select-none", className)}>
+        <LogoIcon size={size} color={iconColor} />
+        <div className="flex flex-col justify-center leading-none">
+          <span className={cn("text-lg font-extrabold tracking-tight", thinkTextClass)}>
+            Think
+          </span>
+          <span className={cn("text-lg font-extrabold tracking-tight", dsaTextClass)}>
+            DSA
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // Horizontal variant (default)
+  return (
+    <div className={cn("inline-flex items-center gap-2.5 select-none", className)}>
+      <LogoIcon size={size} color={iconColor} />
+      <div className="flex items-center gap-1 leading-none text-xl font-extrabold tracking-tight">
+        <span className={thinkTextClass}>Think</span>
+        <span className={dsaTextClass}>DSA</span>
+      </div>
     </div>
   );
+}
+
+// Compact mark alias for compatibility
+export function LogoMark({ size = 28, className, color }: Omit<LogoProps, "variant">) {
+  return <LogoIcon size={size} className={className} color={color || "#4F46E5"} />;
 }
