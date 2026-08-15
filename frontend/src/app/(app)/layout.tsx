@@ -47,10 +47,19 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     !isGuidePage && traversalRoutes.some((route) => pathname.startsWith(route));
   const isBinaryTreeProblemRoute = pathname.startsWith("/problems/binary-tree/");
   const isLinkedListProblemRoute = pathname.startsWith("/problems/linked-list/");
-  const isProblemFocusPage = isTraversalPage || isBinaryTreeProblemRoute || isLinkedListProblemRoute;
+  const isFullBleedPage =
+    pathname === "/dashboard" ||
+    pathname === "/settings" ||
+    pathname.startsWith("/settings") ||
+    pathname === "/profile" ||
+    pathname.startsWith("/profile") ||
+    pathname.startsWith("/problems/topics") ||
+    pathname === "/problems" ||
+    pathname === "/problems/";
+  const isProblemFocusPage = isTraversalPage || isBinaryTreeProblemRoute || isLinkedListProblemRoute || isFullBleedPage;
 
   return (
-    <div className="flex min-h-screen bg-muted/30">
+    <div className="flex min-h-screen bg-zinc-950">
       {!isProblemFocusPage ? (
         <AppSidebar
           collapsed={collapsed}
@@ -59,7 +68,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       ) : null}
       <main
         className={
-          isTraversalPage
+          isFullBleedPage
+            ? "flex h-screen w-full flex-1 flex-col overflow-hidden bg-zinc-950 p-0"
+            : isTraversalPage
             ? "flex h-screen flex-1 flex-col overflow-hidden p-0"
             : isProblemFocusPage
             ? "flex min-h-screen flex-1 flex-col overflow-y-auto p-0"

@@ -82,19 +82,19 @@ export function TreeSetupModal({
 				<div className="flex flex-wrap justify-end gap-2 border-t border-slate-200 px-6 py-4">
 					<button
 						onClick={onClose}
-						className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+						className="rounded-md border border-[#CBD5E1] bg-white px-3 py-1.5 text-sm font-bold text-[#334155] transition hover:bg-slate-50"
 					>
 						Cancel
 					</button>
 					<button
 						onClick={handleApply}
-						className="rounded-md border border-teal-300 bg-white px-3 py-1.5 text-sm font-extrabold text-teal-700 transition hover:bg-teal-50"
+						className="rounded-md border border-[#818CF8] bg-white px-3 py-1.5 text-sm font-extrabold text-[#4F46E5] transition hover:bg-indigo-50/70"
 					>
 						Apply
 					</button>
 					<button
 						onClick={handleApplyAndRun}
-						className="rounded-md bg-teal-600 px-3 py-1.5 text-sm font-extrabold text-white transition hover:bg-teal-700"
+						className="rounded-md border border-[#4F46E5] bg-[#4F46E5] px-3 py-1.5 text-sm font-extrabold text-white transition hover:bg-[#4338CA]"
 					>
 						Apply & Run
 					</button>
