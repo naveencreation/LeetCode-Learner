@@ -17,7 +17,7 @@ export default function ProgressPage() {
           </p>
           <div className="pt-3">
             <Link
-              href="/problems/topics/trees#problem-list"
+              href="/problems/topics/trees"
               className="inline-flex items-center rounded-xl border border-sky-300 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700 transition hover:bg-sky-100"
             >
               Move To Trees Page

@@ -32,7 +32,7 @@ export function ProblemFocusHeader({
   guideLabel = "Read Here",
   stats,
   extraActions,
-  backHref = "/problems/topics/trees#problem-list",
+  backHref = "/problems/topics/trees",
   backLabel = "Back To Trees List",
   topicKey,
   currentHref,
@@ -52,7 +52,7 @@ export function ProblemFocusHeader({
         {guideHref ? (
           <Link
             href={guideHref}
-            className="inline-flex items-center gap-1 rounded-full border border-teal-200 bg-teal-50 px-2.5 py-1.5 text-[12px] font-extrabold text-teal-700 transition hover:bg-teal-100"
+            className="inline-flex items-center gap-1 rounded-full border border-[#a7f3d0] bg-[#D0FAE5] px-2.5 py-1.5 text-[12px] font-extrabold text-[#047857] transition hover:bg-[#a7f3d0]"
           >
             {guideLabel}
           </Link>
@@ -86,7 +86,7 @@ export function ProblemFocusHeader({
 
         <Link
           href={backHref}
-          className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-3 py-1.5 text-[12px] font-bold text-teal-700 transition hover:bg-teal-100 shadow-sm"
+          className="inline-flex items-center gap-1.5 rounded-full border border-[#a7f3d0] bg-[#D0FAE5] px-3 py-1.5 text-[12px] font-bold text-[#047857] transition hover:bg-[#a7f3d0] shadow-sm"
         >
           <ArrowLeft size={13} strokeWidth={2.5} aria-hidden="true" />
           {backLabel}

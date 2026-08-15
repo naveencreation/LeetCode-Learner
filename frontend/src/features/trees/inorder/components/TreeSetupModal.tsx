@@ -742,7 +742,7 @@ export function TreeSetupModal({
               <button
                 type="button"
                 onClick={() => setShowDiscardConfirm(false)}
-                className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+                className="rounded-md border border-[#CBD5E1] bg-white px-3 py-1.5 text-sm font-bold text-[#334155] transition hover:bg-slate-50"
               >
                 Continue Editing
               </button>
@@ -773,7 +773,7 @@ export function TreeSetupModal({
             <button
               type="button"
               onClick={handleRequestClose}
-              className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+              className="rounded-md border border-[#CBD5E1] bg-white px-3 py-1.5 text-sm font-bold text-[#334155] transition hover:bg-slate-50"
             >
               Close
             </button>
@@ -837,7 +837,7 @@ export function TreeSetupModal({
                       type="button"
                       onClick={() => handleAddNode("left")}
                       disabled={isNodeLimitReached}
-                      className="col-span-6 h-9 rounded-md bg-teal-600 px-3 text-sm font-extrabold text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:bg-teal-300 sm:col-span-3"
+                      className="col-span-6 h-9 rounded-md border border-[#CBD5E1] bg-white px-3 text-sm font-extrabold text-[#334155] transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 sm:col-span-3"
                     >
                       + Left
                     </button>
@@ -845,7 +845,7 @@ export function TreeSetupModal({
                       type="button"
                       onClick={() => handleAddNode("right")}
                       disabled={isNodeLimitReached}
-                      className="col-span-6 h-9 rounded-md bg-sky-600 px-3 text-sm font-extrabold text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-sky-300 sm:col-span-3"
+                      className="col-span-6 h-9 rounded-md border border-[#CBD5E1] bg-white px-3 text-sm font-extrabold text-[#334155] transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50 sm:col-span-3"
                     >
                       + Right
                     </button>
@@ -871,7 +871,7 @@ export function TreeSetupModal({
                     <button
                       type="button"
                       onClick={handleAutoLayout}
-                      className="col-span-4 h-9 rounded-md bg-emerald-600 px-3 text-sm font-extrabold text-white transition hover:bg-emerald-700"
+                      className="col-span-4 h-9 rounded-md border border-[#4F46E5] bg-[#4F46E5] px-3 text-sm font-extrabold text-white transition hover:bg-[#4338CA]"
                     >
                       Re-organize
                     </button>
@@ -909,7 +909,7 @@ export function TreeSetupModal({
                     <button
                       type="button"
                       onClick={handleRenameNode}
-                      className="col-span-12 h-9 rounded-md bg-indigo-600 px-3 text-sm font-extrabold text-white transition hover:bg-indigo-700 sm:col-span-4"
+                      className="col-span-12 h-9 rounded-md border border-[#4F46E5] bg-[#4F46E5] px-3 text-sm font-extrabold text-white transition hover:bg-[#4338CA] sm:col-span-4"
                     >
                       Rename
                     </button>
@@ -934,7 +934,7 @@ export function TreeSetupModal({
                         if (!Number.isFinite(v)) { setError("Parent value must be a valid number."); return; }
                         setPendingRemove({ side: "left", parent: removeParentValue });
                       }}
-                      className="col-span-6 h-9 rounded-md bg-rose-600 px-3 text-sm font-extrabold text-white transition hover:bg-rose-700 sm:col-span-4"
+                      className="col-span-6 h-9 rounded-md border border-[#DC2626] bg-[#DC2626] px-3 text-sm font-extrabold text-white transition hover:bg-[#B91C1C] sm:col-span-4"
                     >
                       Remove Left
                     </button>
@@ -945,7 +945,7 @@ export function TreeSetupModal({
                         if (!Number.isFinite(v)) { setError("Parent value must be a valid number."); return; }
                         setPendingRemove({ side: "right", parent: removeParentValue });
                       }}
-                      className="col-span-6 h-9 rounded-md bg-orange-600 px-3 text-sm font-extrabold text-white transition hover:bg-orange-700 sm:col-span-4"
+                      className="col-span-6 h-9 rounded-md border border-[#DC2626] bg-[#DC2626] px-3 text-sm font-extrabold text-white transition hover:bg-[#B91C1C] sm:col-span-4"
                     >
                       Remove Right
                     </button>
@@ -1107,21 +1107,21 @@ export function TreeSetupModal({
           <button
             type="button"
             onClick={handleRequestClose}
-            className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+            className="rounded-md border border-[#CBD5E1] bg-white px-3 py-1.5 text-sm font-bold text-[#334155] transition hover:bg-slate-50"
           >
             Cancel
           </button>
           <button
             type="button"
             onClick={handleApply}
-            className="rounded-md border border-teal-300 bg-white px-3 py-1.5 text-sm font-extrabold text-teal-700 transition hover:bg-teal-50"
+            className="rounded-md border border-[#818CF8] bg-white px-3 py-1.5 text-sm font-extrabold text-[#4F46E5] transition hover:bg-indigo-50/70"
           >
             Apply Only
           </button>
           <button
             type="button"
             onClick={handleApplyAndRun}
-            className="rounded-md bg-teal-600 px-3 py-1.5 text-sm font-extrabold text-white transition hover:bg-teal-700"
+            className="rounded-md border border-[#4F46E5] bg-[#4F46E5] px-3 py-1.5 text-sm font-extrabold text-white transition hover:bg-[#4338CA]"
           >
             Apply and Run
           </button>
@@ -1143,7 +1143,7 @@ export function TreeSetupModal({
               <button
                 type="button"
                 onClick={() => setPendingRemove(null)}
-                className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+                className="rounded-md border border-[#CBD5E1] bg-white px-3 py-1.5 text-sm font-bold text-[#334155] transition hover:bg-slate-50"
               >
                 Cancel
               </button>

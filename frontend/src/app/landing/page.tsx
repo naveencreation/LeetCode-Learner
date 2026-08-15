@@ -64,15 +64,13 @@ function Navbar() {
       }`}
     >
       <div className="max-w-[1200px] mx-auto px-6 h-full flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3 no-underline group">
+        <Link href="/" className="flex items-center no-underline group">
           <Logo 
-            size={36} 
-            color="oklch(65% 0.22 280)"
+            size={32} 
+            variant="horizontal"
+            theme="dark"
             className="transition-all duration-300 group-hover:scale-105"
           />
-          <span className="font-[var(--font-space-grotesk)] font-semibold text-2xl text-[var(--l-text)] tracking-tight">
-            ThinkDSA
-          </span>
         </Link>
 
         <ul className="hidden md:flex items-center gap-6 list-none">
@@ -690,11 +688,8 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           {/* Brand */}
           <div className="md:col-span-1">
-            <Link href="/" className="inline-flex items-center gap-3 no-underline mb-4">
-              <Logo size={24} color="oklch(65% 0.22 280)" />
-              <span className="font-[var(--font-space-grotesk)] font-bold text-xl text-[var(--l-text)] tracking-tight">
-                ThinkDSA
-              </span>
+            <Link href="/" className="inline-flex items-center no-underline mb-4">
+              <Logo size={24} variant="horizontal" theme="dark" />
             </Link>
             <p className="text-sm text-[var(--l-text-2)] leading-relaxed max-w-[280px] font-[var(--font-outfit)]">
               Visual execution engine for developers who want to actually master data structures and algorithms.

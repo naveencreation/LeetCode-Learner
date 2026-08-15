@@ -56,7 +56,7 @@ export function LinkedListShell({
           guideHref={guideHref}
           topicKey={topicKey}
           currentHref={currentHref}
-          backHref="/problems/topics/linked-list#problem-list"
+          backHref="/problems/topics/linked-list"
           backLabel="Back To Linked List"
           extraActions={
             <div className="flex items-center gap-1.5">
